@@ -680,6 +680,91 @@ export default function RoutinesPage() {
                   </div>
                 </div>
 
+                {/* identity line */}
+                {r.identity && (
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: "var(--label-2,#6E6E73)",
+                      fontWeight: 500,
+                      fontStyle: "italic",
+                      letterSpacing: "-0.005em",
+                      marginBottom: 10,
+                    }}
+                  >
+                    — {r.identity}
+                  </div>
+                )}
+
+                {/* 8-week dot grid — 8 cols × up to 4 rows (32 days) */}
+                {(() => {
+                  const TOTAL = 32;
+                  const todayDotIdx = TOTAL - 1;
+                  // For seed data, fill dots based on days array (simulate kept pattern)
+                  // In production this would derive from actual block history
+                  const dots = Array.from({ length: TOTAL }, (_, i) => {
+                    // today = last dot
+                    if (i === todayDotIdx) return "today";
+                    // simulate: if this weekday matches routine days, mark done
+                    const dayOffset = todayDotIdx - i;
+                    const weekdayIdx =
+                      (today.getDay() - 1 + 7 - (dayOffset % 7) + 7) % 7;
+                    const key = WEEKDAY_KEYS[weekdayIdx];
+                    if (!key) return "empty";
+                    if (r.days.includes(key)) return "done";
+                    return "empty";
+                  });
+                  const keptCount = dots.filter((d) => d === "done").length;
+                  return (
+                    <>
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(8,1fr)",
+                          gap: 5,
+                          padding: "2px 0",
+                          marginBottom: 8,
+                        }}
+                      >
+                        {dots.map((state, i) => (
+                          <div
+                            key={i}
+                            style={{
+                              aspectRatio: "1",
+                              borderRadius: 4,
+                              background:
+                                state === "done"
+                                  ? "var(--ink,#0A0A0F)"
+                                  : state === "today"
+                                    ? "transparent"
+                                    : "transparent",
+                              boxShadow:
+                                state === "done"
+                                  ? "none"
+                                  : state === "today"
+                                    ? "inset 0 0 0 1.5px var(--ink,#0A0A0F), 0 0 0 3px rgba(0,0,0,0.06)"
+                                    : "inset 0 0 0 1px var(--hairline-2,rgba(60,60,67,0.06))",
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          color: "var(--label-2,#6E6E73)",
+                          fontWeight: 600,
+                          marginBottom: 10,
+                        }}
+                      >
+                        <strong style={{ color: "var(--ink-2,#1C1C1E)" }}>
+                          {keptCount} of {TOTAL} kept
+                        </strong>{" "}
+                        · last 8 weeks
+                      </div>
+                    </>
+                  );
+                })()}
+
                 {/* bottom row */}
                 <div
                   style={{

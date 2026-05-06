@@ -1327,6 +1327,11 @@ button {
 }
 
 /* ── Desktop sidebar rail ── */
+.sidebar-rail,
+.desktop-titlebar {
+  display: none;
+}
+
 @media (min-width: 1024px) {
   .tabbar {
     display: none;
