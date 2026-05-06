@@ -621,7 +621,7 @@ export default function TodayPage() {
         onClick={() => setShowCreate(true)}
         style={{
           position: "fixed",
-          bottom: 100,
+          bottom: 156,
           right: 20,
           width: 48,
           height: 48,

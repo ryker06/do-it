@@ -461,7 +461,25 @@ export const useDoIt = create<State & Actions>()(
           domains,
           visions:
             Array.isArray(s?.visions) && (s.visions as unknown[]).length > 0
-              ? s.visions
+              ? SEED_VISIONS.map((seed) => {
+                  const stored = (s.visions as Vision[]).find(
+                    (v) => v.id === seed.id,
+                  );
+                  // Merge: seed fields win for optional rich fields that may be
+                  // missing from stale localStorage snapshots (deadline,
+                  // targetMetric, description, threads, etc.)
+                  // stored wins for user-edited fields; seed fills in new
+                  // optional fields (deadline, targetMetric, description,
+                  // threads) that may be absent from stale localStorage data.
+                  if (!stored) return seed;
+                  const merged = { ...stored };
+                  for (const key of Object.keys(seed) as (keyof Vision)[]) {
+                    if (merged[key] === undefined || merged[key] === null) {
+                      (merged as Record<string, unknown>)[key] = seed[key];
+                    }
+                  }
+                  return merged;
+                })
               : SEED_VISIONS,
           routines,
           weekAssignments:
