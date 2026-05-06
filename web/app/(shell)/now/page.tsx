@@ -57,7 +57,6 @@ export default function NowPage() {
   }, []);
 
   useEffect(() => {
-    // Load prayer times for anchor-interrupt detection
     const cached = loadCachedAnchors();
     if (cached) {
       setAnchors(cached);
@@ -92,21 +91,19 @@ export default function NowPage() {
   const live = focus?.status === "active";
   const paused = focus?.status === "paused";
 
-  // Anchor-interrupt: find next prayer ≤ 5 min away
   const nowDate = new Date(now);
   const prayerWarning = anchors
     ? anchors
         .map((a) => ({ a, mins: minsUntilHHMM(a.hhmm, nowDate) }))
         .find((x) => x.mins >= 0 && x.mins <= 5)
     : null;
-  // Prayer-time mode: prayer is at 0 min (or negative, meaning right now)
   const prayerNow = anchors
     ? anchors
         .map((a) => ({ a, mins: minsUntilHHMM(a.hhmm, nowDate) }))
         .find((x) => x.mins >= -10 && x.mins <= 0)
     : null;
 
-  // Day-complete state
+  // ── Day complete ──
   if (!focus) {
     const doneBlocks = blocks.filter((b) => b.status === "done");
     const totalDoneMin = doneBlocks.reduce(
@@ -115,66 +112,22 @@ export default function NowPage() {
     );
     const hh = Math.floor(totalDoneMin / 60);
     const mm = totalDoneMin % 60;
-    const todayDow = new Date().toLocaleDateString("en-US", {
-      weekday: "short",
-    });
-    const todayTime = new Date().toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
 
     return (
-      <>
-        {/* dusk halo */}
+      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <Topbar name="adam." sub="that's the day." />
+
+        {/* centered hero for day-complete */}
         <div
           style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 520,
-            background:
-              "radial-gradient(110% 70% at 50% -10%, rgba(120,150,180,0.10) 0%, rgba(120,150,180,0.03) 38%, transparent 68%), radial-gradient(80% 60% at 85% 0%, rgba(180,200,220,0.18) 0%, transparent 55%)",
-            pointerEvents: "none",
-          }}
-        />
-
-        <Topbar name={`Evening, Adam`} sub="that's the day" />
-
-        {/* Hero */}
-        <div
-          style={{
-            position: "relative",
-            zIndex: 2,
-            marginTop: 40,
-            padding: "6px 8px 0",
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "0 0 80px",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              fontSize: 11.5,
-              fontWeight: 700,
-              color: "#5C6B79",
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              marginBottom: 14,
-            }}
-          >
-            <span
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: "#5C6B79",
-                opacity: 0.6,
-              }}
-            />
-            Day complete
-          </div>
           <div
             style={{
               fontSize: 46,
@@ -182,9 +135,11 @@ export default function NowPage() {
               color: "var(--ink,#000)",
               letterSpacing: "-0.05em",
               lineHeight: 0.96,
+              textAlign: "center",
+              marginBottom: 14,
             }}
           >
-            That&apos;s it
+            that&apos;s it
             <br />
             <span style={{ color: "var(--label,#8E8E93)", fontWeight: 600 }}>
               for today.
@@ -192,45 +147,29 @@ export default function NowPage() {
           </div>
           <div
             style={{
-              marginTop: 14,
               fontSize: 14.5,
               fontWeight: 500,
               color: "var(--label-2,#6E6E73)",
               letterSpacing: "-0.012em",
+              textAlign: "center",
+              marginBottom: 36,
             }}
           >
             <b style={{ color: "var(--ink-2,#1C1C1E)", fontWeight: 700 }}>
               {doneBlocks.length} block{doneBlocks.length !== 1 ? "s" : ""}.
             </b>{" "}
-            {hh > 0 ? `${hh}h ${mm}m` : `${mm}m`}. Calm execution.
+            {hh > 0 ? `${hh}h ${mm}m` : `${mm}m`}. calm execution.
           </div>
-        </div>
 
-        {/* Domain recap discs */}
-        {doneBlocks.length > 0 && (
-          <div
-            style={{
-              position: "relative",
-              zIndex: 2,
-              margin: "30px 8px 0",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
+          {doneBlocks.length > 0 && (
             <div
               style={{
-                fontSize: 11,
-                fontWeight: 700,
-                color: "var(--label,#8E8E93)",
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                marginRight: 4,
+                display: "flex",
+                alignItems: "center",
+                gap: -8,
+                marginBottom: 40,
               }}
             >
-              Today
-            </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
               {Array.from(new Set(doneBlocks.map((b) => b.domain))).map(
                 (id, i) => (
                   <div
@@ -245,7 +184,7 @@ export default function NowPage() {
                       justifyContent: "center",
                       marginLeft: i > 0 ? -8 : 0,
                       boxShadow:
-                        "0 0 0 2px #fff, inset 0 0 0 0.5px rgba(20,20,30,0.06), inset 0 -2px 4px rgba(20,20,30,0.04), 0 1px 2px rgba(20,20,30,0.04)",
+                        "0 0 0 2px #fff, inset 0 0 0 0.5px rgba(20,20,30,0.06)",
                     }}
                   >
                     <DomainGlyph id={id} size={17} />
@@ -253,37 +192,14 @@ export default function NowPage() {
                 ),
               )}
             </div>
-          </div>
-        )}
+          )}
 
-        {/* divider */}
-        <div
-          style={{
-            position: "relative",
-            zIndex: 2,
-            margin: "30px 8px 0",
-            height: 0.5,
-            background: "var(--hairline,rgba(60,60,67,0.10))",
-          }}
-        />
-
-        {/* Actions */}
-        <div
-          style={{
-            position: "relative",
-            zIndex: 2,
-            marginTop: 22,
-            display: "flex",
-            flexDirection: "column",
-            gap: 9,
-          }}
-        >
           <button
             className="cta"
-            style={{ fontFamily: "inherit" }}
+            style={{ fontFamily: "inherit", maxWidth: 340, width: "100%" }}
             onClick={() => router.push("/today")}
           >
-            Preview tomorrow
+            preview tomorrow
             <svg
               viewBox="0 0 24 24"
               width={14}
@@ -297,37 +213,16 @@ export default function NowPage() {
               <path d="M9 6l6 6-6 6" />
             </svg>
           </button>
-          <button
-            style={{
-              width: "100%",
-              background: "transparent",
-              color: "var(--label-2,#6E6E73)",
-              border: "none",
-              borderRadius: 999,
-              padding: "13px 20px",
-              fontSize: 14,
-              fontWeight: 600,
-              letterSpacing: "-0.012em",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              cursor: "pointer",
-              fontFamily: "inherit",
-            }}
-          >
-            Just rest
-          </button>
         </div>
 
         {showBrainDump && (
           <BrainDumpSheet onClose={() => setShowBrainDump(false)} />
         )}
-      </>
+      </div>
     );
   }
 
-  // ── Anchor-interrupt: prayer now (State B — mint hero) ──
+  // ── Prayer-now state ──
   if (prayerNow && focus) {
     const blockedMin = Math.floor(
       (focus.accumulatedMs +
@@ -357,72 +252,20 @@ export default function NowPage() {
             right: 0,
             height: 340,
             background:
-              "radial-gradient(120% 80% at 50% -10%, rgba(47,90,62,0.10) 0%, rgba(47,90,62,0.03) 35%, transparent 65%), radial-gradient(80% 60% at 85% 0%, rgba(140,200,160,0.18) 0%, transparent 55%)",
+              "radial-gradient(120% 80% at 50% -10%, rgba(47,90,62,0.10) 0%, rgba(47,90,62,0.03) 35%, transparent 65%)",
             pointerEvents: "none",
           }}
         />
-        <Topbar name="A moment" sub="for prayer" />
+        <Topbar name="a moment" sub="for prayer." />
 
-        {/* Status pill */}
-        <div
-          style={{
-            position: "relative",
-            zIndex: 2,
-            marginBottom: 18,
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            padding: "6px 12px 6px 8px",
-            background: "rgba(255,255,255,0.55)",
-            boxShadow:
-              "inset 0 0 0 0.5px rgba(47,90,62,0.10), 0 1px 1px rgba(47,90,62,0.04)",
-            borderRadius: 999,
-          }}
-        >
-          <span
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: "50%",
-              background: "#2F5A3E",
-              boxShadow: "0 0 0 3px rgba(47,90,62,0.08)",
-            }}
-          />
-          <span
-            style={{
-              fontSize: 12,
-              fontWeight: 600,
-              color: "#1F3A2A",
-              letterSpacing: "-0.008em",
-            }}
-          >
-            In prayer{" "}
-            <span style={{ color: "#5E8A6E", fontWeight: 500 }}>
-              · {prayerNow.a.hhmm}
-            </span>
-          </span>
-        </div>
-
-        {/* Mint hero card */}
         <div
           className="hero"
           style={{
             background: "linear-gradient(180deg, #F0F8F2 0%, #E2F0E6 100%)",
             boxShadow:
-              "0 0 0 0.5px rgba(47,90,62,0.10), 0 1px 1px rgba(47,90,62,0.03), 0 12px 28px -14px rgba(47,90,62,0.16), 0 26px 50px -28px rgba(47,90,62,0.20)",
+              "0 0 0 0.5px rgba(47,90,62,0.10), 0 12px 28px -14px rgba(47,90,62,0.16)",
           }}
         >
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: 30,
-              boxShadow:
-                "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(47,90,62,0.16)",
-              pointerEvents: "none",
-            }}
-          />
-
           <div
             style={{
               display: "flex",
@@ -444,116 +287,8 @@ export default function NowPage() {
                 boxShadow: "0 0 0 3px rgba(47,90,62,0.08)",
               }}
             />
-            In prayer
+            in prayer
             <span style={{ color: "#5E8A6E", fontWeight: 500 }}>· no rush</span>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 11,
-              marginBottom: 14,
-            }}
-          >
-            <div
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: "50%",
-                background: "linear-gradient(180deg,#FFFFFF 0%, #F0F8F3 100%)",
-                boxShadow:
-                  "inset 0 0 0 0.5px rgba(47,90,62,0.16), inset 0 -2px 4px rgba(47,90,62,0.05), 0 1px 3px rgba(47,90,62,0.10)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <svg
-                viewBox="0 0 24 24"
-                width={24}
-                height={24}
-                fill="none"
-                stroke="#1F3A2A"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z" />
-                <path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z" />
-              </svg>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                flex: 1,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: "#1F3A2A",
-                  letterSpacing: "-0.012em",
-                }}
-              >
-                Religion · Anchor
-              </div>
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "#5E8A6E",
-                  fontWeight: 500,
-                  letterSpacing: "-0.008em",
-                }}
-              >
-                Pray when ready · no countdown
-              </div>
-            </div>
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                fontSize: 10.5,
-                fontWeight: 700,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                color: "var(--label-2,#6E6E73)",
-                background: "var(--inset,#F2F2F7)",
-                padding: "5px 10px 5px 8px",
-                borderRadius: 999,
-                boxShadow:
-                  "inset 0 0 0 0.5px var(--hairline,rgba(60,60,67,0.10))",
-              }}
-            >
-              <span
-                style={{ display: "inline-flex", alignItems: "center", gap: 2 }}
-              >
-                <i
-                  style={{
-                    display: "block",
-                    width: 2,
-                    height: 8,
-                    background: "var(--label-2,#6E6E73)",
-                    borderRadius: 1,
-                  }}
-                />
-                <i
-                  style={{
-                    display: "block",
-                    width: 2,
-                    height: 8,
-                    background: "var(--label-2,#6E6E73)",
-                    borderRadius: 1,
-                  }}
-                />
-              </span>
-              Paused
-            </div>
           </div>
 
           <div
@@ -581,7 +316,7 @@ export default function NowPage() {
               marginBottom: 18,
             }}
           >
-            Pray when you&apos;re ready. The day waits with you.
+            pray when you&apos;re ready. the day waits with you.
           </div>
 
           <button
@@ -589,8 +324,6 @@ export default function NowPage() {
             className="cta"
             style={{
               background: "linear-gradient(180deg, #2E7B5E 0%, #1F5A45 100%)",
-              boxShadow:
-                "0 1px 0 rgba(255,255,255,0.30) inset, 0 0 0 0.5px rgba(31,90,68,0.40), 0 18px 38px -18px rgba(31,90,68,0.45), 0 6px 14px -6px rgba(31,90,68,0.25)",
               fontFamily: "inherit",
             }}
           >
@@ -618,10 +351,9 @@ export default function NowPage() {
                 <path d="M5 12l4 4L19 6" />
               </svg>
             </span>
-            Marked prayed
+            marked prayed
           </button>
 
-          {/* Paused block status */}
           <div
             style={{
               marginTop: 14,
@@ -635,60 +367,20 @@ export default function NowPage() {
               fontSize: 12,
               color: "#5E8A6E",
               fontWeight: 500,
-              letterSpacing: "-0.005em",
             }}
           >
-            <span
-              style={{
-                width: 22,
-                height: 22,
-                borderRadius: "50%",
-                background: "#fff",
-                flexShrink: 0,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 1.5,
-                boxShadow: "0 0 0 0.5px rgba(47,90,62,0.10)",
-              }}
-            >
-              <i
-                style={{
-                  display: "block",
-                  width: 2,
-                  height: 8,
-                  background: "#5E8A6E",
-                  borderRadius: 1,
-                }}
-              />
-              <i
-                style={{
-                  display: "block",
-                  width: 2,
-                  height: 8,
-                  background: "#5E8A6E",
-                  borderRadius: 1,
-                }}
-              />
-            </span>
             {focus.title} paused at{" "}
             <b style={{ color: "#1F3A2A", fontWeight: 700, marginLeft: 3 }}>
               {pausedTimeStr}
             </b>
             <span
-              style={{
-                marginLeft: "auto",
-                fontSize: 11.5,
-                color: "#5E8A6E",
-                fontWeight: 600,
-              }}
+              style={{ marginLeft: "auto", fontSize: 11.5, color: "#5E8A6E" }}
             >
               · resume after
             </span>
           </div>
         </div>
 
-        {/* Then section */}
         {next && (
           <div className="then-wrap">
             <div className="then-head">
@@ -736,26 +428,27 @@ export default function NowPage() {
   const blockMin = focus.durationMin + (focus.adjustedMin ?? 0);
   const anyMomentum = !!focus.adjustedMin;
 
-  const topbarName = live ? "In flow" : paused ? "Paused" : "Morning, Adam";
+  const topbarName = live ? "in flow." : paused ? "paused." : "adam.";
   const topbarSub = live
-    ? "stay with it"
+    ? "stay with it."
     : paused
-      ? "ready when you are"
-      : "let's start";
+      ? "ready when you are."
+      : "ready when you are.";
 
+  // ── Main NOW state ──
   return (
     <>
       <Topbar name={topbarName} sub={topbarSub} live={live} />
       <StateLoggerInline />
 
-      {/* Anchor-interrupt: 5-min warning banner above hero */}
+      {/* 5-min prayer warning banner */}
       {prayerWarning && !prayerNow && (
         <div
           className="prayer warn"
           style={{
             background: "linear-gradient(180deg, #E2F2E8 0%, #CFE7D9 100%)",
             boxShadow:
-              "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(47,90,62,0.16), 0 1px 2px rgba(47,90,62,0.06), 0 8px 22px -10px rgba(47,90,62,0.24)",
+              "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(47,90,62,0.16)",
           }}
         >
           <div className="disc">
@@ -771,7 +464,7 @@ export default function NowPage() {
               {prayerWarning.a.label}
               <span className="at"> · {prayerWarning.a.hhmm}</span>
             </div>
-            <div className="hint">Pause when you&apos;re ready</div>
+            <div className="hint">pause when you&apos;re ready</div>
           </div>
           <div className="count pulse">in {prayerWarning.mins} min</div>
         </div>
@@ -779,10 +472,12 @@ export default function NowPage() {
 
       {!prayerWarning && <PrayerBanner />}
 
+      {/* ── HERO focal card ── */}
       <div className="hero">
+        {/* eyebrow */}
         <div className={`card-eyebrow${live ? " live" : ""}`}>
           <span className="pip" />
-          {live ? "Now in flow" : paused ? "On hold" : "Up next"}
+          {live ? "now in flow" : paused ? "on hold" : "up next"}
           <span className="at">
             ·{" "}
             {live
@@ -793,6 +488,7 @@ export default function NowPage() {
           </span>
         </div>
 
+        {/* domain badge row */}
         <div className="badge-row">
           <div
             className={`ddisc ${focus.domain}`}
@@ -811,11 +507,11 @@ export default function NowPage() {
               {live || paused ? (
                 <>
                   {focus.step
-                    ? `Step ${(focus.step.current ?? 0) + 1} of ${focus.step.items.length}`
+                    ? `step ${(focus.step.current ?? 0) + 1} of ${focus.step.items.length}`
                     : domain?.name}
                 </>
               ) : focus.step ? (
-                `Step ${(focus.step.current ?? 0) + 1} of ${focus.step.items.length} today`
+                `step ${(focus.step.current ?? 0) + 1} of ${focus.step.items.length} today`
               ) : anyMomentum ? (
                 `adjusted ${(focus.adjustedMin ?? 0) > 0 ? "+" : ""}${focus.adjustedMin ?? 0} min`
               ) : (
@@ -830,22 +526,34 @@ export default function NowPage() {
           )}
         </div>
 
-        {live || paused ? (
+        {/* Title — MASSIVE */}
+        <div
+          className="task-title"
+          style={live || paused ? { fontSize: 28, marginBottom: 10 } : {}}
+        >
+          {focus.title}
+        </div>
+
+        {/* Intention line — idle state only */}
+        {!live && !paused && focus.intention && (
+          <div className="intention">
+            <span className="lbl">intention</span>
+            {focus.intention}
+          </div>
+        )}
+
+        {/* Step card */}
+        {focus.step && (
+          <StepCard
+            step={focus.step}
+            onAdvance={() => advanceStep(focus.id)}
+            onComplete={() => finish(focus.id)}
+          />
+        )}
+
+        {/* Active/Paused: timer */}
+        {(live || paused) && (
           <>
-            <div
-              className="task-title"
-              style={{ fontSize: 22, marginBottom: 14 }}
-            >
-              {focus.title}
-            </div>
-            {/* Step card — active/paused state */}
-            {focus.step && (
-              <StepCard
-                step={focus.step}
-                onAdvance={() => advanceStep(focus.id)}
-                onComplete={() => finish(focus.id)}
-              />
-            )}
             <div className="timer-block">
               <div className="timer">
                 {formatTimer(remaining).main}
@@ -859,7 +567,7 @@ export default function NowPage() {
               <span style={{ width: `${pctDone}%` }} />
             </div>
 
-            {/* 5-min prayer warning: show option pair above primary CTA */}
+            {/* Prayer 5-min option pair */}
             {prayerWarning && (
               <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
                 <button
@@ -873,35 +581,21 @@ export default function NowPage() {
                     borderRadius: 14,
                     fontSize: 13,
                     fontWeight: 600,
-                    letterSpacing: "-0.012em",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
                     gap: 7,
                     background:
-                      "linear-gradient(180deg,#E0F2E5 0%, #CCE6D4 100%)",
+                      "linear-gradient(180deg,#E0F2E5 0%,#CCE6D4 100%)",
                     color: "#1F3A2A",
                     boxShadow:
-                      "inset 0 1px 0 rgba(255,255,255,0.9), inset 0 0 0 0.5px rgba(47,90,62,0.16), 0 1px 2px rgba(47,90,62,0.06)",
+                      "inset 0 1px 0 rgba(255,255,255,0.9), inset 0 0 0 0.5px rgba(47,90,62,0.16)",
                   }}
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width={13}
-                    height={13}
-                    fill="none"
-                    stroke="#1F3A2A"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M16.5 14.5a6.5 6.5 0 11-7-9.5 5.5 5.5 0 007 9.5z" />
-                  </svg>
-                  Pause for prayer
+                  pause for prayer
                 </button>
                 <button
                   type="button"
-                  aria-label="Keep going — dismiss prayer warning and continue"
                   style={{
                     flex: 1,
                     border: "none",
@@ -911,7 +605,6 @@ export default function NowPage() {
                     borderRadius: 14,
                     fontSize: 13,
                     fontWeight: 600,
-                    letterSpacing: "-0.012em",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -919,34 +612,26 @@ export default function NowPage() {
                     background: "#fff",
                     color: "var(--ink-2,#1C1C1E)",
                     boxShadow:
-                      "inset 0 0 0 0.5px var(--hairline,rgba(60,60,67,0.10)), 0 1px 1px rgba(20,20,30,0.03)",
+                      "inset 0 0 0 0.5px var(--hairline,rgba(60,60,67,0.10))",
                   }}
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width={13}
-                    height={13}
-                    fill="none"
-                    stroke="var(--ink-2,#1C1C1E)"
-                    strokeWidth={2}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M5 12h14M13 6l6 6-6 6" />
-                  </svg>
-                  Keep going
+                  keep going
                 </button>
               </div>
             )}
 
-            <button className="cta" onClick={onPrimary}>
+            <button
+              className="cta"
+              onClick={onPrimary}
+              style={{ fontFamily: "inherit" }}
+            >
               {live ? (
                 <>
                   <span className="pause">
                     <i />
                     <i />
                   </span>
-                  Pause
+                  pause
                   <span className="dur">· hold time</span>
                 </>
               ) : (
@@ -956,7 +641,7 @@ export default function NowPage() {
                       <path d="M2 1.5v9l8-4.5z" fill="#fff" />
                     </svg>
                   </span>
-                  Resume
+                  resume
                   <span className="dur">· {remainingMin} min left</span>
                 </>
               )}
@@ -967,14 +652,16 @@ export default function NowPage() {
                 onClick={() => finish(focus.id)}
               >
                 <CheckSvg stroke="#248A3D" weight={2.6} size={13} />
-                Done early
+                done early
               </button>
               <TimeSlider onCommit={(min) => extend(focus.id, min)} />
             </div>
           </>
-        ) : (
+        )}
+
+        {/* Idle state CTA */}
+        {!live && !paused && (
           <>
-            <div className="task-title">{focus.title}</div>
             <div className="meta-row">
               <span className="chip">
                 <ClockSvg />
@@ -983,7 +670,7 @@ export default function NowPage() {
               {focus.step && (
                 <span className="chip step">
                   <CheckSvg size={12} />
-                  Step {(focus.step.current ?? 0) + 1} of{" "}
+                  step {(focus.step.current ?? 0) + 1} of{" "}
                   {focus.step.items.length}
                 </span>
               )}
@@ -994,27 +681,44 @@ export default function NowPage() {
                 </span>
               )}
             </div>
-            {/* Step card — pending state */}
-            {focus.step && (
-              <StepCard
-                step={focus.step}
-                onAdvance={() => advanceStep(focus.id)}
-                onComplete={() => finish(focus.id)}
-              />
-            )}
-            <button className="cta" onClick={onPrimary}>
+            <button
+              className="cta"
+              onClick={onPrimary}
+              style={{ fontFamily: "inherit" }}
+            >
               <span className="play">
                 <svg viewBox="0 0 12 12" width="8" height="8">
                   <path d="M2 1.5v9l8-4.5z" fill="#fff" />
                 </svg>
               </span>
-              Start
+              start
               <span className="dur">· {blockMin} min</span>
             </button>
           </>
         )}
       </div>
 
+      {/* "shift forward" — subtle text link below the card */}
+      <div style={{ textAlign: "center", marginTop: 14 }}>
+        <button
+          onClick={() => finish(focus.id)}
+          style={{
+            background: "transparent",
+            border: "none",
+            color: "var(--label,#8E8E93)",
+            fontSize: 12.5,
+            fontWeight: 500,
+            letterSpacing: "-0.005em",
+            fontFamily: "inherit",
+            cursor: "pointer",
+            padding: "6px 12px",
+          }}
+        >
+          shift forward
+        </button>
+      </div>
+
+      {/* Then — next block preview */}
       {next && (
         <div className="then-wrap">
           <div className="then-head">
@@ -1045,57 +749,14 @@ export default function NowPage() {
         </div>
       )}
 
-      {/* Skip block — calm corner affordance */}
-      <button
-        onClick={() => {
-          finish(focus.id);
-        }}
-        style={{
-          position: "fixed",
-          bottom: 106,
-          right: 18,
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 5,
-          padding: "7px 12px",
-          borderRadius: 999,
-          background: "rgba(255,255,255,0.72)",
-          border: "none",
-          cursor: "pointer",
-          fontFamily: "inherit",
-          fontSize: 12,
-          fontWeight: 600,
-          color: "var(--label-2,#6E6E73)",
-          letterSpacing: "-0.008em",
-          backdropFilter: "saturate(180%) blur(14px)",
-          WebkitBackdropFilter: "saturate(180%) blur(14px)",
-          boxShadow:
-            "0 0 0 0.5px rgba(60,60,67,0.10), 0 1px 2px rgba(20,20,30,0.06)",
-          zIndex: 10,
-        }}
-        aria-label="Skip block"
-      >
-        skip
-        <svg
-          viewBox="0 0 24 24"
-          width={10}
-          height={10}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2.2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M9 6l6 6-6 6" />
-        </svg>
-      </button>
-
       {showBrainDump && (
         <BrainDumpSheet onClose={() => setShowBrainDump(false)} />
       )}
     </>
   );
 }
+
+// ── StepCard ──────────────────────────────────────────────────────────────────
 
 function StepCard({
   step,
@@ -1114,88 +775,97 @@ function StepCard({
   return (
     <div
       style={{
-        background: "rgba(255,255,255,0.72)",
-        borderRadius: 16,
-        padding: "13px 14px",
-        marginBottom: 12,
-        boxShadow:
-          "inset 0 0 0 0.5px rgba(60,60,67,0.10), 0 1px 2px rgba(20,20,30,0.04), 0 4px 12px -6px rgba(20,20,30,0.08)",
-        backdropFilter: "saturate(180%) blur(10px)",
-        WebkitBackdropFilter: "saturate(180%) blur(10px)",
+        background: "var(--inset,#F2F2F7)",
+        borderRadius: 18,
+        padding: "12px 14px",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        marginBottom: 14,
+        boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
       }}
     >
-      {/* step label */}
+      {/* step number disc */}
       <div
         style={{
-          fontSize: 10,
-          fontWeight: 700,
-          color: "var(--label,#8E8E93)",
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          marginBottom: 6,
-        }}
-      >
-        Step {current + 1} of {total}
-      </div>
-      {/* current item */}
-      <div
-        style={{
-          fontSize: 14.5,
-          fontWeight: 600,
-          color: "var(--ink,#000)",
-          letterSpacing: "-0.018em",
-          lineHeight: 1.3,
-          marginBottom: 11,
-        }}
-      >
-        {currentItem}
-      </div>
-      {/* next item preview */}
-      {!isLast && (
-        <div
-          style={{
-            fontSize: 11.5,
-            fontWeight: 500,
-            color: "var(--label-2,#6E6E73)",
-            letterSpacing: "-0.005em",
-            marginBottom: 11,
-          }}
-        >
-          Next: {step.items[current + 1]}
-        </div>
-      )}
-      {/* action button */}
-      <button
-        onClick={isLast ? onComplete : onAdvance}
-        style={{
-          width: "100%",
-          padding: "9px 14px",
-          borderRadius: 10,
-          border: "none",
-          cursor: "pointer",
-          fontFamily: "inherit",
-          fontSize: 13,
-          fontWeight: 600,
-          letterSpacing: "-0.012em",
+          width: 28,
+          height: 28,
+          borderRadius: "50%",
+          background: "#fff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: 6,
+          fontSize: 12,
+          fontWeight: 700,
+          color: "var(--ink,#000)",
+          boxShadow:
+            "0 0 0 0.5px var(--hairline,rgba(60,60,67,0.10)), 0 1px 2px rgba(20,20,30,0.04)",
+          fontVariantNumeric: "tabular-nums",
+          flexShrink: 0,
+        }}
+      >
+        {current + 1}
+      </div>
+      <div
+        style={{
+          flex: 1,
+          minWidth: 0,
+          display: "flex",
+          flexDirection: "column",
+          gap: 1,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: "0.10em",
+            textTransform: "uppercase",
+            color: "var(--label,#8E8E93)",
+          }}
+        >
+          {isLast ? "last step" : "next step"}
+        </div>
+        <div
+          style={{
+            fontSize: 13.5,
+            fontWeight: 600,
+            color: "var(--ink,#000)",
+            letterSpacing: "-0.012em",
+          }}
+        >
+          {currentItem}
+        </div>
+      </div>
+      <button
+        onClick={isLast ? onComplete : onAdvance}
+        style={{
+          flexShrink: 0,
           background: isLast
             ? "linear-gradient(180deg,#2E7B5E 0%,#1F5A45 100%)"
-            : "var(--inset,#F2F2F7)",
-          color: isLast ? "#fff" : "var(--ink-2,#1C1C1E)",
+            : "#fff",
+          color: isLast ? "#fff" : "var(--green-deep,#248A3D)",
+          border: "none",
+          borderRadius: 10,
+          padding: "7px 12px",
+          fontSize: 12.5,
+          fontWeight: 600,
+          fontFamily: "inherit",
+          cursor: "pointer",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 5,
           boxShadow: isLast
-            ? "0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 14px -8px rgba(31,90,68,0.35)"
-            : "inset 0 0 0 0.5px rgba(60,60,67,0.10), 0 1px 1px rgba(20,20,30,0.03)",
+            ? "0 6px 14px -8px rgba(31,90,68,0.35)"
+            : "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
         }}
       >
         {isLast ? (
           <>
             <svg
               viewBox="0 0 24 24"
-              width={12}
-              height={12}
+              width={11}
+              height={11}
               fill="none"
               stroke="#fff"
               strokeWidth={2.6}
@@ -1204,15 +874,15 @@ function StepCard({
             >
               <path d="M5 12l4 4L19 6" />
             </svg>
-            complete block
+            complete
           </>
         ) : (
           <>
             done · next
             <svg
               viewBox="0 0 24 24"
-              width={10}
-              height={10}
+              width={9}
+              height={9}
               fill="none"
               stroke="currentColor"
               strokeWidth={2.2}
@@ -1228,16 +898,16 @@ function StepCard({
   );
 }
 
+// ── TimeSlider ────────────────────────────────────────────────────────────────
+
 function TimeSlider({ onCommit }: { onCommit: (min: number) => void }) {
   const [draft, setDraft] = useState(0);
   const [active, setActive] = useState(false);
-
   const label = draft === 0 ? "±0m" : draft > 0 ? `+${draft}m` : `${draft}m`;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDraft(Number(e.target.value));
   };
-
   const handleCommit = () => {
     if (draft !== 0) {
       onCommit(draft);
@@ -1257,11 +927,8 @@ function TimeSlider({ onCommit }: { onCommit: (min: number) => void }) {
         gap: 4,
         padding: "8px 10px",
         borderRadius: 14,
-        background: active
-          ? "var(--inset,#EBEBF0)"
-          : "var(--surface,rgba(255,255,255,0.60))",
-        boxShadow:
-          "inset 0 0 0 0.5px var(--hairline,rgba(60,60,67,0.12)), 0 1px 2px rgba(20,20,30,0.04)",
+        background: active ? "var(--inset,#F2F2F7)" : "rgba(255,255,255,0.60)",
+        boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.12)",
         cursor: "pointer",
         transition: "background 0.15s",
         minWidth: 0,
@@ -1271,7 +938,6 @@ function TimeSlider({ onCommit }: { onCommit: (min: number) => void }) {
         style={{
           fontSize: 11,
           fontWeight: 700,
-          letterSpacing: "-0.01em",
           color:
             draft === 0
               ? "var(--label,#8E8E93)"

@@ -263,15 +263,246 @@ function SortableRow({
   );
 }
 
+// ── MorningBrief overlay — modal-centered per morning-brief-v2.html ──────────
+
+function MorningBriefOverlay({ onDone }: { onDone: () => void }) {
+  const { addMorningBrief, blocks } = useDoIt();
+  const [friction, setFriction] = useState("");
+  const [resumePlan, setResumePlan] = useState("");
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const blockCount = blocks.filter(
+    (b) => b.scheduledFor === "today" && b.status !== "done",
+  ).length;
+
+  function handleSave() {
+    if (!friction.trim() && !resumePlan.trim()) {
+      onDone();
+      return;
+    }
+    addMorningBrief({
+      dateISO: todayISO,
+      friction: friction.trim(),
+      resumePlan: resumePlan.trim(),
+    });
+    onDone();
+  }
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 100,
+        background: "rgba(20,20,30,0.42)",
+        backdropFilter: "saturate(180%) blur(20px)",
+        WebkitBackdropFilter: "saturate(180%) blur(20px)",
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "center",
+        padding: "120px 20px 0",
+      }}
+    >
+      {/* modal card — centered */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 440,
+          background: "#fff",
+          borderRadius: 24,
+          boxShadow:
+            "0 0 0 0.5px rgba(0,0,0,0.06), 0 32px 64px -20px rgba(20,20,30,0.40)",
+          padding: "22px 22px 18px",
+        }}
+      >
+        {/* eyebrow */}
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "var(--label,#8E8E93)",
+            marginBottom: 6,
+          }}
+        >
+          morning brief
+        </div>
+        {/* heading */}
+        <div
+          style={{
+            fontSize: 24,
+            fontWeight: 800,
+            letterSpacing: "-0.035em",
+            lineHeight: 1.1,
+            color: "var(--ink,#000)",
+            marginBottom: 6,
+          }}
+        >
+          {blockCount > 0 ? `${blockCount} blocks today.` : "today."}
+          <br />
+          where could it bend?
+        </div>
+        <div
+          style={{
+            fontSize: 13,
+            color: "var(--label-2,#6E6E73)",
+            fontWeight: 500,
+            letterSpacing: "-0.005em",
+            marginBottom: 18,
+            lineHeight: 1.4,
+          }}
+        >
+          two prompts. answer plain. shapes the rest.
+        </div>
+
+        {/* Q1 */}
+        <div
+          style={{
+            marginBottom: 14,
+            padding: "14px 14px 12px",
+            background: "var(--inset,#F2F2F7)",
+            borderRadius: 16,
+            boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 13.5,
+              fontWeight: 700,
+              color: "var(--ink,#000)",
+              letterSpacing: "-0.012em",
+              lineHeight: 1.3,
+              marginBottom: 8,
+            }}
+          >
+            what&apos;s likely to push back today?
+          </div>
+          <textarea
+            value={friction}
+            onChange={(e) => setFriction(e.target.value)}
+            placeholder="the 2pm calls might run long..."
+            rows={2}
+            style={{
+              width: "100%",
+              background: "#fff",
+              border: "none",
+              borderRadius: 10,
+              padding: "10px 12px",
+              fontSize: 14,
+              color: "var(--ink,#000)",
+              fontFamily: "inherit",
+              resize: "none",
+              outline: "none",
+              letterSpacing: "-0.005em",
+              boxShadow:
+                "inset 0 0 0 0.5px var(--hairline,rgba(60,60,67,0.10))",
+              lineHeight: 1.45,
+            }}
+          />
+        </div>
+
+        {/* Q2 */}
+        <div
+          style={{
+            marginBottom: 14,
+            padding: "14px 14px 12px",
+            background: "var(--inset,#F2F2F7)",
+            borderRadius: 16,
+            boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 13.5,
+              fontWeight: 700,
+              color: "var(--ink,#000)",
+              letterSpacing: "-0.012em",
+              lineHeight: 1.3,
+              marginBottom: 8,
+            }}
+          >
+            if it breaks down, you resume by ___.
+          </div>
+          <textarea
+            value={resumePlan}
+            onChange={(e) => setResumePlan(e.target.value)}
+            placeholder="walking · 5 min · then back to the brief."
+            rows={2}
+            style={{
+              width: "100%",
+              background: "#fff",
+              border: "none",
+              borderRadius: 10,
+              padding: "10px 12px",
+              fontSize: 14,
+              color: "var(--ink,#000)",
+              fontFamily: "inherit",
+              resize: "none",
+              outline: "none",
+              letterSpacing: "-0.005em",
+              boxShadow:
+                "inset 0 0 0 0.5px var(--hairline,rgba(60,60,67,0.10))",
+              lineHeight: 1.45,
+            }}
+          />
+        </div>
+
+        <button
+          onClick={handleSave}
+          style={{
+            width: "100%",
+            padding: "14px",
+            borderRadius: 14,
+            background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
+            color: "#fff",
+            fontSize: 14.5,
+            fontWeight: 600,
+            letterSpacing: "-0.014em",
+            border: "none",
+            cursor: "pointer",
+            fontFamily: "inherit",
+            boxShadow:
+              "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 0.5px rgba(0,0,0,0.5), 0 12px 24px -14px rgba(10,10,20,0.45)",
+          }}
+        >
+          good. start today.
+        </button>
+        <button
+          onClick={onDone}
+          style={{
+            display: "block",
+            margin: "10px auto 0",
+            background: "transparent",
+            border: "none",
+            color: "var(--label,#8E8E93)",
+            fontSize: 12,
+            fontWeight: 500,
+            fontFamily: "inherit",
+            cursor: "pointer",
+          }}
+        >
+          skip this morning
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function TodayPage() {
-  const { blocks, domains, resume, reorderBlocks } = useDoIt();
+  const { blocks, domains, resume, reorderBlocks, morningBriefs } = useDoIt();
   const [anchors, setAnchors] = useState<Anchor[]>(() =>
     readAllAnchorsFromCache(),
   );
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [showCreate, setShowCreate] = useState(false);
+
+  // Show morning brief overlay if none exists for today
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const hasBriefToday = morningBriefs.some((b) => b.dateISO === todayISO);
+  const [briefDismissed, setBriefDismissed] = useState(false);
+  const showBrief = !hasBriefToday && !briefDismissed;
 
   // Local ordering state for optimistic drag-and-drop
   const [orderedIds, setOrderedIds] = useState<string[]>(() =>
@@ -366,7 +597,7 @@ export default function TodayPage() {
   if (sorted.length === 0) {
     return (
       <>
-        <Topbar name="Today" sub="a quiet start" />
+        <Topbar name="today." sub="nothing yet · add a block." />
         <div className="section-eyebrow">
           <span className="lbl">The day</span>
           <span className="rule" />
@@ -480,13 +711,19 @@ export default function TodayPage() {
         {showCreate && (
           <BlockCreateSheet onClose={() => setShowCreate(false)} />
         )}
+        {showBrief && (
+          <MorningBriefOverlay onDone={() => setBriefDismissed(true)} />
+        )}
       </>
     );
   }
 
   return (
     <>
-      <Topbar name="Today" sub="calmly on track" />
+      <Topbar name="today." sub={`${sorted.length} blocks ready.`} />
+      {showBrief && (
+        <MorningBriefOverlay onDone={() => setBriefDismissed(true)} />
+      )}
 
       <div className="summary">
         <div className="sum-stat">

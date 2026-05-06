@@ -3,32 +3,36 @@
 import { useRouter } from "next/navigation";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
-import { DomainGlyph, ChevSvg, ArrowSvg } from "@/components/icons";
-import { CompounderPhrase } from "@/components/CompounderPhrase";
+import { DomainGlyph } from "@/components/icons";
 import type { DomainMomentum, DomainId } from "@/lib/types";
 
-const MOMENTUM: Record<DomainMomentum, string> = {
-  warm: "Warm",
-  steady: "Steady",
-  drifting: "Drifting",
-  quiet: "Quiet",
-  humming: "Humming",
+const MOMENTUM_WORD: Record<DomainMomentum, string> = {
+  warm: "warm.",
+  steady: "steady.",
+  drifting: "drifting.",
+  quiet: "quieter.",
+  humming: "humming.",
 };
+
+// humming = big tile (span 2 cols × min-height 174)
+// warm/steady = normal (span 1)
+// drifting/quiet = small (span 1, min-height 148)
+function getTileSpan(momentum: DomainMomentum): "big" | "normal" | "small" {
+  if (momentum === "humming") return "big";
+  if (momentum === "steady" || momentum === "warm") return "normal";
+  return "small";
+}
 
 function computeBalanceSignal(
   blocks: ReturnType<typeof useDoIt.getState>["blocks"],
 ): string | null {
-  const sevenDaysAgo = Date.now() - 7 * 86_400_000;
-  // Use all blocks (no startedAt timestamp available; approximate with all scheduled blocks)
   const recent = blocks.filter(
     (b) =>
       b.mode !== undefined &&
       (b.status === "done" || b.scheduledFor === "today"),
   );
-
   if (recent.length === 0) return null;
 
-  // Group by domain → count modes
   const domainCounts: Record<
     DomainId,
     { theory: number; application: number; feedback: number }
@@ -45,14 +49,13 @@ function computeBalanceSignal(
     domainCounts[b.domain][b.mode]++;
   }
 
-  // Find most extreme imbalance: theory > 2× application
   let worst: { domain: DomainId; ratio: number } | null = null;
   for (const [domainId, counts] of Object.entries(domainCounts) as [
     DomainId,
     { theory: number; application: number; feedback: number },
   ][]) {
     if (counts.theory > 0 && counts.application === 0) {
-      const ratio = counts.theory * 3; // treat div-by-zero as very high
+      const ratio = counts.theory * 3;
       if (!worst || ratio > worst.ratio) worst = { domain: domainId, ratio };
     } else if (counts.theory > 0 && counts.application > 0) {
       const ratio = counts.theory / counts.application;
@@ -60,202 +63,91 @@ function computeBalanceSignal(
         worst = { domain: domainId, ratio };
     }
   }
-
   if (!worst) return null;
 
   const DOMAIN_NAMES: Record<DomainId, string> = {
-    business: "Business",
-    religion: "Religion",
-    learning: "Learning",
-    fitness: "Fitness",
-    home: "Home",
-    food: "Food",
+    business: "business",
+    religion: "religion",
+    learning: "learning",
+    fitness: "fitness",
+    home: "home",
+    food: "food",
   };
+  return `heavy on theory in ${DOMAIN_NAMES[worst.domain]}, light on application this week.`;
+}
 
-  return `Heavy on theory in ${DOMAIN_NAMES[worst.domain]}, light on application this week.`;
+/** Count done blocks per day for the last 7 days, for a given domain */
+function sevenDayBlockCounts(
+  blocks: ReturnType<typeof useDoIt.getState>["blocks"],
+  domainId: DomainId,
+): number[] {
+  const now = Date.now();
+  const counts: number[] = Array(7).fill(0);
+  for (const b of blocks) {
+    if (b.domain !== domainId || b.status !== "done") continue;
+    // Use startedAt if available, else skip
+    if (!b.startedAt) continue;
+    const daysAgo = Math.floor((now - b.startedAt) / 86_400_000);
+    if (daysAgo >= 0 && daysAgo < 7) {
+      counts[6 - daysAgo]++;
+    }
+  }
+  return counts;
+}
+
+/** Compute money phrase for domain from transactions this month */
+function moneyPhrase(
+  transactions: ReturnType<typeof useDoIt.getState>["transactions"],
+  domainId: DomainId,
+): string | null {
+  const now = new Date();
+  const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  const domainTx = transactions.filter(
+    (t) => t.domain === domainId && t.dateISO.startsWith(monthStr),
+  );
+  if (domainTx.length === 0) return null;
+  const totalCents = domainTx.reduce((acc, t) => {
+    return t.kind === "expense" ? acc + t.amountCents : acc - t.amountCents;
+  }, 0);
+  if (totalCents > 10000) return "$ heavy this month";
+  if (totalCents > 2000) return "$ steady this month";
+  if (totalCents > 0) return "$ light this month";
+  return null;
 }
 
 export default function DomainsPage() {
-  const { domains, blocks } = useDoIt();
+  const { domains, blocks, transactions } = useDoIt();
   const router = useRouter();
   const balanceSignal = computeBalanceSignal(blocks);
 
-  // Empty state
   if (domains.length === 0) {
     return (
       <>
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 560,
-            pointerEvents: "none",
-            background:
-              "radial-gradient(120% 80% at 50% -10%, rgba(255,200,210,0.10) 0%, rgba(255,200,210,0.02) 40%, transparent 65%), radial-gradient(70% 55% at 15% 0%, rgba(225,236,255,0.18) 0%, transparent 55%)",
-          }}
-        />
-        <Topbar name="Domains" sub="nothing yet" />
-
-        <div className="section-eyebrow">
-          <span className="lbl">Five areas</span>
-          <span className="rule" />
-          <span className="meta">choose to begin</span>
-        </div>
-
+        <Topbar name="domains." sub="five facets, one life." />
         <div
           style={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            padding: "8px 4px 110px",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "0 20px 110px",
+            gap: 14,
           }}
         >
-          {/* warm orb */}
           <div
             style={{
-              width: 148,
-              height: 148,
-              borderRadius: "50%",
-              position: "relative",
-              margin: "18px auto 0",
-              background:
-                "radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.4) 22%, transparent 45%), radial-gradient(circle at 50% 60%, #FFE3EB 0%, #FFCFDC 60%, #F4B6C7 100%)",
-              boxShadow:
-                "inset 0 -10px 30px rgba(160,80,100,0.16), inset 0 2px 0 rgba(255,255,255,0.9), 0 30px 60px -22px rgba(160,80,100,0.22), 0 10px 30px -10px rgba(160,80,100,0.14)",
-              flexShrink: 0,
+              fontSize: 26,
+              fontWeight: 800,
+              color: "var(--ink,#000)",
+              letterSpacing: "-0.04em",
+              lineHeight: 1.05,
+              textAlign: "center",
             }}
           >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "rgba(120,50,70,0.40)",
-                zIndex: 1,
-              }}
-            >
-              <svg
-                viewBox="0 0 48 48"
-                width={54}
-                height={54}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.6}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="24" cy="24" r="3.2" />
-                <path d="M24 10.5a5.5 5.5 0 010 11M24 10.5a5.5 5.5 0 000 11" />
-                <path
-                  d="M37.6 19.5a5.5 5.5 0 01-9 6.3M37.6 19.5a5.5 5.5 0 00-9 6.3"
-                  transform="rotate(72 24 24)"
-                />
-                <path
-                  d="M37.6 19.5a5.5 5.5 0 01-9 6.3M37.6 19.5a5.5 5.5 0 00-9 6.3"
-                  transform="rotate(144 24 24)"
-                />
-                <path
-                  d="M37.6 19.5a5.5 5.5 0 01-9 6.3M37.6 19.5a5.5 5.5 0 00-9 6.3"
-                  transform="rotate(216 24 24)"
-                />
-                <path
-                  d="M37.6 19.5a5.5 5.5 0 01-9 6.3M37.6 19.5a5.5 5.5 0 00-9 6.3"
-                  transform="rotate(288 24 24)"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div
-            style={{ textAlign: "center", marginTop: 34, padding: "0 18px" }}
-          >
-            <div
-              style={{
-                fontSize: 26,
-                fontWeight: 800,
-                color: "var(--ink,#000)",
-                letterSpacing: "-0.04em",
-                lineHeight: 1.05,
-              }}
-            >
-              Define your
-              <br />
-              life areas.
-            </div>
-            <div
-              style={{
-                marginTop: 10,
-                fontSize: 14.5,
-                fontWeight: 500,
-                color: "var(--label-2,#6E6E73)",
-                letterSpacing: "-0.012em",
-                lineHeight: 1.42,
-              }}
-            >
-              Domains are how Do It tracks momentum across what matters.
-            </div>
-          </div>
-
-          <div
-            style={{
-              marginTop: 24,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 10,
-              padding: "0 6px",
-            }}
-          >
-            <button
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 9,
-                padding: "14px 22px",
-                borderRadius: 999,
-                background: "linear-gradient(180deg, #1A1A20 0%, #000000 100%)",
-                color: "#fff",
-                fontWeight: 600,
-                fontSize: 14.5,
-                letterSpacing: "-0.012em",
-                border: "none",
-                cursor: "pointer",
-                fontFamily: "inherit",
-                boxShadow:
-                  "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 0.5px rgba(0,0,0,0.5), 0 18px 38px -18px rgba(10,10,20,0.55), 0 6px 14px -6px rgba(10,10,20,0.30)",
-              }}
-            >
-              Add your first domain
-              <span
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: "50%",
-                  background: "rgba(255,255,255,0.16)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <svg
-                  viewBox="0 0 12 12"
-                  width={9}
-                  height={9}
-                  fill="none"
-                  stroke="#fff"
-                  strokeWidth={1.8}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M2 6h7M6 3l3 3-3 3" />
-                </svg>
-              </span>
-            </button>
+            define your
+            <br />
+            life areas.
           </div>
         </div>
       </>
@@ -264,88 +156,216 @@ export default function DomainsPage() {
 
   return (
     <>
-      <Topbar name="Domains" sub="how life is moving" />
+      <Topbar name="domains." sub="five facets, one life." />
 
-      <div className="section-eyebrow">
-        <span className="lbl">Five areas</span>
-        <span className="rule" />
-        <span className="meta">this week</span>
-      </div>
-
-      <div style={{ paddingBottom: balanceSignal ? 0 : undefined }}>
-        {domains.map((d) => (
-          <button
-            key={d.id}
-            onClick={() => router.push(`/domains/${d.id}`)}
-            className="dcard"
-            style={{
-              width: "100%",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              textAlign: "left",
-              padding: 0,
-            }}
-          >
-            <div className="dcard-head">
-              <div className={`ddisc ${d.id} lg`}>
-                <DomainGlyph id={d.id} />
-              </div>
-              <div className="dcard-body">
-                <div className="dcard-name">{d.name}</div>
-                <CompounderPhrase domainId={d.id} />
-                <div className="dcard-meta">
-                  <span className="rhythm">{MOMENTUM[d.momentum]}</span>
-                  <span className="sep">·</span>
-                  <ArrowSvg
-                    dir={d.direction === "improving" ? "up" : "flat"}
-                    stroke="#6E6E73"
-                    size={9}
-                  />
-                  <span style={{ color: "#6E6E73", fontWeight: 600 }}>
-                    {d.direction}
-                  </span>
-                  <span className="sep">·</span>
-                  <span className="last">{d.lastEngagement}</span>
-                </div>
-              </div>
-              <div className="dcard-chev">
-                <ChevSvg />
-              </div>
-            </div>
-            <div className="next">
-              <span className="lbl">Next</span>
-              <span className="vline" />
-              <span className="text">{d.nextAction}</span>
-              <span className="go">
-                <ChevSvg size={8} stroke="#1C1C1E" />
-              </span>
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Balance signal — one calm sentence */}
+      {/* T·A·F balance signal */}
       {balanceSignal && (
         <div
           style={{
-            margin: "12px 0 8px",
-            padding: "12px 14px",
-            borderRadius: 14,
-            background: "rgba(255,255,255,0.60)",
-            boxShadow:
-              "inset 0 0 0 0.5px var(--hairline,rgba(60,60,67,0.10)), 0 1px 2px rgba(20,20,30,0.04)",
-            fontSize: 13,
-            fontWeight: 500,
+            fontSize: 12,
             color: "var(--label-2,#6E6E73)",
-            letterSpacing: "-0.010em",
+            fontStyle: "italic",
+            letterSpacing: "-0.005em",
+            padding: "0 2px 12px",
             lineHeight: 1.4,
           }}
         >
           {balanceSignal}
         </div>
       )}
+
+      {/* Asymmetric bento grid */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(2,1fr)",
+          gridAutoRows: "minmax(120px,auto)",
+          gap: 12,
+          paddingBottom: 110,
+        }}
+      >
+        {domains.map((d) => {
+          const span = getTileSpan(d.momentum);
+          const isBig = span === "big";
+          const barCounts = sevenDayBlockCounts(blocks, d.id);
+          const maxBar = Math.max(...barCounts, 1);
+          const money = moneyPhrase(transactions, d.id);
+
+          return (
+            <button
+              key={d.id}
+              onClick={() => router.push(`/domains/${d.id}`)}
+              style={{
+                gridColumn: isBig ? "span 2" : "span 1",
+                minHeight: isBig ? 174 : 148,
+                position: "relative",
+                background: "var(--card,#fff)",
+                borderRadius: 24,
+                padding: 16,
+                boxShadow:
+                  "0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12)",
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                textAlign: "left",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "inherit",
+              }}
+            >
+              {/* inset highlight */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  borderRadius: 24,
+                  boxShadow:
+                    "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+                  pointerEvents: "none",
+                }}
+              />
+
+              {/* head: glyph + name */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 11,
+                  marginBottom: 10,
+                }}
+              >
+                <div
+                  className={`ddisc ${d.id}`}
+                  style={{ width: 38, height: 38, flexShrink: 0 }}
+                >
+                  <DomainGlyph id={d.id} />
+                </div>
+                <div
+                  style={{
+                    fontSize: 15,
+                    fontWeight: 700,
+                    letterSpacing: "-0.022em",
+                    color: "var(--ink,#000)",
+                  }}
+                >
+                  {d.name}
+                </div>
+              </div>
+
+              {/* momentum word */}
+              <div
+                style={{
+                  fontSize: isBig ? 32 : 24,
+                  fontWeight: 800,
+                  letterSpacing: "-0.04em",
+                  lineHeight: 1,
+                  color: "var(--ink,#000)",
+                  marginBottom: 4,
+                }}
+              >
+                {MOMENTUM_WORD[d.momentum]}
+              </div>
+
+              {/* compounder / last engagement */}
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "var(--label,#8E8E93)",
+                  fontWeight: 600,
+                  letterSpacing: "-0.005em",
+                  marginBottom: 8,
+                }}
+              >
+                {d.lastEngagement}
+              </div>
+
+              {/* 7-day minibar */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: 3,
+                  alignItems: "flex-end",
+                  height: 18,
+                  marginBottom: 8,
+                }}
+              >
+                {barCounts.map((count, i) => {
+                  const pct = maxBar > 0 ? count / maxBar : 0;
+                  const minH = 3;
+                  const h = Math.max(minH, Math.round(pct * 18));
+                  return (
+                    <span
+                      key={i}
+                      style={{
+                        flex: 1,
+                        height: h,
+                        background:
+                          count > 0
+                            ? "var(--ink-2,#1C1C1E)"
+                            : "var(--inset-2,#EAEAEF)",
+                        borderRadius: 2,
+                        boxShadow:
+                          count > 0
+                            ? undefined
+                            : "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+                        display: "block",
+                      }}
+                    />
+                  );
+                })}
+              </div>
+
+              {/* money phrase */}
+              {money && (
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: "var(--label-2,#6E6E73)",
+                    fontWeight: 600,
+                    marginBottom: 8,
+                  }}
+                >
+                  {money}
+                </div>
+              )}
+
+              {/* next move */}
+              {d.nextAction && (
+                <div
+                  style={{
+                    fontSize: 11.5,
+                    color: "var(--label-2,#6E6E73)",
+                    fontWeight: 600,
+                    letterSpacing: "-0.005em",
+                    lineHeight: 1.4,
+                    background: "var(--inset,#F2F2F7)",
+                    padding: "8px 10px",
+                    borderRadius: 12,
+                    boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+                    marginTop: "auto",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 700,
+                      letterSpacing: "0.10em",
+                      textTransform: "uppercase",
+                      color: "var(--label,#8E8E93)",
+                      display: "block",
+                      marginBottom: 2,
+                    }}
+                  >
+                    next move
+                  </span>
+                  {d.nextAction}
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
     </>
   );
 }
