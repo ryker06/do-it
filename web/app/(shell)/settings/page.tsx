@@ -1,12 +1,40 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState, useCallback } from "react";
 import { useDoIt } from "@/lib/store";
 import { DomainGlyph } from "@/components/icons";
+import { syncFromCloud } from "@/lib/notionSync";
 
 export default function SettingsPage() {
   const router = useRouter();
   const { domains, routines, userPrefs, setUserPrefs } = useDoIt();
+
+  // Notion sync local state
+  const [syncUrlDraft, setSyncUrlDraft] = useState(
+    userPrefs.syncUrl?.trim() ?? "",
+  );
+  const [syncBusy, setSyncBusy] = useState(false);
+  const [syncFeedback, setSyncFeedback] = useState<string | null>(null);
+
+  const handleSyncNow = useCallback(async () => {
+    const url = syncUrlDraft.trim();
+    if (!url) {
+      setSyncFeedback("Enter a Worker URL first");
+      return;
+    }
+    setSyncBusy(true);
+    setSyncFeedback(null);
+    // Persist URL before syncing
+    setUserPrefs({ syncUrl: url });
+    const result = await syncFromCloud({ syncUrl: url });
+    setSyncBusy(false);
+    if (result.added === 0 && result.skipped === 0) {
+      setSyncFeedback("No new blocks — check the Worker URL");
+    } else {
+      setSyncFeedback(`Added ${result.added} · skipped ${result.skipped}`);
+    }
+  }, [syncUrlDraft, setUserPrefs]);
 
   const DAYS = ["M", "T", "W", "T", "F", "S", "S"] as const;
   const WEEKDAYS: Record<string, number[]> = {
@@ -720,11 +748,35 @@ export default function SettingsPage() {
         </SettingsSection>
 
         {/* SYNC */}
-        <SettingsSection label="Notion sync" metaOk="connected">
+        <SettingsSection
+          label="Notion sync"
+          meta={userPrefs.syncUrl?.trim() ? undefined : "not connected"}
+          metaOk={userPrefs.syncUrl?.trim() ? "connected" : undefined}
+        >
           <SettingsGroup>
-            <SettingsRow
-              iconBg="dark"
-              icon={
+            {/* Worker URL input */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "12px 14px",
+                minHeight: 46,
+              }}
+            >
+              <div
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: 7,
+                  background:
+                    "linear-gradient(180deg,#2A2A30 0%, #0D0D12 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
                 <svg
                   viewBox="0 0 24 24"
                   width={14}
@@ -738,14 +790,59 @@ export default function SettingsPage() {
                   <rect x="4" y="4" width="16" height="16" rx="2" />
                   <path d="M9 8v8M9 8l6 8M15 8v8" />
                 </svg>
-              }
-              title="Database"
-              sub="Do It · 9f12…a4d7"
-              syncStatus
-            />
-            <SettingsRow
-              iconBg="gray"
-              icon={
+              </div>
+              <input
+                type="url"
+                placeholder="https://do-it-sync.*.workers.dev"
+                value={syncUrlDraft}
+                onChange={(e) => setSyncUrlDraft(e.target.value)}
+                onBlur={() => {
+                  const trimmed = syncUrlDraft.trim();
+                  if (trimmed !== (userPrefs.syncUrl ?? "")) {
+                    setUserPrefs({ syncUrl: trimmed });
+                  }
+                }}
+                style={{
+                  flex: 1,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "var(--ink-2,#1C1C1E)",
+                  background: "var(--inset,#F2F2F7)",
+                  border: "none",
+                  outline: "none",
+                  borderRadius: 8,
+                  padding: "5px 9px",
+                  fontFamily: "inherit",
+                  letterSpacing: "-0.01em",
+                  minWidth: 0,
+                }}
+              />
+            </div>
+
+            {/* Last sync row */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "12px 14px",
+                minHeight: 46,
+                borderTop: "0.5px solid rgba(60,60,67,0.06)",
+              }}
+            >
+              <div
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: 7,
+                  background:
+                    "linear-gradient(180deg,#9A9AA1 0%, #7E7E86 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
                 <svg
                   viewBox="0 0 24 24"
                   width={14}
@@ -759,13 +856,79 @@ export default function SettingsPage() {
                   <path d="M21 12a9 9 0 11-3-6.7" />
                   <path d="M21 4v5h-5" />
                 </svg>
-              }
-              title="Last sync"
-              sub="2 minutes ago · 9:40"
-            />
-            <SettingsRow
-              iconBg="blue"
-              icon={
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    fontSize: 14.5,
+                    fontWeight: 500,
+                    color: "var(--ink,#000)",
+                    letterSpacing: "-0.018em",
+                  }}
+                >
+                  Last sync
+                </div>
+                {userPrefs.lastSyncISO ? (
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      fontWeight: 500,
+                      color: "var(--label,#8e8e93)",
+                      letterSpacing: "-0.005em",
+                    }}
+                  >
+                    {userPrefs.lastSyncISO ===
+                    new Date().toISOString().slice(0, 10)
+                      ? "today"
+                      : userPrefs.lastSyncISO}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      fontWeight: 500,
+                      color: "var(--label,#8e8e93)",
+                      letterSpacing: "-0.005em",
+                    }}
+                  >
+                    never
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Sync now button */}
+            <button
+              onClick={handleSyncNow}
+              disabled={syncBusy}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "12px 14px",
+                minHeight: 46,
+                width: "100%",
+                background: "none",
+                border: "none",
+                borderTop: "0.5px solid rgba(60,60,67,0.06)",
+                cursor: syncBusy ? "default" : "pointer",
+                textAlign: "left",
+                opacity: syncBusy ? 0.55 : 1,
+              }}
+            >
+              <div
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: 7,
+                  background:
+                    "linear-gradient(180deg,#3B8DFF 0%, #0E66E6 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
                 <svg
                   viewBox="0 0 24 24"
                   width={14}
@@ -775,15 +938,41 @@ export default function SettingsPage() {
                   strokeWidth={2}
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  style={
+                    syncBusy ? { animation: "spin 1s linear infinite" } : {}
+                  }
                 >
                   <path d="M21 12a9 9 0 11-3-6.7" />
                   <path d="M21 4v5h-5" />
                 </svg>
-              }
-              title="Re-sync now"
-              titleBlue
-              hasChev
-            />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div
+                  style={{
+                    fontSize: 14.5,
+                    fontWeight: 500,
+                    color: "var(--blue,#007aff)",
+                    letterSpacing: "-0.018em",
+                  }}
+                >
+                  {syncBusy ? "Syncing…" : "Sync now"}
+                </div>
+                {syncFeedback && (
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      fontWeight: 500,
+                      color: syncFeedback.startsWith("Added")
+                        ? "var(--green-deep,#248a3d)"
+                        : "var(--label,#8e8e93)",
+                      letterSpacing: "-0.005em",
+                    }}
+                  >
+                    {syncFeedback}
+                  </div>
+                )}
+              </div>
+            </button>
           </SettingsGroup>
           <div
             style={{
@@ -795,8 +984,8 @@ export default function SettingsPage() {
               lineHeight: 1.35,
             }}
           >
-            Tasks, blocks, and domain rhythm flow both ways. Notion stays the
-            source of truth.
+            Notion tasks tagged for today flow in at 04:00. Plug in your Worker
+            URL to activate.
           </div>
         </SettingsSection>
 

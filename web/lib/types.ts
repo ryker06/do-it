@@ -114,3 +114,67 @@ export type InboxItem = {
   domain?: DomainId;
   createdAt: number;
 };
+
+export type Money = number; // cents
+export type CadenceMoney = "monthly" | "yearly" | "weekly";
+export type Subscription = {
+  id: string;
+  name: string;
+  amountCents: Money;
+  currency: string;
+  cadence: CadenceMoney;
+  nextChargeISO: string;
+  category: string;
+  note?: string;
+};
+export type Transaction = {
+  id: string;
+  kind: "expense" | "income";
+  amountCents: Money;
+  currency: string;
+  dateISO: string;
+  category: string;
+  note?: string;
+  source?: "manual" | "subscription";
+};
+export type Reflection = {
+  id: string;
+  dateISO: string;
+  worked?: string;
+  shifted?: string;
+  firstMove?: string;
+};
+export type StateMark = "clear" | "focused" | "wired" | "drained" | "heavy";
+export type StateLogEntry = {
+  id: string;
+  ts: number;
+  mark: StateMark;
+  note?: string;
+};
+export type Insight = {
+  id: string;
+  text: string;
+  source?: string;
+  domainId?: DomainId;
+  visionId?: string;
+  capturedAt: number;
+};
+export type WeeklyReview = {
+  id: string;
+  weekStartISO: string;
+  q: {
+    kept?: string;
+    shifted?: string;
+    learned?: string;
+    aiming?: string;
+    firstMoveNextWeek?: string;
+  };
+};
+export type Person = {
+  id: string;
+  name: string;
+  relation: string;
+  lastTouchedISO?: string;
+  nextMove?: string;
+  note?: string;
+};

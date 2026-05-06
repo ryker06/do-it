@@ -1,4 +1,16 @@
-import type { Block, Domain, Vision, Routine, Weekday } from "./types";
+import type {
+  Block,
+  Domain,
+  Vision,
+  Routine,
+  Weekday,
+  Subscription,
+  Transaction,
+  Reflection,
+  StateLogEntry,
+  Insight,
+  Person,
+} from "./types";
 
 export const DOMAINS: Domain[] = [
   {
@@ -499,3 +511,134 @@ export const SEED_WEEK_ASSIGNMENTS: Record<Weekday, string | null> = {
   Sat: "r2",
   Sun: null,
 };
+
+export const SEED_SUBSCRIPTIONS: Subscription[] = [
+  {
+    id: "sub1",
+    name: "Spotify",
+    amountCents: 1099,
+    currency: "USD",
+    cadence: "monthly",
+    nextChargeISO: "2026-05-18",
+    category: "music",
+  },
+  {
+    id: "sub2",
+    name: "GitHub Pro",
+    amountCents: 400,
+    currency: "USD",
+    cadence: "monthly",
+    nextChargeISO: "2026-05-22",
+    category: "software",
+  },
+  {
+    id: "sub3",
+    name: "ChatGPT Plus",
+    amountCents: 2000,
+    currency: "USD",
+    cadence: "monthly",
+    nextChargeISO: "2026-05-14",
+    category: "software",
+  },
+];
+
+const thisMonthISO = "2026-05-";
+export const SEED_TRANSACTIONS: Transaction[] = [
+  {
+    id: "tx1",
+    kind: "expense",
+    amountCents: 5400,
+    currency: "USD",
+    dateISO: `${thisMonthISO}02`,
+    category: "food",
+    note: "Grocery run",
+    source: "manual",
+  },
+  {
+    id: "tx2",
+    kind: "expense",
+    amountCents: 8900,
+    currency: "USD",
+    dateISO: `${thisMonthISO}04`,
+    category: "gym",
+    note: "Monthly gym membership",
+    source: "manual",
+  },
+  {
+    id: "tx3",
+    kind: "income",
+    amountCents: 250000,
+    currency: "USD",
+    dateISO: `${thisMonthISO}01`,
+    category: "freelance",
+    note: "Webuild client project",
+    source: "manual",
+  },
+  {
+    id: "tx4",
+    kind: "income",
+    amountCents: 42000,
+    currency: "USD",
+    dateISO: `${thisMonthISO}03`,
+    category: "dividend",
+    note: "ETF dividend",
+    source: "manual",
+  },
+];
+
+export const SEED_REFLECTIONS: Reflection[] = [
+  {
+    id: "ref1",
+    dateISO: "2026-05-05",
+    worked:
+      "Deep work session on the Dr. Lashin landing page was uninterrupted — got the hero drafted.",
+    shifted:
+      "Gym moved to evening, which actually felt better than the morning slot.",
+    firstMove: "Send the landing page draft to review first thing.",
+  },
+];
+
+export const SEED_STATE_LOG: StateLogEntry[] = [
+  { id: "sl1", ts: Date.now() - 3 * 3600_000, mark: "focused" },
+  { id: "sl2", ts: Date.now() - 1 * 3600_000, mark: "wired" },
+];
+
+export const SEED_INSIGHTS: Insight[] = [
+  {
+    id: "ins1",
+    text: "Consistency compounds faster than intensity. Showing up every day, even for 20 minutes, builds more than a single heroic session.",
+    source: "Atomic Habits",
+    domainId: "learning",
+    capturedAt: Date.now() - 2 * 86400_000,
+  },
+  {
+    id: "ins2",
+    text: "The goal is not to be perfect at prayer — it is to return quickly when you drift.",
+    domainId: "religion",
+    capturedAt: Date.now() - 86400_000,
+  },
+];
+
+export const SEED_PEOPLE: Person[] = [
+  {
+    id: "p1",
+    name: "Mom",
+    relation: "Family",
+    lastTouchedISO: "2026-04-28",
+    nextMove: "Call this weekend — ask about the trip.",
+  },
+  {
+    id: "p2",
+    name: "Karim",
+    relation: "Business mentor",
+    lastTouchedISO: "2026-04-20",
+    nextMove: "Share the Webuild pipeline update and ask for feedback.",
+  },
+  {
+    id: "p3",
+    name: "Faris",
+    relation: "Gym partner",
+    lastTouchedISO: "2026-05-03",
+    nextMove: "Confirm Thursday push session.",
+  },
+];

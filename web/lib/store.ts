@@ -32,6 +32,13 @@ import {
   SEED_PEOPLE,
 } from "./seed";
 
+type UserPrefs = {
+  wakeHHMM: string;
+  sleepHHMM: string;
+  syncUrl?: string;
+  lastSyncISO?: string;
+};
+
 type State = {
   blocks: Block[];
   domains: Domain[];
@@ -50,7 +57,7 @@ type State = {
   insights: Insight[];
   weeklyReviews: WeeklyReview[];
   people: Person[];
-  userPrefs: { wakeHHMM: string; sleepHHMM: string };
+  userPrefs: UserPrefs;
 };
 
 type Actions = {
@@ -112,10 +119,8 @@ type Actions = {
   pauseCurrent: () => void;
   finishCurrent: () => void;
   // user prefs
-  userPrefs: { wakeHHMM: string; sleepHHMM: string };
-  setUserPrefs: (
-    prefs: Partial<{ wakeHHMM: string; sleepHHMM: string }>,
-  ) => void;
+  userPrefs: UserPrefs;
+  setUserPrefs: (prefs: Partial<UserPrefs>) => void;
 };
 
 export const useDoIt = create<State & Actions>()(
@@ -138,7 +143,12 @@ export const useDoIt = create<State & Actions>()(
       insights: SEED_INSIGHTS,
       weeklyReviews: [],
       people: SEED_PEOPLE,
-      userPrefs: { wakeHHMM: "06:00", sleepHHMM: "22:00" },
+      userPrefs: {
+        wakeHHMM: "06:00",
+        sleepHHMM: "22:00",
+        syncUrl: "",
+        lastSyncISO: "",
+      },
       setHydrated: () => set({ hydrated: true }),
       setSliderRange: (min, max) =>
         set({ sliderMinOffset: min, sliderMaxOffset: max }),
@@ -533,7 +543,7 @@ export const useDoIt = create<State & Actions>()(
     }),
     {
       name: "do-it-state",
-      version: 9,
+      version: 10,
       skipHydration: true,
       migrate: (persistedState, _fromVersion) => {
         const s = persistedState as Record<string, unknown> | null;
@@ -697,10 +707,11 @@ export const useDoIt = create<State & Actions>()(
           people: Array.isArray(s?.people)
             ? (s.people as Person[])
             : SEED_PEOPLE,
-          userPrefs: (s?.userPrefs as {
-            wakeHHMM: string;
-            sleepHHMM: string;
-          }) ?? { wakeHHMM: "06:00", sleepHHMM: "22:00" },
+          userPrefs: {
+            wakeHHMM: "06:00",
+            sleepHHMM: "22:00",
+            ...(s?.userPrefs as Partial<UserPrefs> | undefined),
+          },
         };
       },
       onRehydrateStorage: () => (state) => {

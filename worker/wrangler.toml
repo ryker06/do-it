@@ -1,0 +1,16 @@
+name = "do-it-sync"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+
+# Cron: 03:00 UTC = 04:00 Berlin (winter). Adjust for summer: change to "0 2 * * *"
+[triggers]
+crons = ["0 3 * * *"]
+
+[[kv_namespaces]]
+binding = "DOIT_KV"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_NAMESPACE_ID"
+
+[vars]
+# Non-secret vars go here (none needed right now)
+# Secrets: set via `wrangler secret put NOTION_TOKEN` and `wrangler secret put NOTION_DB_ID`
