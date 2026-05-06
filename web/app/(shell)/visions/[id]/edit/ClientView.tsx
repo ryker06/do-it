@@ -45,6 +45,8 @@ export function ClientView({ id }: { id: string }) {
   const [domainId, setDomainId] = useState<DomainId>(
     vision?.domainId ?? "business",
   );
+  const [deadline, setDeadline] = useState(vision?.deadline ?? "");
+  const [targetMetric, setTargetMetric] = useState(vision?.targetMetric ?? "");
 
   if (!vision) {
     return (
@@ -70,7 +72,14 @@ export function ClientView({ id }: { id: string }) {
   }
 
   function save() {
-    updateVision(visionId, { title, blurb, description, domainId });
+    updateVision(visionId, {
+      title,
+      blurb,
+      description,
+      domainId,
+      deadline: deadline || undefined,
+      targetMetric: targetMetric || undefined,
+    });
     router.back();
   }
 
@@ -490,6 +499,95 @@ export function ClientView({ id }: { id: string }) {
                 border: "none",
                 outline: "none",
                 resize: "none",
+                fontFamily: "inherit",
+              }}
+            />
+          </div>
+        </div>
+
+        {/* deadline + metric */}
+        <div
+          style={{
+            background: "var(--card,#fff)",
+            borderRadius: 20,
+            overflow: "hidden",
+            boxShadow:
+              "0 0 0 0.5px rgba(60,60,67,0.05), 0 1px 1px rgba(20,20,30,0.02), 0 6px 16px -12px rgba(20,20,30,0.10)",
+            marginBottom: 14,
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 20,
+              boxShadow:
+                "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05)",
+              pointerEvents: "none",
+            }}
+          />
+          <div
+            style={{
+              padding: "14px 16px",
+              borderBottom: "0.5px solid var(--hairline-2,rgba(60,60,67,0.06))",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                color: "var(--label,#8E8E93)",
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                marginBottom: 6,
+              }}
+            >
+              Deadline
+            </div>
+            <input
+              type="date"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              style={{
+                width: "100%",
+                fontSize: 15,
+                fontWeight: 500,
+                color: "var(--ink-2,#1C1C1E)",
+                letterSpacing: "-0.012em",
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                fontFamily: "inherit",
+              }}
+            />
+          </div>
+          <div style={{ padding: "14px 16px" }}>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                color: "var(--label,#8E8E93)",
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                marginBottom: 6,
+              }}
+            >
+              Target metric
+            </div>
+            <input
+              value={targetMetric}
+              onChange={(e) => setTargetMetric(e.target.value)}
+              placeholder="e.g. deadlift 180kg"
+              style={{
+                width: "100%",
+                fontSize: 15,
+                fontWeight: 500,
+                color: "var(--ink-2,#1C1C1E)",
+                letterSpacing: "-0.012em",
+                background: "transparent",
+                border: "none",
+                outline: "none",
                 fontFamily: "inherit",
               }}
             />

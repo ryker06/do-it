@@ -36,6 +36,16 @@ const DOMAIN_NAMES: Record<DomainId, string> = {
   food: "Food",
 };
 
+function deadlineCountdown(deadline: string): string {
+  const diff = new Date(deadline).getTime() - Date.now();
+  const days = Math.round(diff / 86_400_000);
+  if (days < -1) return "moved";
+  if (days <= 0) return "today";
+  if (days < 7) return `${days}d left`;
+  const weeks = Math.round(days / 7);
+  return `${weeks} weeks out`;
+}
+
 const THREAD_ICONS = [
   <svg
     key="star"
@@ -376,6 +386,46 @@ export function ClientView({ id }: { id: string }) {
           >
             {vision.blurb}
           </div>
+          {/* Deadline + metric */}
+          {(vision.deadline || vision.targetMetric) && (
+            <div
+              style={{
+                position: "relative",
+                zIndex: 2,
+                marginTop: 16,
+                display: "inline-flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 4,
+              }}
+            >
+              {vision.deadline && (
+                <div
+                  style={{
+                    fontSize: 28,
+                    fontWeight: 800,
+                    color: "var(--ink,#000)",
+                    letterSpacing: "-0.04em",
+                    lineHeight: 1,
+                  }}
+                >
+                  {deadlineCountdown(vision.deadline)}
+                </div>
+              )}
+              {vision.targetMetric && (
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 500,
+                    color: "var(--label-2,#6E6E73)",
+                    letterSpacing: "-0.005em",
+                  }}
+                >
+                  {vision.targetMetric}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* description */}

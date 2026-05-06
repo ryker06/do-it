@@ -42,7 +42,8 @@ const DOMAIN_BG: Record<string, string> = {
 
 export default function NowPage() {
   const router = useRouter();
-  const { blocks, domains, start, pause, resume, finish, extend } = useDoIt();
+  const { blocks, domains, start, pause, resume, finish, extend, advanceStep } =
+    useDoIt();
   const [now, setNow] = useState<number>(() => Date.now());
   const [showBrainDump, setShowBrainDump] = useState(false);
   const [anchors, setAnchors] = useState<Anchor[] | null>(() =>
@@ -835,6 +836,14 @@ export default function NowPage() {
             >
               {focus.title}
             </div>
+            {/* Step card — active/paused state */}
+            {focus.step && (
+              <StepCard
+                step={focus.step}
+                onAdvance={() => advanceStep(focus.id)}
+                onComplete={() => finish(focus.id)}
+              />
+            )}
             <div className="timer-block">
               <div className="timer">
                 {formatTimer(remaining).main}
@@ -983,6 +992,14 @@ export default function NowPage() {
                 </span>
               )}
             </div>
+            {/* Step card — pending state */}
+            {focus.step && (
+              <StepCard
+                step={focus.step}
+                onAdvance={() => advanceStep(focus.id)}
+                onComplete={() => finish(focus.id)}
+              />
+            )}
             <button className="cta" onClick={onPrimary}>
               <span className="play">
                 <svg viewBox="0 0 12 12" width="8" height="8">
@@ -1026,53 +1043,186 @@ export default function NowPage() {
         </div>
       )}
 
-      {/* + thought pill */}
+      {/* Skip block — calm corner affordance */}
       <button
-        onClick={() => setShowBrainDump(true)}
+        onClick={() => {
+          finish(focus.id);
+        }}
         style={{
           position: "fixed",
-          bottom: 100,
-          left: "50%",
-          transform: "translateX(-50%)",
+          bottom: 106,
+          right: 18,
           display: "inline-flex",
           alignItems: "center",
-          gap: 7,
-          padding: "9px 16px",
+          gap: 5,
+          padding: "7px 12px",
           borderRadius: 999,
-          background: "rgba(255,255,255,0.82)",
+          background: "rgba(255,255,255,0.72)",
           border: "none",
           cursor: "pointer",
           fontFamily: "inherit",
-          fontSize: 13,
+          fontSize: 12,
           fontWeight: 600,
           color: "var(--label-2,#6E6E73)",
           letterSpacing: "-0.008em",
           backdropFilter: "saturate(180%) blur(14px)",
           WebkitBackdropFilter: "saturate(180%) blur(14px)",
           boxShadow:
-            "0 0 0 0.5px rgba(60,60,67,0.10), 0 1px 2px rgba(20,20,30,0.06), 0 4px 12px -4px rgba(20,20,30,0.08)",
+            "0 0 0 0.5px rgba(60,60,67,0.10), 0 1px 2px rgba(20,20,30,0.06)",
           zIndex: 10,
         }}
+        aria-label="Skip block"
       >
+        skip
         <svg
           viewBox="0 0 24 24"
-          width={12}
-          height={12}
+          width={10}
+          height={10}
           fill="none"
           stroke="currentColor"
           strokeWidth={2.2}
           strokeLinecap="round"
           strokeLinejoin="round"
         >
-          <path d="M12 5v14M5 12h14" />
+          <path d="M9 6l6 6-6 6" />
         </svg>
-        thought
       </button>
 
       {showBrainDump && (
         <BrainDumpSheet onClose={() => setShowBrainDump(false)} />
       )}
     </>
+  );
+}
+
+function StepCard({
+  step,
+  onAdvance,
+  onComplete,
+}: {
+  step: { kind: string; items: string[]; current?: number };
+  onAdvance: () => void;
+  onComplete: () => void;
+}) {
+  const current = step.current ?? 0;
+  const total = step.items.length;
+  const currentItem = step.items[current] ?? "";
+  const isLast = current >= total - 1;
+
+  return (
+    <div
+      style={{
+        background: "rgba(255,255,255,0.72)",
+        borderRadius: 16,
+        padding: "13px 14px",
+        marginBottom: 12,
+        boxShadow:
+          "inset 0 0 0 0.5px rgba(60,60,67,0.10), 0 1px 2px rgba(20,20,30,0.04), 0 4px 12px -6px rgba(20,20,30,0.08)",
+        backdropFilter: "saturate(180%) blur(10px)",
+        WebkitBackdropFilter: "saturate(180%) blur(10px)",
+      }}
+    >
+      {/* step label */}
+      <div
+        style={{
+          fontSize: 10,
+          fontWeight: 700,
+          color: "var(--label,#8E8E93)",
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
+          marginBottom: 6,
+        }}
+      >
+        Step {current + 1} of {total}
+      </div>
+      {/* current item */}
+      <div
+        style={{
+          fontSize: 14.5,
+          fontWeight: 600,
+          color: "var(--ink,#000)",
+          letterSpacing: "-0.018em",
+          lineHeight: 1.3,
+          marginBottom: 11,
+        }}
+      >
+        {currentItem}
+      </div>
+      {/* next item preview */}
+      {!isLast && (
+        <div
+          style={{
+            fontSize: 11.5,
+            fontWeight: 500,
+            color: "var(--label-2,#6E6E73)",
+            letterSpacing: "-0.005em",
+            marginBottom: 11,
+          }}
+        >
+          Next: {step.items[current + 1]}
+        </div>
+      )}
+      {/* action button */}
+      <button
+        onClick={isLast ? onComplete : onAdvance}
+        style={{
+          width: "100%",
+          padding: "9px 14px",
+          borderRadius: 10,
+          border: "none",
+          cursor: "pointer",
+          fontFamily: "inherit",
+          fontSize: 13,
+          fontWeight: 600,
+          letterSpacing: "-0.012em",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
+          background: isLast
+            ? "linear-gradient(180deg,#2E7B5E 0%,#1F5A45 100%)"
+            : "var(--inset,#F2F2F7)",
+          color: isLast ? "#fff" : "var(--ink-2,#1C1C1E)",
+          boxShadow: isLast
+            ? "0 1px 0 rgba(255,255,255,0.20) inset, 0 6px 14px -8px rgba(31,90,68,0.35)"
+            : "inset 0 0 0 0.5px rgba(60,60,67,0.10), 0 1px 1px rgba(20,20,30,0.03)",
+        }}
+      >
+        {isLast ? (
+          <>
+            <svg
+              viewBox="0 0 24 24"
+              width={12}
+              height={12}
+              fill="none"
+              stroke="#fff"
+              strokeWidth={2.6}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 12l4 4L19 6" />
+            </svg>
+            complete block
+          </>
+        ) : (
+          <>
+            done · next
+            <svg
+              viewBox="0 0 24 24"
+              width={10}
+              height={10}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 6l6 6-6 6" />
+            </svg>
+          </>
+        )}
+      </button>
+    </div>
   );
 }
 

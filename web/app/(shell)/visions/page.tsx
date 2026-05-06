@@ -343,6 +343,19 @@ export default function VisionsPage() {
               </div>
               <div className="name">{v.title}</div>
               <div className="tag">{shorten(v.blurb)}</div>
+              {v.deadline && (
+                <div
+                  style={{
+                    marginTop: 6,
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    color: "var(--label-2,#6E6E73)",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {deadlineCountdown(v.deadline)}
+                </div>
+              )}
             </button>
           );
         })}
@@ -354,4 +367,15 @@ export default function VisionsPage() {
 function shorten(s: string): string {
   if (s.length <= 60) return s;
   return s.slice(0, 57) + "…";
+}
+
+function deadlineCountdown(deadline: string | undefined): string | null {
+  if (!deadline) return null;
+  const diff = new Date(deadline).getTime() - Date.now();
+  const days = Math.round(diff / 86_400_000);
+  if (days < -1) return "moved";
+  if (days <= 0) return "today";
+  if (days < 7) return `${days}d left`;
+  const weeks = Math.round(days / 7);
+  return `${weeks}w out`;
 }

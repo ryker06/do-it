@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
 import { DomainGlyph, ChevSvg, ArrowSvg } from "@/components/icons";
-import type { DomainMomentum } from "@/lib/types";
+import type { DomainMomentum, DomainId } from "@/lib/types";
 
 const MOMENTUM: Record<DomainMomentum, string> = {
   warm: "Warm",
@@ -14,9 +14,70 @@ const MOMENTUM: Record<DomainMomentum, string> = {
   humming: "Humming",
 };
 
+function computeBalanceSignal(
+  blocks: ReturnType<typeof useDoIt.getState>["blocks"],
+): string | null {
+  const sevenDaysAgo = Date.now() - 7 * 86_400_000;
+  // Use all blocks (no startedAt timestamp available; approximate with all scheduled blocks)
+  const recent = blocks.filter(
+    (b) =>
+      b.mode !== undefined &&
+      (b.status === "done" || b.scheduledFor === "today"),
+  );
+
+  if (recent.length === 0) return null;
+
+  // Group by domain → count modes
+  const domainCounts: Record<
+    DomainId,
+    { theory: number; application: number; feedback: number }
+  > = {} as Record<
+    DomainId,
+    { theory: number; application: number; feedback: number }
+  >;
+
+  for (const b of recent) {
+    if (!b.mode) continue;
+    if (!domainCounts[b.domain]) {
+      domainCounts[b.domain] = { theory: 0, application: 0, feedback: 0 };
+    }
+    domainCounts[b.domain][b.mode]++;
+  }
+
+  // Find most extreme imbalance: theory > 2× application
+  let worst: { domain: DomainId; ratio: number } | null = null;
+  for (const [domainId, counts] of Object.entries(domainCounts) as [
+    DomainId,
+    { theory: number; application: number; feedback: number },
+  ][]) {
+    if (counts.theory > 0 && counts.application === 0) {
+      const ratio = counts.theory * 3; // treat div-by-zero as very high
+      if (!worst || ratio > worst.ratio) worst = { domain: domainId, ratio };
+    } else if (counts.theory > 0 && counts.application > 0) {
+      const ratio = counts.theory / counts.application;
+      if (ratio > 2 && (!worst || ratio > worst.ratio))
+        worst = { domain: domainId, ratio };
+    }
+  }
+
+  if (!worst) return null;
+
+  const DOMAIN_NAMES: Record<DomainId, string> = {
+    business: "Business",
+    religion: "Religion",
+    learning: "Learning",
+    fitness: "Fitness",
+    home: "Home",
+    food: "Food",
+  };
+
+  return `Heavy on theory in ${DOMAIN_NAMES[worst.domain]}, light on application this week.`;
+}
+
 export default function DomainsPage() {
-  const { domains } = useDoIt();
+  const { domains, blocks } = useDoIt();
   const router = useRouter();
+  const balanceSignal = computeBalanceSignal(blocks);
 
   // Empty state
   if (domains.length === 0) {
@@ -210,7 +271,7 @@ export default function DomainsPage() {
         <span className="meta">this week</span>
       </div>
 
-      <div>
+      <div style={{ paddingBottom: balanceSignal ? 0 : undefined }}>
         {domains.map((d) => (
           <button
             key={d.id}
@@ -262,6 +323,27 @@ export default function DomainsPage() {
           </button>
         ))}
       </div>
+
+      {/* Balance signal — one calm sentence */}
+      {balanceSignal && (
+        <div
+          style={{
+            margin: "12px 0 8px",
+            padding: "12px 14px",
+            borderRadius: 14,
+            background: "rgba(255,255,255,0.60)",
+            boxShadow:
+              "inset 0 0 0 0.5px var(--hairline,rgba(60,60,67,0.10)), 0 1px 2px rgba(20,20,30,0.04)",
+            fontSize: 13,
+            fontWeight: 500,
+            color: "var(--label-2,#6E6E73)",
+            letterSpacing: "-0.010em",
+            lineHeight: 1.4,
+          }}
+        >
+          {balanceSignal}
+        </div>
+      )}
     </>
   );
 }

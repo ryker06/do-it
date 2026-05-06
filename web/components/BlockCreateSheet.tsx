@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDoIt } from "@/lib/store";
 import { DomainGlyph } from "@/components/icons";
+import RightDrawer from "@/components/RightDrawer";
 import type { DomainId } from "@/lib/types";
 
 const DOMAIN_BG: Record<DomainId, string> = {
@@ -47,91 +48,64 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
     onClose();
   }
 
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-    }
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      style={{
-        position: "fixed",
-        left: 0,
-        right: 0,
-        bottom: 0,
-        top: 0,
-        zIndex: 50,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
-      }}
-    >
-      {/* scrim */}
-      <div
-        onClick={onClose}
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "rgba(18,18,24,0.34)",
-          backdropFilter: "blur(14px) saturate(140%)",
-          WebkitBackdropFilter: "blur(14px) saturate(140%)",
-          zIndex: 0,
-        }}
-      />
-
-      {/* sheet */}
+    <RightDrawer onClose={onClose}>
       <div
         style={{
-          position: "relative",
-          zIndex: 10,
-          background: "#fff",
-          borderTopLeftRadius: 32,
-          borderTopRightRadius: 32,
-          padding: "10px 22px 22px",
-          boxShadow:
-            "0 -1px 0 rgba(255,255,255,0.95) inset, 0 0 0 0.5px rgba(60,60,67,0.08), 0 -2px 8px rgba(20,20,30,0.04), 0 -22px 60px -10px rgba(20,20,30,0.20), 0 -40px 80px -20px rgba(20,20,30,0.22)",
+          padding: "24px 20px 32px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 0,
         }}
       >
+        {/* header */}
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            borderTopLeftRadius: 32,
-            borderTopRightRadius: 32,
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.95)",
-            pointerEvents: "none",
-          }}
-        />
-
-        {/* handle */}
-        <div
-          style={{
-            width: 38,
-            height: 5,
-            borderRadius: 999,
-            background: "rgba(60,60,67,0.22)",
-            margin: "0 auto 14px",
-          }}
-        />
-
-        {/* eyebrow */}
-        <div
-          style={{
-            fontSize: 10.5,
-            fontWeight: 700,
-            color: "var(--label,#8E8E93)",
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            textAlign: "center",
-            marginBottom: 14,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 22,
           }}
         >
-          Add block
+          <div
+            style={{
+              fontSize: 10.5,
+              fontWeight: 700,
+              color: "var(--label,#8E8E93)",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+            }}
+          >
+            Add block
+          </div>
+          <button
+            onClick={onClose}
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: "50%",
+              background: "var(--inset,#F2F2F7)",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            aria-label="Close"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width={11}
+              height={11}
+              fill="none"
+              stroke="var(--ink-2,#1C1C1E)"
+              strokeWidth={2.4}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
         {/* title input */}
@@ -139,7 +113,7 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
           style={{
             padding: "6px 4px 16px",
             borderBottom: "0.5px solid var(--hairline-2,rgba(60,60,67,0.06))",
-            marginBottom: 18,
+            marginBottom: 22,
             display: "flex",
             alignItems: "center",
             gap: 6,
@@ -157,24 +131,13 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
               border: 0,
               outline: 0,
               fontFamily: "inherit",
-              fontSize: 24,
+              fontSize: 22,
               fontWeight: 700,
               color: "var(--ink,#000)",
-              letterSpacing: "-0.032em",
+              letterSpacing: "-0.030em",
               lineHeight: 1.1,
             }}
           />
-          <span
-            style={{
-              width: 2,
-              height: 24,
-              background: "var(--blue,#007AFF)",
-              borderRadius: 2,
-              animation: "blink 1.05s steps(2) infinite",
-              flexShrink: 0,
-            }}
-          />
-          <style>{`@keyframes blink{50%{opacity:0;}}`}</style>
         </div>
 
         {/* domain label */}
@@ -185,25 +148,10 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
             color: "var(--label,#8E8E93)",
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            padding: "0 4px",
             marginBottom: 10,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
           }}
         >
-          <span>Domain</span>
-          <span
-            style={{
-              fontSize: 11.5,
-              fontWeight: 600,
-              color: "var(--ink-3,#3A3A3C)",
-              letterSpacing: "-0.012em",
-              textTransform: "none",
-            }}
-          >
-            {domainId.charAt(0).toUpperCase() + domainId.slice(1)}
-          </span>
+          Domain
         </div>
 
         {/* domain picker */}
@@ -211,9 +159,8 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            gap: 8,
-            padding: "2px 2px 6px",
-            marginBottom: 18,
+            gap: 6,
+            marginBottom: 22,
           }}
         >
           {DOMAIN_IDS.map((id) => {
@@ -223,8 +170,8 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
                 key={id}
                 onClick={() => setDomainId(id)}
                 style={{
-                  width: 54,
-                  height: 54,
+                  width: 46,
+                  height: 46,
                   borderRadius: "50%",
                   flexShrink: 0,
                   display: "flex",
@@ -237,11 +184,11 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
                   border: "none",
                   cursor: "pointer",
                   color: "var(--glyph,#0A0A0F)",
-                  transform: selected ? "scale(1.04)" : "scale(1)",
+                  transform: selected ? "scale(1.06)" : "scale(1)",
                   transition: "transform .12s ease",
                 }}
               >
-                <DomainGlyph id={id} size={24} />
+                <DomainGlyph id={id} size={20} />
               </button>
             );
           })}
@@ -255,7 +202,6 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
             color: "var(--label,#8E8E93)",
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            padding: "0 4px",
             marginBottom: 10,
           }}
         >
@@ -272,7 +218,7 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
             padding: 5,
             boxShadow:
               "inset 0 0 0 0.5px var(--hairline-2,rgba(60,60,67,0.06))",
-            marginBottom: 18,
+            marginBottom: 22,
           }}
         >
           {DURATIONS.map((d) => {
@@ -319,45 +265,44 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
         </div>
 
         {/* schedule pills */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>
+        <div style={{ display: "flex", gap: 10, marginBottom: 22 }}>
           <button
             onClick={() => setScheduleToday(true)}
             style={{
               flex: 1,
-              padding: "14px",
+              padding: "13px",
               borderRadius: 16,
               background: scheduleToday ? "#fff" : "var(--inset,#F2F2F7)",
               boxShadow: scheduleToday
-                ? "0 0 0 1.5px var(--ink-2,#1C1C1E), 0 8px 18px -10px rgba(20,20,30,0.20), 0 2px 6px -3px rgba(20,20,30,0.10)"
+                ? "0 0 0 1.5px var(--ink-2,#1C1C1E), 0 8px 18px -10px rgba(20,20,30,0.20)"
                 : "inset 0 0 0 0.5px var(--hairline-2,rgba(60,60,67,0.06))",
               border: "none",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: 10,
-              textAlign: "left",
+              gap: 8,
             }}
           >
             <div
               style={{
-                width: 30,
-                height: 30,
-                borderRadius: 9,
+                width: 28,
+                height: 28,
+                borderRadius: 8,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 background: scheduleToday ? "var(--ink-2,#1C1C1E)" : "#fff",
-                boxShadow: scheduleToday
-                  ? "0 2px 6px -2px rgba(20,20,30,0.30)"
-                  : "inset 0 0 0 0.5px rgba(60,60,67,0.08), 0 1px 1px rgba(20,20,30,0.03)",
                 color: scheduleToday ? "#fff" : "var(--ink-3,#3A3A3C)",
                 flexShrink: 0,
+                boxShadow: scheduleToday
+                  ? "0 2px 6px -2px rgba(20,20,30,0.30)"
+                  : "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
               }}
             >
               <svg
                 viewBox="0 0 24 24"
-                width={15}
-                height={15}
+                width={13}
+                height={13}
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2}
@@ -371,10 +316,10 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
             <div>
               <div
                 style={{
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: 600,
                   color: "var(--ink-2,#1C1C1E)",
-                  letterSpacing: "-0.018em",
+                  letterSpacing: "-0.016em",
                   lineHeight: 1.1,
                 }}
               >
@@ -382,7 +327,7 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
               </div>
               <div
                 style={{
-                  fontSize: 10.5,
+                  fontSize: 10,
                   fontWeight: 600,
                   color: "var(--label,#8E8E93)",
                   letterSpacing: "0.04em",
@@ -398,40 +343,39 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
             onClick={() => setScheduleToday(false)}
             style={{
               flex: 1,
-              padding: "14px",
+              padding: "13px",
               borderRadius: 16,
               background: !scheduleToday ? "#fff" : "var(--inset,#F2F2F7)",
               boxShadow: !scheduleToday
-                ? "0 0 0 1.5px var(--ink-2,#1C1C1E), 0 8px 18px -10px rgba(20,20,30,0.20), 0 2px 6px -3px rgba(20,20,30,0.10)"
+                ? "0 0 0 1.5px var(--ink-2,#1C1C1E), 0 8px 18px -10px rgba(20,20,30,0.20)"
                 : "inset 0 0 0 0.5px var(--hairline-2,rgba(60,60,67,0.06))",
               border: "none",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: 10,
-              textAlign: "left",
+              gap: 8,
             }}
           >
             <div
               style={{
-                width: 30,
-                height: 30,
-                borderRadius: 9,
+                width: 28,
+                height: 28,
+                borderRadius: 8,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 background: !scheduleToday ? "var(--ink-2,#1C1C1E)" : "#fff",
-                boxShadow: !scheduleToday
-                  ? "0 2px 6px -2px rgba(20,20,30,0.30)"
-                  : "inset 0 0 0 0.5px rgba(60,60,67,0.08), 0 1px 1px rgba(20,20,30,0.03)",
                 color: !scheduleToday ? "#fff" : "var(--ink-3,#3A3A3C)",
                 flexShrink: 0,
+                boxShadow: !scheduleToday
+                  ? "0 2px 6px -2px rgba(20,20,30,0.30)"
+                  : "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
               }}
             >
               <svg
                 viewBox="0 0 24 24"
-                width={15}
-                height={15}
+                width={13}
+                height={13}
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2}
@@ -444,10 +388,10 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
             <div>
               <div
                 style={{
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: 600,
                   color: "var(--ink-2,#1C1C1E)",
-                  letterSpacing: "-0.018em",
+                  letterSpacing: "-0.016em",
                   lineHeight: 1.1,
                 }}
               >
@@ -455,7 +399,7 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
               </div>
               <div
                 style={{
-                  fontSize: 10.5,
+                  fontSize: 10,
                   fontWeight: 600,
                   color: "var(--label,#8E8E93)",
                   letterSpacing: "0.04em",
@@ -471,70 +415,34 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
         {/* save */}
         <button
           onClick={handleSave}
+          disabled={!title.trim()}
           style={{
             width: "100%",
-            padding: 16,
-            borderRadius: 18,
+            padding: "15px 20px",
+            borderRadius: 999,
             border: 0,
-            cursor: "pointer",
-            background: "linear-gradient(180deg,#1C1C1E 0%, #000000 100%)",
-            boxShadow:
-              "0 0 0 0.5px rgba(0,0,0,0.40), 0 14px 28px -12px rgba(20,20,30,0.50), 0 6px 12px -6px rgba(20,20,30,0.30)",
-            color: "#fff",
-            fontSize: 15.5,
-            fontWeight: 700,
-            letterSpacing: "-0.022em",
+            cursor: title.trim() ? "pointer" : "default",
+            background: title.trim()
+              ? "linear-gradient(180deg,#1A1A20 0%,#000 100%)"
+              : "var(--inset,#F2F2F7)",
+            boxShadow: title.trim()
+              ? "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 0.5px rgba(0,0,0,0.5), 0 18px 38px -18px rgba(10,10,20,0.55)"
+              : "none",
+            color: title.trim() ? "#fff" : "var(--label,#8E8E93)",
+            fontSize: 15,
+            fontWeight: 600,
+            letterSpacing: "-0.014em",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: 8,
-            position: "relative",
+            gap: 10,
+            fontFamily: "inherit",
+            transition: "background .15s ease",
           }}
         >
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: 18,
-              boxShadow:
-                "inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 0.5px rgba(255,255,255,0.06)",
-              pointerEvents: "none",
-            }}
-          />
-          <svg
-            viewBox="0 0 24 24"
-            width={14}
-            height={14}
-            fill="none"
-            stroke="#fff"
-            strokeWidth={2.4}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 5v14M5 12h14" />
-          </svg>
           Add block
         </button>
-
-        <button
-          onClick={onClose}
-          style={{
-            display: "block",
-            width: "100%",
-            padding: "14px 0 2px",
-            textAlign: "center",
-            fontSize: 14,
-            fontWeight: 500,
-            color: "var(--label-2,#6E6E73)",
-            letterSpacing: "-0.018em",
-            background: "none",
-            border: 0,
-            cursor: "pointer",
-          }}
-        >
-          Cancel
-        </button>
       </div>
-    </div>
+    </RightDrawer>
   );
 }

@@ -1,7 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
 import { DomainGlyph, CrescentSvg } from "@/components/icons";
@@ -10,54 +27,322 @@ import BlockCreateSheet from "@/components/BlockCreateSheet";
 import type { Anchor, Block } from "@/lib/types";
 
 const PRAYER_CACHE_KEY = "do-it-prayer-cache-v1";
+const DAY_START_HHMM = "06:00";
 
-function readDhuhrFromCache(): { label: string; hhmm: string } | null {
-  if (typeof window === "undefined") return null;
+function readAllAnchorsFromCache(): Anchor[] {
+  if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(PRAYER_CACHE_KEY);
-    if (!raw) return null;
+    if (!raw) return [];
     const parsed = JSON.parse(raw) as { date: string; anchors: Anchor[] };
-    if (parsed.date !== new Date().toDateString()) return null;
-    const dhuhr = parsed.anchors.find((a) => a.label.toLowerCase() === "dhuhr");
-    return dhuhr ? { label: dhuhr.label, hhmm: dhuhr.hhmm } : null;
+    if (parsed.date !== new Date().toDateString()) return [];
+    return parsed.anchors;
   } catch {
-    return null;
+    return [];
   }
 }
 
+function hhmmToMin(hhmm: string): number {
+  const [h, m] = hhmm.split(":").map(Number);
+  return (h ?? 0) * 60 + (m ?? 0);
+}
+
+function minToHHMM(min: number): string {
+  const h = Math.floor(min / 60) % 24;
+  const m = min % 60;
+  return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
+}
+
+/** Compute projected start time (minutes from midnight) for each block id */
+function computeProjectedStarts(
+  orderedBlocks: Block[],
+  anchors: Anchor[],
+): Map<string, number> {
+  const prayerMins = anchors.map((a) => hhmmToMin(a.hhmm));
+  const PRAYER_WINDOW = 5; // skip 5 min around each prayer
+  const result = new Map<string, number>();
+
+  let cursor = hhmmToMin(DAY_START_HHMM);
+
+  for (const b of orderedBlocks) {
+    if (b.status === "done") {
+      // done blocks don't matter for projection but we still slot them
+      result.set(b.id, cursor);
+      cursor += b.durationMin + (b.adjustedMin ?? 0);
+      continue;
+    }
+    // Bump cursor past any prayer window
+    for (const pm of prayerMins) {
+      if (cursor >= pm - PRAYER_WINDOW && cursor < pm + PRAYER_WINDOW) {
+        cursor = pm + PRAYER_WINDOW;
+      }
+    }
+    result.set(b.id, cursor);
+    cursor += b.durationMin + (b.adjustedMin ?? 0);
+  }
+
+  return result;
+}
+
+// ── Sortable row ──────────────────────────────────────────────────────────────
+
+interface SortableRowProps {
+  block: Block;
+  projectedStart: number | undefined;
+  domainName: string | undefined;
+  isFirstIdle: boolean;
+  onTap: (b: Block) => void;
+  onResume: (id: string) => void;
+}
+
+function SortableRow({
+  block: b,
+  projectedStart,
+  domainName,
+  isFirstIdle,
+  onTap,
+  onResume,
+}: SortableRowProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: b.id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.55 : 1,
+    zIndex: isDragging ? 10 : undefined,
+  };
+
+  const status = b.status;
+  const cls =
+    status === "done"
+      ? "done"
+      : status === "active" || status === "paused"
+        ? "flow"
+        : "";
+
+  const timeLabel =
+    projectedStart !== undefined ? minToHHMM(projectedStart) : null;
+
+  return (
+    <div ref={setNodeRef} style={style} className={`tl-block ${cls}`}>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        {/* Projected time label */}
+        <div
+          style={{
+            width: 42,
+            flexShrink: 0,
+            fontSize: 10,
+            fontWeight: 600,
+            color: "var(--label,#8E8E93)",
+            letterSpacing: "0.01em",
+            textAlign: "right",
+            paddingRight: 7,
+            fontVariantNumeric: "tabular-nums",
+            lineHeight: 1,
+          }}
+        >
+          {timeLabel}
+        </div>
+
+        {/* Drag handle */}
+        <button
+          {...attributes}
+          {...listeners}
+          style={{
+            width: 24,
+            height: 32,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "none",
+            border: "none",
+            cursor: isDragging ? "grabbing" : "grab",
+            padding: 0,
+            flexShrink: 0,
+            touchAction: "none",
+            color: "var(--label,#8E8E93)",
+          }}
+          aria-label="Drag to reorder"
+        >
+          <svg
+            viewBox="0 0 14 18"
+            width={9}
+            height={12}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.8}
+            strokeLinecap="round"
+          >
+            <line x1="2" y1="4" x2="12" y2="4" />
+            <line x1="2" y1="9" x2="12" y2="9" />
+            <line x1="2" y1="14" x2="12" y2="14" />
+          </svg>
+        </button>
+
+        {/* Block content — tap area */}
+        {status === "pending" ? (
+          <button
+            onClick={() => onTap(b)}
+            className={`row ${cls}`}
+            style={{
+              flex: 1,
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              textAlign: "left",
+              padding: 0,
+            }}
+          >
+            <div className={`ddisc ${b.domain} row`}>
+              <DomainGlyph id={b.domain} />
+            </div>
+            <div className="text">
+              <div className="title">{b.title}</div>
+              <div className="meta">
+                {domainName}
+                <span className="sep">·</span>
+                {b.durationMin + (b.adjustedMin ?? 0)} min
+              </div>
+            </div>
+            {b.adjustedMin && (
+              <span className="pill adj">+{b.adjustedMin}m</span>
+            )}
+            {!b.adjustedMin && isFirstIdle && (
+              <span className="pill up-next">Up next</span>
+            )}
+            {!b.adjustedMin && !isFirstIdle && (
+              <span className="pill later">Later</span>
+            )}
+          </button>
+        ) : (
+          <Link
+            href="/now"
+            onClick={() => {
+              if (status === "paused") onResume(b.id);
+            }}
+            className={`row ${cls}`}
+            style={{ flex: 1 }}
+          >
+            <div className={`ddisc ${b.domain} row`}>
+              <DomainGlyph id={b.domain} />
+            </div>
+            <div className="text">
+              <div className="title">{b.title}</div>
+              <div className="meta">
+                {domainName}
+                <span className="sep">·</span>
+                {b.durationMin + (b.adjustedMin ?? 0)} min
+              </div>
+            </div>
+            {status === "done" && <span className="pill done">Done</span>}
+            {status === "active" && (
+              <span className="pill flow">
+                <span className="ldot" />
+                In flow
+              </span>
+            )}
+            {status === "paused" && <span className="pill flow">Paused</span>}
+            {(status === "active" || status === "paused") && (
+              <div
+                className="progress-line"
+                style={{ width: `${progressPct(b)}%` }}
+              />
+            )}
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+
 export default function TodayPage() {
-  const { blocks, domains, start, resume } = useDoIt();
-  const [dhuhr, setDhuhr] = useState<{ label: string; hhmm: string } | null>(
-    null,
+  const { blocks, domains, resume, reorderBlocks } = useDoIt();
+  const [anchors, setAnchors] = useState<Anchor[]>(() =>
+    readAllAnchorsFromCache(),
   );
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [showCreate, setShowCreate] = useState(false);
 
+  // Local ordering state for optimistic drag-and-drop
+  const [orderedIds, setOrderedIds] = useState<string[]>(() =>
+    [...blocks].sort((a, b) => a.order - b.order).map((b) => b.id),
+  );
+
+  // Sync orderedIds if blocks changes externally (new block created, etc.)
   useEffect(() => {
-    const cached = readDhuhrFromCache();
-    if (cached) {
-      setDhuhr(cached);
-      return;
-    }
+    const fromStore = [...blocks]
+      .sort((a, b) => a.order - b.order)
+      .map((b) => b.id);
+    setOrderedIds((prev) => {
+      // Merge: keep prev order for existing ids, append new ids at end
+      const prevSet = new Set(prev);
+      const newIds = fromStore.filter((id) => !prevSet.has(id));
+      const stillValid = prev.filter((id) => fromStore.includes(id));
+      return [...stillValid, ...newIds];
+    });
+  }, [blocks]);
+
+  useEffect(() => {
+    if (anchors.length > 0) return;
     import("@/lib/prayers").then(({ fetchTodayPrayers }) => {
-      fetchTodayPrayers().then((anchors) => {
-        if (anchors.length > 0) {
+      fetchTodayPrayers().then((fresh) => {
+        if (fresh.length > 0) {
           try {
             localStorage.setItem(
               PRAYER_CACHE_KEY,
-              JSON.stringify({ date: new Date().toDateString(), anchors }),
+              JSON.stringify({
+                date: new Date().toDateString(),
+                anchors: fresh,
+              }),
             );
           } catch {
-            // storage quota or private mode — silent
+            // silent
           }
-          const d = anchors.find((a) => a.label.toLowerCase() === "dhuhr");
-          if (d) setDhuhr({ label: d.label, hhmm: d.hhmm });
+          setAnchors(fresh);
         }
       });
     });
-  }, []);
+  }, [anchors.length]);
 
-  const sorted = [...blocks].sort((a, b) => a.order - b.order);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      if (!over || active.id === over.id) return;
+
+      setOrderedIds((prev) => {
+        const oldIdx = prev.indexOf(String(active.id));
+        const newIdx = prev.indexOf(String(over.id));
+        const next = arrayMove(prev, oldIdx, newIdx);
+        reorderBlocks(next);
+        return next;
+      });
+    },
+    [reorderBlocks],
+  );
+
+  // Build ordered block list from orderedIds
+  const blockMap = new Map(blocks.map((b) => [b.id, b]));
+  const sorted = orderedIds
+    .map((id) => blockMap.get(id))
+    .filter((b): b is Block => b !== undefined);
+
   const totalMin = sorted.reduce(
     (acc, b) => acc + b.durationMin + (b.adjustedMin ?? 0),
     0,
@@ -68,21 +353,25 @@ export default function TodayPage() {
   const aheadMin = totalMin - doneMin;
   const pct = totalMin > 0 ? Math.round((doneMin / totalMin) * 100) : 0;
 
-  const anchorPos = 2;
   const firstIdleIdx = sorted.findIndex((b) => b.status === "pending");
+
+  // Dhuhr for anchor display
+  const dhuhr = anchors.find((a) => a.label.toLowerCase() === "dhuhr");
+  const anchorPos = 2; // insert anchor after 2nd block
+
+  // Projected start times
+  const projectedStarts = computeProjectedStarts(sorted, anchors);
 
   // Empty state
   if (sorted.length === 0) {
     return (
       <>
         <Topbar name="Today" sub="a quiet start" />
-
         <div className="section-eyebrow">
           <span className="lbl">The day</span>
           <span className="rule" />
           <span className="meta">empty</span>
         </div>
-
         <div
           style={{
             flex: 1,
@@ -91,7 +380,6 @@ export default function TodayPage() {
             padding: "8px 4px 110px",
           }}
         >
-          {/* orb */}
           <div
             style={{
               width: 148,
@@ -105,35 +393,7 @@ export default function TodayPage() {
                 "inset 0 -10px 30px rgba(60,90,140,0.18), inset 0 2px 0 rgba(255,255,255,0.9), 0 30px 60px -22px rgba(60,90,140,0.28), 0 10px 30px -10px rgba(60,90,140,0.16)",
               flexShrink: 0,
             }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "rgba(20,30,50,0.42)",
-                zIndex: 1,
-              }}
-            >
-              <svg
-                viewBox="0 0 48 48"
-                width={54}
-                height={54}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.6}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="24" cy="24" r="7" />
-                <path d="M24 9v3M24 36v3M9 24h3M36 24h3M13.5 13.5l2.1 2.1M32.4 32.4l2.1 2.1M13.5 34.5l2.1-2.1M32.4 15.6l2.1-2.1" />
-              </svg>
-            </div>
-          </div>
-
-          {/* copy */}
+          />
           <div
             style={{ textAlign: "center", marginTop: 34, padding: "0 18px" }}
           >
@@ -158,21 +418,7 @@ export default function TodayPage() {
                 for today.
               </span>
             </div>
-            <div
-              style={{
-                marginTop: 10,
-                fontSize: 14.5,
-                fontWeight: 500,
-                color: "var(--label-2,#6E6E73)",
-                letterSpacing: "-0.012em",
-                lineHeight: 1.42,
-              }}
-            >
-              Pick a routine or add a block to begin.
-            </div>
           </div>
-
-          {/* actions */}
           <div
             style={{
               marginTop: 24,
@@ -203,30 +449,6 @@ export default function TodayPage() {
               }}
             >
               Pick a routine
-              <span
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: "50%",
-                  background: "rgba(255,255,255,0.16)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <svg
-                  viewBox="0 0 12 12"
-                  width={9}
-                  height={9}
-                  fill="none"
-                  stroke="#fff"
-                  strokeWidth={1.8}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M2 6h7M6 3l3 3-3 3" />
-                </svg>
-              </span>
             </Link>
             <button
               onClick={() => setShowCreate(true)}
@@ -251,23 +473,10 @@ export default function TodayPage() {
                 WebkitBackdropFilter: "saturate(180%) blur(10px)",
               }}
             >
-              <svg
-                viewBox="0 0 24 24"
-                width={13}
-                height={13}
-                fill="none"
-                stroke="var(--ink-2,#1C1C1E)"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 5v14M5 12h14" />
-              </svg>
               Add a block
             </button>
           </div>
         </div>
-
         {showCreate && (
           <BlockCreateSheet onClose={() => setShowCreate(false)} />
         )}
@@ -321,7 +530,6 @@ export default function TodayPage() {
       <div className="section-eyebrow">
         <span className="lbl">The day</span>
         <span className="rule" />
-        {/* yesterday link */}
         <Link
           href="/yesterday"
           style={{
@@ -353,116 +561,58 @@ export default function TodayPage() {
 
       <div className="timeline-wrap">
         <div className="timeline">
-          {sorted.map((b, idx) => {
-            const d = domains.find((x) => x.id === b.domain);
-            const status = b.status;
-            const cls =
-              status === "done"
-                ? "done"
-                : status === "active" || status === "paused"
-                  ? "flow"
-                  : "";
-
-            return (
-              <div key={b.id}>
-                {idx === anchorPos && (
-                  <div className="tl-block anchor">
-                    <div className="row anchor">
-                      <div className="ddisc religion sm">
-                        <CrescentSvg size={16} />
-                      </div>
-                      <div className="text">
-                        <div className="title" style={{ color: "#1F3A2A" }}>
-                          {dhuhr
-                            ? `${dhuhr.label} · ${dhuhr.hhmm}`
-                            : "Dhuhr · loading"}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={orderedIds}
+              strategy={verticalListSortingStrategy}
+            >
+              {sorted.map((b, idx) => {
+                const d = domains.find((x) => x.id === b.domain);
+                return (
+                  <div key={b.id}>
+                    {idx === anchorPos && (
+                      <div className="tl-block anchor">
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          {/* Time spacer for anchor */}
+                          <div style={{ width: 42, flexShrink: 0 }} />
+                          {/* Handle spacer */}
+                          <div style={{ width: 24, flexShrink: 0 }} />
+                          <div className="row anchor" style={{ flex: 1 }}>
+                            <div className="ddisc religion sm">
+                              <CrescentSvg size={16} />
+                            </div>
+                            <div className="text">
+                              <div
+                                className="title"
+                                style={{ color: "#1F3A2A" }}
+                              >
+                                {dhuhr
+                                  ? `${dhuhr.label} · ${dhuhr.hhmm}`
+                                  : "Dhuhr · loading"}
+                              </div>
+                            </div>
+                            <span className="pill anchor">Anchor</span>
+                          </div>
                         </div>
                       </div>
-                      <span className="pill anchor">Anchor</span>
-                    </div>
+                    )}
+                    <SortableRow
+                      block={b}
+                      projectedStart={projectedStarts.get(b.id)}
+                      domainName={d?.name}
+                      isFirstIdle={idx === firstIdleIdx}
+                      onTap={setSelectedBlock}
+                      onResume={resume}
+                    />
                   </div>
-                )}
-                <div className={`tl-block ${cls}`}>
-                  {status === "pending" ? (
-                    // Tap idle block → open BlockSheet
-                    <button
-                      onClick={() => setSelectedBlock(b)}
-                      className={`row ${cls}`}
-                      style={{
-                        width: "100%",
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontFamily: "inherit",
-                        textAlign: "left",
-                        padding: 0,
-                      }}
-                    >
-                      <div className={`ddisc ${b.domain} row`}>
-                        <DomainGlyph id={b.domain} />
-                      </div>
-                      <div className="text">
-                        <div className="title">{b.title}</div>
-                        <div className="meta">
-                          {d?.name}
-                          <span className="sep">·</span>
-                          {b.durationMin + (b.adjustedMin ?? 0)} min
-                        </div>
-                      </div>
-                      {b.adjustedMin && (
-                        <span className="pill adj">+{b.adjustedMin}m</span>
-                      )}
-                      {!b.adjustedMin && idx === firstIdleIdx && (
-                        <span className="pill up-next">Up next</span>
-                      )}
-                      {!b.adjustedMin && idx !== firstIdleIdx && (
-                        <span className="pill later">Later</span>
-                      )}
-                    </button>
-                  ) : (
-                    // Active/paused/done → navigate to /now
-                    <Link
-                      href="/now"
-                      onClick={() => {
-                        if (status === "paused") resume(b.id);
-                      }}
-                      className={`row ${cls}`}
-                    >
-                      <div className={`ddisc ${b.domain} row`}>
-                        <DomainGlyph id={b.domain} />
-                      </div>
-                      <div className="text">
-                        <div className="title">{b.title}</div>
-                        <div className="meta">
-                          {d?.name}
-                          <span className="sep">·</span>
-                          {b.durationMin + (b.adjustedMin ?? 0)} min
-                        </div>
-                      </div>
-                      {status === "done" && (
-                        <span className="pill done">Done</span>
-                      )}
-                      {status === "active" && (
-                        <span className="pill flow">
-                          <span className="ldot" />
-                          In flow
-                        </span>
-                      )}
-                      {status === "paused" && (
-                        <span className="pill flow">Paused</span>
-                      )}
-                      {(status === "active" || status === "paused") && (
-                        <div
-                          className="progress-line"
-                          style={{ width: `${progressPct(b)}%` }}
-                        />
-                      )}
-                    </Link>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
+            </SortableContext>
+          </DndContext>
         </div>
       </div>
 
@@ -509,7 +659,6 @@ export default function TodayPage() {
           onClose={() => setSelectedBlock(null)}
         />
       )}
-
       {showCreate && <BlockCreateSheet onClose={() => setShowCreate(false)} />}
     </>
   );

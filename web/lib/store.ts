@@ -40,6 +40,7 @@ type Actions = {
   finish: (id: string) => void;
   extend: (id: string, min: number) => void;
   reorder: (fromIdx: number, toIdx: number) => void;
+  reorderBlocks: (orderedIds: string[]) => void;
   resetDay: () => void;
   setHydrated: () => void;
   completeOnboarding: () => void;
@@ -188,6 +189,18 @@ export const useDoIt = create<State & Actions>()(
             };
           }),
         }));
+      },
+
+      reorderBlocks: (orderedIds: string[]) => {
+        set((s) => {
+          const idxMap = new Map(orderedIds.map((id, i) => [id, i]));
+          return {
+            blocks: s.blocks.map((b) => {
+              const newOrder = idxMap.get(b.id);
+              return newOrder !== undefined ? { ...b, order: newOrder } : b;
+            }),
+          };
+        });
       },
 
       reorder: (fromIdx, toIdx) => {
