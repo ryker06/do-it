@@ -34,6 +34,7 @@ export type Block = {
   adjustedMin?: number;
   step?: { current: number; total: number };
   focusType?: string;
+  scheduledFor?: "today" | "tomorrow";
 };
 
 export type AnchorKind = "prayer" | "training";
@@ -52,4 +53,36 @@ export type Vision = {
   blurb: string;
   domainId: DomainId;
   tint: string;
+  description?: string;
+  threads?: VisionThread[];
+};
+
+export type VisionThread = {
+  id: string;
+  title: string;
+  sub?: string;
+};
+
+export type Weekday = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
+
+export type RoutineBlock = Omit<
+  Block,
+  "status" | "accumulatedMs" | "startedAt"
+> & {
+  order: number;
+};
+
+export type Routine = {
+  id: string;
+  name: string;
+  days: Weekday[];
+  blocks: RoutineBlock[];
+  color?: string; // one of: "weekday" | "recovery" | "friday" | "sunday"
+};
+
+export type InboxItem = {
+  id: string;
+  text: string;
+  domainId?: DomainId;
+  createdAt: number;
 };

@@ -1,4 +1,4 @@
-import type { Block, Domain, Vision } from "./types";
+import type { Block, Domain, Vision, Routine, Weekday } from "./types";
 
 export const DOMAINS: Domain[] = [
   {
@@ -121,6 +121,35 @@ export const SEED_VISIONS: Vision[] = [
       "The website + solutions company. Templates → leads → close → automate.",
     domainId: "business",
     tint: "#FFE8D6",
+    description:
+      "A site shop that ships fast, beautiful, near-free websites to founders and small teams — powered by templates, lead gen, and a closing pipeline that quietly compounds in the background. The work flows in. The work flows out.",
+    threads: [
+      {
+        id: "t1",
+        title: "Templates engine",
+        sub: "The reusable spine — Framer, Webflow, code",
+      },
+      {
+        id: "t2",
+        title: "Lead generation",
+        sub: "Where the right founders find us",
+      },
+      {
+        id: "t3",
+        title: "Cold email automation",
+        sub: "A patient, quiet outbound loop",
+      },
+      {
+        id: "t4",
+        title: "Closing pipeline",
+        sub: "Calls, scope, signed — without friction",
+      },
+      {
+        id: "t5",
+        title: "Webuild.solutions",
+        sub: "The faces of the same engine",
+      },
+    ],
   },
   {
     id: "v2",
@@ -129,6 +158,18 @@ export const SEED_VISIONS: Vision[] = [
       "Co-evolution engine. High-level brain piecing it all together via Notion.",
     domainId: "learning",
     tint: "#E6E0FF",
+    threads: [
+      {
+        id: "t1",
+        title: "Notion as memory",
+        sub: "The external brain that persists",
+      },
+      {
+        id: "t2",
+        title: "Claude as collaborator",
+        sub: "Real-time thinking partner",
+      },
+    ],
   },
   {
     id: "v3",
@@ -143,6 +184,18 @@ export const SEED_VISIONS: Vision[] = [
     blurb: "Kentnissprüfung site, app, and content engine.",
     domainId: "business",
     tint: "#FFE8D6",
+    threads: [
+      {
+        id: "t1",
+        title: "Landing page",
+        sub: "Where doctors land and convert",
+      },
+      {
+        id: "t2",
+        title: "Content engine",
+        sub: "Questions, guides, prep material",
+      },
+    ],
   },
   {
     id: "v5",
@@ -166,3 +219,168 @@ export const SEED_VISIONS: Vision[] = [
     tint: "#E6E0FF",
   },
 ];
+
+export const SEED_ROUTINES: Routine[] = [
+  {
+    id: "r1",
+    name: "Weekday morning",
+    color: "weekday",
+    days: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    blocks: [
+      {
+        id: "rb1",
+        title: "Quran · read & reflect",
+        domainId: "religion",
+        durationMin: 20,
+        adjustedMin: 0,
+        order: 0,
+        step: undefined,
+        focusType: undefined,
+      },
+      {
+        id: "rb2",
+        title: "Webuild · deep work",
+        domainId: "business",
+        durationMin: 90,
+        adjustedMin: 0,
+        order: 1,
+        step: undefined,
+        focusType: "deep focus",
+      },
+      {
+        id: "rb3",
+        title: "Cold emails",
+        domainId: "business",
+        durationMin: 30,
+        adjustedMin: 0,
+        order: 2,
+        step: undefined,
+        focusType: undefined,
+      },
+      {
+        id: "rb4",
+        title: "Learning sprint",
+        domainId: "learning",
+        durationMin: 45,
+        adjustedMin: 0,
+        order: 3,
+        step: undefined,
+        focusType: undefined,
+      },
+      {
+        id: "rb5",
+        title: "Gym · push session",
+        domainId: "fitness",
+        durationMin: 60,
+        adjustedMin: 0,
+        order: 4,
+        step: undefined,
+        focusType: undefined,
+      },
+    ],
+  },
+  {
+    id: "r2",
+    name: "Recovery day",
+    color: "recovery",
+    days: ["Sat"],
+    blocks: [
+      {
+        id: "rb1",
+        title: "Quran · read & reflect",
+        domainId: "religion",
+        durationMin: 20,
+        adjustedMin: 0,
+        order: 0,
+        step: undefined,
+        focusType: undefined,
+      },
+      {
+        id: "rb2",
+        title: "Home · reset & tidy",
+        domainId: "home",
+        durationMin: 60,
+        adjustedMin: 0,
+        order: 1,
+        step: undefined,
+        focusType: undefined,
+      },
+      {
+        id: "rb3",
+        title: "Light walk",
+        domainId: "fitness",
+        durationMin: 30,
+        adjustedMin: 0,
+        order: 2,
+        step: undefined,
+        focusType: undefined,
+      },
+    ],
+  },
+  {
+    id: "r3",
+    name: "Friday cycle",
+    color: "friday",
+    days: ["Fri"],
+    blocks: [
+      {
+        id: "rb1",
+        title: "Jumu'ah prep + prayer",
+        domainId: "religion",
+        durationMin: 40,
+        adjustedMin: 0,
+        order: 0,
+        step: undefined,
+        focusType: undefined,
+      },
+      {
+        id: "rb2",
+        title: "Week review",
+        domainId: "learning",
+        durationMin: 30,
+        adjustedMin: 0,
+        order: 1,
+        step: undefined,
+        focusType: undefined,
+      },
+    ],
+  },
+  {
+    id: "r4",
+    name: "Sunday slow",
+    color: "sunday",
+    days: ["Sun"],
+    blocks: [
+      {
+        id: "rb1",
+        title: "Quran · long session",
+        domainId: "religion",
+        durationMin: 45,
+        adjustedMin: 0,
+        order: 0,
+        step: undefined,
+        focusType: undefined,
+      },
+      {
+        id: "rb2",
+        title: "Plan next week",
+        domainId: "learning",
+        durationMin: 45,
+        adjustedMin: 0,
+        order: 1,
+        step: undefined,
+        focusType: undefined,
+      },
+    ],
+  },
+];
+
+export const SEED_WEEK_ASSIGNMENTS: Record<Weekday, string | null> = {
+  Mon: "r1",
+  Tue: "r1",
+  Wed: "r1",
+  Thu: "r1",
+  Fri: "r1",
+  Sat: "r2",
+  Sun: null,
+};

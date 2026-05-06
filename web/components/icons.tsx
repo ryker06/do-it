@@ -1,10 +1,26 @@
 import type { DomainId } from "@/lib/types";
 
-export function DomainGlyph({ id }: { id: DomainId }) {
+export function DomainGlyph({
+  id,
+  size = 19,
+}: {
+  id: DomainId;
+  size?: number;
+}) {
+  const shared = {
+    viewBox: "0 0 24 24",
+    width: size,
+    height: size,
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
   switch (id) {
     case "business":
       return (
-        <svg viewBox="0 0 24 24">
+        <svg {...shared}>
           <rect x="3" y="7" width="18" height="13" rx="2.2" />
           <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7" />
           <path d="M3 13h18" />
@@ -12,14 +28,14 @@ export function DomainGlyph({ id }: { id: DomainId }) {
       );
     case "religion":
       return (
-        <svg viewBox="0 0 24 24">
+        <svg {...shared}>
           <path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z" />
           <path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z" />
         </svg>
       );
     case "learning":
       return (
-        <svg viewBox="0 0 24 24">
+        <svg {...shared}>
           <path d="M3 7l9-4 9 4-9 4z" />
           <path d="M7 9.5v4.5c0 1.5 2.5 3 5 3s5-1.5 5-3V9.5" />
           <path d="M21 7v6" />
@@ -27,7 +43,7 @@ export function DomainGlyph({ id }: { id: DomainId }) {
       );
     case "fitness":
       return (
-        <svg viewBox="0 0 24 24">
+        <svg {...shared}>
           <rect x="2" y="9" width="3" height="6" rx="1" />
           <rect x="19" y="9" width="3" height="6" rx="1" />
           <rect x="5" y="10" width="2" height="4" rx="1" />
@@ -37,7 +53,7 @@ export function DomainGlyph({ id }: { id: DomainId }) {
       );
     case "home":
       return (
-        <svg viewBox="0 0 24 24">
+        <svg {...shared}>
           <path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z" />
         </svg>
       );
