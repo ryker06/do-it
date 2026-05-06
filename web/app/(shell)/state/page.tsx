@@ -83,6 +83,7 @@ function daysOfWeek() {
 export default function StatePage() {
   const { stateLog, addStateMark } = useDoIt();
   const [flash, setFlash] = useState<StateMark | null>(null);
+  const [selected, setSelected] = useState<StateMark | null>(null);
 
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
@@ -95,6 +96,7 @@ export default function StatePage() {
 
   function tap(mark: StateMark) {
     addStateMark(mark);
+    setSelected(mark);
     setFlash(mark);
     setTimeout(() => setFlash(null), 1200);
   }
@@ -103,7 +105,7 @@ export default function StatePage() {
 
   return (
     <>
-      <Topbar name="State" sub="how you're running" />
+      <Topbar name="state." sub="how you're running." />
 
       {/* Flash confirmation */}
       {flash && (
@@ -126,69 +128,176 @@ export default function StatePage() {
             pointerEvents: "none",
           }}
         >
-          {MARKS.find((m) => m.mark === flash)?.label} logged
+          {MARKS.find((m) => m.mark === flash)?.label.toLowerCase()} logged.
         </div>
       )}
 
       <div style={{ paddingBottom: 110 }}>
-        {/* Tap cards */}
+        {/* Tap chips — 2+2+1 layout */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(5, 1fr)",
+            display: "flex",
+            flexDirection: "column",
             gap: 8,
             marginBottom: 20,
           }}
         >
-          {MARKS.map((m) => (
-            <button
-              key={m.mark}
-              onClick={() => tap(m.mark)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                padding: "14px 4px",
-                borderRadius: 18,
-                background: m.tint,
-                border: "none",
-                cursor: "pointer",
-                boxShadow:
-                  "0 0 0 0.5px rgba(60,60,67,0.06), 0 2px 8px -4px rgba(20,20,30,0.10)",
-                minHeight: 80,
-                transition: "transform 0.12s ease",
-              }}
-            >
-              <span
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: "50%",
-                  background: m.dot,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: "#fff",
-                }}
-              >
-                {m.single}
-              </span>
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "var(--ink-2,#1C1C1E)",
-                  letterSpacing: "-0.01em",
-                }}
-              >
-                {m.label}
-              </span>
-            </button>
-          ))}
+          {/* Row 1: 2 chips */}
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}
+          >
+            {MARKS.slice(0, 2).map((m) => {
+              const isActive = selected === m.mark;
+              return (
+                <button
+                  key={m.mark}
+                  onClick={() => tap(m.mark)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    padding: "14px 10px",
+                    borderRadius: 18,
+                    background: isActive
+                      ? "linear-gradient(180deg,#1A1A20 0%,#000 100%)"
+                      : m.tint,
+                    border: "none",
+                    cursor: "pointer",
+                    boxShadow: isActive
+                      ? "0 0 0 0.5px rgba(0,0,0,0.5), 0 8px 20px -10px rgba(0,0,0,0.35)"
+                      : "0 0 0 0.5px rgba(60,60,67,0.06), 0 2px 8px -4px rgba(20,20,30,0.10)",
+                    transition: "background 0.15s ease, box-shadow 0.15s ease",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: isActive ? "#fff" : m.dot,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: isActive ? "#fff" : "var(--ink-2,#1C1C1E)",
+                      letterSpacing: "-0.016em",
+                    }}
+                  >
+                    {m.label.toLowerCase()}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {/* Row 2: 2 chips */}
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}
+          >
+            {MARKS.slice(2, 4).map((m) => {
+              const isActive = selected === m.mark;
+              return (
+                <button
+                  key={m.mark}
+                  onClick={() => tap(m.mark)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    padding: "14px 10px",
+                    borderRadius: 18,
+                    background: isActive
+                      ? "linear-gradient(180deg,#1A1A20 0%,#000 100%)"
+                      : m.tint,
+                    border: "none",
+                    cursor: "pointer",
+                    boxShadow: isActive
+                      ? "0 0 0 0.5px rgba(0,0,0,0.5), 0 8px 20px -10px rgba(0,0,0,0.35)"
+                      : "0 0 0 0.5px rgba(60,60,67,0.06), 0 2px 8px -4px rgba(20,20,30,0.10)",
+                    transition: "background 0.15s ease, box-shadow 0.15s ease",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: isActive ? "#fff" : m.dot,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: isActive ? "#fff" : "var(--ink-2,#1C1C1E)",
+                      letterSpacing: "-0.016em",
+                    }}
+                  >
+                    {m.label.toLowerCase()}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {/* Row 3: 1 chip centered */}
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}
+          >
+            {MARKS.slice(4).map((m) => {
+              const isActive = selected === m.mark;
+              return (
+                <button
+                  key={m.mark}
+                  onClick={() => tap(m.mark)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    padding: "14px 10px",
+                    borderRadius: 18,
+                    background: isActive
+                      ? "linear-gradient(180deg,#1A1A20 0%,#000 100%)"
+                      : m.tint,
+                    border: "none",
+                    cursor: "pointer",
+                    boxShadow: isActive
+                      ? "0 0 0 0.5px rgba(0,0,0,0.5), 0 8px 20px -10px rgba(0,0,0,0.35)"
+                      : "0 0 0 0.5px rgba(60,60,67,0.06), 0 2px 8px -4px rgba(20,20,30,0.10)",
+                    transition: "background 0.15s ease, box-shadow 0.15s ease",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      background: isActive ? "#fff" : m.dot,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: isActive ? "#fff" : "var(--ink-2,#1C1C1E)",
+                      letterSpacing: "-0.016em",
+                    }}
+                  >
+                    {m.label.toLowerCase()}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Today's log */}
@@ -203,7 +312,7 @@ export default function StatePage() {
             padding: "0 2px",
           }}
         >
-          Today
+          today
         </div>
         <div
           style={{
@@ -224,7 +333,7 @@ export default function StatePage() {
                 color: "var(--label,#8E8E93)",
               }}
             >
-              Nothing logged yet — tap a state above.
+              nothing logged yet. tap one above.
             </div>
           ) : (
             todayEntries.map((e, i) => {
@@ -290,7 +399,7 @@ export default function StatePage() {
             padding: "0 2px",
           }}
         >
-          This week
+          this week
         </div>
         <div
           style={{

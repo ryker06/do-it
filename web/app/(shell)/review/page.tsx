@@ -212,7 +212,7 @@ export default function ReviewPage() {
                 "0 4px 16px rgba(10,10,15,0.22), 0 1px 2px rgba(10,10,15,0.14)",
             }}
           >
-            {saved ? "Saved" : "Save review"}
+            {saved ? "saved." : "save review"}
           </button>
         )}
       </div>

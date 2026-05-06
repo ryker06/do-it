@@ -150,7 +150,7 @@ export default function InboxPage() {
                   "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 0.5px rgba(0,0,0,0.5)",
               }}
             >
-              Save
+              save
             </button>
           )}
         </div>

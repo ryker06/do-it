@@ -62,7 +62,7 @@ export default function PeoplePage() {
 
   return (
     <>
-      <Topbar name="People" sub="relationships" />
+      <Topbar name="people." sub="the ones who matter." />
 
       {/* Add button */}
       <div
@@ -100,7 +100,7 @@ export default function PeoplePage() {
           >
             <path d="M12 5v14M5 12h14" />
           </svg>
-          Add person
+          add person
         </button>
       </div>
 
@@ -123,7 +123,7 @@ export default function PeoplePage() {
               padding: "32px 0",
             }}
           >
-            No people yet — add someone above.
+            no one yet. add someone worth keeping close.
           </div>
         )}
         {people.map((p) => {
@@ -217,15 +217,40 @@ export default function PeoplePage() {
                 </div>
                 <div
                   style={{
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: isQuiet
-                      ? "var(--label,#8E8E93)"
-                      : "var(--label-2,#6E6E73)",
-                    letterSpacing: "-0.005em",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    marginTop: 2,
                   }}
                 >
-                  {phrase}
+                  <span
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: "var(--label,#8E8E93)",
+                      letterSpacing: "-0.005em",
+                    }}
+                  >
+                    {phrase}
+                  </span>
+                  {isQuiet && (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 700,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase",
+                        color: "#C41E3A",
+                        background:
+                          "linear-gradient(180deg,#FFD0DA 0%,#FFB6C5 100%)",
+                        padding: "2px 7px",
+                        borderRadius: 999,
+                        boxShadow: "inset 0 0 0 0.5px rgba(196,30,58,0.15)",
+                      }}
+                    >
+                      reach out
+                    </span>
+                  )}
                 </div>
               </div>
             </Link>
@@ -246,7 +271,7 @@ export default function PeoplePage() {
                 marginBottom: 6,
               }}
             >
-              Add person
+              add person.
             </div>
             <div
               style={{
@@ -256,26 +281,26 @@ export default function PeoplePage() {
                 marginBottom: 24,
               }}
             >
-              Someone worth keeping close.
+              someone worth keeping close.
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <input
                 style={inputStyle}
-                placeholder="Name"
+                placeholder="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 autoFocus
               />
               <input
                 style={inputStyle}
-                placeholder="Relation (family, mentor, friend…)"
+                placeholder="relation (family, mentor, friend…)"
                 value={relation}
                 onChange={(e) => setRelation(e.target.value)}
               />
               <input
                 style={inputStyle}
-                placeholder="Next move (optional)"
+                placeholder="next move (optional)"
                 value={nextMove}
                 onChange={(e) => setNextMove(e.target.value)}
               />
@@ -301,7 +326,7 @@ export default function PeoplePage() {
                 transition: "background 0.15s ease",
               }}
             >
-              Add
+              add
             </button>
           </div>
         </RightDrawer>

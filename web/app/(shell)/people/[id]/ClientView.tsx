@@ -221,7 +221,7 @@ export function ClientView({ id }: { id: string }) {
               "0 4px 16px rgba(10,10,15,0.22), 0 1px 2px rgba(10,10,15,0.14)",
           }}
         >
-          {saved ? "Saved" : "Save"}
+          {saved ? "saved." : "save"}
         </button>
 
         {/* Back */}

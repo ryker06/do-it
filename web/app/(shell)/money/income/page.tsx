@@ -90,10 +90,10 @@ export default function IncomePage() {
           />
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={handleAdd} style={primaryBtn}>
-              Save
+              save
             </button>
             <button onClick={() => setAdding(false)} style={ghostBtn}>
-              Cancel
+              cancel
             </button>
           </div>
         </div>

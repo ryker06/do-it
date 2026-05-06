@@ -459,7 +459,7 @@ export function ClientView({ id }: { id: string }) {
             >
               <path d="M5 12l4 4L19 6" />
             </svg>
-            Save changes
+            save changes
           </button>
         </div>
       </div>

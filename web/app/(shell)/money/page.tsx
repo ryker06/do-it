@@ -67,54 +67,71 @@ export default function MoneyPage() {
 
   return (
     <>
-      <Topbar name="Money" sub="this month's picture" />
+      <Topbar name="money." sub="this month's picture." />
 
-      {/* Overview sentence */}
+      {/* 3-cell in/out/net header */}
       <div
         style={{
           background: "var(--card,#fff)",
           borderRadius: 20,
           padding: "18px 18px",
-          marginBottom: 18,
+          marginBottom: 16,
           boxShadow:
-            "0 0 0 0.5px rgba(60,60,67,0.06), 0 1px 1px rgba(20,20,30,0.02), 0 8px 20px -12px rgba(20,20,30,0.08)",
+            "0 0 0 0.5px rgba(60,60,67,0.06), 0 8px 20px -12px rgba(20,20,30,0.08)",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr 1fr",
+          gap: 0,
         }}
       >
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 700,
-            color: "var(--label,#8E8E93)",
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            marginBottom: 10,
-          }}
-        >
-          This month
-        </div>
-        <div
-          style={{
-            fontSize: 15,
-            fontWeight: 500,
-            color: "var(--ink-2,#1C1C1E)",
-            letterSpacing: "-0.014em",
-            lineHeight: 1.6,
-          }}
-        >
-          in{" "}
-          <span style={{ fontWeight: 700, color: "var(--ink,#000)" }}>
-            {fmt(totalIn)}
-          </span>{" "}
-          · out{" "}
-          <span style={{ fontWeight: 700, color: "var(--ink,#000)" }}>
-            {fmt(totalOut)}
-          </span>{" "}
-          · net{" "}
-          <span style={{ fontWeight: 700, color: "var(--ink,#000)" }}>
-            {net >= 0 ? "+" : ""}
-            {fmt(net)}
-          </span>
-        </div>
+        {[
+          { label: "in", value: totalIn, color: "#1F7A2B" },
+          { label: "out", value: totalOut, color: "#C41E3A" },
+          {
+            label: "net",
+            value: net,
+            color: net >= 0 ? "#1F7A2B" : "#C41E3A",
+            prefix: net >= 0 ? "+" : "",
+          },
+        ].map((cell, i) => (
+          <div
+            key={cell.label}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              paddingLeft: i > 0 ? 12 : 0,
+              borderLeft:
+                i > 0
+                  ? "0.5px solid var(--hairline,rgba(60,60,67,0.10))"
+                  : undefined,
+              gap: 2,
+            }}
+          >
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--label,#8E8E93)",
+              }}
+            >
+              {cell.label}
+            </div>
+            <div
+              style={{
+                fontSize: 17,
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                color: cell.color,
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {cell.prefix ?? ""}
+              {fmt(cell.value)}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Three cards */}
@@ -154,7 +171,7 @@ export default function MoneyPage() {
                   textTransform: "uppercase",
                 }}
               >
-                Subscriptions
+                subscriptions
               </span>
               <span
                 style={{
@@ -210,7 +227,7 @@ export default function MoneyPage() {
                   textTransform: "uppercase",
                 }}
               >
-                Outflow
+                outflow
               </span>
               <span
                 style={{
@@ -219,7 +236,7 @@ export default function MoneyPage() {
                   color: "var(--blue,#007AFF)",
                 }}
               >
-                View all →
+                view all →
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -263,7 +280,7 @@ export default function MoneyPage() {
                     color: "var(--label,#8E8E93)",
                   }}
                 >
-                  Quiet this month
+                  quiet this month.
                 </div>
               )}
             </div>
@@ -298,7 +315,7 @@ export default function MoneyPage() {
                   textTransform: "uppercase",
                 }}
               >
-                Inflow
+                inflow
               </span>
               <span
                 style={{
@@ -307,7 +324,7 @@ export default function MoneyPage() {
                   color: "var(--blue,#007AFF)",
                 }}
               >
-                View all →
+                view all →
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -351,7 +368,7 @@ export default function MoneyPage() {
                     color: "var(--label,#8E8E93)",
                   }}
                 >
-                  Quiet this month
+                  quiet this month.
                 </div>
               )}
             </div>

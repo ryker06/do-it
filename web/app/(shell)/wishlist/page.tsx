@@ -2,28 +2,38 @@
 
 import { useState } from "react";
 import { useDoIt } from "@/lib/store";
+import { Topbar } from "@/components/Topbar";
 import type {
   WishlistCategory,
   WishlistPriority,
   WishlistStatus,
 } from "@/lib/types";
 
-const PRIORITY_LABEL: Record<WishlistPriority, string> = {
-  low: "low",
-  medium: "med",
-  high: "high",
-};
-
-const PRIORITY_COLOR: Record<WishlistPriority, string> = {
-  low: "#8E8E93",
-  medium: "#007AFF",
-  high: "#FF9500",
+const PRIORITY_STYLE: Record<
+  WishlistPriority,
+  { bg: string; color: string; shadow: string }
+> = {
+  high: {
+    bg: "linear-gradient(180deg,#FFD0DA 0%,#FFB6C5 100%)",
+    color: "#C41E3A",
+    shadow: "inset 0 0 0 0.5px rgba(196,30,58,0.15)",
+  },
+  medium: {
+    bg: "linear-gradient(180deg,#E8F0FF 0%,#D6E4FF 100%)",
+    color: "#3B5BDB",
+    shadow: "inset 0 0 0 0.5px rgba(59,91,219,0.15)",
+  },
+  low: {
+    bg: "var(--inset,#F2F2F7)",
+    color: "var(--label,#8E8E93)",
+    shadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
+  },
 };
 
 const STATUS_FILTER: { label: string; value: WishlistStatus | "all" }[] = [
-  { label: "Wanted", value: "wanted" },
-  { label: "Bought", value: "bought" },
-  { label: "All", value: "all" },
+  { label: "wanted", value: "wanted" },
+  { label: "bought", value: "bought" },
+  { label: "all", value: "all" },
 ];
 
 function formatAmount(cents: number, currency: string): string {
@@ -42,8 +52,6 @@ export default function WishlistPage() {
   const [filterStatus, setFilterStatus] = useState<WishlistStatus | "all">(
     "wanted",
   );
-
-  // Add form state
   const [addName, setAddName] = useState("");
   const [addAmount, setAddAmount] = useState("");
   const [addCategory, setAddCategory] = useState<WishlistCategory>("other");
@@ -52,6 +60,10 @@ export default function WishlistPage() {
   const visible = wishlist.filter(
     (w) => filterStatus === "all" || w.status === filterStatus,
   );
+
+  const totalWanted = wishlist
+    .filter((w) => w.status === "wanted")
+    .reduce((s, w) => s + w.expectedAmountCents, 0);
 
   function handleAdd() {
     const name = addName.trim();
@@ -72,24 +84,25 @@ export default function WishlistPage() {
   }
 
   return (
-    <div style={{ position: "relative", zIndex: 2 }}>
-      {/* Header */}
-      <div style={{ padding: "0 4px", marginBottom: 18 }}>
-        <div className="greet-day">Wishlist</div>
-        <div className="greet-name">
-          Wishlist <span className="sub">· tracked wants</span>
-        </div>
-      </div>
+    <>
+      <Topbar
+        name="wishlist."
+        sub={
+          totalWanted > 0
+            ? `${formatAmount(totalWanted, "USD")} on deck.`
+            : "tracked wants."
+        }
+      />
 
-      {/* Inline add form */}
+      {/* Add form */}
       <div
         style={{
           background: "var(--card,#fff)",
-          borderRadius: 18,
-          boxShadow:
-            "0 0 0 0.5px rgba(60,60,67,0.07), 0 1px 1px rgba(20,20,30,0.02), 0 6px 16px -12px rgba(20,20,30,0.10)",
-          padding: "14px 14px",
+          borderRadius: 20,
+          padding: "14px 16px",
           marginBottom: 16,
+          boxShadow:
+            "0 0 0 0.5px rgba(60,60,67,0.06), 0 8px 20px -12px rgba(20,20,30,0.08)",
           display: "flex",
           flexDirection: "column",
           gap: 10,
@@ -100,7 +113,7 @@ export default function WishlistPage() {
             value={addName}
             onChange={(e) => setAddName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAdd()}
-            placeholder="Item name"
+            placeholder="item name"
             style={{
               flex: 1,
               fontSize: 14,
@@ -110,7 +123,7 @@ export default function WishlistPage() {
               border: "none",
               outline: "none",
               borderRadius: 10,
-              padding: "8px 12px",
+              padding: "9px 12px",
               fontFamily: "inherit",
               letterSpacing: "-0.012em",
             }}
@@ -122,19 +135,19 @@ export default function WishlistPage() {
             placeholder="$0"
             type="number"
             min="0"
-            step="0.01"
+            step="1"
             style={{
               width: 72,
               fontSize: 14,
-              fontWeight: 500,
+              fontWeight: 600,
               color: "var(--ink,#000)",
               background: "var(--inset,#F2F2F7)",
               border: "none",
               outline: "none",
               borderRadius: 10,
-              padding: "8px 10px",
+              padding: "9px 10px",
               fontFamily: "inherit",
-              letterSpacing: "-0.012em",
+              fontVariantNumeric: "tabular-nums",
             }}
           />
         </div>
@@ -155,17 +168,17 @@ export default function WishlistPage() {
               fontFamily: "inherit",
             }}
           >
-            <option value="books">Books</option>
-            <option value="gear">Gear</option>
-            <option value="tools">Tools</option>
-            <option value="experiences">Experiences</option>
-            <option value="other">Other</option>
+            <option value="books">books</option>
+            <option value="gear">gear</option>
+            <option value="tools">tools</option>
+            <option value="experiences">experiences</option>
+            <option value="other">other</option>
           </select>
           <select
             value={addPriority}
             onChange={(e) => setAddPriority(e.target.value as WishlistPriority)}
             style={{
-              width: 80,
+              width: 88,
               fontSize: 13,
               fontWeight: 500,
               color: "var(--ink-2,#1C1C1E)",
@@ -177,33 +190,34 @@ export default function WishlistPage() {
               fontFamily: "inherit",
             }}
           >
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
+            <option value="low">low</option>
+            <option value="medium">medium</option>
+            <option value="high">high</option>
           </select>
           <button
             onClick={handleAdd}
             style={{
               padding: "7px 16px",
               borderRadius: 10,
-              background: "var(--ink,#000)",
+              background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
               color: "#fff",
               fontSize: 13,
               fontWeight: 600,
               border: "none",
               cursor: "pointer",
               fontFamily: "inherit",
-              letterSpacing: "-0.01em",
               flexShrink: 0,
+              boxShadow:
+                "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 0.5px rgba(0,0,0,0.5)",
             }}
           >
-            + Add
+            add
           </button>
         </div>
       </div>
 
       {/* Filter pills */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+      <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
         {STATUS_FILTER.map((f) => {
           const active = filterStatus === f.value;
           return (
@@ -211,16 +225,19 @@ export default function WishlistPage() {
               key={f.value}
               onClick={() => setFilterStatus(f.value)}
               style={{
-                padding: "6px 14px",
+                padding: "5px 14px",
                 borderRadius: 999,
                 border: "none",
                 cursor: "pointer",
                 fontFamily: "inherit",
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: 600,
                 letterSpacing: "-0.01em",
                 background: active ? "var(--ink,#000)" : "var(--inset,#F2F2F7)",
                 color: active ? "#fff" : "var(--label-2,#6E6E73)",
+                boxShadow: active
+                  ? "none"
+                  : "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
               }}
             >
               {f.label}
@@ -229,11 +246,11 @@ export default function WishlistPage() {
         })}
       </div>
 
-      {/* List */}
+      {/* 2-col card grid */}
       {visible.length === 0 ? (
         <div
           style={{
-            padding: "32px 0",
+            padding: "40px 0",
             textAlign: "center",
             fontSize: 14,
             fontWeight: 500,
@@ -241,161 +258,164 @@ export default function WishlistPage() {
             letterSpacing: "-0.01em",
           }}
         >
-          Nothing here yet
+          nothing here. add something you want.
         </div>
       ) : (
         <div
           style={{
-            background: "var(--card,#fff)",
-            borderRadius: 18,
-            boxShadow:
-              "0 0 0 0.5px rgba(60,60,67,0.07), 0 1px 1px rgba(20,20,30,0.02), 0 6px 16px -12px rgba(20,20,30,0.10)",
-            overflow: "hidden",
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 10,
+            paddingBottom: 110,
           }}
         >
-          {visible.map((item, i) => (
-            <div
-              key={item.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "12px 14px",
-                borderTop:
-                  i > 0 ? "0.5px solid rgba(60,60,67,0.06)" : undefined,
-                opacity: item.status === "bought" ? 0.55 : 1,
-              }}
-            >
-              {/* Priority pill */}
-              {item.priority && (
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 700,
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase",
-                    color: PRIORITY_COLOR[item.priority],
-                    background: `${PRIORITY_COLOR[item.priority]}18`,
-                    padding: "3px 7px",
-                    borderRadius: 999,
-                    flexShrink: 0,
-                  }}
-                >
-                  {PRIORITY_LABEL[item.priority]}
-                </span>
-              )}
+          {visible.map((item) => {
+            const ps = item.priority ? PRIORITY_STYLE[item.priority] : null;
+            const isBought = item.status === "bought";
+            return (
+              <div
+                key={item.id}
+                style={{
+                  background: "var(--card,#fff)",
+                  borderRadius: 18,
+                  padding: "14px 14px 12px",
+                  boxShadow:
+                    "0 0 0 0.5px rgba(60,60,67,0.06), 0 6px 16px -10px rgba(20,20,30,0.10)",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                  opacity: isBought ? 0.55 : 1,
+                  position: "relative",
+                }}
+              >
+                {/* Priority pill */}
+                {ps && item.priority && (
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignSelf: "flex-start",
+                      fontSize: 10,
+                      fontWeight: 700,
+                      letterSpacing: "0.06em",
+                      textTransform: "uppercase",
+                      color: ps.color,
+                      background: ps.bg,
+                      padding: "3px 8px",
+                      borderRadius: 999,
+                      boxShadow: ps.shadow,
+                    }}
+                  >
+                    {item.priority}
+                  </div>
+                )}
 
-              {/* Name + category */}
-              <div style={{ flex: 1, minWidth: 0 }}>
+                {/* Name */}
                 <div
                   style={{
-                    fontSize: 14.5,
-                    fontWeight: 500,
+                    fontSize: 15,
+                    fontWeight: 700,
                     color: "var(--ink,#000)",
-                    letterSpacing: "-0.018em",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    textDecoration:
-                      item.status === "bought" ? "line-through" : "none",
+                    letterSpacing: "-0.022em",
+                    lineHeight: 1.25,
+                    textDecoration: isBought ? "line-through" : "none",
+                    textDecorationColor: "var(--label,#8E8E93)",
                   }}
                 >
                   {item.name}
                 </div>
+
+                {/* Amount */}
+                <div
+                  style={{
+                    fontSize: 17,
+                    fontWeight: 800,
+                    color: isBought
+                      ? "var(--label,#8E8E93)"
+                      : "var(--ink,#000)",
+                    letterSpacing: "-0.03em",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {formatAmount(item.expectedAmountCents, item.currency)}
+                </div>
+
+                {/* Category */}
                 {item.category && (
                   <div
                     style={{
-                      fontSize: 11.5,
-                      fontWeight: 500,
+                      fontSize: 11,
+                      fontWeight: 600,
                       color: "var(--label,#8E8E93)",
-                      letterSpacing: "-0.005em",
+                      letterSpacing: "0.01em",
                     }}
                   >
                     {item.category}
                   </div>
                 )}
-              </div>
 
-              {/* Amount */}
-              <div
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "var(--ink-2,#1C1C1E)",
-                  letterSpacing: "-0.014em",
-                  flexShrink: 0,
-                }}
-              >
-                {formatAmount(item.expectedAmountCents, item.currency)}
-              </div>
-
-              {/* Actions */}
-              {item.status === "wanted" && (
-                <button
-                  onClick={() => markWishlistBought(item.id)}
-                  title="Mark bought"
+                {/* Actions row */}
+                <div
                   style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: "50%",
-                    background: "var(--inset,#F2F2F7)",
-                    border: "none",
-                    cursor: "pointer",
                     display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                    boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
+                    gap: 6,
+                    marginTop: 2,
                   }}
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    width={13}
-                    height={13}
-                    fill="none"
-                    stroke="var(--ink-2,#1C1C1E)"
-                    strokeWidth={2.4}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                  {!isBought && (
+                    <button
+                      onClick={() => markWishlistBought(item.id)}
+                      style={{
+                        flex: 1,
+                        padding: "6px 0",
+                        borderRadius: 8,
+                        background: "var(--inset,#F2F2F7)",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: 11.5,
+                        fontWeight: 600,
+                        color: "var(--label-2,#6E6E73)",
+                        fontFamily: "inherit",
+                        boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
+                      }}
+                    >
+                      got it
+                    </button>
+                  )}
+                  <button
+                    onClick={() => removeWishlistItem(item.id)}
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: 8,
+                      background: "var(--inset,#F2F2F7)",
+                      border: "none",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
+                    }}
                   >
-                    <path d="M5 12l4 4L19 6" />
-                  </svg>
-                </button>
-              )}
-              <button
-                onClick={() => removeWishlistItem(item.id)}
-                title="Remove"
-                style={{
-                  width: 30,
-                  height: 30,
-                  borderRadius: "50%",
-                  background: "var(--inset,#F2F2F7)",
-                  border: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
-                }}
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  width={12}
-                  height={12}
-                  fill="none"
-                  stroke="var(--label,#8E8E93)"
-                  strokeWidth={2.4}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          ))}
+                    <svg
+                      viewBox="0 0 24 24"
+                      width={11}
+                      height={11}
+                      fill="none"
+                      stroke="var(--label,#8E8E93)"
+                      strokeWidth={2.4}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
-    </div>
+    </>
   );
 }

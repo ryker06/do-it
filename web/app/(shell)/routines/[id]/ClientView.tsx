@@ -4,7 +4,12 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useDoIt } from "@/lib/store";
 import { DomainGlyph } from "@/components/icons";
-import type { DomainId, RoutineBlock, Weekday } from "@/lib/types";
+import type {
+  DomainId,
+  RoutineBlock,
+  RoutineCadence,
+  Weekday,
+} from "@/lib/types";
 
 const WEEKDAY_KEYS: Weekday[] = [
   "Mon",
@@ -53,14 +58,51 @@ export function ClientView({ id }: { id: string }) {
   const existing = routines.find((r) => r.id === routineId);
 
   const [name, setName] = useState(existing?.name ?? "New routine");
+  const [identity, setIdentity] = useState(existing?.identity ?? "");
   const [days, setDays] = useState<Weekday[]>(existing?.days ?? []);
   const [blocks, setBlocks] = useState<RoutineBlock[]>(existing?.blocks ?? []);
+  const [cadenceKind, setCadenceKind] = useState<RoutineCadence["kind"]>(
+    existing?.cadence?.kind ?? "weekly",
+  );
+  const [cadenceDays, setCadenceDays] = useState<Weekday[]>(
+    existing?.cadence && "days" in existing.cadence
+      ? (existing.cadence.days as Weekday[])
+      : [],
+  );
+  const [cadenceWeeks, setCadenceWeeks] = useState<(1 | 2 | 3 | 4 | 5)[]>(
+    existing?.cadence?.kind === "monthlyWeeks"
+      ? existing.cadence.weeks
+      : [1, 3],
+  );
+  const [cadenceMonthDays, setCadenceMonthDays] = useState<number[]>(
+    existing?.cadence?.kind === "monthlyDays" ? existing.cadence.days : [1, 15],
+  );
+  const [cadenceInterval, setCadenceInterval] = useState<number>(
+    existing?.cadence?.kind === "interval" ? existing.cadence.everyDays : 3,
+  );
+  const [anchorWeek, setAnchorWeek] = useState<"A" | "B">(
+    existing?.cadence?.kind === "biweekly" ? existing.cadence.anchorWeek : "A",
+  );
 
   useEffect(() => {
     if (existing) {
       setName(existing.name);
+      setIdentity(existing.identity ?? "");
       setDays(existing.days);
       setBlocks(existing.blocks);
+      if (existing.cadence) {
+        setCadenceKind(existing.cadence.kind);
+        if ("days" in existing.cadence)
+          setCadenceDays(existing.cadence.days as Weekday[]);
+        if (existing.cadence.kind === "monthlyWeeks")
+          setCadenceWeeks(existing.cadence.weeks);
+        if (existing.cadence.kind === "monthlyDays")
+          setCadenceMonthDays(existing.cadence.days);
+        if (existing.cadence.kind === "interval")
+          setCadenceInterval(existing.cadence.everyDays);
+        if (existing.cadence.kind === "biweekly")
+          setAnchorWeek(existing.cadence.anchorWeek);
+      }
     }
   }, [existing]);
 
@@ -112,11 +154,79 @@ export function ClientView({ id }: { id: string }) {
     setBlocks((prev) => prev.filter((b) => b.id !== blockId));
   }
 
+  function buildCadence(): RoutineCadence {
+    switch (cadenceKind) {
+      case "weekly":
+        return { kind: "weekly", days: cadenceDays };
+      case "biweekly":
+        return { kind: "biweekly", days: cadenceDays, anchorWeek };
+      case "monthlyWeeks":
+        return { kind: "monthlyWeeks", weeks: cadenceWeeks, days: cadenceDays };
+      case "monthlyDays":
+        return { kind: "monthlyDays", days: cadenceMonthDays };
+      case "interval":
+        return {
+          kind: "interval",
+          everyDays: cadenceInterval,
+          from: new Date().toISOString().slice(0, 10),
+        };
+    }
+  }
+
+  function cadencePlainEnglish(): string {
+    switch (cadenceKind) {
+      case "weekly":
+        return cadenceDays.length === 0
+          ? "no days set"
+          : `every ${cadenceDays.join(", ").toLowerCase()}`;
+      case "biweekly":
+        return `every other week (${anchorWeek === "A" ? "odd" : "even"} weeks) · ${cadenceDays.join(", ").toLowerCase()}`;
+      case "monthlyWeeks": {
+        const wk = cadenceWeeks.map((w) => `week ${w}`).join(", ");
+        return `${wk} of month · ${cadenceDays.join(", ").toLowerCase()}`;
+      }
+      case "monthlyDays":
+        return `${cadenceMonthDays.map((d) => `${d}${ordinal(d)}`).join(", ")} of each month`;
+      case "interval":
+        return `every ${cadenceInterval} day${cadenceInterval !== 1 ? "s" : ""}`;
+    }
+  }
+
+  function ordinal(n: number): string {
+    if (n % 100 >= 11 && n % 100 <= 13) return "th";
+    switch (n % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
+  }
+
   function save() {
+    const cadence = buildCadence();
+    const cadenceDescription = cadencePlainEnglish();
     if (isNew) {
-      createRoutine({ name, days, blocks });
+      createRoutine({
+        name,
+        days: cadenceDays,
+        blocks,
+        identity: identity || undefined,
+        cadence,
+        cadenceDescription,
+      });
     } else if (existing) {
-      updateRoutine(existing.id, { name, days, blocks });
+      updateRoutine(existing.id, {
+        name,
+        days: cadenceDays,
+        blocks,
+        identity: identity || undefined,
+        cadence,
+        cadenceDescription,
+      });
     }
     router.back();
   }
@@ -391,6 +501,371 @@ export function ClientView({ id }: { id: string }) {
                 </button>
               );
             })}
+          </div>
+        </div>
+
+        {/* identity field */}
+        <div
+          style={{
+            margin: "14px 4px 6px",
+            padding: "14px 14px 12px",
+            background: "var(--card,#fff)",
+            borderRadius: 18,
+            boxShadow:
+              "0 0 0 0.5px rgba(60,60,67,0.05), 0 1px 1px rgba(20,20,30,0.02), 0 6px 16px -12px rgba(20,20,30,0.10)",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 18,
+              boxShadow:
+                "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05)",
+              pointerEvents: "none",
+            }}
+          />
+          <div
+            style={{
+              fontSize: 10.5,
+              fontWeight: 700,
+              color: "var(--label,#8E8E93)",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              marginBottom: 8,
+            }}
+          >
+            Identity line
+          </div>
+          <input
+            value={identity}
+            onChange={(e) => setIdentity(e.target.value)}
+            placeholder="i'm someone who trains daily."
+            style={{
+              width: "100%",
+              background: "var(--inset,#F2F2F7)",
+              border: "none",
+              borderRadius: 12,
+              padding: "10px 12px",
+              fontSize: 14,
+              fontWeight: 500,
+              fontStyle: identity ? "italic" : "normal",
+              color: "var(--ink,#000)",
+              fontFamily: "inherit",
+              letterSpacing: "-0.012em",
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+
+        {/* cadence builder */}
+        <div
+          style={{
+            margin: "14px 4px 6px",
+            padding: "14px 14px 12px",
+            background: "var(--card,#fff)",
+            borderRadius: 18,
+            boxShadow:
+              "0 0 0 0.5px rgba(60,60,67,0.05), 0 1px 1px rgba(20,20,30,0.02), 0 6px 16px -12px rgba(20,20,30,0.10)",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: 18,
+              boxShadow:
+                "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05)",
+              pointerEvents: "none",
+            }}
+          />
+          <div
+            style={{
+              fontSize: 10.5,
+              fontWeight: 700,
+              color: "var(--label,#8E8E93)",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              marginBottom: 10,
+            }}
+          >
+            Cadence
+          </div>
+
+          {/* kind selector */}
+          <select
+            value={cadenceKind}
+            onChange={(e) =>
+              setCadenceKind(e.target.value as RoutineCadence["kind"])
+            }
+            style={{
+              width: "100%",
+              background: "var(--inset,#F2F2F7)",
+              border: "none",
+              borderRadius: 12,
+              padding: "10px 12px",
+              fontSize: 14,
+              fontWeight: 600,
+              color: "var(--ink,#000)",
+              fontFamily: "inherit",
+              cursor: "pointer",
+              outline: "none",
+              marginBottom: 12,
+              boxSizing: "border-box",
+            }}
+          >
+            <option value="weekly">Every week</option>
+            <option value="biweekly">Alternating weeks</option>
+            <option value="monthlyWeeks">Specific weeks of month</option>
+            <option value="monthlyDays">Specific days of month</option>
+            <option value="interval">Every N days</option>
+          </select>
+
+          {/* per-kind config */}
+          {(cadenceKind === "weekly" ||
+            cadenceKind === "biweekly" ||
+            cadenceKind === "monthlyWeeks") && (
+            <div style={{ marginBottom: 12 }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: "var(--label,#8E8E93)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  marginBottom: 8,
+                }}
+              >
+                Days
+              </div>
+              <div style={{ display: "flex", gap: 6 }}>
+                {WEEKDAY_KEYS.map((key, i) => {
+                  const on = cadenceDays.includes(key);
+                  return (
+                    <button
+                      key={key}
+                      onClick={() =>
+                        setCadenceDays((prev) =>
+                          prev.includes(key)
+                            ? prev.filter((d) => d !== key)
+                            : [...prev, key],
+                        )
+                      }
+                      style={{
+                        flex: 1,
+                        height: 34,
+                        borderRadius: 10,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 12,
+                        fontWeight: 700,
+                        color: on ? "#fff" : "var(--label-2,#6E6E73)",
+                        background: on ? "#0A0A0F" : "var(--inset,#F2F2F7)",
+                        border: "none",
+                        cursor: "pointer",
+                        boxShadow: on
+                          ? "none"
+                          : "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
+                      }}
+                    >
+                      {WEEKDAY_LETTERS[i]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {cadenceKind === "biweekly" && (
+            <div style={{ marginBottom: 12 }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: "var(--label,#8E8E93)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  marginBottom: 8,
+                }}
+              >
+                Week pattern
+              </div>
+              <div style={{ display: "flex", gap: 6 }}>
+                {(["A", "B"] as const).map((w) => (
+                  <button
+                    key={w}
+                    onClick={() => setAnchorWeek(w)}
+                    style={{
+                      flex: 1,
+                      height: 36,
+                      borderRadius: 10,
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color:
+                        anchorWeek === w ? "#fff" : "var(--label-2,#6E6E73)",
+                      background:
+                        anchorWeek === w ? "#0A0A0F" : "var(--inset,#F2F2F7)",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {w === "A" ? "Odd weeks" : "Even weeks"}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {cadenceKind === "monthlyWeeks" && (
+            <div style={{ marginBottom: 12 }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: "var(--label,#8E8E93)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  marginBottom: 8,
+                }}
+              >
+                Which weeks of the month
+              </div>
+              <div style={{ display: "flex", gap: 6 }}>
+                {([1, 2, 3, 4, 5] as const).map((w) => {
+                  const on = cadenceWeeks.includes(w);
+                  return (
+                    <button
+                      key={w}
+                      onClick={() =>
+                        setCadenceWeeks((prev) =>
+                          prev.includes(w)
+                            ? prev.filter((x) => x !== w)
+                            : [...prev, w],
+                        )
+                      }
+                      style={{
+                        flex: 1,
+                        height: 36,
+                        borderRadius: 10,
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: on ? "#fff" : "var(--label-2,#6E6E73)",
+                        background: on ? "#0A0A0F" : "var(--inset,#F2F2F7)",
+                        border: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {w}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {cadenceKind === "monthlyDays" && (
+            <div style={{ marginBottom: 12 }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: "var(--label,#8E8E93)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  marginBottom: 8,
+                }}
+              >
+                Day numbers (comma-separated)
+              </div>
+              <input
+                type="text"
+                value={cadenceMonthDays.join(", ")}
+                onChange={(e) => {
+                  const nums = e.target.value
+                    .split(",")
+                    .map((s) => parseInt(s.trim(), 10))
+                    .filter((n) => !isNaN(n) && n >= 1 && n <= 31);
+                  setCadenceMonthDays(nums);
+                }}
+                placeholder="1, 15"
+                style={{
+                  width: "100%",
+                  background: "var(--inset,#F2F2F7)",
+                  border: "none",
+                  borderRadius: 12,
+                  padding: "10px 12px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "var(--ink,#000)",
+                  fontFamily: "inherit",
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+          )}
+
+          {cadenceKind === "interval" && (
+            <div style={{ marginBottom: 12 }}>
+              <div
+                style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  color: "var(--label,#8E8E93)",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  marginBottom: 8,
+                }}
+              >
+                Every how many days
+              </div>
+              <input
+                type="number"
+                min={1}
+                max={90}
+                value={cadenceInterval}
+                onChange={(e) =>
+                  setCadenceInterval(
+                    Math.max(1, parseInt(e.target.value, 10) || 1),
+                  )
+                }
+                style={{
+                  width: "100%",
+                  background: "var(--inset,#F2F2F7)",
+                  border: "none",
+                  borderRadius: 12,
+                  padding: "10px 12px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "var(--ink,#000)",
+                  fontFamily: "inherit",
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+            </div>
+          )}
+
+          {/* plain-English phrase */}
+          <div
+            style={{
+              fontSize: 12.5,
+              color: "var(--label-2,#6E6E73)",
+              fontWeight: 600,
+              fontStyle: "italic",
+              letterSpacing: "-0.005em",
+              lineHeight: 1.4,
+              padding: "8px 10px",
+              background: "var(--inset,#F2F2F7)",
+              borderRadius: 10,
+              boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+            }}
+          >
+            {cadencePlainEnglish()}
           </div>
         </div>
 
@@ -813,7 +1288,7 @@ export function ClientView({ id }: { id: string }) {
           >
             <path d="M5 12l4 4L19 6" />
           </svg>
-          Save routine
+          save routine
         </button>
       </div>
     </div>
