@@ -10,6 +10,14 @@ import type {
   Weekday,
   InboxItem,
   DomainId,
+  Subscription,
+  Transaction,
+  Reflection,
+  StateLogEntry,
+  StateMark,
+  Insight,
+  WeeklyReview,
+  Person,
 } from "./types";
 import {
   DOMAINS,
@@ -17,6 +25,12 @@ import {
   SEED_VISIONS,
   SEED_ROUTINES,
   SEED_WEEK_ASSIGNMENTS,
+  SEED_SUBSCRIPTIONS,
+  SEED_TRANSACTIONS,
+  SEED_REFLECTIONS,
+  SEED_STATE_LOG,
+  SEED_INSIGHTS,
+  SEED_PEOPLE,
 } from "./seed";
 
 type State = {
@@ -31,6 +45,14 @@ type State = {
   userCity: string;
   sliderMinOffset: number;
   sliderMaxOffset: number;
+  subscriptions: Subscription[];
+  transactions: Transaction[];
+  reflections: Reflection[];
+  stateLog: StateLogEntry[];
+  insights: Insight[];
+  weeklyReviews: WeeklyReview[];
+  people: Person[];
+  userPrefs: { wakeHHMM: string; sleepHHMM: string };
 };
 
 type Actions = {
@@ -70,6 +92,33 @@ type Actions = {
   updateVision: (id: string, patch: Partial<Omit<Vision, "id">>) => void;
   deleteVision: (id: string) => void;
   createVision: (vision: Omit<Vision, "id">) => void;
+  // money
+  addSubscription: (sub: Omit<Subscription, "id">) => void;
+  removeSubscription: (id: string) => void;
+  addTransaction: (tx: Omit<Transaction, "id">) => void;
+  removeTransaction: (id: string) => void;
+  // reflections
+  addReflection: (r: Omit<Reflection, "id">) => void;
+  // state log
+  addStateMark: (mark: StateMark, note?: string) => void;
+  // insights
+  addInsight: (ins: Omit<Insight, "id">) => void;
+  removeInsight: (id: string) => void;
+  // people
+  addPerson: (p: Omit<Person, "id">) => void;
+  updatePerson: (id: string, patch: Partial<Omit<Person, "id">>) => void;
+  // weekly review
+  addWeeklyReview: (wr: Omit<WeeklyReview, "id">) => void;
+  // NOW mid-session commands
+  extendCurrent: (min: number) => void;
+  skipCurrent: () => void;
+  pauseCurrent: () => void;
+  finishCurrent: () => void;
+  // user prefs
+  userPrefs: { wakeHHMM: string; sleepHHMM: string };
+  setUserPrefs: (
+    prefs: Partial<{ wakeHHMM: string; sleepHHMM: string }>,
+  ) => void;
 };
 
 export const useDoIt = create<State & Actions>()(
@@ -86,6 +135,14 @@ export const useDoIt = create<State & Actions>()(
       userCity: "Kiel",
       sliderMinOffset: -30,
       sliderMaxOffset: 60,
+      subscriptions: SEED_SUBSCRIPTIONS,
+      transactions: SEED_TRANSACTIONS,
+      reflections: SEED_REFLECTIONS,
+      stateLog: SEED_STATE_LOG,
+      insights: SEED_INSIGHTS,
+      weeklyReviews: [],
+      people: SEED_PEOPLE,
+      userPrefs: { wakeHHMM: "06:00", sleepHHMM: "22:00" },
       setHydrated: () => set({ hydrated: true }),
       setSliderRange: (min, max) =>
         set({ sliderMinOffset: min, sliderMaxOffset: max }),
@@ -344,10 +401,158 @@ export const useDoIt = create<State & Actions>()(
         const newVision: Vision = { ...vision, id: `v-${Date.now()}` };
         set((s) => ({ visions: [...s.visions, newVision] }));
       },
+
+      addSubscription: (sub) => {
+        const newSub: Subscription = { ...sub, id: `sub-${Date.now()}` };
+        set((s) => ({ subscriptions: [...s.subscriptions, newSub] }));
+      },
+      removeSubscription: (id) => {
+        set((s) => ({
+          subscriptions: s.subscriptions.filter((x) => x.id !== id),
+        }));
+      },
+      addTransaction: (tx) => {
+        const newTx: Transaction = { ...tx, id: `tx-${Date.now()}` };
+        set((s) => ({ transactions: [...s.transactions, newTx] }));
+      },
+      removeTransaction: (id) => {
+        set((s) => ({
+          transactions: s.transactions.filter((x) => x.id !== id),
+        }));
+      },
+
+      addReflection: (r) => {
+        const newR: Reflection = { ...r, id: `ref-${Date.now()}` };
+        set((s) => {
+          // Replace existing reflection for same date
+          const filtered = s.reflections.filter((x) => x.dateISO !== r.dateISO);
+          return { reflections: [...filtered, newR] };
+        });
+      },
+
+      addStateMark: (mark, note) => {
+        const entry: StateLogEntry = {
+          id: `sl-${Date.now()}`,
+          ts: Date.now(),
+          mark,
+          note,
+        };
+        set((s) => ({ stateLog: [...s.stateLog, entry] }));
+      },
+
+      addInsight: (ins) => {
+        const newIns: Insight = { ...ins, id: `ins-${Date.now()}` };
+        set((s) => ({ insights: [...s.insights, newIns] }));
+      },
+      removeInsight: (id) => {
+        set((s) => ({ insights: s.insights.filter((x) => x.id !== id) }));
+      },
+
+      addPerson: (p) => {
+        const newP: Person = { ...p, id: `p-${Date.now()}` };
+        set((s) => ({ people: [...s.people, newP] }));
+      },
+      updatePerson: (id, patch) => {
+        set((s) => ({
+          people: s.people.map((p) => (p.id === id ? { ...p, ...patch } : p)),
+        }));
+      },
+
+      addWeeklyReview: (wr) => {
+        const newWr: WeeklyReview = { ...wr, id: `wr-${Date.now()}` };
+        set((s) => {
+          // Replace if same weekStartISO
+          const filtered = s.weeklyReviews.filter(
+            (x) => x.weekStartISO !== wr.weekStartISO,
+          );
+          return { weeklyReviews: [...filtered, newWr] };
+        });
+      },
+
+      extendCurrent: (min) => {
+        set((s) => {
+          const active = s.blocks.find(
+            (b) => b.status === "active" || b.status === "paused",
+          );
+          if (!active) return s;
+          return {
+            blocks: s.blocks.map((b) =>
+              b.id === active.id
+                ? { ...b, adjustedMin: (b.adjustedMin ?? 0) + min }
+                : b,
+            ),
+          };
+        });
+      },
+
+      skipCurrent: () => {
+        set((s) => {
+          const active = s.blocks.find(
+            (b) => b.status === "active" || b.status === "paused",
+          );
+          if (!active) return s;
+          return {
+            blocks: s.blocks.map((b) =>
+              b.id === active.id ? { ...b, status: "done" } : b,
+            ),
+          };
+        });
+      },
+
+      pauseCurrent: () => {
+        const now = Date.now();
+        set((s) => {
+          const active = s.blocks.find((b) => b.status === "active");
+          if (!active) return s;
+          return {
+            blocks: s.blocks.map((b) =>
+              b.id === active.id
+                ? {
+                    ...b,
+                    status: "paused",
+                    accumulatedMs:
+                      b.accumulatedMs + (now - (b.startedAt ?? now)),
+                    startedAt: undefined,
+                  }
+                : b,
+            ),
+          };
+        });
+      },
+
+      finishCurrent: () => {
+        const now = Date.now();
+        set((s) => {
+          const active = s.blocks.find(
+            (b) => b.status === "active" || b.status === "paused",
+          );
+          if (!active) return s;
+          return {
+            blocks: s.blocks.map((b) =>
+              b.id === active.id
+                ? {
+                    ...b,
+                    status: "done",
+                    accumulatedMs:
+                      b.accumulatedMs +
+                      (b.status === "active" && b.startedAt
+                        ? now - b.startedAt
+                        : 0),
+                    startedAt: undefined,
+                  }
+                : b,
+            ),
+          };
+        });
+      },
+
+      setUserPrefs: (prefs) => {
+        set((s) => ({ userPrefs: { ...s.userPrefs, ...prefs } }));
+      },
     }),
     {
       name: "do-it-state",
-      version: 8,
+      version: 9,
       skipHydration: true,
       migrate: (persistedState, _fromVersion) => {
         const s = persistedState as Record<string, unknown> | null;
@@ -496,6 +701,31 @@ export const useDoIt = create<State & Actions>()(
           userCity: (s?.userCity as string) ?? "Kiel",
           sliderMinOffset: (s?.sliderMinOffset as number) ?? -30,
           sliderMaxOffset: (s?.sliderMaxOffset as number) ?? 60,
+          subscriptions: Array.isArray(s?.subscriptions)
+            ? (s.subscriptions as Subscription[])
+            : SEED_SUBSCRIPTIONS,
+          transactions: Array.isArray(s?.transactions)
+            ? (s.transactions as Transaction[])
+            : SEED_TRANSACTIONS,
+          reflections: Array.isArray(s?.reflections)
+            ? (s.reflections as Reflection[])
+            : SEED_REFLECTIONS,
+          stateLog: Array.isArray(s?.stateLog)
+            ? (s.stateLog as StateLogEntry[])
+            : SEED_STATE_LOG,
+          insights: Array.isArray(s?.insights)
+            ? (s.insights as Insight[])
+            : SEED_INSIGHTS,
+          weeklyReviews: Array.isArray(s?.weeklyReviews)
+            ? (s.weeklyReviews as WeeklyReview[])
+            : [],
+          people: Array.isArray(s?.people)
+            ? (s.people as Person[])
+            : SEED_PEOPLE,
+          userPrefs: (s?.userPrefs as {
+            wakeHHMM: string;
+            sleepHHMM: string;
+          }) ?? { wakeHHMM: "06:00", sleepHHMM: "22:00" },
         };
       },
       onRehydrateStorage: () => (state) => {

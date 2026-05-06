@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
 import { DomainGlyph, ChevSvg, ArrowSvg } from "@/components/icons";
+import { CompounderPhrase } from "@/components/CompounderPhrase";
 import type { DomainMomentum, DomainId } from "@/lib/types";
 
 const MOMENTUM: Record<DomainMomentum, string> = {
@@ -293,6 +294,7 @@ export default function DomainsPage() {
               </div>
               <div className="dcard-body">
                 <div className="dcard-name">{d.name}</div>
+                <CompounderPhrase domainId={d.id} />
                 <div className="dcard-meta">
                   <span className="rhythm">{MOMENTUM[d.momentum]}</span>
                   <span className="sep">·</span>

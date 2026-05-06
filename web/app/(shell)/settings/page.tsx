@@ -6,7 +6,7 @@ import { DomainGlyph } from "@/components/icons";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { domains, routines } = useDoIt();
+  const { domains, routines, userPrefs, setUserPrefs } = useDoIt();
 
   const DAYS = ["M", "T", "W", "T", "F", "S", "S"] as const;
   const WEEKDAYS: Record<string, number[]> = {
@@ -174,6 +174,142 @@ export default function SettingsPage() {
             Kiel, Germany
           </div>
         </div>
+
+        {/* DAY ANCHORS */}
+        <SettingsSection label="Day anchors" meta="wake · sleep">
+          <SettingsGroup>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "12px 14px",
+                minHeight: 46,
+              }}
+            >
+              <div
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: 7,
+                  background:
+                    "linear-gradient(180deg,#3B8DFF 0%, #0E66E6 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width={14}
+                  height={14}
+                  fill="none"
+                  stroke="#fff"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                </svg>
+              </div>
+              <div
+                style={{
+                  flex: 1,
+                  fontSize: 14.5,
+                  fontWeight: 500,
+                  color: "var(--ink,#000)",
+                  letterSpacing: "-0.018em",
+                }}
+              >
+                Wake
+              </div>
+              <input
+                type="time"
+                value={userPrefs.wakeHHMM}
+                onChange={(e) => setUserPrefs({ wakeHHMM: e.target.value })}
+                style={{
+                  fontSize: 13.5,
+                  fontWeight: 500,
+                  color: "var(--ink-2,#1C1C1E)",
+                  background: "var(--inset,#F2F2F7)",
+                  border: "none",
+                  outline: "none",
+                  borderRadius: 8,
+                  padding: "4px 8px",
+                  fontFamily: "inherit",
+                  letterSpacing: "-0.01em",
+                }}
+              />
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "12px 14px",
+                minHeight: 46,
+                borderTop: "0.5px solid rgba(60,60,67,0.06)",
+              }}
+            >
+              <div
+                style={{
+                  width: 26,
+                  height: 26,
+                  borderRadius: 7,
+                  background:
+                    "linear-gradient(180deg,#2A2A30 0%, #0D0D12 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width={14}
+                  height={14}
+                  fill="none"
+                  stroke="#fff"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                </svg>
+              </div>
+              <div
+                style={{
+                  flex: 1,
+                  fontSize: 14.5,
+                  fontWeight: 500,
+                  color: "var(--ink,#000)",
+                  letterSpacing: "-0.018em",
+                }}
+              >
+                Sleep
+              </div>
+              <input
+                type="time"
+                value={userPrefs.sleepHHMM}
+                onChange={(e) => setUserPrefs({ sleepHHMM: e.target.value })}
+                style={{
+                  fontSize: 13.5,
+                  fontWeight: 500,
+                  color: "var(--ink-2,#1C1C1E)",
+                  background: "var(--inset,#F2F2F7)",
+                  border: "none",
+                  outline: "none",
+                  borderRadius: 8,
+                  padding: "4px 8px",
+                  fontFamily: "inherit",
+                  letterSpacing: "-0.01em",
+                }}
+              />
+            </div>
+          </SettingsGroup>
+        </SettingsSection>
 
         {/* PRAYER */}
         <SettingsSection label="Prayer" meta="5 daily anchors">

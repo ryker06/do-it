@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useDoIt } from "@/lib/store";
 import { DomainGlyph } from "@/components/icons";
 import { Topbar } from "@/components/Topbar";
@@ -42,6 +43,26 @@ const DOMAIN_BG: Record<DomainId, string> = {
 export default function InboxPage() {
   const { blocks, addToInbox, moveBlockTo, createBlock } = useDoIt();
   const [text, setText] = useState("");
+  const searchParams = useSearchParams();
+
+  // PWA share target: read URL params on mount, capture to inbox, strip params
+  useEffect(() => {
+    const sharedTitle = searchParams.get("title");
+    const sharedText = searchParams.get("text");
+    const sharedUrl = searchParams.get("url");
+    if (sharedTitle || sharedText || sharedUrl) {
+      const parts = [sharedTitle, sharedText, sharedUrl].filter(Boolean);
+      const combined = parts.join(" — ");
+      addToInbox(combined, "learning");
+      // Strip params from URL without navigation
+      if (typeof window !== "undefined") {
+        const clean = window.location.pathname;
+        window.history.replaceState({}, "", clean);
+      }
+    }
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const inboxBlocks = blocks
     .filter((b) => b.scheduledFor === "inbox")
