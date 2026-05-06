@@ -40,9 +40,9 @@ function getUniqueDomains(routine: Routine): DomainId[] {
   const seen = new Set<DomainId>();
   const out: DomainId[] = [];
   for (const b of routine.blocks) {
-    if (!seen.has(b.domainId)) {
-      seen.add(b.domainId);
-      out.push(b.domainId);
+    if (!seen.has(b.domain)) {
+      seen.add(b.domain);
+      out.push(b.domain);
     }
   }
   return out;
@@ -55,6 +55,7 @@ const DOMAIN_BG: Record<DomainId, string> = {
   learning: "linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%)",
   fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
   home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
+  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
 };
 
 export default function RoutinesPage() {

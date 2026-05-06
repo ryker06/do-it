@@ -10,6 +10,7 @@ const DOMAIN_IDS: DomainId[] = [
   "learning",
   "fitness",
   "home",
+  "food",
 ];
 const DOMAIN_NAMES: Record<DomainId, string> = {
   business: "Business",
@@ -17,6 +18,7 @@ const DOMAIN_NAMES: Record<DomainId, string> = {
   learning: "Learning",
   fitness: "Fitness",
   home: "Home",
+  food: "Food",
 };
 
 interface BrainDumpSheetProps {

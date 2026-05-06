@@ -3,9 +3,15 @@ export type DomainId =
   | "religion"
   | "learning"
   | "fitness"
-  | "home";
+  | "home"
+  | "food";
 
-export type DomainMomentum = "strong" | "stable" | "weak" | "inactive";
+export type DomainMomentum =
+  | "warm"
+  | "steady"
+  | "drifting"
+  | "quiet"
+  | "humming";
 export type DomainDirection = "improving" | "stable" | "declining";
 
 export type Domain = {
@@ -20,21 +26,34 @@ export type Domain = {
   streakLabel?: string;
 };
 
-export type BlockStatus = "idle" | "active" | "paused" | "done";
+export type BlockStatus = "pending" | "active" | "done" | "paused";
+
+export type BlockStep = {
+  kind: "recipe" | "sets" | "verses" | "outline" | "list";
+  items: string[];
+  current?: number; // index of current step (0-based)
+};
 
 export type Block = {
   id: string;
+  domain: DomainId;
   title: string;
-  domainId: DomainId;
   durationMin: number;
   status: BlockStatus;
   startedAt?: number;
   accumulatedMs: number;
   order: number;
   adjustedMin?: number;
-  step?: { current: number; total: number };
-  focusType?: string;
-  scheduledFor?: "today" | "tomorrow";
+  step?: BlockStep;
+  visionId?: string;
+  routineId?: string;
+  mode?: "theory" | "application" | "feedback";
+  meta?: {
+    ingredients?: string[];
+    mealSlot?: string;
+    [k: string]: unknown;
+  };
+  scheduledFor?: "today" | "inbox" | string; // "today" | "inbox" | ISO date string
 };
 
 export type AnchorKind = "prayer" | "training";
@@ -54,7 +73,11 @@ export type Vision = {
   domainId: DomainId;
   tint: string;
   description?: string;
+  nextMove?: string; // "next move that proves I'm aiming here"
+  anchorLine?: string; // one anchor line
   threads?: VisionThread[];
+  deadline?: string; // ISO date string e.g. "2026-07-28"
+  targetMetric?: string; // free-text proof statement e.g. "deadlift 180kg"
 };
 
 export type VisionThread = {
@@ -65,24 +88,29 @@ export type VisionThread = {
 
 export type Weekday = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
 
-export type RoutineBlock = Omit<
-  Block,
-  "status" | "accumulatedMs" | "startedAt"
-> & {
+// RoutineBlock is a template; actual blocks are emitted at schedule time
+export type RoutineBlock = {
+  id: string;
+  domain: DomainId;
+  title: string;
+  durationMin: number;
   order: number;
+  step?: BlockStep;
 };
 
 export type Routine = {
   id: string;
   name: string;
   days: Weekday[];
+  cadenceDescription?: string; // plain-English cadence
+  streakPhrase?: string; // e.g. "9 weeks running"
+  color?: string;
   blocks: RoutineBlock[];
-  color?: string; // one of: "weekday" | "recovery" | "friday" | "sunday"
 };
 
 export type InboxItem = {
   id: string;
   text: string;
-  domainId?: DomainId;
+  domain?: DomainId;
   createdAt: number;
 };

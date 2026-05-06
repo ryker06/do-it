@@ -29,6 +29,8 @@ type State = {
   hydrated: boolean;
   onboardingComplete: boolean;
   userCity: string;
+  sliderMinOffset: number;
+  sliderMaxOffset: number;
 };
 
 type Actions = {
@@ -42,14 +44,16 @@ type Actions = {
   setHydrated: () => void;
   completeOnboarding: () => void;
   setUserCity: (city: string) => void;
+  setSliderRange: (min: number, max: number) => void;
+  advanceStep: (id: string) => void;
   // block actions
   createBlock: (input: {
     title: string;
-    domainId: DomainId;
+    domain: DomainId;
     durationMin: number;
     scheduleToday: boolean;
   }) => void;
-  moveBlockTo: (id: string, target: "today" | "tomorrow") => void;
+  moveBlockTo: (id: string, target: "today" | "inbox") => void;
   // routine actions
   createRoutine: (routine: Omit<Routine, "id">) => void;
   updateRoutine: (id: string, patch: Partial<Omit<Routine, "id">>) => void;
@@ -57,7 +61,8 @@ type Actions = {
   assignRoutine: (weekday: Weekday, routineId: string) => void;
   unassignRoutine: (weekday: Weekday) => void;
   // inbox
-  addToInbox: (text: string, domainId?: DomainId) => void;
+  addToInbox: (text: string, domain?: DomainId) => void;
+  scheduleFromInbox: (id: string) => void;
   // domains
   updateDomain: (id: DomainId, patch: Partial<Omit<Domain, "id">>) => void;
   // visions
@@ -78,7 +83,11 @@ export const useDoIt = create<State & Actions>()(
       hydrated: false,
       onboardingComplete: false,
       userCity: "Kiel",
+      sliderMinOffset: -30,
+      sliderMaxOffset: 60,
       setHydrated: () => set({ hydrated: true }),
+      setSliderRange: (min, max) =>
+        set({ sliderMinOffset: min, sliderMaxOffset: max }),
       completeOnboarding: () => {
         if (typeof window !== "undefined") {
           localStorage.setItem("do-it-onboarding-complete", "1");
@@ -165,6 +174,22 @@ export const useDoIt = create<State & Actions>()(
         }));
       },
 
+      advanceStep: (id) => {
+        set((s) => ({
+          blocks: s.blocks.map((b) => {
+            if (b.id !== id || !b.step) return b;
+            const next = (b.step.current ?? 0) + 1;
+            return {
+              ...b,
+              step: {
+                ...b.step,
+                current: Math.min(next, b.step.items.length - 1),
+              },
+            };
+          }),
+        }));
+      },
+
       reorder: (fromIdx, toIdx) => {
         set((s) => {
           const sorted = [...s.blocks].sort((a, b) => a.order - b.order);
@@ -180,7 +205,7 @@ export const useDoIt = create<State & Actions>()(
         set({
           blocks: SEED_BLOCKS.map((b) => ({
             ...b,
-            status: "idle",
+            status: "pending",
             accumulatedMs: 0,
             startedAt: undefined,
             adjustedMin: undefined,
@@ -188,17 +213,18 @@ export const useDoIt = create<State & Actions>()(
         });
       },
 
-      createBlock: ({ title, domainId, durationMin, scheduleToday }) => {
+      createBlock: ({ title, domain, durationMin, scheduleToday }) => {
         const s = get();
         const maxOrder = s.blocks.reduce((m, b) => Math.max(m, b.order), -1);
         const newBlock: Block = {
           id: `b-${Date.now()}`,
           title,
-          domainId,
+          domain,
           durationMin,
-          status: scheduleToday ? "idle" : "idle",
+          status: "pending",
           accumulatedMs: 0,
           order: maxOrder + 1,
+          scheduledFor: scheduleToday ? "today" : "inbox",
         };
         set((st) => ({ blocks: [...st.blocks, newBlock] }));
       },
@@ -253,14 +279,36 @@ export const useDoIt = create<State & Actions>()(
         }));
       },
 
-      addToInbox: (text, domainId) => {
+      addToInbox: (text, domain) => {
         const item: InboxItem = {
           id: `inbox-${Date.now()}`,
           text,
-          domainId,
+          domain,
           createdAt: Date.now(),
         };
         set((s) => ({ inbox: [...s.inbox, item] }));
+      },
+
+      scheduleFromInbox: (id) => {
+        set((s) => {
+          const item = s.inbox.find((x) => x.id === id);
+          if (!item) return s;
+          const maxOrder = s.blocks.reduce((m, b) => Math.max(m, b.order), -1);
+          const newBlock: Block = {
+            id: `b-${Date.now()}`,
+            title: item.text,
+            domain: item.domain ?? "home",
+            durationMin: 30,
+            status: "pending",
+            accumulatedMs: 0,
+            order: maxOrder + 1,
+            scheduledFor: "today",
+          };
+          return {
+            inbox: s.inbox.filter((x) => x.id !== id),
+            blocks: [...s.blocks, newBlock],
+          };
+        });
       },
 
       updateDomain: (id, patch) => {
@@ -286,31 +334,137 @@ export const useDoIt = create<State & Actions>()(
     }),
     {
       name: "do-it-state",
-      version: 5,
+      version: 8,
       skipHydration: true,
       migrate: (persistedState, _fromVersion) => {
-        const s = persistedState as Partial<State> | null;
-        // For existing users (any prior version), treat onboarding as complete
-        // so they don't re-see onboarding after an upgrade.
+        const s = persistedState as Record<string, unknown> | null;
         const hadPriorState = s != null && Object.keys(s).length > 0;
+
+        // Migrate old Block shape → new shape
+        // Old: { domainId, status: "idle"|"active"|"paused"|"done", subtasks, focusType, step: {current, total} }
+        // New: { domain, status: "pending"|"active"|"paused"|"done", step: BlockStep, scheduledFor }
+        const migrateBlock = (b: Record<string, unknown>): Block => {
+          // domain field: prefer "domain", fall back to "domainId"
+          const domain = (b.domain ?? b.domainId ?? "home") as Block["domain"];
+
+          // status: remap "idle" → "pending"
+          const rawStatus = (b.status ?? "pending") as string;
+          const status: Block["status"] =
+            rawStatus === "idle" ? "pending" : (rawStatus as Block["status"]);
+
+          // step: if old shape {current, total} convert to new BlockStep
+          let step: Block["step"] | undefined = undefined;
+          if (b.step && typeof b.step === "object") {
+            const oldStep = b.step as Record<string, unknown>;
+            if ("items" in oldStep && Array.isArray(oldStep.items)) {
+              // already new shape
+              step = b.step as Block["step"];
+            } else if ("current" in oldStep && "total" in oldStep) {
+              // old shape — create a generic outline step
+              const total = Number(oldStep.total ?? 0);
+              step = {
+                kind: "outline",
+                items: Array.from({ length: total }, (_, i) => `Step ${i + 1}`),
+                current: Number(oldStep.current ?? 0) - 1,
+              };
+            }
+          }
+
+          // scheduledFor: remap old "tomorrow" → "inbox"
+          let scheduledFor: Block["scheduledFor"] = "today";
+          if (b.scheduledFor === "tomorrow") scheduledFor = "inbox";
+          else if (typeof b.scheduledFor === "string")
+            scheduledFor = b.scheduledFor as Block["scheduledFor"];
+
+          return {
+            id: String(b.id ?? `b-${Math.random()}`),
+            title: String(b.title ?? ""),
+            domain,
+            durationMin: Number(b.durationMin ?? 30),
+            status,
+            startedAt: b.startedAt as number | undefined,
+            accumulatedMs: Number(b.accumulatedMs ?? 0),
+            order: Number(b.order ?? 0),
+            adjustedMin: b.adjustedMin as number | undefined,
+            step,
+            visionId: b.visionId as string | undefined,
+            routineId: b.routineId as string | undefined,
+            mode: b.mode as Block["mode"],
+            meta: b.meta as Block["meta"],
+            scheduledFor,
+          };
+        };
+
+        const oldBlocks = Array.isArray(s?.blocks)
+          ? (s.blocks as Record<string, unknown>[])
+          : [];
+        const blocks: Block[] =
+          oldBlocks.length > 0 ? oldBlocks.map(migrateBlock) : SEED_BLOCKS;
+
+        // Migrate Domain: add food domain if missing, update momentum vocab
+        const oldDomains = Array.isArray(s?.domains)
+          ? (s.domains as Record<string, unknown>[])
+          : [];
+        const momentumRemap: Record<string, string> = {
+          strong: "warm",
+          stable: "steady",
+          weak: "drifting",
+          inactive: "quiet",
+        };
+        const migratedDomains = oldDomains.map((d) => ({
+          ...d,
+          momentum: (momentumRemap[String(d.momentum ?? "steady")] ??
+            d.momentum) as Domain["momentum"],
+        }));
+        const hasFoodDomain = migratedDomains.some(
+          (d) => (d as Record<string, unknown>).id === "food",
+        );
+        const domains: Domain[] = (
+          migratedDomains.length > 0 ? migratedDomains : DOMAINS
+        ).concat(
+          hasFoodDomain ? [] : [DOMAINS.find((d) => d.id === "food")!],
+        ) as Domain[];
+
+        // Migrate Routine blocks: domainId → domain
+        const oldRoutines = Array.isArray(s?.routines)
+          ? (s.routines as Record<string, unknown>[])
+          : [];
+        const routines: Routine[] =
+          oldRoutines.length > 0
+            ? (oldRoutines.map((r) => ({
+                ...r,
+                blocks: Array.isArray(r.blocks)
+                  ? (r.blocks as Record<string, unknown>[]).map((rb) => ({
+                      ...rb,
+                      domain: rb.domain ?? rb.domainId ?? "home",
+                    }))
+                  : [],
+              })) as Routine[])
+            : SEED_ROUTINES;
+
         return {
           ...s,
-          blocks: (s?.blocks ?? SEED_BLOCKS).map((b, i) => ({
-            ...b,
-            step: b.step ?? SEED_BLOCKS[i]?.step,
-            focusType: b.focusType ?? SEED_BLOCKS[i]?.focusType,
-          })),
-          domains: (s?.domains ?? DOMAINS).map((d) => ({
-            ...d,
-            streakLabel:
-              d.streakLabel ?? DOMAINS.find((x) => x.id === d.id)?.streakLabel,
-          })),
-          visions: s?.visions ?? SEED_VISIONS,
-          routines: s?.routines ?? SEED_ROUTINES,
-          weekAssignments: s?.weekAssignments ?? SEED_WEEK_ASSIGNMENTS,
-          inbox: s?.inbox ?? [],
-          onboardingComplete: s?.onboardingComplete ?? hadPriorState,
-          userCity: s?.userCity ?? "Kiel",
+          blocks,
+          domains,
+          visions:
+            Array.isArray(s?.visions) && (s.visions as unknown[]).length > 0
+              ? s.visions
+              : SEED_VISIONS,
+          routines,
+          weekAssignments:
+            (s?.weekAssignments as Record<Weekday, string | null>) ??
+            SEED_WEEK_ASSIGNMENTS,
+          inbox: Array.isArray(s?.inbox)
+            ? (s.inbox as Record<string, unknown>[]).map((item) => ({
+                ...item,
+                domain: item.domain ?? item.domainId,
+              }))
+            : [],
+          onboardingComplete:
+            (s?.onboardingComplete as boolean) ?? hadPriorState,
+          userCity: (s?.userCity as string) ?? "Kiel",
+          sliderMinOffset: (s?.sliderMinOffset as number) ?? -30,
+          sliderMaxOffset: (s?.sliderMaxOffset as number) ?? 60,
         };
       },
       onRehydrateStorage: () => (state) => {

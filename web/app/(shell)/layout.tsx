@@ -1,5 +1,6 @@
 import { BottomNav } from "@/components/BottomNav";
 import { StoreHydrator } from "@/components/StoreHydrator";
+import { VoiceCaptureButton } from "@/components/VoiceCaptureButton";
 
 export default function ShellLayout({
   children,
@@ -11,6 +12,7 @@ export default function ShellLayout({
       <StoreHydrator />
       {children}
       <BottomNav />
+      <VoiceCaptureButton />
     </div>
   );
 }

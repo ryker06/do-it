@@ -78,8 +78,8 @@ export default function NowPage() {
 
   const focus = pickFocus(blocks);
   const next = focus ? nextBlock(blocks, focus.id) : null;
-  const nextDomain = next ? domains.find((d) => d.id === next.domainId) : null;
-  const domain = focus ? domains.find((d) => d.id === focus.domainId) : null;
+  const nextDomain = next ? domains.find((d) => d.id === next.domain) : null;
+  const domain = focus ? domains.find((d) => d.id === focus.domain) : null;
   const remaining = focus ? remainingMs(focus, now) : 0;
   const totalMs = focus
     ? (focus.durationMin + (focus.adjustedMin ?? 0)) * 60_000
@@ -229,7 +229,7 @@ export default function NowPage() {
               Today
             </div>
             <div style={{ display: "flex", alignItems: "center" }}>
-              {Array.from(new Set(doneBlocks.map((b) => b.domainId))).map(
+              {Array.from(new Set(doneBlocks.map((b) => b.domain))).map(
                 (id, i) => (
                   <div
                     key={id}
@@ -701,8 +701,8 @@ export default function NowPage() {
               <div className="peek p2" />
               <div className="peek p1" />
               <div className="then-row">
-                <div className={`ddisc ${next.domainId} sm`}>
-                  <DomainGlyph id={next.domainId} />
+                <div className={`ddisc ${next.domain} sm`}>
+                  <DomainGlyph id={next.domain} />
                 </div>
                 <div className="text">
                   <div className="domain-tag">{nextDomain?.name}</div>
@@ -725,7 +725,7 @@ export default function NowPage() {
   }
 
   const onPrimary = () => {
-    if (focus.status === "idle") start(focus.id);
+    if (focus.status === "pending") start(focus.id);
     else if (focus.status === "active") pause(focus.id);
     else if (focus.status === "paused") resume(focus.id);
   };
@@ -792,10 +792,10 @@ export default function NowPage() {
 
         <div className="badge-row">
           <div
-            className={`ddisc ${focus.domainId}`}
+            className={`ddisc ${focus.domain}`}
             aria-label={domain?.name ?? ""}
           >
-            <DomainGlyph id={focus.domainId} />
+            <DomainGlyph id={focus.domain} />
           </div>
           <div className="domain-meta">
             <div className="domain-name">
@@ -808,12 +808,11 @@ export default function NowPage() {
               {live || paused ? (
                 <>
                   {focus.step
-                    ? `Step ${focus.step.current} of ${focus.step.total}`
+                    ? `Step ${(focus.step.current ?? 0) + 1} of ${focus.step.items.length}`
                     : domain?.name}
-                  {focus.focusType && ` · ${focus.focusType}`}
                 </>
               ) : focus.step ? (
-                `Step ${focus.step.current} of ${focus.step.total} today`
+                `Step ${(focus.step.current ?? 0) + 1} of ${focus.step.items.length} today`
               ) : anyMomentum ? (
                 `adjusted ${(focus.adjustedMin ?? 0) > 0 ? "+" : ""}${focus.adjustedMin ?? 0} min`
               ) : (
@@ -973,12 +972,8 @@ export default function NowPage() {
               {focus.step && (
                 <span className="chip step">
                   <CheckSvg size={12} />
-                  Step {focus.step.current} of {focus.step.total}
-                </span>
-              )}
-              {focus.focusType && (
-                <span className="chip">
-                  <span className="focus-tag">{focus.focusType}</span>
+                  Step {(focus.step.current ?? 0) + 1} of{" "}
+                  {focus.step.items.length}
                 </span>
               )}
               {anyMomentum && !focus.step && (
@@ -1015,8 +1010,8 @@ export default function NowPage() {
             <div className="peek p2" />
             <div className="peek p1" />
             <div className="then-row">
-              <div className={`ddisc ${next.domainId} sm`}>
-                <DomainGlyph id={next.domainId} />
+              <div className={`ddisc ${next.domain} sm`}>
+                <DomainGlyph id={next.domain} />
               </div>
               <div className="text">
                 <div className="domain-tag">{nextDomain?.name}</div>

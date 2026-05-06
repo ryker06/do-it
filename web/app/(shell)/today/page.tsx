@@ -69,7 +69,7 @@ export default function TodayPage() {
   const pct = totalMin > 0 ? Math.round((doneMin / totalMin) * 100) : 0;
 
   const anchorPos = 2;
-  const firstIdleIdx = sorted.findIndex((b) => b.status === "idle");
+  const firstIdleIdx = sorted.findIndex((b) => b.status === "pending");
 
   // Empty state
   if (sorted.length === 0) {
@@ -354,7 +354,7 @@ export default function TodayPage() {
       <div className="timeline-wrap">
         <div className="timeline">
           {sorted.map((b, idx) => {
-            const d = domains.find((x) => x.id === b.domainId);
+            const d = domains.find((x) => x.id === b.domain);
             const status = b.status;
             const cls =
               status === "done"
@@ -383,7 +383,7 @@ export default function TodayPage() {
                   </div>
                 )}
                 <div className={`tl-block ${cls}`}>
-                  {status === "idle" ? (
+                  {status === "pending" ? (
                     // Tap idle block → open BlockSheet
                     <button
                       onClick={() => setSelectedBlock(b)}
@@ -398,8 +398,8 @@ export default function TodayPage() {
                         padding: 0,
                       }}
                     >
-                      <div className={`ddisc ${b.domainId} row`}>
-                        <DomainGlyph id={b.domainId} />
+                      <div className={`ddisc ${b.domain} row`}>
+                        <DomainGlyph id={b.domain} />
                       </div>
                       <div className="text">
                         <div className="title">{b.title}</div>
@@ -428,8 +428,8 @@ export default function TodayPage() {
                       }}
                       className={`row ${cls}`}
                     >
-                      <div className={`ddisc ${b.domainId} row`}>
-                        <DomainGlyph id={b.domainId} />
+                      <div className={`ddisc ${b.domain} row`}>
+                        <DomainGlyph id={b.domain} />
                       </div>
                       <div className="text">
                         <div className="title">{b.title}</div>

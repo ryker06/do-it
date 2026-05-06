@@ -11,6 +11,7 @@ const DOMAIN_BG: Record<DomainId, string> = {
   learning: "linear-gradient(180deg,#EAE5F4 0%, #D6CCEB 100%)",
   fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
   home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
+  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
 };
 
 const DOMAIN_IDS: DomainId[] = [
@@ -19,6 +20,7 @@ const DOMAIN_IDS: DomainId[] = [
   "learning",
   "fitness",
   "home",
+  "food",
 ];
 
 const DURATIONS = [15, 30, 45, 60, 90];
@@ -36,7 +38,12 @@ export default function BlockCreateSheet({ onClose }: BlockCreateSheetProps) {
 
   function handleSave() {
     if (!title.trim()) return;
-    createBlock({ title: title.trim(), domainId, durationMin, scheduleToday });
+    createBlock({
+      title: title.trim(),
+      domain: domainId,
+      durationMin,
+      scheduleToday,
+    });
     onClose();
   }
 

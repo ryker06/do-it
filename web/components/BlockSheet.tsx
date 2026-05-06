@@ -11,6 +11,7 @@ const DOMAIN_BG: Record<DomainId, string> = {
   learning: "linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%)",
   fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
   home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
+  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
 };
 
 const DOMAIN_NAMES: Record<DomainId, string> = {
@@ -19,6 +20,7 @@ const DOMAIN_NAMES: Record<DomainId, string> = {
   learning: "Learning",
   fitness: "Fitness",
   home: "Home",
+  food: "Food",
 };
 
 interface BlockSheetProps {
@@ -39,7 +41,7 @@ export default function BlockSheet({ block, onClose }: BlockSheetProps) {
     onClose();
   }
 
-  function handleMove(target: "today" | "tomorrow") {
+  function handleMove(target: "today" | "inbox") {
     moveBlockTo(block.id, target);
     onClose();
   }
@@ -138,13 +140,13 @@ export default function BlockSheet({ block, onClose }: BlockSheetProps) {
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
-              background: DOMAIN_BG[block.domainId],
+              background: DOMAIN_BG[block.domain],
               boxShadow:
                 "inset 0 0 0 0.5px rgba(20,20,30,0.06), inset 0 -2px 4px rgba(20,20,30,0.04), 0 1px 2px rgba(20,20,30,0.04)",
               color: "var(--glyph,#0A0A0F)",
             }}
           >
-            <DomainGlyph id={block.domainId} size={22} />
+            <DomainGlyph id={block.domain} size={22} />
           </div>
           <div
             style={{
@@ -186,7 +188,7 @@ export default function BlockSheet({ block, onClose }: BlockSheetProps) {
                   color: "var(--label-2,#6E6E73)",
                 }}
               >
-                {DOMAIN_NAMES[block.domainId]}
+                {DOMAIN_NAMES[block.domain]}
               </span>
               <span style={{ color: "rgba(60,60,67,0.28)" }}>·</span>
               <span style={{ fontWeight: 500, color: "var(--label,#8E8E93)" }}>
@@ -210,7 +212,7 @@ export default function BlockSheet({ block, onClose }: BlockSheetProps) {
               marginTop: 2,
             }}
           >
-            {block.status === "idle"
+            {block.status === "pending"
               ? "Idle"
               : block.status === "paused"
                 ? "Paused"
@@ -392,7 +394,7 @@ export default function BlockSheet({ block, onClose }: BlockSheetProps) {
 
           {/* Move to tomorrow */}
           <button
-            onClick={() => handleMove("tomorrow")}
+            onClick={() => handleMove("inbox")}
             style={{
               aspectRatio: "1.35 / 1",
               borderRadius: 20,

@@ -7,10 +7,11 @@ import { DomainGlyph, ChevSvg, ArrowSvg } from "@/components/icons";
 import type { DomainMomentum } from "@/lib/types";
 
 const MOMENTUM: Record<DomainMomentum, string> = {
-  strong: "Strong rhythm",
-  stable: "Stable rhythm",
-  weak: "Weak rhythm",
-  inactive: "Quiet period",
+  warm: "Warm",
+  steady: "Steady",
+  drifting: "Drifting",
+  quiet: "Quiet",
+  humming: "Humming",
 };
 
 export default function DomainsPage() {

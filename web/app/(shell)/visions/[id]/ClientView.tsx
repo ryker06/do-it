@@ -11,6 +11,7 @@ const DOMAIN_BG: Record<DomainId, string> = {
   learning: "linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%)",
   fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
   home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
+  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
 };
 
 const DOMAIN_AURA_DETAIL: Record<DomainId, string> = {
@@ -23,6 +24,7 @@ const DOMAIN_AURA_DETAIL: Record<DomainId, string> = {
   fitness:
     "radial-gradient(closest-side, rgba(255,182,197,0.95), rgba(255,208,218,0.55) 50%, transparent 78%)",
   home: "radial-gradient(closest-side, rgba(207,220,227,0.95), rgba(229,236,240,0.55) 50%, transparent 78%)",
+  food: "radial-gradient(closest-side, rgba(255,224,178,0.95), rgba(255,243,224,0.55) 50%, transparent 78%)",
 };
 
 const DOMAIN_NAMES: Record<DomainId, string> = {
@@ -31,6 +33,7 @@ const DOMAIN_NAMES: Record<DomainId, string> = {
   learning: "Learning",
   fitness: "Fitness",
   home: "Home",
+  food: "Food",
 };
 
 const THREAD_ICONS = [
@@ -136,7 +139,7 @@ export function ClientView({ id }: { id: string }) {
 
   const domainId = vision.domainId;
   const relatedBlocks = blocks
-    .filter((b) => b.domainId === domainId && b.status === "done")
+    .filter((b) => b.domain === domainId && b.status === "done")
     .slice(0, 3);
 
   return (

@@ -12,16 +12,24 @@ const DOMAIN_BG: Record<DomainId, string> = {
   learning: "linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%)",
   fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
   home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
+  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
 };
 
-const MOMENTUMS: DomainMomentum[] = ["strong", "stable", "weak", "inactive"];
+const MOMENTUMS: DomainMomentum[] = [
+  "warm",
+  "steady",
+  "drifting",
+  "quiet",
+  "humming",
+];
 const DIRECTIONS: DomainDirection[] = ["improving", "stable", "declining"];
 
 const MOMENTUM_LABELS: Record<DomainMomentum, string> = {
-  strong: "Strong",
-  stable: "Stable",
-  weak: "Weak",
-  inactive: "Inactive",
+  warm: "Warm",
+  steady: "Steady",
+  drifting: "Drifting",
+  quiet: "Quiet",
+  humming: "Humming",
 };
 const DIRECTION_LABELS: Record<DomainDirection, string> = {
   improving: "Improving",
@@ -39,7 +47,7 @@ export function ClientView({ id }: { id: string }) {
   const [nextAction, setNextAction] = useState(domain?.nextAction ?? "");
   const [streakLabel, setStreakLabel] = useState(domain?.streakLabel ?? "");
   const [momentum, setMomentum] = useState<DomainMomentum>(
-    domain?.momentum ?? "stable",
+    domain?.momentum ?? "steady",
   );
   const [direction, setDirection] = useState<DomainDirection>(
     domain?.direction ?? "stable",

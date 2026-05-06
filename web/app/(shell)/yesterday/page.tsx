@@ -11,6 +11,7 @@ const DOMAIN_BG: Record<DomainId, string> = {
   learning: "linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%)",
   fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
   home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
+  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
 };
 
 const DOMAIN_DOT: Record<DomainId, string> = {
@@ -19,6 +20,7 @@ const DOMAIN_DOT: Record<DomainId, string> = {
   learning: "#F0AEC0",
   fitness: "#F09AAE",
   home: "#B5C4CD",
+  food: "#FFD08A",
 };
 
 const DOMAIN_NAMES: Record<DomainId, string> = {
@@ -27,6 +29,7 @@ const DOMAIN_NAMES: Record<DomainId, string> = {
   learning: "Learning",
   fitness: "Fitness",
   home: "Home",
+  food: "Food",
 };
 
 const ALL_DOMAIN_IDS: DomainId[] = [
@@ -55,7 +58,7 @@ export default function YesterdayPage() {
   // Per-domain minutes
   const domainMins: Partial<Record<DomainId, number>> = {};
   for (const b of doneBlocks) {
-    const id = b.domainId;
+    const id = b.domain;
     domainMins[id] =
       (domainMins[id] ?? 0) + b.durationMin + (b.adjustedMin ?? 0);
   }
@@ -357,7 +360,7 @@ export default function YesterdayPage() {
               />
 
               {timelineItems.map((b) => {
-                const d = domains.find((x) => x.id === b.domainId);
+                const d = domains.find((x) => x.id === b.domain);
                 const isDone = b.status === "done";
                 const isMoved = false;
 
@@ -425,14 +428,14 @@ export default function YesterdayPage() {
                           alignItems: "center",
                           justifyContent: "center",
                           flexShrink: 0,
-                          background: DOMAIN_BG[b.domainId],
+                          background: DOMAIN_BG[b.domain],
                           filter: "saturate(0.55)",
                           opacity: 0.78,
                           boxShadow:
                             "inset 0 0 0 0.5px rgba(20,20,30,0.06), inset 0 -2px 4px rgba(20,20,30,0.04), 0 1px 2px rgba(20,20,30,0.04)",
                         }}
                       >
-                        <DomainGlyph id={b.domainId} size={17} />
+                        <DomainGlyph id={b.domain} size={17} />
                       </div>
 
                       <div
@@ -479,7 +482,7 @@ export default function YesterdayPage() {
                               letterSpacing: "0.02em",
                             }}
                           >
-                            {d?.name ?? b.domainId}
+                            {d?.name ?? b.domain}
                           </span>
                           <span style={{ color: "rgba(60,60,67,0.22)" }}>
                             ·

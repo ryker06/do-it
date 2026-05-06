@@ -23,6 +23,7 @@ const DOMAIN_BG: Record<DomainId, string> = {
   learning: "linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%)",
   fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
   home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
+  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
 };
 
 const DOMAIN_NAMES: Record<DomainId, string> = {
@@ -31,6 +32,7 @@ const DOMAIN_NAMES: Record<DomainId, string> = {
   learning: "Learning",
   fitness: "Fitness",
   home: "Home",
+  food: "Food",
 };
 
 function fmtDuration(totalMin: number): string {
@@ -546,13 +548,13 @@ export function ClientView({ id }: { id: string }) {
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
-                  background: DOMAIN_BG[b.domainId],
+                  background: DOMAIN_BG[b.domain],
                   boxShadow:
                     "inset 0 0 0 0.5px rgba(20,20,30,0.06), inset 0 -2px 4px rgba(20,20,30,0.04), 0 1px 2px rgba(20,20,30,0.04)",
                   color: "var(--glyph,#0A0A0F)",
                 }}
               >
-                <DomainGlyph id={b.domainId} size={19} />
+                <DomainGlyph id={b.domain} size={19} />
               </div>
               {/* body */}
               <div
@@ -595,7 +597,7 @@ export function ClientView({ id }: { id: string }) {
                       letterSpacing: "0.02em",
                     }}
                   >
-                    {DOMAIN_NAMES[b.domainId]}
+                    {DOMAIN_NAMES[b.domain]}
                   </span>
                 </div>
               </div>

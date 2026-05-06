@@ -57,6 +57,13 @@ export function DomainGlyph({
           <path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z" />
         </svg>
       );
+    case "food":
+      return (
+        <svg {...shared}>
+          <path d="M12 3a5 5 0 015 5c0 2.5-1.5 4.5-3.5 5.3V20a1.5 1.5 0 01-3 0v-6.7C8.5 12.5 7 10.5 7 8a5 5 0 015-5z" />
+          <path d="M9 3v4M12 3v4M15 3v4" />
+        </svg>
+      );
   }
 }
 

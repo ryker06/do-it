@@ -11,6 +11,7 @@ const DOMAIN_BG: Record<DomainId, string> = {
   learning: "linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%)",
   fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
   home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
+  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
 };
 
 const DOMAIN_AURA: Record<DomainId, string> = {
@@ -23,6 +24,7 @@ const DOMAIN_AURA: Record<DomainId, string> = {
   fitness:
     "radial-gradient(closest-side, #FFB6C5, #FFD0DA 55%, transparent 78%)",
   home: "radial-gradient(closest-side, #CFDCE3, #E5ECF0 55%, transparent 78%)",
+  food: "radial-gradient(closest-side, #FFE0B2, #FFF3E0 55%, transparent 78%)",
 };
 
 const MOMENTUM_LABEL: Record<string, string> = {
@@ -84,7 +86,7 @@ export function ClientView({ id }: { id: string }) {
 
   const domainVisions = visions.filter((v) => v.domainId === domainId);
   const domainBlocks = blocks.filter(
-    (b) => b.domainId === domainId && b.status === "done",
+    (b) => b.domain === domainId && b.status === "done",
   );
 
   const now = new Date();

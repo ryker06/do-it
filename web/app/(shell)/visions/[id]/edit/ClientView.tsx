@@ -12,6 +12,7 @@ const DOMAIN_BG: Record<DomainId, string> = {
   learning: "linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%)",
   fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
   home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
+  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
 };
 
 const DOMAIN_IDS: DomainId[] = [
@@ -20,6 +21,7 @@ const DOMAIN_IDS: DomainId[] = [
   "learning",
   "fitness",
   "home",
+  "food",
 ];
 const DOMAIN_NAMES: Record<DomainId, string> = {
   business: "Business",
@@ -27,6 +29,7 @@ const DOMAIN_NAMES: Record<DomainId, string> = {
   learning: "Learning",
   fitness: "Fitness",
   home: "Home",
+  food: "Food",
 };
 
 export function ClientView({ id }: { id: string }) {

@@ -12,6 +12,7 @@ const DOMAIN_BG: Record<DomainId, string> = {
   learning: "var(--d-learning-1,#FFE3EB)",
   fitness: "var(--d-fitness-1,#FFD0DA)",
   home: "var(--d-home-1,#E5ECF0)",
+  food: "var(--d-food-1,#FFF3E0)",
 };
 
 interface SearchOverlayProps {
@@ -467,11 +468,11 @@ export default function SearchOverlay({ onClose }: SearchOverlayProps) {
                             alignItems: "center",
                             justifyContent: "center",
                             flexShrink: 0,
-                            background: DOMAIN_BG[b.domainId],
+                            background: DOMAIN_BG[b.domain],
                             color: "var(--glyph,#0A0A0F)",
                           }}
                         >
-                          <DomainGlyph id={b.domainId} size={18} />
+                          <DomainGlyph id={b.domain} size={18} />
                         </div>
                         <div
                           style={{
