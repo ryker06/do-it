@@ -7,6 +7,7 @@ import type {
   Domain,
   Vision,
   Routine,
+  RoutineCadence,
   Weekday,
   DomainId,
   Subscription,
@@ -15,9 +16,20 @@ import type {
   StateLogEntry,
   StateMark,
   Insight,
+  InsightStatus,
   WeeklyReview,
   Person,
   WishlistItem,
+  Goal,
+  GoalLog,
+  Habit,
+  Workout,
+  WorkoutSet,
+  SleepLog,
+  HydrationLog,
+  BodyLog,
+  JarEntry,
+  MorningBrief,
 } from "./types";
 import {
   DOMAINS,
@@ -32,6 +44,14 @@ import {
   SEED_INSIGHTS,
   SEED_PEOPLE,
   SEED_WISHLIST,
+  SEED_GOALS,
+  SEED_HABITS,
+  SEED_WORKOUTS,
+  SEED_SLEEP_LOG,
+  SEED_HYDRATION_LOG,
+  SEED_BODY_LOG,
+  SEED_JAR,
+  SEED_MORNING_BRIEFS,
 } from "./seed";
 
 type UserPrefs = {
@@ -61,6 +81,15 @@ type State = {
   people: Person[];
   wishlist: WishlistItem[];
   userPrefs: UserPrefs;
+  // v2
+  goals: Goal[];
+  habits: Habit[];
+  workouts: Workout[];
+  sleepLog: SleepLog[];
+  hydrationLog: HydrationLog[];
+  bodyLog: BodyLog[];
+  jar: JarEntry[];
+  morningBriefs: MorningBrief[];
 };
 
 type Actions = {
@@ -77,6 +106,7 @@ type Actions = {
   setUserCity: (city: string) => void;
   setSliderRange: (min: number, max: number) => void;
   advanceStep: (id: string) => void;
+  setBlockIntention: (blockId: string, text: string) => void;
   // block actions
   createBlock: (input: {
     title: string;
@@ -91,6 +121,8 @@ type Actions = {
   deleteRoutine: (id: string) => void;
   assignRoutine: (weekday: Weekday, routineId: string) => void;
   unassignRoutine: (weekday: Weekday) => void;
+  setRoutineIdentity: (routineId: string, identity: string) => void;
+  setRoutineCadence: (routineId: string, cadence: RoutineCadence) => void;
   // inbox
   addToInbox: (text: string, domain?: DomainId) => void;
   // domains
@@ -99,11 +131,39 @@ type Actions = {
   updateVision: (id: string, patch: Partial<Omit<Vision, "id">>) => void;
   deleteVision: (id: string) => void;
   createVision: (vision: Omit<Vision, "id">) => void;
+  setVisionIdentity: (visionId: string, identity: string) => void;
+  // goals
+  addGoal: (goal: Omit<Goal, "id" | "history">) => void;
+  updateGoal: (id: string, patch: Partial<Omit<Goal, "id">>) => void;
+  removeGoal: (id: string) => void;
+  logGoalValue: (goalId: string, value: number) => void;
+  // habits
+  addHabit: (habit: Omit<Habit, "id" | "marks" | "createdAt">) => void;
+  markHabit: (habitId: string, status: "done" | "rested") => void;
+  removeHabit: (id: string) => void;
+  // workouts
+  addWorkout: (workout: Omit<Workout, "id">) => void;
+  addWorkoutSet: (
+    workoutId: string,
+    exerciseId: string,
+    set: WorkoutSet,
+  ) => void;
+  // health
+  logSleep: (log: Omit<SleepLog, "id">) => void;
+  logHydration: (log: Omit<HydrationLog, "id">) => void;
+  addGlass: (dateISO: string) => void;
+  logBody: (log: Omit<BodyLog, "id">) => void;
+  // cookie jar
+  addJarEntry: (entry: Omit<JarEntry, "id">) => void;
+  removeJarEntry: (id: string) => void;
+  // morning brief
+  addMorningBrief: (brief: Omit<MorningBrief, "id">) => void;
   // money
   addSubscription: (sub: Omit<Subscription, "id">) => void;
   removeSubscription: (id: string) => void;
   addTransaction: (tx: Omit<Transaction, "id">) => void;
   removeTransaction: (id: string) => void;
+  setTransactionDomain: (txId: string, domain: DomainId) => void;
   // reflections
   addReflection: (r: Omit<Reflection, "id">) => void;
   // state log
@@ -111,6 +171,11 @@ type Actions = {
   // insights
   addInsight: (ins: Omit<Insight, "id">) => void;
   removeInsight: (id: string) => void;
+  updateInsightStatus: (
+    id: string,
+    status: InsightStatus,
+    notes?: string,
+  ) => void;
   // people
   addPerson: (p: Omit<Person, "id">) => void;
   updatePerson: (id: string, patch: Partial<Omit<Person, "id">>) => void;
@@ -130,7 +195,6 @@ type Actions = {
   pauseCurrent: () => void;
   finishCurrent: () => void;
   // user prefs
-  userPrefs: UserPrefs;
   setUserPrefs: (prefs: Partial<UserPrefs>) => void;
 };
 
@@ -161,6 +225,16 @@ export const useDoIt = create<State & Actions>()(
         syncUrl: "",
         lastSyncISO: "",
       },
+      // v2
+      goals: SEED_GOALS,
+      habits: SEED_HABITS,
+      workouts: SEED_WORKOUTS,
+      sleepLog: SEED_SLEEP_LOG,
+      hydrationLog: SEED_HYDRATION_LOG,
+      bodyLog: SEED_BODY_LOG,
+      jar: SEED_JAR,
+      morningBriefs: SEED_MORNING_BRIEFS,
+
       setHydrated: () => set({ hydrated: true }),
       setSliderRange: (min, max) =>
         set({ sliderMinOffset: min, sliderMaxOffset: max }),
@@ -266,6 +340,14 @@ export const useDoIt = create<State & Actions>()(
         }));
       },
 
+      setBlockIntention: (blockId, text) => {
+        set((s) => ({
+          blocks: s.blocks.map((b) =>
+            b.id === blockId ? { ...b, intention: text } : b,
+          ),
+        }));
+      },
+
       reorderBlocks: (orderedIds: string[]) => {
         set((s) => {
           const idxMap = new Map(orderedIds.map((id, i) => [id, i]));
@@ -367,8 +449,23 @@ export const useDoIt = create<State & Actions>()(
         }));
       },
 
+      setRoutineIdentity: (routineId, identity) => {
+        set((s) => ({
+          routines: s.routines.map((r) =>
+            r.id === routineId ? { ...r, identity } : r,
+          ),
+        }));
+      },
+
+      setRoutineCadence: (routineId, cadence) => {
+        set((s) => ({
+          routines: s.routines.map((r) =>
+            r.id === routineId ? { ...r, cadence } : r,
+          ),
+        }));
+      },
+
       addToInbox: (text, domain) => {
-        // Block is the one primitive. Inbox items are blocks with scheduledFor:'inbox'.
         const s = get();
         const maxOrder = s.blocks.reduce((m, b) => Math.max(m, b.order), -1);
         const newBlock: Block = {
@@ -405,6 +502,167 @@ export const useDoIt = create<State & Actions>()(
         set((s) => ({ visions: [...s.visions, newVision] }));
       },
 
+      setVisionIdentity: (visionId, identity) => {
+        set((s) => ({
+          visions: s.visions.map((v) =>
+            v.id === visionId ? { ...v, identity } : v,
+          ),
+        }));
+      },
+
+      // ── Goals ──
+      addGoal: (goal) => {
+        const newGoal: Goal = { ...goal, id: `g-${Date.now()}`, history: [] };
+        set((s) => ({ goals: [...s.goals, newGoal] }));
+      },
+
+      updateGoal: (id, patch) => {
+        set((s) => ({
+          goals: s.goals.map((g) => (g.id === id ? { ...g, ...patch } : g)),
+        }));
+      },
+
+      removeGoal: (id) => {
+        set((s) => ({ goals: s.goals.filter((g) => g.id !== id) }));
+      },
+
+      logGoalValue: (goalId, value) => {
+        const todayISO = new Date().toISOString().slice(0, 10);
+        const entry: GoalLog = { dateISO: todayISO, value };
+        set((s) => ({
+          goals: s.goals.map((g) => {
+            if (g.id !== goalId) return g;
+            const history = [
+              ...g.history.filter((h) => h.dateISO !== todayISO),
+              entry,
+            ];
+            return { ...g, currentValue: value, history };
+          }),
+        }));
+      },
+
+      // ── Habits ──
+      addHabit: (habit) => {
+        const newHabit: Habit = {
+          ...habit,
+          id: `h-${Date.now()}`,
+          marks: [],
+          createdAt: Date.now(),
+        };
+        set((s) => ({ habits: [...s.habits, newHabit] }));
+      },
+
+      markHabit: (habitId, status) => {
+        const todayISO = new Date().toISOString().slice(0, 10);
+        set((s) => ({
+          habits: s.habits.map((h) => {
+            if (h.id !== habitId) return h;
+            const marks = [
+              ...h.marks.filter((m) => m.dateISO !== todayISO),
+              { dateISO: todayISO, status },
+            ];
+            return { ...h, marks };
+          }),
+        }));
+      },
+
+      removeHabit: (id) => {
+        set((s) => ({ habits: s.habits.filter((h) => h.id !== id) }));
+      },
+
+      // ── Workouts ──
+      addWorkout: (workout) => {
+        const newWorkout: Workout = { ...workout, id: `w-${Date.now()}` };
+        set((s) => ({ workouts: [...s.workouts, newWorkout] }));
+      },
+
+      addWorkoutSet: (workoutId, exerciseId, workoutSet) => {
+        set((s) => ({
+          workouts: s.workouts.map((w) => {
+            if (w.id !== workoutId) return w;
+            return {
+              ...w,
+              exercises: w.exercises.map((e) => {
+                if (e.id !== exerciseId) return e;
+                return { ...e, sets: [...e.sets, workoutSet] };
+              }),
+            };
+          }),
+        }));
+      },
+
+      // ── Health ──
+      logSleep: (log) => {
+        const entry: SleepLog = { ...log, id: `sl-${Date.now()}` };
+        set((s) => ({
+          sleepLog: [
+            ...s.sleepLog.filter((l) => l.dateISO !== log.dateISO),
+            entry,
+          ],
+        }));
+      },
+
+      logHydration: (log) => {
+        const entry: HydrationLog = { ...log, id: `hy-${Date.now()}` };
+        set((s) => ({
+          hydrationLog: [
+            ...s.hydrationLog.filter((l) => l.dateISO !== log.dateISO),
+            entry,
+          ],
+        }));
+      },
+
+      addGlass: (dateISO) => {
+        set((s) => {
+          const existing = s.hydrationLog.find((l) => l.dateISO === dateISO);
+          if (existing) {
+            return {
+              hydrationLog: s.hydrationLog.map((l) =>
+                l.dateISO === dateISO ? { ...l, glasses: l.glasses + 1 } : l,
+              ),
+            };
+          }
+          return {
+            hydrationLog: [
+              ...s.hydrationLog,
+              { id: `hy-${Date.now()}`, dateISO, glasses: 1 },
+            ],
+          };
+        });
+      },
+
+      logBody: (log) => {
+        const entry: BodyLog = { ...log, id: `bo-${Date.now()}` };
+        set((s) => ({
+          bodyLog: [
+            ...s.bodyLog.filter((l) => l.dateISO !== log.dateISO),
+            entry,
+          ],
+        }));
+      },
+
+      // ── Cookie Jar ──
+      addJarEntry: (entry) => {
+        const newEntry: JarEntry = { ...entry, id: `jar-${Date.now()}` };
+        set((s) => ({ jar: [...s.jar, newEntry] }));
+      },
+
+      removeJarEntry: (id) => {
+        set((s) => ({ jar: s.jar.filter((j) => j.id !== id) }));
+      },
+
+      // ── Morning Brief ──
+      addMorningBrief: (brief) => {
+        const newBrief: MorningBrief = { ...brief, id: `mb-${Date.now()}` };
+        set((s) => ({
+          morningBriefs: [
+            ...s.morningBriefs.filter((b) => b.dateISO !== brief.dateISO),
+            newBrief,
+          ],
+        }));
+      },
+
+      // ── Money ──
       addSubscription: (sub) => {
         const newSub: Subscription = { ...sub, id: `sub-${Date.now()}` };
         set((s) => ({ subscriptions: [...s.subscriptions, newSub] }));
@@ -423,11 +681,17 @@ export const useDoIt = create<State & Actions>()(
           transactions: s.transactions.filter((x) => x.id !== id),
         }));
       },
+      setTransactionDomain: (txId, domain) => {
+        set((s) => ({
+          transactions: s.transactions.map((t) =>
+            t.id === txId ? { ...t, domain } : t,
+          ),
+        }));
+      },
 
       addReflection: (r) => {
         const newR: Reflection = { ...r, id: `ref-${Date.now()}` };
         set((s) => {
-          // Replace existing reflection for same date
           const filtered = s.reflections.filter((x) => x.dateISO !== r.dateISO);
           return { reflections: [...filtered, newR] };
         });
@@ -450,6 +714,20 @@ export const useDoIt = create<State & Actions>()(
       removeInsight: (id) => {
         set((s) => ({ insights: s.insights.filter((x) => x.id !== id) }));
       },
+      updateInsightStatus: (id, status, notes) => {
+        set((s) => ({
+          insights: s.insights.map((ins) =>
+            ins.id === id
+              ? {
+                  ...ins,
+                  status,
+                  testedNotes: notes ?? ins.testedNotes,
+                  statusChangedAt: Date.now(),
+                }
+              : ins,
+          ),
+        }));
+      },
 
       addPerson: (p) => {
         const newP: Person = { ...p, id: `p-${Date.now()}` };
@@ -464,7 +742,6 @@ export const useDoIt = create<State & Actions>()(
       addWeeklyReview: (wr) => {
         const newWr: WeeklyReview = { ...wr, id: `wr-${Date.now()}` };
         set((s) => {
-          // Replace if same weekStartISO
           const filtered = s.weeklyReviews.filter(
             (x) => x.weekStartISO !== wr.weekStartISO,
           );
@@ -602,33 +879,24 @@ export const useDoIt = create<State & Actions>()(
     }),
     {
       name: "do-it-state",
-      version: 11,
+      version: 12,
       skipHydration: true,
       migrate: (persistedState, _fromVersion) => {
         const s = persistedState as Record<string, unknown> | null;
         const hadPriorState = s != null && Object.keys(s).length > 0;
 
-        // Migrate old Block shape → new shape
-        // Old: { domainId, status: "idle"|"active"|"paused"|"done", subtasks, focusType, step: {current, total} }
-        // New: { domain, status: "pending"|"active"|"paused"|"done", step: BlockStep, scheduledFor }
         const migrateBlock = (b: Record<string, unknown>): Block => {
-          // domain field: prefer "domain", fall back to "domainId"
           const domain = (b.domain ?? b.domainId ?? "home") as Block["domain"];
-
-          // status: remap "idle" → "pending"
           const rawStatus = (b.status ?? "pending") as string;
           const status: Block["status"] =
             rawStatus === "idle" ? "pending" : (rawStatus as Block["status"]);
 
-          // step: if old shape {current, total} convert to new BlockStep
           let step: Block["step"] | undefined = undefined;
           if (b.step && typeof b.step === "object") {
             const oldStep = b.step as Record<string, unknown>;
             if ("items" in oldStep && Array.isArray(oldStep.items)) {
-              // already new shape
               step = b.step as Block["step"];
             } else if ("current" in oldStep && "total" in oldStep) {
-              // old shape — create a generic outline step
               const total = Number(oldStep.total ?? 0);
               step = {
                 kind: "outline",
@@ -638,7 +906,6 @@ export const useDoIt = create<State & Actions>()(
             }
           }
 
-          // scheduledFor: remap old "tomorrow" → "inbox"
           let scheduledFor: Block["scheduledFor"] = "today";
           if (b.scheduledFor === "tomorrow") scheduledFor = "inbox";
           else if (typeof b.scheduledFor === "string")
@@ -658,6 +925,7 @@ export const useDoIt = create<State & Actions>()(
             visionId: b.visionId as string | undefined,
             routineId: b.routineId as string | undefined,
             mode: b.mode as Block["mode"],
+            intention: b.intention as string | undefined,
             meta: b.meta as Block["meta"],
             scheduledFor,
           };
@@ -669,7 +937,6 @@ export const useDoIt = create<State & Actions>()(
         const blocks: Block[] =
           oldBlocks.length > 0 ? oldBlocks.map(migrateBlock) : SEED_BLOCKS;
 
-        // Migrate Domain: add food domain if missing, update momentum vocab
         const oldDomains = Array.isArray(s?.domains)
           ? (s.domains as Record<string, unknown>[])
           : [];
@@ -693,7 +960,6 @@ export const useDoIt = create<State & Actions>()(
           hasFoodDomain ? [] : [DOMAINS.find((d) => d.id === "food")!],
         ) as Domain[];
 
-        // Migrate Routine blocks: domainId → domain
         const oldRoutines = Array.isArray(s?.routines)
           ? (s.routines as Record<string, unknown>[])
           : [];
@@ -710,6 +976,18 @@ export const useDoIt = create<State & Actions>()(
               })) as Routine[])
             : SEED_ROUTINES;
 
+        // Migrate insights: add default status if missing
+        const oldInsights = Array.isArray(s?.insights)
+          ? (s.insights as Record<string, unknown>[])
+          : [];
+        const insights =
+          oldInsights.length > 0
+            ? (oldInsights.map((ins) => ({
+                ...ins,
+                status: (ins.status as string) ?? "captured",
+              })) as Insight[])
+            : SEED_INSIGHTS;
+
         return {
           ...s,
           blocks,
@@ -720,12 +998,6 @@ export const useDoIt = create<State & Actions>()(
                   const stored = (s.visions as Vision[]).find(
                     (v) => v.id === seed.id,
                   );
-                  // Merge: seed fields win for optional rich fields that may be
-                  // missing from stale localStorage snapshots (deadline,
-                  // targetMetric, description, threads, etc.)
-                  // stored wins for user-edited fields; seed fills in new
-                  // optional fields (deadline, targetMetric, description,
-                  // threads) that may be absent from stale localStorage data.
                   if (!stored) return seed;
                   const merged = { ...stored };
                   for (const key of Object.keys(seed) as (keyof Vision)[]) {
@@ -757,9 +1029,7 @@ export const useDoIt = create<State & Actions>()(
           stateLog: Array.isArray(s?.stateLog)
             ? (s.stateLog as StateLogEntry[])
             : SEED_STATE_LOG,
-          insights: Array.isArray(s?.insights)
-            ? (s.insights as Insight[])
-            : SEED_INSIGHTS,
+          insights,
           weeklyReviews: Array.isArray(s?.weeklyReviews)
             ? (s.weeklyReviews as WeeklyReview[])
             : [],
@@ -774,6 +1044,41 @@ export const useDoIt = create<State & Actions>()(
             sleepHHMM: "22:00",
             ...(s?.userPrefs as Partial<UserPrefs> | undefined),
           },
+          // v2 — always seed fresh on migration (new features)
+          goals:
+            Array.isArray(s?.goals) && (s.goals as unknown[]).length > 0
+              ? (s.goals as Goal[])
+              : SEED_GOALS,
+          habits:
+            Array.isArray(s?.habits) && (s.habits as unknown[]).length > 0
+              ? (s.habits as Habit[])
+              : SEED_HABITS,
+          workouts:
+            Array.isArray(s?.workouts) && (s.workouts as unknown[]).length > 0
+              ? (s.workouts as Workout[])
+              : SEED_WORKOUTS,
+          sleepLog:
+            Array.isArray(s?.sleepLog) && (s.sleepLog as unknown[]).length > 0
+              ? (s.sleepLog as SleepLog[])
+              : SEED_SLEEP_LOG,
+          hydrationLog:
+            Array.isArray(s?.hydrationLog) &&
+            (s.hydrationLog as unknown[]).length > 0
+              ? (s.hydrationLog as HydrationLog[])
+              : SEED_HYDRATION_LOG,
+          bodyLog:
+            Array.isArray(s?.bodyLog) && (s.bodyLog as unknown[]).length > 0
+              ? (s.bodyLog as BodyLog[])
+              : SEED_BODY_LOG,
+          jar:
+            Array.isArray(s?.jar) && (s.jar as unknown[]).length > 0
+              ? (s.jar as JarEntry[])
+              : SEED_JAR,
+          morningBriefs:
+            Array.isArray(s?.morningBriefs) &&
+            (s.morningBriefs as unknown[]).length > 0
+              ? (s.morningBriefs as MorningBrief[])
+              : SEED_MORNING_BRIEFS,
         };
       },
       onRehydrateStorage: () => (state) => {

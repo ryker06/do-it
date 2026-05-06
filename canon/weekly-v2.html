@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — WEEKLY v2</title>
+<style>
+:root{--bg:#FFFFFF;--stage:#F2F2F7;--inset:#F2F2F7;--inset-2:#EAEAEF;--card:#FFFFFF;--ink:#000;--ink-2:#1C1C1E;--label:#8E8E93;--label-2:#6E6E73;--glyph:#0A0A0F;--hairline:rgba(60,60,67,0.10);--hairline-2:rgba(60,60,67,0.06);--blue:#007AFF;--blue-soft:rgba(0,122,255,0.10);--shadow-stack:0 0 0 0.5px rgba(60,60,67,0.05),0 8px 22px -14px rgba(20,20,30,0.10)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--stage);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;color:var(--ink)}
+body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:48px 36px 96px;gap:48px;flex-wrap:wrap;background:radial-gradient(60% 40% at 50% 0%,#F7F7FB 0%,var(--stage) 60%)}
+.col{display:flex;flex-direction:column;align-items:center;gap:14px}
+.col-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--label);font-weight:600}
+.phone{width:393px;height:852px;background:var(--bg);border-radius:52px;position:relative;overflow:hidden;box-shadow:0 0 0 0.5px rgba(0,0,0,0.06),0 30px 60px -25px rgba(20,20,30,0.22)}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:54px 20px 0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-bottom:14px}
+.greet-day{font-size:11.5px;font-weight:600;color:var(--label);letter-spacing:0.04em}
+.greet-name{font-size:24px;font-weight:700;letter-spacing:-0.035em;line-height:1.05;margin-top:3px}
+.greet-name .sub{color:var(--label);font-weight:500}
+.me-avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(60,60,67,0.10)}
+.me-avatar img{width:100%;height:100%;display:block}
+
+.compounder{position:relative;background:linear-gradient(180deg,rgba(0,122,255,0.08) 0%,rgba(0,122,255,0.02) 100%);border-radius:18px;padding:14px 16px;margin-bottom:14px;box-shadow:inset 0 0 0 0.5px rgba(0,122,255,0.20)}
+.compounder .lbl{font-size:10px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--blue);margin-bottom:6px}
+.compounder .ph{font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:-0.012em;line-height:1.4}
+.compounder .ph b{font-weight:800}
+
+/* horizontal day strip */
+.strip{display:flex;gap:8px;padding:0 0 110px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.strip::-webkit-scrollbar{display:none}
+.day{flex:0 0 240px;background:var(--card);border-radius:20px;padding:14px;box-shadow:var(--shadow-stack);min-height:520px;display:flex;flex-direction:column;gap:8px;position:relative}
+.day::before{content:"";position:absolute;inset:0;border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 0.5px var(--hairline-2);pointer-events:none}
+.day.today{box-shadow:0 0 0 1.5px var(--blue),var(--shadow-stack)}
+.day-h{display:flex;align-items:baseline;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:0.5px solid var(--hairline)}
+.day-h .name{font-size:13px;font-weight:800;letter-spacing:-0.012em}
+.day-h .num{font-size:11px;color:var(--label);font-weight:600;font-variant-numeric:tabular-nums;margin-left:auto}
+.day.today .day-h .name{color:var(--blue)}
+
+.block{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:10px;background:var(--inset);box-shadow:inset 0 0 0 0.5px var(--hairline-2);cursor:grab}
+.block .ddisc{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06)}
+.block .ddisc svg{width:12px;height:12px;color:var(--glyph);stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round}
+.block .ddisc.business{background:linear-gradient(180deg,#E1ECFF 0%,#C9DBFF 100%)}
+.block .ddisc.fitness{background:linear-gradient(180deg,#FFD0DA 0%,#FFB6C5 100%)}
+.block .ddisc.religion{background:linear-gradient(180deg,#E2F4E6 0%,#C0E5C8 100%)}
+.block .ddisc.learning{background:linear-gradient(180deg,#FFE3EB 0%,#FFCFDC 100%)}
+.block .ddisc.home{background:linear-gradient(180deg,#E5ECF0 0%,#CFDCE3 100%)}
+.block .name{font-size:11.5px;font-weight:600;color:var(--ink-2);letter-spacing:-0.005em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.block .dur{font-size:10px;color:var(--label);font-weight:600;font-variant-numeric:tabular-nums}
+
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;align-items:flex-start;justify-content:space-around;padding:12px 24px 0;background:rgba(255,255,255,0.78);backdrop-filter:saturate(200%) blur(28px);-webkit-backdrop-filter:saturate(200%) blur(28px);border-top:0.5px solid var(--hairline);z-index:3}
+.tab{display:flex;flex-direction:column;align-items:center}
+.tab .pill{padding:9px 18px;border-radius:999px}
+.tab.active .pill{background:var(--inset-2)}
+.tab .pill svg{width:22px;height:22px;display:block;stroke:#8E8E93;fill:none;stroke-width:1.7}
+.tab.active .pill svg{stroke:#000}
+
+.desktop{width:1180px;background:var(--bg);border-radius:14px;box-shadow:0 0 0 0.5px rgba(0,0,0,0.06),0 30px 60px -25px rgba(20,20,30,0.22);overflow:hidden;display:grid;grid-template-columns:220px 1fr;min-height:760px}
+.sidebar{background:var(--bg);box-shadow:0.5px 0 0 var(--hairline);padding:14px 12px}
+.sb-top{font-size:14px;font-weight:700;padding:8px 10px 14px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.sb-item.active{background:var(--inset-2)}
+.sb-item svg{width:16px;height:16px;stroke:var(--label-2);stroke-width:1.7;fill:none}
+.titlebar{height:48px;display:flex;align-items:center;padding:0 24px;box-shadow:0 0.5px 0 var(--hairline)}
+.titlebar .greet{font-size:15px;font-weight:600}
+.titlebar .greet .sub{color:var(--label);font-weight:500;margin-left:4px}
+.dcontent{padding:24px 32px;background:var(--stage)}
+.dwrap{max-width:1080px;margin:0 auto}
+.dweek{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:14px}
+.dweek .day{min-height:540px}
+</style></head><body>
+
+<div class="col">
+  <div class="col-label">Mobile · week strip · horizontal swipe</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="topbar">
+        <div><div class="greet-day">Wed · 9:24</div><div class="greet-name">week. <span class="sub">may 26 – jun 1.</span></div></div>
+        <a class="me-avatar" href="#/settings/"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/></a>
+      </div>
+      <div class="compounder">
+        <div class="lbl">compounding</div>
+        <div class="ph"><b>deadlift: 3×/wk for 6 weeks · 92kg → 96kg.</b><br/>this week vs four weeks ago.</div>
+      </div>
+      <div class="strip">
+        <div class="day">
+          <div class="day-h"><div class="name">mon</div><div class="num">26</div></div>
+          <div class="block"><div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11"/></svg></div><div class="name">deadlift 5×3</div><div class="dur">75m</div></div>
+          <div class="block"><div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div><div class="name">brief draft</div><div class="dur">60m</div></div>
+          <div class="block"><div class="ddisc religion"><svg viewBox="0 0 24 24"><path d="M16 14a6 6 0 11-7-9 5 5 0 007 9z"/></svg></div><div class="name">quran</div><div class="dur">15m</div></div>
+        </div>
+        <div class="day">
+          <div class="day-h"><div class="name">tue</div><div class="num">27</div></div>
+          <div class="block"><div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div><div class="name">client calls</div><div class="dur">90m</div></div>
+          <div class="block"><div class="ddisc learning"><svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z" fill="#0A0A0F" stroke="none"/></svg></div><div class="name">naval ch.4</div><div class="dur">30m</div></div>
+        </div>
+        <div class="day today">
+          <div class="day-h"><div class="name">wed · today</div><div class="num">28</div></div>
+          <div class="block"><div class="ddisc religion"><svg viewBox="0 0 24 24"><path d="M16 14a6 6 0 11-7-9 5 5 0 007 9z"/></svg></div><div class="name">fajr · quran</div><div class="dur">25m</div></div>
+          <div class="block"><div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11"/></svg></div><div class="name">deadlift 5×3</div><div class="dur">75m</div></div>
+          <div class="block"><div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div><div class="name">Q2 brief</div><div class="dur">60m</div></div>
+          <div class="block"><div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div><div class="name">3 calls stacked</div><div class="dur">90m</div></div>
+        </div>
+        <div class="day">
+          <div class="day-h"><div class="name">thu</div><div class="num">29</div></div>
+          <div class="block"><div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11"/></svg></div><div class="name">bench 4×6</div><div class="dur">60m</div></div>
+          <div class="block"><div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div><div class="name">brief polish</div><div class="dur">45m</div></div>
+        </div>
+      </div>
+      <div class="tabbar"><div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></div></div><div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/></svg></div></div><div class="tab active"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="3.5" height="13" rx="1"/><rect x="10.5" y="3.5" width="3.5" height="17" rx="1"/><rect x="17" y="9" width="3.5" height="9.5" rx="1"/></svg></div></div><div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div></div></div>
+    </div>
+  </div>
+</div>
+
+<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px">
+  <div class="col-label">Desktop · all 7 days visible · drag across</div>
+  <div class="desktop">
+    <aside class="sidebar"><div class="sb-top">do it.</div><div class="sb-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>now</div><div class="sb-item active"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="3.5" height="13" rx="1"/></svg>week</div></aside>
+    <div>
+      <div class="titlebar"><div class="greet">week. <span class="sub">may 26 – jun 1.</span></div></div>
+      <div class="dcontent">
+        <div class="dwrap">
+          <div class="compounder">
+            <div class="lbl">compounding</div>
+            <div class="ph"><b>deadlift: 3×/wk for 6 weeks · 92kg → 96kg.</b> reading: 4 books in 8 weeks. business: 3 closes per week, steady.</div>
+          </div>
+          <div class="dweek">
+            <div class="day"><div class="day-h"><div class="name">mon</div><div class="num">26</div></div><div class="block"><div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11"/></svg></div><div class="name">deadlift</div><div class="dur">75m</div></div><div class="block"><div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div><div class="name">brief</div><div class="dur">60m</div></div></div>
+            <div class="day"><div class="day-h"><div class="name">tue</div><div class="num">27</div></div><div class="block"><div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div><div class="name">calls</div><div class="dur">90m</div></div></div>
+            <div class="day today"><div class="day-h"><div class="name">wed</div><div class="num">28</div></div><div class="block"><div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11"/></svg></div><div class="name">deadlift 5×3</div><div class="dur">75m</div></div><div class="block"><div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div><div class="name">Q2 brief</div><div class="dur">60m</div></div><div class="block"><div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/></svg></div><div class="name">3 calls</div><div class="dur">90m</div></div></div>
+            <div class="day"><div class="day-h"><div class="name">thu</div><div class="num">29</div></div><div class="block"><div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11"/></svg></div><div class="name">bench</div><div class="dur">60m</div></div></div>
+            <div class="day"><div class="day-h"><div class="name">fri</div><div class="num">30</div></div><div class="block"><div class="ddisc home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/></svg></div><div class="name">friday review</div><div class="dur">45m</div></div></div>
+            <div class="day"><div class="day-h"><div class="name">sat</div><div class="num">31</div></div><div class="block"><div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11"/></svg></div><div class="name">long run</div><div class="dur">60m</div></div></div>
+            <div class="day"><div class="day-h"><div class="name">sun</div><div class="num">1</div></div><div class="block"><div class="ddisc home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/></svg></div><div class="name">family</div><div class="dur">3h</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

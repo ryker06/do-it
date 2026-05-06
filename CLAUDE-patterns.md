@@ -45,6 +45,29 @@ Takes `{ title, domain, durationMin, scheduleToday }` — field is `domain`, not
 ## UserPrefs extension pattern
 When adding new optional fields to `userPrefs`, define a named `UserPrefs` type in store.ts (not an inline anonymous type), add the fields as optional, update both the initial default value AND the migrate spread (use `{ wakeHHMM: "06:00", sleepHHMM: "22:00", ...s?.userPrefs }` pattern so new fields are backfilled from seed defaults). Bump persist version.
 
+## Static export + dynamic [id] routes
+With `output: export` in next.config, any `[id]/page.tsx` MUST export `generateStaticParams()` or the build fails with "missing generateStaticParams". For user-created runtime IDs (goals, jar entries, etc.) that aren't known at build time, do NOT use `[param]` routes. Instead, use a static page with `useSearchParams` to read `?id=` from the URL. Wrap the component reading searchParams in `<Suspense>` to avoid hydration errors.
+
+Pattern:
+```tsx
+// /goals/detail/page.tsx
+function Inner() {
+  const id = useSearchParams().get("id") ?? "";
+  const goal = goals.find(g => g.id === id);
+  ...
+}
+export default function Page() {
+  return <Suspense fallback={<div />}><Inner /></Suspense>;
+}
+// Link to it: href={`/goals/detail?id=${g.id}`}
+```
+
+## addInsight requires status field
+`Insight` type now requires `status: InsightStatus` (not optional). Any `addInsight(...)` call must include `status: "captured"` as default. Missing this causes a TypeScript build error.
+
+## TypeScript: closures don't narrow post-early-return
+If a function does `if (!goal) return <JSX/>` and later uses `goal` inside a nested function (closure), TS still considers `goal` possibly undefined. Add a `if (!goal) return;` guard at the top of the closure function, or use a non-null assertion if the early return truly guarantees non-null.
+
 ## syncFromCloud is store-aware but not a hook
 `web/lib/notionSync.ts` calls `useDoIt.getState()` and `useDoIt.setState()` directly (not inside a React component). This is valid for Zustand — the store instance is a singleton. Never import this file from a Server Component.
 

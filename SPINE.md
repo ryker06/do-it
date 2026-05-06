@@ -117,6 +117,43 @@ These extend the same Block primitive and the unified-life thesis. Each earns it
 
 10. **PWA share target** — share article from Safari → block in inbox under learning domain. Zero-friction capture from anywhere.
 
+## Routine cadence — week-of-month aware
+Routines need richer cadence than Mon/Wed/Fri. Adam: "week one of the month has this routine, week two has another."
+
+Routine.cadence becomes a structured rule:
+```ts
+type RoutineCadence =
+  | { kind: 'weekly'; days: Weekday[] }                           // every week, on these weekdays
+  | { kind: 'biweekly'; days: Weekday[]; anchorWeek: 'A'|'B' }   // alternating weeks
+  | { kind: 'monthlyWeeks'; weeks: (1|2|3|4|5)[]; days: Weekday[] } // e.g. weeks 1+3 on Mon
+  | { kind: 'monthlyDays'; days: number[] }                      // e.g. 1st and 15th of each month
+  | { kind: 'interval'; everyDays: number; from: ISODate };       // every 3 days from a start
+```
+Routine builder UI must let Adam pick a cadence kind, then configure. Plain-English phrase derives automatically ("Mondays of weeks 1 and 3").
+
+## Information architecture — thematic grouping (replaces flat 16-item nav)
+
+Adam: "the way things are ordered, just how you navigate through it — supposed to be way more vast — this is part of UX."
+
+Bottom nav (mobile) / sidebar rail (desktop) — 4 primary destinations only:
+1. **NOW** — single focal block
+2. **TODAY** — today's flow
+3. **WEEK** — Mon-Sun arc view (the new weekly surface)
+4. **MORE** — grouped index of every secondary surface
+
+The "MORE" surface is itself a beautiful screen, not a dump. Surfaces are grouped by intent:
+
+- **DO** — Inbox · Templates · Focus modes · Cmd+K
+- **TRACK** — Habits · Health (Sleep/Hydration/Body) · Workouts · State log
+- **KNOW** — Visions · Goals · Insights · Books · Brag book · Knowledge graph
+- **LIFE** — People · Money (overview/subs/expenses/income) · Wishlist · Meal (planner/shopping)
+- **TEND** — Domains · Routines · Reflect · Weekly Review
+- **HOME** — Yesterday · Settings (memoji-tap shortcut still goes here)
+
+Each group is a labeled section on the MORE screen with its surfaces as tappable tiles in the group. Calm typography for group labels (small uppercase + hairline divider).
+
+Cmd+K (desktop) and a slide-from-right "all surfaces" search (mobile) provide instant access regardless of grouping.
+
 ## Anti-friction principles
 - Voice capture must work from any screen, any time.
 - Mid-NOW capture must not navigate away.

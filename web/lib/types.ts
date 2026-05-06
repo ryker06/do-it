@@ -48,6 +48,7 @@ export type Block = {
   visionId?: string;
   routineId?: string;
   mode?: "theory" | "application" | "feedback";
+  intention?: string;
   meta?: {
     ingredients?: string[];
     mealSlot?: string;
@@ -73,11 +74,12 @@ export type Vision = {
   domainId: DomainId;
   tint: string;
   description?: string;
-  nextMove?: string; // "next move that proves I'm aiming here"
-  anchorLine?: string; // one anchor line
+  nextMove?: string;
+  anchorLine?: string;
   threads?: VisionThread[];
   deadline?: string; // ISO date string e.g. "2026-07-28"
-  targetMetric?: string; // free-text proof statement e.g. "deadlift 180kg"
+  targetMetric?: string;
+  identity?: string; // "I am a 220kg deadlifter"
 };
 
 export type VisionThread = {
@@ -87,6 +89,13 @@ export type VisionThread = {
 };
 
 export type Weekday = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
+
+export type RoutineCadence =
+  | { kind: "weekly"; days: Weekday[] }
+  | { kind: "biweekly"; days: Weekday[]; anchorWeek: "A" | "B" }
+  | { kind: "monthlyWeeks"; weeks: (1 | 2 | 3 | 4 | 5)[]; days: Weekday[] }
+  | { kind: "monthlyDays"; days: number[] }
+  | { kind: "interval"; everyDays: number; from: string };
 
 // RoutineBlock is a template; actual blocks are emitted at schedule time
 export type RoutineBlock = {
@@ -101,11 +110,13 @@ export type RoutineBlock = {
 export type Routine = {
   id: string;
   name: string;
-  days: Weekday[];
-  cadenceDescription?: string; // plain-English cadence
-  streakPhrase?: string; // e.g. "9 weeks running"
+  days: Weekday[]; // legacy fallback — new code uses cadence
+  cadence?: RoutineCadence;
+  cadenceDescription?: string;
+  streakPhrase?: string;
   color?: string;
   blocks: RoutineBlock[];
+  identity?: string; // "I am someone who trains daily"
 };
 
 export type InboxItem = {
@@ -136,6 +147,7 @@ export type Transaction = {
   category: string;
   note?: string;
   source?: "manual" | "subscription";
+  domain?: DomainId;
 };
 export type Reflection = {
   id: string;
@@ -143,6 +155,10 @@ export type Reflection = {
   worked?: string;
   shifted?: string;
   firstMove?: string;
+  // v2 evening audit fields
+  fellShort?: string;
+  actedWell?: string;
+  correction?: string;
 };
 export type StateMark = "clear" | "focused" | "wired" | "drained" | "heavy";
 export type StateLogEntry = {
@@ -151,6 +167,8 @@ export type StateLogEntry = {
   mark: StateMark;
   note?: string;
 };
+
+export type InsightStatus = "captured" | "testing" | "adopted" | "discarded";
 export type Insight = {
   id: string;
   text: string;
@@ -158,7 +176,11 @@ export type Insight = {
   domainId?: DomainId;
   visionId?: string;
   capturedAt: number;
+  status: InsightStatus;
+  testedNotes?: string;
+  statusChangedAt?: number;
 };
+
 export type WeeklyReview = {
   id: string;
   weekStartISO: string;
@@ -170,6 +192,8 @@ export type WeeklyReview = {
     firstMoveNextWeek?: string;
   };
 };
+
+export type PersonRole = "family" | "mentor" | "training" | "team" | "friend";
 export type Person = {
   id: string;
   name: string;
@@ -177,6 +201,8 @@ export type Person = {
   lastTouchedISO?: string;
   nextMove?: string;
   note?: string;
+  role?: PersonRole;
+  lastInsight?: string;
 };
 
 export type WishlistPriority = "low" | "medium" | "high";
@@ -199,4 +225,67 @@ export type WishlistItem = {
   status: WishlistStatus;
   createdAt: number;
   boughtAt?: number;
+};
+
+// ── New v2 types ──
+
+export type GoalMetricKind = "weight" | "money" | "count" | "boolean";
+export type GoalLog = { dateISO: string; value: number };
+export type Goal = {
+  id: string;
+  visionId: string;
+  identityLine?: string;
+  metricKind: GoalMetricKind;
+  targetValue: number;
+  currentValue: number;
+  unit: string;
+  deadlineISO: string;
+  history: GoalLog[];
+};
+
+export type HabitMark = { dateISO: string; status: "done" | "rested" };
+export type Habit = {
+  id: string;
+  name: string;
+  identity?: string;
+  marks: HabitMark[];
+  createdAt: number;
+};
+
+export type WorkoutSet = { reps: number; weightKg: number; loggedAt: number };
+export type WorkoutExercise = { id: string; name: string; sets: WorkoutSet[] };
+export type Workout = {
+  id: string;
+  dateISO: string;
+  exercises: WorkoutExercise[];
+  notes?: string;
+};
+
+export type SleepLog = {
+  id: string;
+  dateISO: string;
+  hoursSlept: number;
+  quality?: 1 | 2 | 3 | 4 | 5;
+};
+export type HydrationLog = { id: string; dateISO: string; glasses: number };
+export type BodyLog = {
+  id: string;
+  dateISO: string;
+  weightKg?: number;
+  waistCm?: number;
+  bfPct?: number;
+};
+
+export type JarEntry = {
+  id: string;
+  capturedAt: number;
+  oneLine: string;
+  blockId?: string;
+};
+
+export type MorningBrief = {
+  id: string;
+  dateISO: string;
+  friction?: string;
+  resumePlan?: string;
 };

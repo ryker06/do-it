@@ -1,210 +1,327 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
 
 function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function tomorrowISO() {
   const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().slice(0, 10);
 }
 
 export default function ReflectPage() {
-  const { reflections, addReflection } = useDoIt();
+  const { reflections, addReflection, addMorningBrief } = useDoIt();
   const today = todayISO();
+
+  const [fellShort, setFellShort] = useState("");
+  const [actedWell, setActedWell] = useState("");
+  const [correction, setCorrection] = useState("");
+  const [echo, setEcho] = useState<string | null>(null);
 
   const existing = reflections.find((r) => r.dateISO === today);
 
-  const [worked, setWorked] = useState(existing?.worked ?? "");
-  const [shifted, setShifted] = useState(existing?.shifted ?? "");
-  const [firstMove, setFirstMove] = useState(existing?.firstMove ?? "");
-  const [saved, setSaved] = useState(false);
-  const [editMode, setEditMode] = useState(!existing);
-
-  useEffect(() => {
-    if (existing) {
-      setWorked(existing.worked ?? "");
-      setShifted(existing.shifted ?? "");
-      setFirstMove(existing.firstMove ?? "");
-      setEditMode(false);
-    }
-  }, [existing?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
   function handleSave() {
-    addReflection({ dateISO: today, worked, shifted, firstMove });
-    setSaved(true);
-    setEditMode(false);
-    setTimeout(() => setSaved(false), 2000);
+    addReflection({ dateISO: today, fellShort, actedWell, correction });
+    if (correction.trim()) {
+      addMorningBrief({ dateISO: tomorrowISO(), friction: correction.trim() });
+    }
+    setEcho("saved. → tomorrow sharper.");
+    setTimeout(() => setEcho(null), 2600);
   }
 
-  const card = {
-    background: "var(--card,#fff)",
-    borderRadius: 20,
-    padding: "18px 18px",
-    marginBottom: 14,
-    boxShadow:
-      "0 0 0 0.5px rgba(60,60,67,0.06), 0 1px 1px rgba(20,20,30,0.02), 0 8px 20px -12px rgba(20,20,30,0.08)",
-  } as const;
-
-  const label = {
-    fontSize: 11,
-    fontWeight: 700,
-    color: "var(--label,#8E8E93)",
-    letterSpacing: "0.12em",
-    textTransform: "uppercase" as const,
-    marginBottom: 8,
-  };
-
-  const textarea = {
-    width: "100%",
-    minHeight: 80,
-    resize: "none" as const,
-    border: "none",
-    outline: "none",
-    fontSize: 15,
-    fontWeight: 500,
-    color: "var(--ink,#000)",
-    letterSpacing: "-0.014em",
-    lineHeight: 1.55,
-    background: "transparent",
-    fontFamily: "inherit",
-    padding: 0,
-  };
-
-  const readText = {
-    fontSize: 15,
-    fontWeight: 500,
-    color: "var(--ink-2,#1C1C1E)",
-    letterSpacing: "-0.014em",
-    lineHeight: 1.55,
-    whiteSpace: "pre-wrap" as const,
-  };
+  const past = [...reflections]
+    .filter((r) => r.dateISO !== today && r.correction)
+    .sort((a, b) => b.dateISO.localeCompare(a.dateISO))
+    .slice(0, 3);
 
   return (
-    <>
-      <Topbar name="Reflect" sub="today's close" />
+    <div
+      style={{
+        minHeight: "100dvh",
+        background: "var(--ink-2)",
+        margin: "-16px -16px 0",
+        padding: "16px 16px 0",
+      }}
+    >
+      <Topbar name="reflect." sub="evening audit." />
 
-      {/* status row */}
-      {existing && (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 14,
+          paddingBottom: 100,
+        }}
+      >
+        {/* Prompt 1 */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 16,
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 20,
+            padding: "16px 18px",
+            boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.08)",
           }}
         >
-          <span
+          <div
             style={{
-              fontSize: 13,
-              fontWeight: 500,
-              color: "var(--label,#8E8E93)",
-              letterSpacing: "-0.01em",
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.35)",
+              marginBottom: 10,
             }}
           >
-            {editMode ? "Editing today's reflection" : "Today's reflection"}
-          </span>
-          {!editMode && (
-            <button
-              onClick={() => setEditMode(true)}
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: "var(--blue,#007AFF)",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: "4px 0",
-                letterSpacing: "-0.01em",
-              }}
-            >
-              Edit
-            </button>
-          )}
-        </div>
-      )}
-
-      <div style={{ paddingBottom: 110 }}>
-        {/* What worked */}
-        <div style={card}>
-          <div style={label}>What worked</div>
-          {editMode ? (
-            <textarea
-              style={textarea}
-              placeholder="A moment of clarity, a block that flowed, a decision that landed well…"
-              value={worked}
-              onChange={(e) => setWorked(e.target.value)}
-            />
-          ) : (
-            <div style={readText}>
-              {worked || (
-                <span style={{ color: "var(--label,#8E8E93)" }}>—</span>
-              )}
-            </div>
-          )}
+            where did you fall short today?
+          </div>
+          <textarea
+            value={fellShort}
+            onChange={(e) => setFellShort(e.target.value)}
+            placeholder="be honest."
+            rows={3}
+            style={{
+              width: "100%",
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              resize: "none",
+              fontSize: 15,
+              fontWeight: 500,
+              color: "rgba(255,255,255,0.85)",
+              fontFamily: "inherit",
+              letterSpacing: "-0.014em",
+              lineHeight: 1.5,
+            }}
+          />
         </div>
 
-        {/* What shifted */}
-        <div style={card}>
-          <div style={label}>What shifted</div>
-          {editMode ? (
-            <textarea
-              style={textarea}
-              placeholder="Something that moved, changed, or surprised you today…"
-              value={shifted}
-              onChange={(e) => setShifted(e.target.value)}
-            />
-          ) : (
-            <div style={readText}>
-              {shifted || (
-                <span style={{ color: "var(--label,#8E8E93)" }}>—</span>
-              )}
-            </div>
-          )}
+        {/* Prompt 2 */}
+        <div
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 20,
+            padding: "16px 18px",
+            boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.08)",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.35)",
+              marginBottom: 10,
+            }}
+          >
+            where did you act well?
+          </div>
+          <textarea
+            value={actedWell}
+            onChange={(e) => setActedWell(e.target.value)}
+            placeholder="own it."
+            rows={3}
+            style={{
+              width: "100%",
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              resize: "none",
+              fontSize: 15,
+              fontWeight: 500,
+              color: "rgba(255,255,255,0.85)",
+              fontFamily: "inherit",
+              letterSpacing: "-0.014em",
+              lineHeight: 1.5,
+            }}
+          />
         </div>
 
-        {/* Tomorrow's first move */}
-        <div style={card}>
-          <div style={label}>{"Tomorrow's first move"}</div>
-          {editMode ? (
-            <textarea
-              style={{ ...textarea, minHeight: 56 }}
-              placeholder="The one thing you'll do first, before anything else…"
-              value={firstMove}
-              onChange={(e) => setFirstMove(e.target.value)}
-            />
-          ) : (
-            <div style={readText}>
-              {firstMove || (
-                <span style={{ color: "var(--label,#8E8E93)" }}>—</span>
-              )}
-            </div>
-          )}
+        {/* Prompt 3 */}
+        <div
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: 20,
+            padding: "16px 18px",
+            boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.08)",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.35)",
+              marginBottom: 10,
+            }}
+          >
+            one specific correction for tomorrow.
+          </div>
+          <textarea
+            value={correction}
+            onChange={(e) => setCorrection(e.target.value)}
+            placeholder="make it a verb."
+            rows={2}
+            style={{
+              width: "100%",
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              resize: "none",
+              fontSize: 15,
+              fontWeight: 500,
+              color: "rgba(255,255,255,0.85)",
+              fontFamily: "inherit",
+              letterSpacing: "-0.014em",
+              lineHeight: 1.5,
+            }}
+          />
         </div>
 
         {/* Save */}
-        {editMode && (
-          <button
-            onClick={handleSave}
+        <button
+          onClick={handleSave}
+          style={{
+            background: "rgba(255,255,255,0.10)",
+            color: "rgba(255,255,255,0.80)",
+            border: "none",
+            borderRadius: 18,
+            padding: "15px 0",
+            fontSize: 15,
+            fontWeight: 700,
+            fontFamily: "inherit",
+            cursor: "pointer",
+            letterSpacing: "-0.018em",
+            boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.12)",
+            width: "100%",
+          }}
+        >
+          close the day.
+        </button>
+
+        {echo && (
+          <div
             style={{
-              width: "100%",
-              padding: "15px 0",
-              borderRadius: 18,
-              background: "linear-gradient(180deg,#1A1A1F 0%, #0A0A0F 100%)",
-              color: "#fff",
-              fontSize: 15,
+              textAlign: "center",
+              fontSize: 12,
               fontWeight: 600,
-              letterSpacing: "-0.018em",
-              border: "none",
-              cursor: "pointer",
-              boxShadow:
-                "0 4px 16px rgba(10,10,15,0.22), 0 1px 2px rgba(10,10,15,0.14)",
+              color: "rgba(255,255,255,0.45)",
+              fontStyle: "italic",
+              marginTop: -4,
             }}
           >
-            {saved ? "Saved" : "Save reflection"}
-          </button>
+            {echo}
+          </div>
+        )}
+
+        {/* Past corrections */}
+        {past.length > 0 && (
+          <div style={{ marginTop: 8 }}>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.25)",
+                marginBottom: 10,
+              }}
+            >
+              recent corrections
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {past.map((r) => (
+                <div
+                  key={r.id}
+                  style={{
+                    padding: "11px 14px",
+                    background: "rgba(255,255,255,0.04)",
+                    borderRadius: 14,
+                    boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.06)",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "rgba(255,255,255,0.28)",
+                      fontWeight: 600,
+                      marginBottom: 4,
+                    }}
+                  >
+                    {new Date(r.dateISO).toLocaleDateString("en", {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      color: "rgba(255,255,255,0.60)",
+                      fontWeight: 500,
+                      letterSpacing: "-0.012em",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {r.correction}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Today's saved entry */}
+        {existing && (
+          <div style={{ marginTop: 4 }}>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.25)",
+                marginBottom: 10,
+              }}
+            >
+              today&apos;s log
+            </div>
+            {existing.actedWell && (
+              <div
+                style={{
+                  fontSize: 13.5,
+                  color: "rgba(255,255,255,0.55)",
+                  fontWeight: 500,
+                  letterSpacing: "-0.012em",
+                  lineHeight: 1.45,
+                  marginBottom: 8,
+                }}
+              >
+                {existing.actedWell}
+              </div>
+            )}
+            {existing.correction && (
+              <div
+                style={{
+                  fontSize: 13.5,
+                  color: "rgba(255,255,255,0.40)",
+                  fontWeight: 600,
+                  letterSpacing: "-0.012em",
+                  fontStyle: "italic",
+                }}
+              >
+                → {existing.correction}
+              </div>
+            )}
+          </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

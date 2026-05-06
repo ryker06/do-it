@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — REFLECT v2</title>
+<style>
+:root{
+  --bg:#FFFFFF;--stage:#F2F2F7;--inset:#F2F2F7;--inset-2:#EAEAEF;--card:#FFFFFF;
+  --ink:#000;--ink-2:#1C1C1E;--label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-2:rgba(60,60,67,0.06);
+  --blue:#007AFF;--blue-soft:rgba(0,122,255,0.10);
+  --green:#34C759;--green-deep:#248A3D;
+  --shadow-stack:0 0 0 0.5px rgba(60,60,67,0.05),0 8px 22px -14px rgba(20,20,30,0.10);
+  --shadow-press:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 12px 24px -14px rgba(10,10,20,0.45);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--stage);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;color:var(--ink)}
+body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:48px 36px 96px;gap:48px;flex-wrap:wrap;background:radial-gradient(40% 50% at 50% 0%, #1A1A20 0%, #0A0A0F 100%)}
+.col{display:flex;flex-direction:column;align-items:center;gap:14px}
+.col-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.45);font-weight:600}
+
+/* Reflect uses dark surface — "evening audit" feel */
+.phone{width:393px;height:852px;background:#0E0E12;border-radius:52px;position:relative;overflow:hidden;box-shadow:0 0 0 0.5px rgba(255,255,255,0.06),0 30px 60px -25px rgba(0,0,0,0.5)}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:54px 22px 0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-bottom:22px}
+.greet-day{font-size:11.5px;font-weight:600;color:rgba(255,255,255,0.45);letter-spacing:0.04em}
+.greet-name{font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.035em;line-height:1.05;margin-top:3px}
+.greet-name .sub{color:rgba(255,255,255,0.45);font-weight:500}
+.me-avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #1A1A20,0 0 0 3px rgba(255,255,255,0.10)}
+.me-avatar img{width:100%;height:100%;display:block}
+
+.scroller{flex:1;overflow-y:auto;padding:0 0 110px;display:flex;flex-direction:column;gap:14px}
+.scroller::-webkit-scrollbar{display:none}
+
+.prompt{position:relative;background:rgba(255,255,255,0.04);border-radius:22px;padding:20px 20px 18px;box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.06),inset 0 1px 0 rgba(255,255,255,0.04)}
+.prompt .num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;margin-bottom:10px;box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.10)}
+.prompt .q{font-size:18px;font-weight:700;color:#fff;letter-spacing:-0.026em;line-height:1.25;margin-bottom:14px}
+.prompt textarea{width:100%;background:transparent;border:none;color:rgba(255,255,255,0.85);font-size:14.5px;line-height:1.5;font-family:inherit;resize:none;min-height:64px;outline:none;letter-spacing:-0.005em}
+.prompt textarea::placeholder{color:rgba(255,255,255,0.30);font-style:italic}
+.prompt .typed{font-size:14.5px;line-height:1.5;color:rgba(255,255,255,0.85);letter-spacing:-0.005em}
+
+.actions{display:flex;gap:10px;margin-top:14px;align-items:center}
+.voice-btn{width:48px;height:48px;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,0.10) 0%,rgba(255,255,255,0.04) 100%);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.10),inset 0 1px 0 rgba(255,255,255,0.06)}
+.voice-btn svg{width:20px;height:20px;color:#fff;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round}
+.save-btn{flex:1;background:#fff;color:#000;border:none;border-radius:14px;padding:14px;font-size:14.5px;font-weight:700;letter-spacing:-0.012em;font-family:inherit;cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,0.4) inset,0 12px 24px -8px rgba(0,0,0,0.5)}
+
+.echo{font-size:12px;color:rgba(255,255,255,0.40);font-weight:500;font-style:italic;letter-spacing:-0.005em;text-align:center;padding:14px 12px}
+
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;align-items:flex-start;justify-content:space-around;padding:12px 24px 0;background:rgba(20,20,28,0.65);backdrop-filter:saturate(200%) blur(28px);-webkit-backdrop-filter:saturate(200%) blur(28px);border-top:0.5px solid rgba(255,255,255,0.08);z-index:3}
+.tab{display:flex;flex-direction:column;align-items:center}
+.tab .pill{padding:9px 18px;border-radius:999px}
+.tab.active .pill{background:rgba(255,255,255,0.10)}
+.tab .pill svg{width:22px;height:22px;display:block;stroke:rgba(255,255,255,0.45);fill:none;stroke-width:1.7}
+.tab.active .pill svg{stroke:#fff}
+</style></head><body>
+
+<div class="col">
+  <div class="col-label">Mobile · evening audit (3 prompts)</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 9:14 pm</div>
+          <div class="greet-name">reflect. <span class="sub">sharpen tomorrow.</span></div>
+        </div>
+        <a class="me-avatar" href="#/settings/"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/></a>
+      </div>
+
+      <div class="scroller">
+        <div class="prompt">
+          <div class="num">1</div>
+          <div class="q">where did you fall short today?</div>
+          <textarea placeholder="say it plain..."></textarea>
+        </div>
+
+        <div class="prompt">
+          <div class="num">2</div>
+          <div class="q">where did you act well?</div>
+          <div class="typed">held the deadlift line · 96kg felt clean. shipped the brief before noon.</div>
+        </div>
+
+        <div class="prompt">
+          <div class="num">3</div>
+          <div class="q">one specific correction for tomorrow.</div>
+          <textarea placeholder="one move. tomorrow's first block."></textarea>
+        </div>
+
+        <div class="actions">
+          <button class="voice-btn" title="hold to talk">
+            <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="13" rx="3"/><path d="M5 11a7 7 0 0014 0"/><path d="M12 18v3"/></svg>
+          </button>
+          <button class="save-btn">save · sharpen tomorrow</button>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="3.5" height="13" rx="1"/></svg></div></div>
+        <div class="tab active"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col">
+  <div class="col-label">Mobile · saved (echo state)</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 9:18 pm</div>
+          <div class="greet-name">saved. <span class="sub">tomorrow sharper.</span></div>
+        </div>
+        <a class="me-avatar" href="#/settings/"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/></a>
+      </div>
+      <div class="scroller">
+        <div class="prompt">
+          <div class="num">1</div>
+          <div class="q">fell short.</div>
+          <div class="typed">scrolled twitter at 8pm for 25 min instead of reading.</div>
+        </div>
+        <div class="prompt">
+          <div class="num">2</div>
+          <div class="q">acted well.</div>
+          <div class="typed">held the deadlift line · 96kg felt clean. shipped the brief before noon.</div>
+        </div>
+        <div class="prompt" style="background:linear-gradient(180deg,rgba(0,122,255,0.18) 0%,rgba(0,122,255,0.06) 100%);box-shadow:inset 0 0 0 0.5px rgba(0,122,255,0.30)">
+          <div class="num" style="background:rgba(0,122,255,0.30);color:#fff">3</div>
+          <div class="q">tomorrow's first move.</div>
+          <div class="typed" style="color:#fff">phone in another room from 8pm. read instead.</div>
+        </div>
+        <div class="echo">→ becomes tomorrow's first-block intention.</div>
+      </div>
+      <div class="tabbar">
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="3.5" height="13" rx="1"/></svg></div></div>
+        <div class="tab active"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

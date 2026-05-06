@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — KNOWLEDGE HEATMAP v2</title>
+<style>
+:root{
+  --bg:#FFFFFF;--stage:#F2F2F7;--inset:#F2F2F7;--inset-2:#EAEAEF;--card:#FFFFFF;
+  --ink:#000;--ink-2:#1C1C1E;--label:#8E8E93;--label-2:#6E6E73;--glyph:#0A0A0F;
+  --hairline:rgba(60,60,67,0.10);--hairline-2:rgba(60,60,67,0.06);
+  --blue:#007AFF;--blue-soft:rgba(0,122,255,0.10);
+  --shadow-stack:0 0 0 0.5px rgba(60,60,67,0.05),0 8px 22px -14px rgba(20,20,30,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--stage);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;color:var(--ink)}
+body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:48px 36px 96px;gap:48px;flex-wrap:wrap;background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%)}
+.col{display:flex;flex-direction:column;align-items:center;gap:14px}
+.col-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--label);font-weight:600}
+
+.phone{width:393px;height:852px;background:var(--bg);border-radius:52px;position:relative;overflow:hidden;box-shadow:0 0 0 0.5px rgba(0,0,0,0.06),0 30px 60px -25px rgba(20,20,30,0.22)}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:54px 20px 0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-bottom:14px}
+.greet-day{font-size:11.5px;font-weight:600;color:var(--label);letter-spacing:0.04em}
+.greet-name{font-size:24px;font-weight:700;letter-spacing:-0.035em;line-height:1.05;margin-top:3px}
+.greet-name .sub{color:var(--label);font-weight:500}
+.me-avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(60,60,67,0.10)}
+.me-avatar img{width:100%;height:100%;display:block}
+
+.scroller{flex:1;overflow-y:auto;padding:0 0 110px}
+.scroller::-webkit-scrollbar{display:none}
+
+.tabs{display:flex;gap:6px;padding:4px;background:var(--inset);border-radius:12px;margin-bottom:14px;box-shadow:inset 0 0 0 0.5px var(--hairline-2);overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tabs .t{padding:7px 12px;font-size:12px;font-weight:600;color:var(--label-2);border-radius:8px;font-family:inherit;border:none;background:transparent;cursor:pointer;white-space:nowrap}
+.tabs .t.on{background:#fff;color:var(--ink);box-shadow:0 0 0 0.5px var(--hairline)}
+
+.heat{position:relative;background:var(--card);border-radius:20px;padding:18px 16px;box-shadow:var(--shadow-stack);margin-bottom:14px}
+.heat::before{content:"";position:absolute;inset:0;border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 0.5px var(--hairline-2);pointer-events:none}
+.heat .name{font-size:15px;font-weight:700;letter-spacing:-0.018em;margin-bottom:4px}
+.heat .meta{font-size:11.5px;color:var(--label);font-weight:600;margin-bottom:14px}
+.heat .meta b{color:var(--ink-2);font-weight:700}
+
+/* heat grid: 14 cols x 7 rows = 14 weeks */
+.hgrid{display:grid;grid-template-columns:auto repeat(14,1fr);gap:3px;align-items:center}
+.hgrid .day-lbl{font-size:9px;color:var(--label);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;text-align:right;padding-right:4px;height:14px;line-height:14px}
+.hcell{aspect-ratio:1;border-radius:3px;background:var(--inset-2);box-shadow:inset 0 0 0 0.5px var(--hairline-2)}
+.hcell.l1{background:#DCEDFB}
+.hcell.l2{background:#A8D4F5}
+.hcell.l3{background:#5BAEEC}
+.hcell.l4{background:#007AFF}
+.hcell.fitness.l1{background:#FFE3EB}
+.hcell.fitness.l2{background:#FFCFDC}
+.hcell.fitness.l3{background:#FF9DB6}
+.hcell.fitness.l4{background:#FF6B8B}
+
+.legend{margin-top:12px;display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--label);font-weight:600}
+.legend .scale{display:flex;gap:3px}
+.legend .scale .s{width:10px;height:10px;border-radius:2px;box-shadow:inset 0 0 0 0.5px var(--hairline-2)}
+.legend .scale .s.l0{background:var(--inset-2)}
+.legend .scale .s.l1{background:#DCEDFB}
+.legend .scale .s.l2{background:#A8D4F5}
+.legend .scale .s.l3{background:#5BAEEC}
+.legend .scale .s.l4{background:#007AFF}
+
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;align-items:flex-start;justify-content:space-around;padding:12px 24px 0;background:rgba(255,255,255,0.78);backdrop-filter:saturate(200%) blur(28px);-webkit-backdrop-filter:saturate(200%) blur(28px);border-top:0.5px solid var(--hairline);z-index:3}
+.tab{display:flex;flex-direction:column;align-items:center}
+.tab .pill{padding:9px 18px;border-radius:999px}
+.tab.active .pill{background:var(--inset-2)}
+.tab .pill svg{width:22px;height:22px;display:block;stroke:#8E8E93;fill:none;stroke-width:1.7}
+.tab.active .pill svg{stroke:#000}
+
+.desktop{width:1100px;background:var(--bg);border-radius:14px;box-shadow:0 0 0 0.5px rgba(0,0,0,0.06),0 30px 60px -25px rgba(20,20,30,0.22);overflow:hidden;display:grid;grid-template-columns:220px 1fr;min-height:680px}
+.sidebar{background:var(--bg);box-shadow:0.5px 0 0 var(--hairline);padding:14px 12px}
+.sb-top{font-size:14px;font-weight:700;padding:8px 10px 14px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.sb-item.active{background:var(--inset-2)}
+.sb-item svg{width:16px;height:16px;stroke:var(--label-2);stroke-width:1.7;fill:none}
+.titlebar{height:48px;display:flex;align-items:center;padding:0 24px;box-shadow:0 0.5px 0 var(--hairline)}
+.titlebar .greet{font-size:15px;font-weight:600}
+.titlebar .greet .sub{color:var(--label);font-weight:500;margin-left:4px}
+.dcontent{padding:32px 0;background:var(--stage)}
+.dwrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+</style></head><body>
+
+<div class="col">
+  <div class="col-label">Mobile · knowledge engagement heatmap</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 9:24</div>
+          <div class="greet-name">heatmap. <span class="sub">14 weeks of input.</span></div>
+        </div>
+        <a class="me-avatar" href="#/settings/"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/></a>
+      </div>
+
+      <div class="tabs">
+        <button class="t on">all</button>
+        <button class="t">learning</button>
+        <button class="t">business</button>
+        <button class="t">religion</button>
+        <button class="t">fitness</button>
+      </div>
+
+      <div class="scroller">
+        <div class="heat">
+          <div class="name">learning</div>
+          <div class="meta"><b>87 captures</b> · 14 weeks · 22 theory blocks</div>
+          <div class="hgrid">
+            <span class="day-lbl">mon</span>
+            <div class="hcell l1"></div><div class="hcell"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l1"></div><div class="hcell"></div><div class="hcell l2"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l3"></div>
+            <span class="day-lbl">tue</span>
+            <div class="hcell"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l2"></div><div class="hcell"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l4"></div>
+            <span class="day-lbl">wed</span>
+            <div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l2"></div>
+            <span class="day-lbl">thu</span>
+            <div class="hcell l1"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l3"></div><div class="hcell l3"></div>
+            <span class="day-lbl">fri</span>
+            <div class="hcell"></div><div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell l3"></div><div class="hcell"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l3"></div>
+            <span class="day-lbl">sat</span>
+            <div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l4"></div>
+            <span class="day-lbl">sun</span>
+            <div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l3"></div><div class="hcell l4"></div>
+          </div>
+          <div class="legend"><span>quiet</span><div class="scale"><div class="s l0"></div><div class="s l1"></div><div class="s l2"></div><div class="s l3"></div><div class="s l4"></div></div><span>steady input</span></div>
+        </div>
+
+        <div class="heat">
+          <div class="name">fitness</div>
+          <div class="meta"><b>54 captures</b> · 14 weeks · 14 theory blocks</div>
+          <div class="hgrid">
+            <span class="day-lbl">mon</span>
+            <div class="hcell"></div><div class="hcell fitness l1"></div><div class="hcell fitness l2"></div><div class="hcell"></div><div class="hcell fitness l1"></div><div class="hcell fitness l3"></div><div class="hcell fitness l2"></div><div class="hcell fitness l4"></div><div class="hcell fitness l3"></div><div class="hcell fitness l2"></div><div class="hcell"></div><div class="hcell fitness l3"></div><div class="hcell fitness l4"></div><div class="hcell fitness l3"></div>
+            <span class="day-lbl">wed</span>
+            <div class="hcell fitness l1"></div><div class="hcell"></div><div class="hcell fitness l2"></div><div class="hcell fitness l1"></div><div class="hcell fitness l3"></div><div class="hcell"></div><div class="hcell fitness l2"></div><div class="hcell fitness l3"></div><div class="hcell fitness l4"></div><div class="hcell fitness l3"></div><div class="hcell fitness l2"></div><div class="hcell fitness l3"></div><div class="hcell fitness l3"></div><div class="hcell fitness l4"></div>
+            <span class="day-lbl">fri</span>
+            <div class="hcell"></div><div class="hcell fitness l3"></div><div class="hcell fitness l2"></div><div class="hcell fitness l1"></div><div class="hcell"></div><div class="hcell fitness l2"></div><div class="hcell fitness l3"></div><div class="hcell fitness l4"></div><div class="hcell fitness l3"></div><div class="hcell fitness l4"></div><div class="hcell fitness l3"></div><div class="hcell fitness l3"></div><div class="hcell fitness l4"></div><div class="hcell fitness l3"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="3.5" height="13" rx="1"/></svg></div></div>
+        <div class="tab active"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px">
+  <div class="col-label">Desktop · 880px full heatmap</div>
+  <div class="desktop">
+    <aside class="sidebar"><div class="sb-top">do it.</div><div class="sb-item active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg>heatmap</div></aside>
+    <div>
+      <div class="titlebar"><div class="greet">heatmap. <span class="sub">where you've been thinking.</span></div></div>
+      <div class="dcontent">
+        <div class="dwrap">
+          <div class="heat">
+            <div class="name">learning · 14 weeks</div>
+            <div class="meta"><b>87 captures</b> · 22 theory blocks · longest stretch 9 days</div>
+            <div class="hgrid">
+              <span class="day-lbl">mon</span>
+              <div class="hcell l1"></div><div class="hcell"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l1"></div><div class="hcell"></div><div class="hcell l2"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l3"></div>
+              <span class="day-lbl">tue</span>
+              <div class="hcell"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l2"></div><div class="hcell"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l4"></div>
+              <span class="day-lbl">wed</span>
+              <div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l2"></div>
+              <span class="day-lbl">thu</span>
+              <div class="hcell l1"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l3"></div><div class="hcell l3"></div>
+              <span class="day-lbl">fri</span>
+              <div class="hcell"></div><div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell l3"></div><div class="hcell"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l3"></div>
+              <span class="day-lbl">sat</span>
+              <div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l4"></div><div class="hcell l4"></div><div class="hcell l3"></div><div class="hcell l4"></div>
+              <span class="day-lbl">sun</span>
+              <div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l1"></div><div class="hcell l2"></div><div class="hcell l3"></div><div class="hcell l3"></div><div class="hcell l4"></div>
+            </div>
+            <div class="legend"><span>quiet</span><div class="scale"><div class="s l0"></div><div class="s l1"></div><div class="s l2"></div><div class="s l3"></div><div class="s l4"></div></div><span>steady input</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

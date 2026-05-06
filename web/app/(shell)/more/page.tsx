@@ -1,123 +1,138 @@
 "use client";
 
 import Link from "next/link";
+import { Topbar } from "@/components/Topbar";
 
-type Surface = {
+type Tile = {
   href: string;
-  name: string;
-  description: string;
+  label: string;
+  emoji: string;
 };
 
-const SURFACES: Surface[] = [
+type Group = {
+  id: string;
+  name: string;
+  tiles: Tile[];
+};
+
+const GROUPS: Group[] = [
   {
-    href: "/visions",
-    name: "Visions",
-    description: "What you are building toward",
+    id: "do",
+    name: "do",
+    tiles: [{ href: "/inbox", label: "inbox", emoji: "📥" }],
   },
   {
-    href: "/routines",
-    name: "Routines",
-    description: "Your daily and weekly rhythms",
+    id: "track",
+    name: "track",
+    tiles: [
+      { href: "/habits", label: "habits", emoji: "⬛" },
+      { href: "/workouts", label: "workouts", emoji: "🏋️" },
+      { href: "/health", label: "health", emoji: "💧" },
+      { href: "/state", label: "state", emoji: "🌡" },
+    ],
   },
   {
-    href: "/meal",
-    name: "Meal",
-    description: "Food blocks and shopping derivation",
-  },
-  { href: "/inbox", name: "Inbox", description: "Unscheduled captured blocks" },
-  {
-    href: "/money",
-    name: "Money",
-    description: "Subscriptions, expenses, income",
-  },
-  {
-    href: "/reflect",
-    name: "Reflect",
-    description: "End-of-day prompts and entries",
+    id: "know",
+    name: "know",
+    tiles: [
+      { href: "/visions", label: "visions", emoji: "🔭" },
+      { href: "/goals", label: "goals", emoji: "🎯" },
+      { href: "/insights", label: "insights", emoji: "💡" },
+      { href: "/jar", label: "cookie jar", emoji: "🍪" },
+      { href: "/knowledge", label: "knowledge", emoji: "📊" },
+    ],
   },
   {
-    href: "/state",
-    name: "State",
-    description: "How you feel right now — one tap",
+    id: "life",
+    name: "life",
+    tiles: [
+      { href: "/people", label: "people", emoji: "🤝" },
+      { href: "/money", label: "money", emoji: "💸" },
+      { href: "/wishlist", label: "wishlist", emoji: "✨" },
+    ],
   },
   {
-    href: "/insights",
-    name: "Insights",
-    description: "Quotes and lessons from learning",
+    id: "tend",
+    name: "tend",
+    tiles: [
+      { href: "/domains", label: "domains", emoji: "🗺" },
+      { href: "/routines", label: "routines", emoji: "🔄" },
+      { href: "/reflect", label: "reflect", emoji: "🌙" },
+      { href: "/review", label: "review", emoji: "📋" },
+    ],
   },
   {
-    href: "/review",
-    name: "Review",
-    description: "Weekly checkpoint and one-pager",
-  },
-  { href: "/people", name: "People", description: "Calm relationship surface" },
-  {
-    href: "/wishlist",
-    name: "Wishlist",
-    description: "Things you want, priced and tracked",
-  },
-  {
-    href: "/yesterday",
-    name: "Yesterday",
-    description: "What carried over from the day before",
+    id: "home",
+    name: "home",
+    tiles: [
+      { href: "/yesterday", label: "yesterday", emoji: "◀" },
+      { href: "/settings", label: "settings", emoji: "⚙️" },
+    ],
   },
 ];
 
 export default function MorePage() {
   return (
-    <div style={{ position: "relative", zIndex: 2 }}>
-      <div style={{ padding: "0 4px", marginBottom: 18 }}>
-        <div className="greet-day">Surfaces</div>
-        <div className="greet-name">
-          More <span className="sub">· everything else</span>
-        </div>
-      </div>
+    <div className="shell-content">
+      <Topbar name="more." sub="every surface." />
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 10,
-        }}
-      >
-        {SURFACES.map((s) => (
-          <Link
-            key={s.href}
-            href={s.href}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 4,
-              padding: "14px 14px",
-              borderRadius: 18,
-              background: "var(--card,#fff)",
-              boxShadow:
-                "0 0 0 0.5px rgba(60,60,67,0.07), 0 1px 1px rgba(20,20,30,0.02), 0 6px 16px -12px rgba(20,20,30,0.10)",
-              textDecoration: "none",
-            }}
-          >
+      <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        {GROUPS.map((group) => (
+          <div key={group.id}>
             <div
               style={{
-                fontSize: 15,
-                fontWeight: 600,
-                color: "var(--ink,#000)",
-                letterSpacing: "-0.020em",
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "var(--label)",
+                marginBottom: 8,
+                paddingLeft: 2,
               }}
             >
-              {s.name}
+              {group.name}
             </div>
             <div
               style={{
-                fontSize: 11.5,
-                fontWeight: 500,
-                color: "var(--label-2,#6E6E73)",
-                letterSpacing: "-0.005em",
-                lineHeight: 1.3,
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: 8,
               }}
             >
-              {s.description}
+              {group.tiles.map((tile) => (
+                <Link
+                  key={tile.href}
+                  href={tile.href}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    gap: 6,
+                    padding: "12px 12px 11px",
+                    borderRadius: 16,
+                    background: "var(--card)",
+                    boxShadow: "var(--shadow-stack)",
+                    textDecoration: "none",
+                  }}
+                >
+                  <span style={{ fontSize: 20, lineHeight: 1 }}>
+                    {tile.emoji}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      color: "var(--ink)",
+                      letterSpacing: "-0.015em",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {tile.label}
+                  </span>
+                </Link>
+              ))}
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

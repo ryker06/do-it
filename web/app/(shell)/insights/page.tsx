@@ -42,6 +42,7 @@ export default function InsightsPage() {
       domainId: domainId || undefined,
       visionId: visionId || undefined,
       capturedAt: Date.now(),
+      status: "captured",
     });
     setText("");
     setSource("");

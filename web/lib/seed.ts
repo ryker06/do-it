@@ -11,6 +11,14 @@ import type {
   Insight,
   Person,
   WishlistItem,
+  Goal,
+  Habit,
+  Workout,
+  SleepLog,
+  HydrationLog,
+  BodyLog,
+  JarEntry,
+  MorningBrief,
 } from "./types";
 
 export const DOMAINS: Domain[] = [
@@ -264,6 +272,7 @@ export const SEED_VISIONS: Vision[] = [
   {
     id: "v1",
     title: "Webuild",
+    identity: "I run a focused 4-day workweek through Webuild.",
     blurb:
       "The website + solutions company. Templates → leads → close → automate.",
     domainId: "business",
@@ -355,6 +364,7 @@ export const SEED_VISIONS: Vision[] = [
     blurb: "Combat sports + gym, weekly cadence that holds.",
     domainId: "fitness",
     tint: "#FFE0E6",
+    identity: "I am a 100kg deadlifter who shows up three times a week.",
     nextMove: "Show up to the gym three times this week.",
     deadline: "2026-07-28",
     targetMetric: "3 gym sessions per week for 8 consecutive weeks",
@@ -384,8 +394,13 @@ export const SEED_ROUTINES: Routine[] = [
     name: "Weekday morning",
     color: "weekday",
     days: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    cadence: {
+      kind: "weekly",
+      days: ["Mon", "Tue", "Wed", "Thu", "Fri"] as Weekday[],
+    },
     cadenceDescription: "Every weekday, Monday through Friday",
     streakPhrase: "4 weeks running",
+    identity: "I am someone who starts every weekday with intention.",
     blocks: [
       {
         id: "rb1",
@@ -483,7 +498,12 @@ export const SEED_ROUTINES: Routine[] = [
     name: "Sunday slow",
     color: "sunday",
     days: ["Sun"],
-    cadenceDescription: "Sunday — slow and deliberate",
+    cadence: {
+      kind: "monthlyWeeks",
+      weeks: [1, 2, 3, 4, 5],
+      days: ["Sun"] as Weekday[],
+    },
+    cadenceDescription: "Every Sunday — slow and deliberate",
     blocks: [
       {
         id: "rb1",
@@ -611,12 +631,25 @@ export const SEED_INSIGHTS: Insight[] = [
     source: "Atomic Habits",
     domainId: "learning",
     capturedAt: Date.now() - 2 * 86400_000,
+    status: "testing",
+    statusChangedAt: Date.now() - 2 * 86400_000,
   },
   {
     id: "ins2",
     text: "The goal is not to be perfect at prayer — it is to return quickly when you drift.",
     domainId: "religion",
     capturedAt: Date.now() - 86400_000,
+    status: "adopted",
+    statusChangedAt: Date.now() - 86400_000,
+  },
+  {
+    id: "ins3",
+    text: "Systems beat goals. The goal is the direction; the system is what actually moves you.",
+    source: "James Clear",
+    domainId: "learning",
+    capturedAt: Date.now() - 14 * 86400_000,
+    status: "testing",
+    statusChangedAt: Date.now() - 14 * 86400_000,
   },
 ];
 
@@ -678,6 +711,7 @@ export const SEED_PEOPLE: Person[] = [
     id: "p1",
     name: "Mom",
     relation: "Family",
+    role: "family",
     lastTouchedISO: "2026-04-28",
     nextMove: "Call this weekend — ask about the trip.",
   },
@@ -685,6 +719,7 @@ export const SEED_PEOPLE: Person[] = [
     id: "p2",
     name: "Karim",
     relation: "Business mentor",
+    role: "mentor",
     lastTouchedISO: "2026-04-20",
     nextMove: "Share the Webuild pipeline update and ask for feedback.",
   },
@@ -692,7 +727,224 @@ export const SEED_PEOPLE: Person[] = [
     id: "p3",
     name: "Faris",
     relation: "Gym partner",
+    role: "training",
     lastTouchedISO: "2026-05-03",
     nextMove: "Confirm Thursday push session.",
+  },
+];
+
+// ── v2 seed data ──
+
+export const SEED_GOALS: Goal[] = [
+  {
+    id: "g1",
+    visionId: "v5",
+    identityLine: "I am a 100kg deadlifter.",
+    metricKind: "weight",
+    targetValue: 100,
+    currentValue: 88,
+    unit: "kg",
+    deadlineISO: "2026-07-28",
+    history: [
+      { dateISO: "2026-04-06", value: 82 },
+      { dateISO: "2026-04-20", value: 84 },
+      { dateISO: "2026-05-04", value: 88 },
+    ],
+  },
+  {
+    id: "g2",
+    visionId: "v1",
+    identityLine: "I close €5k/month through Webuild.",
+    metricKind: "money",
+    targetValue: 500000,
+    currentValue: 292000,
+    unit: "€",
+    deadlineISO: "2026-08-01",
+    history: [
+      { dateISO: "2026-04-01", value: 0 },
+      { dateISO: "2026-05-01", value: 292000 },
+    ],
+  },
+  {
+    id: "g3",
+    visionId: "v3",
+    identityLine: "I capture 3 insights a week.",
+    metricKind: "count",
+    targetValue: 50,
+    currentValue: 14,
+    unit: "insights",
+    deadlineISO: "2026-09-01",
+    history: [
+      { dateISO: "2026-03-01", value: 0 },
+      { dateISO: "2026-04-01", value: 7 },
+      { dateISO: "2026-05-06", value: 14 },
+    ],
+  },
+];
+
+export const SEED_HABITS: Habit[] = [
+  {
+    id: "hab1",
+    name: "read 20 pages",
+    identity: "I am a daily reader.",
+    marks: [
+      { dateISO: "2026-04-29", status: "done" },
+      { dateISO: "2026-04-30", status: "done" },
+      { dateISO: "2026-05-01", status: "rested" },
+      { dateISO: "2026-05-02", status: "done" },
+      { dateISO: "2026-05-03", status: "done" },
+      { dateISO: "2026-05-04", status: "done" },
+      { dateISO: "2026-05-05", status: "done" },
+    ],
+    createdAt: Date.now() - 56 * 86400_000,
+  },
+  {
+    id: "hab2",
+    name: "stretch 5 min",
+    identity: "I move every morning.",
+    marks: [
+      { dateISO: "2026-04-30", status: "done" },
+      { dateISO: "2026-05-01", status: "done" },
+      { dateISO: "2026-05-02", status: "done" },
+      { dateISO: "2026-05-03", status: "rested" },
+      { dateISO: "2026-05-04", status: "done" },
+      { dateISO: "2026-05-05", status: "done" },
+    ],
+    createdAt: Date.now() - 42 * 86400_000,
+  },
+  {
+    id: "hab3",
+    name: "no phone first hour",
+    identity: "I own my mornings.",
+    marks: [
+      { dateISO: "2026-05-01", status: "done" },
+      { dateISO: "2026-05-02", status: "done" },
+      { dateISO: "2026-05-03", status: "done" },
+      { dateISO: "2026-05-04", status: "rested" },
+      { dateISO: "2026-05-05", status: "done" },
+    ],
+    createdAt: Date.now() - 30 * 86400_000,
+  },
+];
+
+export const SEED_WORKOUTS: Workout[] = [
+  {
+    id: "wo1",
+    dateISO: "2026-05-06",
+    exercises: [
+      {
+        id: "ex1",
+        name: "Deadlift",
+        sets: [
+          { reps: 5, weightKg: 80, loggedAt: Date.now() - 3600_000 },
+          { reps: 5, weightKg: 85, loggedAt: Date.now() - 3400_000 },
+          { reps: 3, weightKg: 88, loggedAt: Date.now() - 3200_000 },
+        ],
+      },
+      {
+        id: "ex2",
+        name: "Bench Press",
+        sets: [
+          { reps: 8, weightKg: 60, loggedAt: Date.now() - 3000_000 },
+          { reps: 8, weightKg: 65, loggedAt: Date.now() - 2800_000 },
+        ],
+      },
+    ],
+    notes: "solid session. → 100kg deadlift coming.",
+  },
+  {
+    id: "wo2",
+    dateISO: "2026-05-03",
+    exercises: [
+      {
+        id: "ex1",
+        name: "Overhead Press",
+        sets: [
+          { reps: 8, weightKg: 40, loggedAt: Date.now() - 4 * 86400_000 },
+          {
+            reps: 8,
+            weightKg: 42.5,
+            loggedAt: Date.now() - 4 * 86400_000 + 600_000,
+          },
+        ],
+      },
+    ],
+  },
+];
+
+// 7 days of sleep logs
+const today = new Date("2026-05-06");
+function daysAgoISO(n: number): string {
+  const d = new Date(today);
+  d.setDate(d.getDate() - n);
+  return d.toISOString().slice(0, 10);
+}
+
+export const SEED_SLEEP_LOG: SleepLog[] = [
+  { id: "sl1", dateISO: daysAgoISO(6), hoursSlept: 7.5, quality: 4 },
+  { id: "sl2", dateISO: daysAgoISO(5), hoursSlept: 6.5, quality: 3 },
+  { id: "sl3", dateISO: daysAgoISO(4), hoursSlept: 8, quality: 5 },
+  { id: "sl4", dateISO: daysAgoISO(3), hoursSlept: 7, quality: 4 },
+  { id: "sl5", dateISO: daysAgoISO(2), hoursSlept: 6, quality: 2 },
+  { id: "sl6", dateISO: daysAgoISO(1), hoursSlept: 7.5, quality: 4 },
+  { id: "sl7", dateISO: daysAgoISO(0), hoursSlept: 0, quality: undefined },
+];
+
+export const SEED_HYDRATION_LOG: HydrationLog[] = [
+  { id: "hy1", dateISO: daysAgoISO(6), glasses: 8 },
+  { id: "hy2", dateISO: daysAgoISO(5), glasses: 6 },
+  { id: "hy3", dateISO: daysAgoISO(4), glasses: 9 },
+  { id: "hy4", dateISO: daysAgoISO(3), glasses: 7 },
+  { id: "hy5", dateISO: daysAgoISO(2), glasses: 5 },
+  { id: "hy6", dateISO: daysAgoISO(1), glasses: 8 },
+  { id: "hy7", dateISO: daysAgoISO(0), glasses: 3 },
+];
+
+export const SEED_BODY_LOG: BodyLog[] = [
+  { id: "bo1", dateISO: daysAgoISO(14), weightKg: 78.2, waistCm: 82 },
+  { id: "bo2", dateISO: daysAgoISO(7), weightKg: 77.8, waistCm: 81 },
+  { id: "bo3", dateISO: daysAgoISO(0), weightKg: 77.4, waistCm: 80.5 },
+];
+
+export const SEED_JAR: JarEntry[] = [
+  {
+    id: "jar1",
+    capturedAt: Date.now() - 3 * 86400_000,
+    oneLine: "finished the cold email batch at 23:00. didn't quit.",
+  },
+  {
+    id: "jar2",
+    capturedAt: Date.now() - 5 * 86400_000,
+    oneLine: "gym session after a full day. showed up anyway.",
+  },
+  {
+    id: "jar3",
+    capturedAt: Date.now() - 8 * 86400_000,
+    oneLine: "wrote 1,400 words for the landing page in one block.",
+  },
+  {
+    id: "jar4",
+    capturedAt: Date.now() - 12 * 86400_000,
+    oneLine: "held the morning routine for 7 days straight.",
+  },
+  {
+    id: "jar5",
+    capturedAt: Date.now() - 20 * 86400_000,
+    oneLine: "closed first Webuild client. proof the thing works.",
+  },
+];
+
+export const SEED_MORNING_BRIEFS: MorningBrief[] = [
+  {
+    id: "mb1",
+    dateISO: "2026-05-05",
+    friction: "Back-to-back calls might interrupt the deep work block.",
+    resumePlan: "If calls run long, I resume with the cold email batch.",
+  },
+  {
+    id: "mb2",
+    dateISO: "2026-05-04",
+    friction: "Low energy after poor sleep.",
+    resumePlan: "Start with the lightest block first, build momentum.",
   },
 ];

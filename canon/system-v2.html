@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — System v2</title>
+<style>
+:root{
+  --bg:#FFFFFF;--stage:#F2F2F7;--stage-2:#E9E9EE;
+  --inset:#F2F2F7;--inset-2:#EAEAEF;--card:#FFFFFF;
+  --ink:#000;--ink-2:#1C1C1E;--ink-3:#3A3A3C;
+  --label:#8E8E93;--label-2:#6E6E73;--glyph:#0A0A0F;
+  --hairline:rgba(60,60,67,0.10);--hairline-2:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --blue:#007AFF;--blue-deep:#0062CC;--blue-soft:rgba(0,122,255,0.10);--blue-glow:rgba(0,122,255,0.20);
+  --green:#34C759;--green-deep:#248A3D;--green-soft:rgba(52,199,89,0.14);
+  --pink:#FFD0DA;--pink-2:#FFE3EB;--pink-ink:#7A2A3C;
+  --prayer-bg-1:#EAF6EE;--prayer-bg-2:#DCEFE3;--prayer-ink:#2F5A3E;--prayer-ink-2:#5E8A6E;--prayer-ring:rgba(47,90,62,0.10);
+  --d-business:#E1ECFF;--d-business-2:#C9DBFF;
+  --d-religion:#E2F4E6;--d-religion-2:#C0E5C8;
+  --d-learning:#FFE3EB;--d-learning-2:#FFCFDC;
+  --d-fitness:#FFD0DA;--d-fitness-2:#FFB6C5;
+  --d-home:#E5ECF0;--d-home-2:#CFDCE3;
+  --shadow-card:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -14px rgba(20,20,30,0.10),0 26px 50px -28px rgba(20,20,30,0.14);
+  --shadow-stack:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-press:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-pill:0 0 0 0.5px rgba(60,60,67,0.08),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --ease:cubic-bezier(.32,.72,0,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--stage);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;color:var(--ink)}
+body{padding:48px 56px 96px;max-width:1280px;margin:0 auto}
+h1{font-size:42px;font-weight:800;letter-spacing:-0.04em;margin-bottom:6px}
+h2{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 16px}
+.lead{font-size:15px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;margin-bottom:8px;max-width:640px;line-height:1.5}
+.note{font-size:12.5px;color:var(--label);max-width:640px;letter-spacing:-0.005em;margin-bottom:16px}
+.grid{display:grid;gap:14px}
+.swatches{grid-template-columns:repeat(6,1fr)}
+.sw{background:var(--card);border-radius:18px;padding:14px;box-shadow:var(--shadow-stack);position:relative}
+.sw .chip{height:54px;border-radius:12px;margin-bottom:10px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.sw .name{font-size:12.5px;font-weight:700;color:var(--ink-2);letter-spacing:-0.012em}
+.sw .hex{font-size:11px;color:var(--label);font-variant-numeric:tabular-nums;margin-top:1px}
+
+.tier-grid{grid-template-columns:repeat(3,1fr)}
+.tier{padding:24px;border-radius:24px}
+.tier.raised{background:var(--card);box-shadow:var(--shadow-card)}
+.tier.sunken{background:var(--inset);box-shadow:inset 0 0.5px 1px rgba(20,20,30,0.05)}
+.tier.hairline{background:var(--card);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.tier-label{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--label);margin-bottom:8px}
+.tier-name{font-size:18px;font-weight:700;letter-spacing:-0.022em;color:var(--ink)}
+.tier-desc{font-size:12.5px;color:var(--label-2);margin-top:4px;line-height:1.45}
+
+.type-row{background:var(--card);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow-stack);display:flex;align-items:baseline;gap:24px;margin-bottom:8px}
+.type-row .lbl{font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;width:96px;flex-shrink:0}
+.type-row .ex{flex:1;color:var(--ink)}
+.type-row .meta{font-size:11px;color:var(--label);font-variant-numeric:tabular-nums}
+
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn-primary{background:linear-gradient(180deg,#1A1A20 0%,#000 100%);color:#fff;border:none;border-radius:999px;padding:13px 22px;font-size:14.5px;font-weight:600;letter-spacing:-0.012em;box-shadow:var(--shadow-press);font-family:inherit;cursor:pointer}
+.btn-secondary{background:#fff;color:var(--ink-2);border:none;border-radius:999px;padding:12px 20px;font-size:14px;font-weight:600;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 1px rgba(20,20,30,0.03);font-family:inherit;cursor:pointer}
+.btn-ghost{background:transparent;color:var(--ink-2);border:none;padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-blue{background:var(--blue-soft);color:var(--blue);border:none;border-radius:999px;padding:12px 20px;font-size:14px;font-weight:700;box-shadow:inset 0 0 0 0.5px rgba(0,122,255,0.20);font-family:inherit;cursor:pointer}
+.btn-green{background:var(--green-soft);color:var(--green-deep);border:none;border-radius:999px;padding:12px 20px;font-size:14px;font-weight:700;box-shadow:inset 0 0 0 0.5px rgba(52,199,89,0.20);font-family:inherit;cursor:pointer}
+
+.input-row{background:var(--card);border-radius:18px;padding:14px 16px;box-shadow:inset 0 0 0 0.5px var(--hairline);font-size:15px;color:var(--ink);width:320px}
+.input-row.focus{box-shadow:inset 0 0 0 1.5px var(--blue),0 0 0 4px var(--blue-soft)}
+.input-label{font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;margin-bottom:6px;display:block}
+
+.divider-h{height:1px;background:var(--hairline);width:100%}
+.divider-2{height:0.5px;background:var(--hairline-strong);width:100%}
+
+.motion{background:var(--card);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow-stack);display:flex;align-items:center;gap:18px}
+.motion .name{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:-0.012em;width:160px}
+.motion .val{font-size:12px;color:var(--label-2);font-family:"SF Mono",ui-monospace,monospace}
+.motion .use{font-size:12px;color:var(--label);margin-left:auto}
+
+.spacing-grid{grid-template-columns:repeat(8,1fr)}
+.sp{background:var(--card);border-radius:14px;padding:14px;text-align:center;box-shadow:var(--shadow-stack)}
+.sp .box{margin:0 auto 8px;background:var(--blue-soft);border-radius:6px}
+.sp .v{font-size:11.5px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.sp .n{font-size:10px;color:var(--label);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px}
+
+.glyphs{display:flex;gap:14px;flex-wrap:wrap}
+.ddisc{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06),inset 0 -2px 4px rgba(20,20,30,0.04),0 1px 2px rgba(20,20,30,0.04)}
+.ddisc svg{width:26px;height:26px;color:var(--glyph);stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.ddisc.business{background:linear-gradient(180deg,var(--d-business) 0%,var(--d-business-2) 100%)}
+.ddisc.religion{background:linear-gradient(180deg,var(--d-religion) 0%,var(--d-religion-2) 100%)}
+.ddisc.learning{background:linear-gradient(180deg,var(--d-learning) 0%,var(--d-learning-2) 100%)}
+.ddisc.fitness{background:linear-gradient(180deg,var(--d-fitness) 0%,var(--d-fitness-2) 100%)}
+.ddisc.home{background:linear-gradient(180deg,var(--d-home) 0%,var(--d-home-2) 100%)}
+.glabel{font-size:10.5px;color:var(--label);text-align:center;margin-top:4px;font-weight:600;letter-spacing:0.04em}
+
+.preamble{background:var(--card);border-radius:24px;padding:24px 28px;box-shadow:var(--shadow-card);max-width:780px;margin-bottom:24px}
+.preamble p{font-size:14px;color:var(--ink-2);line-height:1.55;letter-spacing:-0.005em}
+.preamble p+p{margin-top:10px}
+.preamble strong{color:var(--ink);font-weight:700}
+</style></head><body>
+
+<h1>do it · system v2</h1>
+<p class="lead">tokens reconciled from approved canons + board references. each surface uses these tokens but layouts vary per screen — no two screens share the same vertical column.</p>
+
+<div class="preamble">
+  <p><strong>palette law.</strong> white, pink, green, black, blue. nothing else. tints below are exact hex calibrated from board/ + approved canons. red, orange, yellow, purple are forbidden.</p>
+  <p><strong>tone law.</strong> short fact → future-self pull. no streak guilt, no failure vocabulary. "moved" not "missed". "quieter" not "behind".</p>
+  <p><strong>layout law.</strong> mac-app on desktop. cards have max-width per surface. never full-width. each surface gets its own creative arrangement.</p>
+</div>
+
+<h2>palette · core surfaces</h2>
+<div class="grid swatches">
+  <div class="sw"><div class="chip" style="background:#FFFFFF"></div><div class="name">bg</div><div class="hex">#FFFFFF</div></div>
+  <div class="sw"><div class="chip" style="background:#F2F2F7"></div><div class="name">stage</div><div class="hex">#F2F2F7</div></div>
+  <div class="sw"><div class="chip" style="background:#E9E9EE"></div><div class="name">stage-2</div><div class="hex">#E9E9EE</div></div>
+  <div class="sw"><div class="chip" style="background:#EAEAEF"></div><div class="name">inset-2</div><div class="hex">#EAEAEF</div></div>
+  <div class="sw"><div class="chip" style="background:#000"></div><div class="name">ink</div><div class="hex">#000000</div></div>
+  <div class="sw"><div class="chip" style="background:#1C1C1E"></div><div class="name">ink-2</div><div class="hex">#1C1C1E</div></div>
+</div>
+
+<h2>palette · ink</h2>
+<div class="grid swatches">
+  <div class="sw"><div class="chip" style="background:#3A3A3C"></div><div class="name">ink-3</div><div class="hex">#3A3A3C</div></div>
+  <div class="sw"><div class="chip" style="background:#6E6E73"></div><div class="name">label-2</div><div class="hex">#6E6E73</div></div>
+  <div class="sw"><div class="chip" style="background:#8E8E93"></div><div class="name">label</div><div class="hex">#8E8E93</div></div>
+</div>
+
+<h2>palette · accents (only these)</h2>
+<div class="grid swatches">
+  <div class="sw"><div class="chip" style="background:#007AFF"></div><div class="name">blue</div><div class="hex">#007AFF</div></div>
+  <div class="sw"><div class="chip" style="background:#0062CC"></div><div class="name">blue-deep</div><div class="hex">#0062CC</div></div>
+  <div class="sw"><div class="chip" style="background:#34C759"></div><div class="name">green</div><div class="hex">#34C759</div></div>
+  <div class="sw"><div class="chip" style="background:#248A3D"></div><div class="name">green-deep</div><div class="hex">#248A3D</div></div>
+  <div class="sw"><div class="chip" style="background:#FFD0DA"></div><div class="name">pink</div><div class="hex">#FFD0DA</div></div>
+  <div class="sw"><div class="chip" style="background:#FFE3EB"></div><div class="name">pink-2</div><div class="hex">#FFE3EB</div></div>
+</div>
+
+<h2>palette · domain tints</h2>
+<div class="grid swatches">
+  <div class="sw"><div class="chip" style="background:linear-gradient(180deg,#E1ECFF,#C9DBFF)"></div><div class="name">business</div><div class="hex">#E1ECFF → #C9DBFF</div></div>
+  <div class="sw"><div class="chip" style="background:linear-gradient(180deg,#E2F4E6,#C0E5C8)"></div><div class="name">religion</div><div class="hex">#E2F4E6 → #C0E5C8</div></div>
+  <div class="sw"><div class="chip" style="background:linear-gradient(180deg,#FFE3EB,#FFCFDC)"></div><div class="name">learning</div><div class="hex">#FFE3EB → #FFCFDC</div></div>
+  <div class="sw"><div class="chip" style="background:linear-gradient(180deg,#FFD0DA,#FFB6C5)"></div><div class="name">fitness</div><div class="hex">#FFD0DA → #FFB6C5</div></div>
+  <div class="sw"><div class="chip" style="background:linear-gradient(180deg,#E5ECF0,#CFDCE3)"></div><div class="name">home</div><div class="hex">#E5ECF0 → #CFDCE3</div></div>
+  <div class="sw"><div class="chip" style="background:linear-gradient(180deg,#EAF6EE,#DCEFE3)"></div><div class="name">prayer</div><div class="hex">#EAF6EE → #DCEFE3</div></div>
+</div>
+
+<h2>type ramp</h2>
+<div class="type-row"><span class="lbl">display</span><span class="ex" style="font-size:42px;font-weight:800;letter-spacing:-0.04em;line-height:1">220kg deadlift coming</span><span class="meta">42 / 800 / -0.04</span></div>
+<div class="type-row"><span class="lbl">title-1</span><span class="ex" style="font-size:30px;font-weight:800;letter-spacing:-0.045em;line-height:1">write the Q2 brief</span><span class="meta">30 / 800 / -0.045</span></div>
+<div class="type-row"><span class="lbl">title-2</span><span class="ex" style="font-size:24px;font-weight:700;letter-spacing:-0.035em">adam · ready when you are</span><span class="meta">24 / 700 / -0.035</span></div>
+<div class="type-row"><span class="lbl">heading</span><span class="ex" style="font-size:18px;font-weight:700;letter-spacing:-0.022em">today's flow</span><span class="meta">18 / 700 / -0.022</span></div>
+<div class="type-row"><span class="lbl">body</span><span class="ex" style="font-size:15px;font-weight:500;letter-spacing:-0.012em">step 2 of 4 · deep focus</span><span class="meta">15 / 500 / -0.012</span></div>
+<div class="type-row"><span class="lbl">label</span><span class="ex" style="font-size:13px;font-weight:600;color:var(--label-2)">in 3h 23m</span><span class="meta">13 / 600</span></div>
+<div class="type-row"><span class="lbl">caption</span><span class="ex" style="font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--label)">religion · humming</span><span class="meta">11 / 700 / 0.10 / upper</span></div>
+<div class="type-row"><span class="lbl">tabular</span><span class="ex" style="font-size:38px;font-weight:700;letter-spacing:-0.05em;font-variant-numeric:tabular-nums">42:18</span><span class="meta">tabular-nums</span></div>
+
+<h2>surface tiers</h2>
+<div class="grid tier-grid">
+  <div class="tier raised">
+    <div class="tier-label">tier 1 · raised</div>
+    <div class="tier-name">card</div>
+    <div class="tier-desc">white surface lifted off stage. shadow-card. used for hero, primary content. inner highlight at top edge.</div>
+  </div>
+  <div class="tier sunken">
+    <div class="tier-label">tier 2 · sunken</div>
+    <div class="tier-name">inset</div>
+    <div class="tier-desc">recessed below stage. used for inputs, pressed states, prayer-window backings, progress tracks.</div>
+  </div>
+  <div class="tier hairline">
+    <div class="tier-label">tier 3 · hairline</div>
+    <div class="tier-name">flat</div>
+    <div class="tier-desc">card-flat with hairline only — no shadow. used for sub-rows nested inside cards, dense lists.</div>
+  </div>
+</div>
+
+<h2>buttons</h2>
+<div class="btn-row">
+  <button class="btn-primary">start · 60 min</button>
+  <button class="btn-secondary">+15 min</button>
+  <button class="btn-ghost">skip</button>
+  <button class="btn-blue">capture</button>
+  <button class="btn-green">done early</button>
+</div>
+<p class="note" style="margin-top:12px">primary is the dark gradient (the singular page action). secondary is hairline white. ghost is text-only. blue/green are exception accents — use sparingly, one per state.</p>
+
+<h2>inputs</h2>
+<div style="display:flex;gap:18px;flex-wrap:wrap">
+  <div><span class="input-label">default</span><div class="input-row">log weight 96</div></div>
+  <div><span class="input-label">focused</span><div class="input-row focus">log weight 96<span style="display:inline-block;width:1.5px;height:16px;background:var(--blue);margin-left:2px;vertical-align:middle"></span></div></div>
+</div>
+
+<h2>dividers</h2>
+<div style="background:var(--card);border-radius:18px;padding:18px 22px;box-shadow:var(--shadow-stack);max-width:520px">
+  <div style="font-size:13px;color:var(--ink-2);font-weight:600">row above hairline</div>
+  <div class="divider-h" style="margin:14px 0"></div>
+  <div style="font-size:13px;color:var(--ink-2);font-weight:600">row between hairlines</div>
+  <div class="divider-2" style="margin:14px 0"></div>
+  <div style="font-size:13px;color:var(--ink-2);font-weight:600">row below strong hairline</div>
+</div>
+
+<h2>spacing scale (4-base)</h2>
+<div class="grid spacing-grid">
+  <div class="sp"><div class="box" style="width:4px;height:4px"></div><div class="v">4</div><div class="n">xs</div></div>
+  <div class="sp"><div class="box" style="width:8px;height:8px"></div><div class="v">8</div><div class="n">sm</div></div>
+  <div class="sp"><div class="box" style="width:12px;height:12px"></div><div class="v">12</div><div class="n">md</div></div>
+  <div class="sp"><div class="box" style="width:16px;height:16px"></div><div class="v">16</div><div class="n">base</div></div>
+  <div class="sp"><div class="box" style="width:20px;height:20px"></div><div class="v">20</div><div class="n">lg</div></div>
+  <div class="sp"><div class="box" style="width:24px;height:24px"></div><div class="v">24</div><div class="n">xl</div></div>
+  <div class="sp"><div class="box" style="width:32px;height:32px"></div><div class="v">32</div><div class="n">2xl</div></div>
+  <div class="sp"><div class="box" style="width:48px;height:48px"></div><div class="v">48</div><div class="n">3xl</div></div>
+</div>
+
+<h2>radius scale</h2>
+<div class="grid spacing-grid">
+  <div class="sp"><div class="box" style="width:32px;height:32px;border-radius:6px;background:var(--ink-2)"></div><div class="v">6</div><div class="n">chip</div></div>
+  <div class="sp"><div class="box" style="width:32px;height:32px;border-radius:14px;background:var(--ink-2)"></div><div class="v">14</div><div class="n">btn</div></div>
+  <div class="sp"><div class="box" style="width:32px;height:32px;border-radius:18px;background:var(--ink-2)"></div><div class="v">18</div><div class="n">row</div></div>
+  <div class="sp"><div class="box" style="width:32px;height:32px;border-radius:20px;background:var(--ink-2)"></div><div class="v">20</div><div class="n">card</div></div>
+  <div class="sp"><div class="box" style="width:32px;height:32px;border-radius:24px;background:var(--ink-2)"></div><div class="v">24</div><div class="n">tile</div></div>
+  <div class="sp"><div class="box" style="width:32px;height:32px;border-radius:30px;background:var(--ink-2)"></div><div class="v">30</div><div class="n">hero</div></div>
+  <div class="sp"><div class="box" style="width:32px;height:32px;border-radius:52px;background:var(--ink-2)"></div><div class="v">52</div><div class="n">phone</div></div>
+  <div class="sp"><div class="box" style="width:32px;height:32px;border-radius:999px;background:var(--ink-2)"></div><div class="v">999</div><div class="n">pill</div></div>
+</div>
+
+<h2>domain glyphs</h2>
+<p class="note">Lucide-derived, single-color marks on tinted discs. apple-app-icon register.</p>
+<div class="glyphs">
+  <div><div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div><div class="glabel">business</div></div>
+  <div><div class="ddisc religion"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/><path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/></svg></div><div class="glabel">religion</div></div>
+  <div><div class="ddisc learning"><svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z" fill="#0A0A0F" stroke="none"/><path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/></svg></div><div class="glabel">learning</div></div>
+  <div><div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M4 9l2-2M9 4l-2 2M15 20l2-2M20 15l-2 2M3 12l9 9M12 3l9 9"/></svg></div><div class="glabel">fitness</div></div>
+  <div><div class="ddisc home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1z"/></svg></div><div class="glabel">home</div></div>
+</div>
+
+<h2>motion timings</h2>
+<div class="motion"><span class="name">page transition</span><span class="val">240ms cubic-bezier(.32,.72,0,1)</span><span class="use">cross-fade + 4px slide</span></div>
+<div class="motion" style="margin-top:8px"><span class="name">drawer open</span><span class="val">280ms cubic-bezier(.32,.72,0,1)</span><span class="use">right-side, 380px</span></div>
+<div class="motion" style="margin-top:8px"><span class="name">modal open</span><span class="val">180ms cubic-bezier(.32,.72,0,1)</span><span class="use">cmd+k, brief</span></div>
+<div class="motion" style="margin-top:8px"><span class="name">button press</span><span class="val">80ms cubic-bezier(.4,0,.2,1)</span><span class="use">scale 0.97</span></div>
+<div class="motion" style="margin-top:8px"><span class="name">hover lift</span><span class="val">200ms cubic-bezier(.32,.72,0,1)</span><span class="use">desktop only, -1px</span></div>
+
+</body></html>

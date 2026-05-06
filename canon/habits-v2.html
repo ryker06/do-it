@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — HABITS v2</title>
+<style>
+:root{
+  --bg:#FFFFFF;--stage:#F2F2F7;--inset:#F2F2F7;--inset-2:#EAEAEF;--card:#FFFFFF;
+  --ink:#000;--ink-2:#1C1C1E;--label:#8E8E93;--label-2:#6E6E73;--glyph:#0A0A0F;
+  --hairline:rgba(60,60,67,0.10);--hairline-2:rgba(60,60,67,0.06);
+  --green:#34C759;--green-deep:#248A3D;--green-soft:rgba(52,199,89,0.14);
+  --shadow-stack:0 0 0 0.5px rgba(60,60,67,0.05),0 8px 22px -14px rgba(20,20,30,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--stage);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;color:var(--ink)}
+body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:48px 36px 96px;gap:48px;flex-wrap:wrap;background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%)}
+.col{display:flex;flex-direction:column;align-items:center;gap:14px}
+.col-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--label);font-weight:600}
+
+.phone{width:393px;height:852px;background:var(--bg);border-radius:52px;position:relative;overflow:hidden;box-shadow:0 0 0 0.5px rgba(0,0,0,0.06),0 30px 60px -25px rgba(20,20,30,0.22)}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:54px 20px 0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-bottom:14px}
+.greet-day{font-size:11.5px;font-weight:600;color:var(--label);letter-spacing:0.04em}
+.greet-name{font-size:24px;font-weight:700;letter-spacing:-0.035em;line-height:1.05;margin-top:3px}
+.greet-name .sub{color:var(--label);font-weight:500}
+.me-avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(60,60,67,0.10)}
+.me-avatar img{width:100%;height:100%;display:block}
+
+.add-row{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--card);border-radius:16px;box-shadow:var(--shadow-stack);margin-bottom:14px}
+.add-row .plus{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;line-height:1}
+.add-row input{flex:1;border:none;background:transparent;font-size:14px;color:var(--ink);font-family:inherit;outline:none}
+.add-row input::placeholder{color:var(--label);font-weight:500}
+
+.scroller{flex:1;overflow-y:auto;padding:0 0 110px}
+.scroller::-webkit-scrollbar{display:none}
+
+.habit{position:relative;background:var(--card);border-radius:20px;padding:16px 16px 14px;box-shadow:var(--shadow-stack);margin-bottom:12px}
+.habit::before{content:"";position:absolute;inset:0;border-radius:20px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 0.5px var(--hairline-2);pointer-events:none}
+.habit .name{font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-0.022em;margin-bottom:2px}
+.habit .ident{font-size:11.5px;color:var(--label-2);font-weight:500;font-style:italic;letter-spacing:-0.005em;margin-bottom:12px;line-height:1.3}
+.habit .ident::before{content:"— "}
+
+.dotgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;padding:2px 0}
+.d{aspect-ratio:1;border-radius:4px;background:transparent;box-shadow:inset 0 0 0 1px var(--hairline-2)}
+.d.done{background:var(--ink);box-shadow:none}
+.d.rested{background:var(--inset-2);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.d.today{box-shadow:inset 0 0 0 1.5px var(--ink),0 0 0 3px rgba(0,0,0,0.06)}
+.d.future{opacity:0.3}
+
+.row-meta{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.row-meta .kept{font-size:11.5px;color:var(--label-2);font-weight:600;letter-spacing:-0.005em}
+.row-meta .kept b{color:var(--ink-2);font-weight:700}
+.row-meta .tap-today{font-size:11.5px;color:var(--ink);font-weight:700;background:var(--inset);padding:5px 11px;border-radius:999px;box-shadow:inset 0 0 0 0.5px var(--hairline-2);font-family:inherit;border:none;cursor:pointer}
+
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;align-items:flex-start;justify-content:space-around;padding:12px 24px 0;background:rgba(255,255,255,0.78);backdrop-filter:saturate(200%) blur(28px);-webkit-backdrop-filter:saturate(200%) blur(28px);border-top:0.5px solid var(--hairline);z-index:3}
+.tab{display:flex;flex-direction:column;align-items:center}
+.tab .pill{padding:9px 18px;border-radius:999px}
+.tab.active .pill{background:var(--inset-2)}
+.tab .pill svg{width:22px;height:22px;display:block;stroke:#8E8E93;fill:none;stroke-width:1.7}
+.tab.active .pill svg{stroke:#000}
+
+.desktop{width:980px;background:var(--bg);border-radius:14px;box-shadow:0 0 0 0.5px rgba(0,0,0,0.06),0 30px 60px -25px rgba(20,20,30,0.22);overflow:hidden;display:grid;grid-template-columns:220px 1fr;min-height:760px}
+.sidebar{background:var(--bg);box-shadow:0.5px 0 0 var(--hairline);padding:14px 12px;display:flex;flex-direction:column;gap:2px}
+.sb-top{font-size:14px;font-weight:700;padding:8px 10px 14px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.sb-item.active{background:var(--inset-2)}
+.sb-item svg{width:16px;height:16px;stroke:var(--label-2);stroke-width:1.7;fill:none}
+.sb-item.active svg{stroke:var(--ink)}
+.titlebar{height:48px;display:flex;align-items:center;padding:0 24px;box-shadow:0 0.5px 0 var(--hairline)}
+.titlebar .greet{font-size:15px;font-weight:600}
+.titlebar .greet .sub{color:var(--label);font-weight:500;margin-left:4px}
+.titlebar .axn{margin-left:auto;font-size:12.5px;color:#fff;font-weight:600;padding:7px 14px;border-radius:999px;background:linear-gradient(180deg,#1A1A20 0%,#000 100%)}
+.dcontent{padding:32px 0;background:var(--stage)}
+.dwrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+</style></head><body>
+
+<div class="col">
+  <div class="col-label">Mobile · daily kept · 8-week dot grid</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 9:24</div>
+          <div class="greet-name">habits. <span class="sub">five things, kept.</span></div>
+        </div>
+        <a class="me-avatar" href="#/settings/"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/></a>
+      </div>
+
+      <div class="add-row">
+        <div class="plus">+</div>
+        <input placeholder="add a habit..."/>
+      </div>
+
+      <div class="scroller">
+        <div class="habit">
+          <div class="name">drink water · 8 glasses</div>
+          <div class="ident">i'm someone who hydrates without thinking.</div>
+          <div class="dotgrid">
+            <div class="d done"></div><div class="d done"></div><div class="d rested"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d rested"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d today"></div><div class="d future"></div>
+          </div>
+          <div class="row-meta">
+            <div class="kept"><b>54 of 56 kept</b> · 8 weeks steady</div>
+            <button class="tap-today">tap today</button>
+          </div>
+        </div>
+
+        <div class="habit">
+          <div class="name">read 30 min</div>
+          <div class="ident">i'm someone who builds his head daily.</div>
+          <div class="dotgrid">
+            <div class="d done"></div><div class="d done"></div><div class="d"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d rested"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d today"></div><div class="d future"></div>
+          </div>
+          <div class="row-meta">
+            <div class="kept"><b>48 of 56 kept</b></div>
+            <button class="tap-today">tap today</button>
+          </div>
+        </div>
+
+        <div class="habit">
+          <div class="name">stretch · 10 min</div>
+          <div class="ident">i'm someone who keeps his body open.</div>
+          <div class="dotgrid">
+            <div class="d done"></div><div class="d"></div><div class="d done"></div><div class="d done"></div><div class="d"></div><div class="d done"></div><div class="d done"></div><div class="d"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d"></div><div class="d done"></div><div class="d done"></div><div class="d rested"></div><div class="d done"></div><div class="d"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+            <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d today"></div><div class="d future"></div>
+          </div>
+          <div class="row-meta">
+            <div class="kept"><b>42 of 56 kept</b></div>
+            <button class="tap-today">tap today</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="3.5" height="13" rx="1"/></svg></div></div>
+        <div class="tab active"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px">
+  <div class="col-label">Desktop · 720px column · full grids visible</div>
+  <div class="desktop">
+    <aside class="sidebar">
+      <div class="sb-top">do it.</div>
+      <div class="sb-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>now</div>
+      <div class="sb-item"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/></svg>today</div>
+      <div class="sb-item active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>habits</div>
+    </aside>
+    <div>
+      <div class="titlebar"><div class="greet">habits. <span class="sub">five things, kept.</span></div><div class="axn">+ habit</div></div>
+      <div class="dcontent">
+        <div class="dwrap">
+          <div class="habit">
+            <div class="name">drink water · 8 glasses</div>
+            <div class="ident">i'm someone who hydrates without thinking.</div>
+            <div class="dotgrid">
+              <div class="d done"></div><div class="d done"></div><div class="d rested"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+              <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d rested"></div><div class="d done"></div><div class="d done"></div>
+              <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+              <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+              <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+              <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div>
+              <div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d done"></div><div class="d today"></div><div class="d future"></div>
+            </div>
+            <div class="row-meta"><div class="kept"><b>54 of 56 kept</b> · 8 weeks steady</div><button class="tap-today">tap today</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

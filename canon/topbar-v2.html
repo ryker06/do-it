@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — Topbar v2</title>
+<style>
+:root{--bg:#FFFFFF;--stage:#F2F2F7;--inset:#F2F2F7;--inset-2:#EAEAEF;--ink:#000;--ink-2:#1C1C1E;--label:#8E8E93;--label-2:#6E6E73;--hairline:rgba(60,60,67,0.10)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--stage);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;color:var(--ink)}
+body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:64px 40px 96px;gap:48px;flex-wrap:wrap;background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%)}
+.col{display:flex;flex-direction:column;align-items:center;gap:18px}
+.col-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--label);font-weight:600}
+.phone{width:393px;height:380px;background:var(--bg);border-radius:52px 52px 18px 18px;position:relative;overflow:hidden;box-shadow:0 0 0 0.5px rgba(0,0,0,0.06),0 1px 0 rgba(255,255,255,0.6) inset,0 30px 60px -25px rgba(20,20,30,0.22)}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:54px 20px 0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 4px;position:relative;z-index:2}
+.greet-day{font-size:11.5px;font-weight:600;color:var(--label);letter-spacing:0.04em}
+.greet-name{font-size:24px;font-weight:700;color:var(--ink);letter-spacing:-0.035em;line-height:1.05;margin-top:3px}
+.greet-name .sub{color:var(--label);font-weight:500;letter-spacing:-0.022em}
+.me-avatar{width:42px;height:42px;border-radius:50%;background:var(--inset);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(60,60,67,0.10),0 2px 6px rgba(20,20,30,0.10);cursor:pointer}
+.me-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.scroll-mock{margin-top:24px;padding:0 4px}
+.skel{height:74px;background:#fff;border-radius:18px;box-shadow:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);margin-bottom:12px}
+.phone.scrolled .topbar-frost{background:rgba(255,255,255,0.78);backdrop-filter:saturate(200%) blur(28px);-webkit-backdrop-filter:saturate(200%) blur(28px);box-shadow:0 0.5px 0 var(--hairline)}
+.topbar-frost{position:absolute;top:0;left:0;right:0;height:90px;z-index:1;transition:background .24s cubic-bezier(.32,.72,0,1)}
+.spec{max-width:560px;background:#fff;border-radius:24px;padding:24px 28px;box-shadow:0 0 0 0.5px rgba(60,60,67,0.05),0 12px 28px -14px rgba(20,20,30,0.10)}
+.spec h2{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin-bottom:10px}
+.spec ul{list-style:none}
+.spec li{font-size:13.5px;color:var(--ink-2);padding:7px 0;border-bottom:0.5px solid var(--hairline);letter-spacing:-0.005em;line-height:1.45}
+.spec li:last-child{border-bottom:none}
+.spec li b{color:var(--ink);font-weight:700}
+.spec li code{font-family:"SF Mono",ui-monospace,monospace;font-size:12px;color:var(--label-2);background:var(--inset);padding:1px 6px;border-radius:5px}
+.deskbar{width:1080px;height:48px;background:var(--bg);box-shadow:0 0.5px 0 var(--hairline);display:flex;align-items:center;padding:0 24px;border-radius:14px}
+.deskbar .greet{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-0.018em}
+.deskbar .greet .sub{color:var(--label);font-weight:500;margin-left:4px}
+.deskbar .actions{margin-left:auto;display:flex;gap:8px}
+.deskbar .actions .ax{font-size:12.5px;color:var(--label-2);font-weight:600;padding:6px 12px;border-radius:999px;background:var(--inset);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+</style></head><body>
+
+<div class="col">
+  <div class="col-label">Mobile · idle</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="topbar-frost"></div>
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 9:24</div>
+          <div class="greet-name">adam. <span class="sub">ready when you are.</span></div>
+        </div>
+        <a class="me-avatar" href="#/settings/" title="settings">
+          <img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/>
+        </a>
+      </div>
+      <div class="scroll-mock">
+        <div class="skel"></div><div class="skel" style="opacity:.6"></div><div class="skel" style="opacity:.3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col">
+  <div class="col-label">Mobile · scrolled (frost)</div>
+  <div class="phone scrolled">
+    <div class="screen" style="padding-top:60px">
+      <div class="topbar-frost"></div>
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 9:24</div>
+          <div class="greet-name">adam. <span class="sub">ready when you are.</span></div>
+        </div>
+        <a class="me-avatar" href="#/settings/" title="settings">
+          <img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/>
+        </a>
+      </div>
+      <div class="scroll-mock" style="margin-top:14px"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;flex-direction:column;align-items:center;gap:18px;width:100%">
+  <div class="col-label">Desktop · slim title bar (≥1024px)</div>
+  <div class="deskbar">
+    <div class="greet">adam. <span class="sub">ready when you are.</span></div>
+    <div class="actions">
+      <span class="ax">⌘K  search</span>
+      <span class="ax">+ block</span>
+    </div>
+  </div>
+</div>
+
+<div class="spec">
+  <h2>topbar spec</h2>
+  <ul>
+    <li><b>greeting left.</b> day · time on top (<code>11.5px / 600 / label</code>), then "<b>adam.</b>" + sub-line "<i>ready when you are.</i>" (<code>24px / 700 / -0.035em</code>).</li>
+    <li><b>memoji far right.</b> 42px disc, links to <code>/settings/</code>. ring: 2px white + 3px hairline. live-state ring switches to blue.</li>
+    <li><b>no hamburger.</b> memoji is the only right-side affordance.</li>
+    <li><b>scroll behavior.</b> past 12px scroll, frost fades in (<code>0 → rgba(255,255,255,0.78)</code> + 28px blur), 240ms ease. hairline appears.</li>
+    <li><b>greeting copy</b> shifts with state: idle "ready when you are." · in flow "stay with it." · evening "wind down." · pre-prayer "wudu, then dhuhr."</li>
+    <li><b>desktop.</b> topbar collapses to slim 48px title bar; memoji moves to sidebar bottom. greeting + contextual actions only.</li>
+  </ul>
+</div>
+
+</body></html>

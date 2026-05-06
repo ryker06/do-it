@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — TODAY v2</title>
+<style>
+:root{
+  --bg:#FFFFFF;--stage:#F2F2F7;--inset:#F2F2F7;--inset-2:#EAEAEF;--card:#FFFFFF;
+  --ink:#000;--ink-2:#1C1C1E;--ink-3:#3A3A3C;--label:#8E8E93;--label-2:#6E6E73;--glyph:#0A0A0F;
+  --hairline:rgba(60,60,67,0.10);--hairline-2:rgba(60,60,67,0.06);
+  --blue:#007AFF;--blue-soft:rgba(0,122,255,0.10);
+  --green:#34C759;--green-deep:#248A3D;--green-soft:rgba(52,199,89,0.14);
+  --prayer-bg-1:#EAF6EE;--prayer-bg-2:#DCEFE3;--prayer-ink:#2F5A3E;--prayer-ink-2:#5E8A6E;--prayer-ring:rgba(47,90,62,0.10);
+  --shadow-card:0 0 0 0.5px rgba(60,60,67,0.06),0 12px 28px -14px rgba(20,20,30,0.10);
+  --shadow-stack:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-row:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 6px 16px -12px rgba(20,20,30,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--stage);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;color:var(--ink)}
+body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:48px 36px 96px;gap:48px;flex-wrap:wrap;background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%)}
+.col{display:flex;flex-direction:column;align-items:center;gap:14px}
+.col-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--label);font-weight:600}
+
+.phone{width:393px;height:852px;background:var(--bg);border-radius:52px;position:relative;overflow:hidden;box-shadow:0 0 0 0.5px rgba(0,0,0,0.06),0 30px 60px -25px rgba(20,20,30,0.22)}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:54px 20px 0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-bottom:18px}
+.greet-day{font-size:11.5px;font-weight:600;color:var(--label);letter-spacing:0.04em}
+.greet-name{font-size:24px;font-weight:700;letter-spacing:-0.035em;line-height:1.05;margin-top:3px}
+.greet-name .sub{color:var(--label);font-weight:500}
+.me-avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(60,60,67,0.10)}
+.me-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* compact summary */
+.summary{margin:0 4px 14px;padding:13px 16px;background:var(--card);border-radius:20px;box-shadow:var(--shadow-stack);display:flex;align-items:center;gap:14px}
+.sum-stat{display:flex;flex-direction:column;gap:3px}
+.sum-num{font-size:17px;font-weight:700;letter-spacing:-0.026em;font-variant-numeric:tabular-nums;display:inline-flex;align-items:baseline;gap:1px}
+.sum-num .unit{font-weight:600;color:var(--label-2);font-size:11.5px;margin-left:0.5px;margin-right:3px}
+.sum-lbl{font-size:10px;font-weight:700;color:var(--label);letter-spacing:0.10em;text-transform:uppercase}
+.sum-divider{width:1px;align-self:stretch;background:var(--hairline-2);margin:4px 4px}
+.sum-track{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:108px}
+.sum-track .line{font-size:11px;color:var(--label-2);font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.sum-track .line .dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.sum-track .bar{width:108px;height:4px;border-radius:999px;background:var(--inset-2);overflow:hidden}
+.sum-track .bar i{display:block;height:100%;background:linear-gradient(90deg,#1C1C1E 0%,#3A3A3C 100%);border-radius:999px}
+
+/* timeline */
+.timeline{flex:1;overflow-y:auto;padding:6px 4px 110px;margin:0 -4px;-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 92%,transparent 100%)}
+.timeline::-webkit-scrollbar{display:none}
+
+.t-row{position:relative;background:var(--card);border-radius:20px;padding:13px 14px 13px 12px;display:flex;align-items:center;gap:11px;box-shadow:var(--shadow-row);margin-bottom:12px}
+.t-row .grip{width:14px;height:24px;display:flex;flex-direction:column;justify-content:center;gap:3px;flex-shrink:0;cursor:grab;opacity:0.45}
+.t-row .grip span{width:14px;height:1.5px;background:var(--label);border-radius:1px}
+.t-time{font-size:13px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums;letter-spacing:-0.012em;width:46px;flex-shrink:0;text-align:left}
+.t-time .ampm{font-size:10px;color:var(--label);font-weight:600;letter-spacing:0.04em;display:block}
+.ddisc{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06),inset 0 -2px 4px rgba(20,20,30,0.04)}
+.ddisc svg{width:17px;height:17px;color:var(--glyph);stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.ddisc.business{background:linear-gradient(180deg,#E1ECFF 0%,#C9DBFF 100%)}
+.ddisc.religion{background:linear-gradient(180deg,#E2F4E6 0%,#C0E5C8 100%)}
+.ddisc.learning{background:linear-gradient(180deg,#FFE3EB 0%,#FFCFDC 100%)}
+.ddisc.fitness{background:linear-gradient(180deg,#FFD0DA 0%,#FFB6C5 100%)}
+.ddisc.home{background:linear-gradient(180deg,#E5ECF0 0%,#CFDCE3 100%)}
+.t-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.t-tag{font-size:9.5px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--label)}
+.t-name{font-size:14.5px;font-weight:700;letter-spacing:-0.018em;color:var(--ink)}
+.t-dur{font-size:11.5px;font-weight:600;color:var(--label-2);font-variant-numeric:tabular-nums;background:var(--inset);padding:5px 9px;border-radius:999px;flex-shrink:0;box-shadow:inset 0 0 0 0.5px var(--hairline-2)}
+
+/* prayer band — soft tinted band BEHIND row */
+.t-prayer{position:relative;margin:6px 4px 12px;padding:11px 14px 11px 12px;background:linear-gradient(90deg,var(--prayer-bg-1) 0%,var(--prayer-bg-2) 100%);border-radius:18px;display:flex;align-items:center;gap:11px;box-shadow:inset 0 0 0 0.5px var(--prayer-ring)}
+.t-prayer .pmoon{width:30px;height:30px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 0.5px var(--prayer-ring)}
+.t-prayer .pname{font-size:13.5px;font-weight:700;color:#1F3A2A;letter-spacing:-0.012em}
+.t-prayer .pwhen{font-size:11.5px;color:var(--prayer-ink-2);font-weight:600;margin-left:auto;font-variant-numeric:tabular-nums}
+
+.t-row.live{box-shadow:0 0 0 1.5px var(--blue),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -14px rgba(0,122,255,0.20)}
+.t-row.live .t-time{color:var(--blue)}
+.t-row.done{opacity:0.55}
+.t-row.done .t-name{text-decoration:none;color:var(--label-2)}
+.t-row.done .t-time{color:var(--label)}
+.t-row.done::after{content:"";position:absolute;right:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;background:var(--green-soft);border:1.5px solid var(--green-deep);}
+
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:84px;display:flex;align-items:flex-start;justify-content:space-around;padding:12px 24px 0;background:rgba(255,255,255,0.78);backdrop-filter:saturate(200%) blur(28px);-webkit-backdrop-filter:saturate(200%) blur(28px);border-top:0.5px solid var(--hairline);z-index:3}
+.tab{display:flex;flex-direction:column;align-items:center}
+.tab .pill{padding:9px 18px;border-radius:999px}
+.tab.active .pill{background:var(--inset-2)}
+.tab .pill svg{width:22px;height:22px;display:block;stroke:#8E8E93;fill:none;stroke-width:1.7}
+.tab.active .pill svg{stroke:#000}
+
+/* desktop frame */
+.desktop{width:1180px;height:820px;background:var(--bg);border-radius:14px;box-shadow:0 0 0 0.5px rgba(0,0,0,0.06),0 30px 60px -25px rgba(20,20,30,0.22);overflow:hidden;display:grid;grid-template-columns:220px 1fr}
+.sidebar{background:var(--bg);box-shadow:0.5px 0 0 var(--hairline);padding:14px 12px;display:flex;flex-direction:column;gap:2px}
+.sb-top{font-size:14px;font-weight:700;padding:8px 10px 14px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.sb-item.active{background:var(--inset-2);color:var(--ink)}
+.sb-item svg{width:16px;height:16px;stroke:var(--label-2);stroke-width:1.7;fill:none;stroke-linecap:round}
+.sb-item.active svg{stroke:var(--ink)}
+.sb-divider{height:0.5px;background:var(--hairline);margin:10px 6px}
+.sb-group{font-size:10px;font-weight:700;color:var(--label);letter-spacing:0.14em;text-transform:uppercase;padding:8px 10px 4px}
+.sb-bottom{margin-top:auto;padding-top:10px;border-top:0.5px solid var(--hairline-2);display:flex;align-items:center;gap:10px}
+.sb-bottom .me{width:32px;height:32px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 1.5px #fff,0 0 0 2.5px var(--hairline)}
+.sb-bottom .me img{width:100%;height:100%;display:block}
+.sb-bottom .ko{font-size:11px;color:var(--label-2);font-weight:600}
+.sb-bottom .kb{font-size:10.5px;color:var(--label);background:var(--inset);padding:3px 8px;border-radius:6px;margin-left:auto}
+
+.titlebar{height:48px;display:flex;align-items:center;padding:0 24px;box-shadow:0 0.5px 0 var(--hairline)}
+.titlebar .greet{font-size:15px;font-weight:600;letter-spacing:-0.018em}
+.titlebar .greet .sub{color:var(--label);font-weight:500;margin-left:4px}
+.titlebar .axn{margin-left:auto;font-size:12.5px;color:#fff;font-weight:600;padding:7px 14px;border-radius:999px;background:linear-gradient(180deg,#1A1A20 0%,#000 100%);box-shadow:0 0 0 0.5px rgba(0,0,0,0.5),0 6px 12px -6px rgba(10,10,20,0.4)}
+.dcontent{padding:32px 0;background:var(--stage);height:calc(100% - 48px);display:grid;grid-template-columns:1fr 720px 280px 1fr;gap:24px;align-items:flex-start}
+.dcol-tl{grid-column:2}
+.dcol-stats{grid-column:3;position:sticky;top:32px}
+.stats-card{background:var(--card);border-radius:24px;padding:22px;box-shadow:var(--shadow-card)}
+.stats-card h3{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label);margin-bottom:14px}
+.stat-row{display:flex;align-items:baseline;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--hairline-2)}
+.stat-row:last-child{border-bottom:none}
+.stat-row .k{font-size:12px;color:var(--label-2);font-weight:600}
+.stat-row .v{font-size:16px;font-weight:700;letter-spacing:-0.022em;font-variant-numeric:tabular-nums}
+.stat-row .v .unit{font-size:11px;color:var(--label-2);font-weight:600;margin-left:2px}
+.prayer-stack{margin-top:14px;border-top:0.5px solid var(--hairline);padding-top:14px}
+.prayer-stack .pname{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label);margin-bottom:10px}
+.pp{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12.5px;color:var(--ink-2);font-weight:600}
+.pp .pdot{width:6px;height:6px;border-radius:50%;background:var(--prayer-ink)}
+.pp .pdot.dim{background:var(--label);opacity:0.4}
+.pp .ptime{margin-left:auto;color:var(--label-2);font-weight:500;font-variant-numeric:tabular-nums}
+</style></head><body>
+
+<!-- MOBILE -->
+<div class="col">
+  <div class="col-label">Mobile · today's flow</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 9:24</div>
+          <div class="greet-name">today. <span class="sub">11 blocks · 6h 40m.</span></div>
+        </div>
+        <a class="me-avatar" href="#/settings/"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/></a>
+      </div>
+
+      <div class="summary">
+        <div class="sum-stat"><div class="sum-num">6<span class="unit">h</span>40<span class="unit">m</span></div><div class="sum-lbl">scheduled</div></div>
+        <div class="sum-divider"></div>
+        <div class="sum-stat"><div class="sum-num">2<span class="unit">h</span>15<span class="unit">m</span></div><div class="sum-lbl">used</div></div>
+        <div class="sum-track">
+          <div class="line"><span class="dot"></span>3 of 11 done</div>
+          <div class="bar"><i style="width:27%"></i></div>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="t-row done">
+          <div class="grip"><span></span><span></span><span></span></div>
+          <div class="t-time">5:30<span class="ampm">am</span></div>
+          <div class="ddisc religion"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/><path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/></svg></div>
+          <div class="t-text"><div class="t-tag">religion</div><div class="t-name">Fajr · Quran</div></div>
+          <div class="t-dur" style="opacity:0">25m</div>
+        </div>
+
+        <div class="t-row done">
+          <div class="grip"><span></span><span></span><span></span></div>
+          <div class="t-time">6:30<span class="ampm">am</span></div>
+          <div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M4 9l2-2M9 4l-2 2M15 20l2-2M20 15l-2 2"/></svg></div>
+          <div class="t-text"><div class="t-tag">fitness</div><div class="t-name">deadlift · 5×3</div></div>
+          <div class="t-dur" style="opacity:0">75m</div>
+        </div>
+
+        <div class="t-row done">
+          <div class="grip"><span></span><span></span><span></span></div>
+          <div class="t-time">8:15<span class="ampm">am</span></div>
+          <div class="ddisc home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1z"/></svg></div>
+          <div class="t-text"><div class="t-tag">home · food</div><div class="t-name">eggs · oats · greens</div></div>
+          <div class="t-dur" style="opacity:0">25m</div>
+        </div>
+
+        <div class="t-row live">
+          <div class="grip"><span></span><span></span><span></span></div>
+          <div class="t-time">9:24<span class="ampm">am</span></div>
+          <div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div>
+          <div class="t-text"><div class="t-tag">business · in flow</div><div class="t-name">Q2 launch brief</div></div>
+          <div class="t-dur" style="background:var(--blue-soft);color:var(--blue);box-shadow:inset 0 0 0 0.5px rgba(0,122,255,0.20)">42m left</div>
+        </div>
+
+        <!-- prayer band -->
+        <div class="t-prayer">
+          <div class="pmoon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M16.5 14.5a6.5 6.5 0 11-7-9.5 5.5 5.5 0 007 9.5z" fill="#2F5A3E"/></svg></div>
+          <div class="pname">Dhuhr <span style="font-weight:500;color:var(--prayer-ink-2);font-size:11.5px;margin-left:4px">12:47</span></div>
+          <div class="pwhen">in 3h 23m</div>
+        </div>
+
+        <div class="t-row">
+          <div class="grip"><span></span><span></span><span></span></div>
+          <div class="t-time">1:05<span class="ampm">pm</span></div>
+          <div class="ddisc religion"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/><path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/></svg></div>
+          <div class="t-text"><div class="t-tag">religion</div><div class="t-name">Quran · 15 min</div></div>
+          <div class="t-dur">15m</div>
+        </div>
+
+        <div class="t-row">
+          <div class="grip"><span></span><span></span><span></span></div>
+          <div class="t-time">1:30<span class="ampm">pm</span></div>
+          <div class="ddisc learning"><svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z" fill="#0A0A0F" stroke="none"/><path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/></svg></div>
+          <div class="t-text"><div class="t-tag">learning</div><div class="t-name">read · Naval ch. 3</div></div>
+          <div class="t-dur">30m</div>
+        </div>
+
+        <div class="t-row">
+          <div class="grip"><span></span><span></span><span></span></div>
+          <div class="t-time">2:30<span class="ampm">pm</span></div>
+          <div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div>
+          <div class="t-text"><div class="t-tag">business</div><div class="t-name">client calls · 3 stacked</div></div>
+          <div class="t-dur">90m</div>
+        </div>
+
+        <div class="t-row">
+          <div class="grip"><span></span><span></span><span></span></div>
+          <div class="t-time">5:00<span class="ampm">pm</span></div>
+          <div class="ddisc home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-7h-6v7H4a1 1 0 01-1-1z"/></svg></div>
+          <div class="t-text"><div class="t-tag">home</div><div class="t-name">walk · clear head</div></div>
+          <div class="t-dur">20m</div>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></svg></div></div>
+        <div class="tab active"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/><path d="M3.5 10h17"/><path d="M8 3.5v3.5M16 3.5v3.5"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="3.5" height="13" rx="1"/><rect x="10.5" y="3.5" width="3.5" height="17" rx="1"/><rect x="17" y="9" width="3.5" height="9.5" rx="1"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DESKTOP -->
+<div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:14px">
+  <div class="col-label">Desktop · 720px timeline + 280px floating stats</div>
+  <div class="desktop">
+    <aside class="sidebar">
+      <div class="sb-top">do it.</div>
+      <div class="sb-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></svg>now</div>
+      <div class="sb-item active"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/><path d="M3.5 10h17"/></svg>today</div>
+      <div class="sb-item"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="3.5" height="13" rx="1"/><rect x="10.5" y="3.5" width="3.5" height="17" rx="1"/><rect x="17" y="9" width="3.5" height="9.5" rx="1"/></svg>week</div>
+      <div class="sb-divider"></div>
+      <div class="sb-group">do</div>
+      <div class="sb-item"><svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h12"/></svg>inbox</div>
+      <div class="sb-group">tend</div>
+      <div class="sb-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>domains</div>
+      <div class="sb-item"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>routines</div>
+      <div class="sb-bottom">
+        <div class="me"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7"/></div>
+        <div class="ko">adam</div>
+        <div class="kb">⌘K</div>
+      </div>
+    </aside>
+    <div>
+      <div class="titlebar">
+        <div class="greet">today. <span class="sub">11 blocks · 6h 40m.</span></div>
+        <div class="axn">+ block</div>
+      </div>
+      <div class="dcontent">
+        <div class="dcol-tl">
+          <div class="summary" style="margin:0 0 18px">
+            <div class="sum-stat"><div class="sum-num">6<span class="unit">h</span>40<span class="unit">m</span></div><div class="sum-lbl">scheduled</div></div>
+            <div class="sum-divider"></div>
+            <div class="sum-stat"><div class="sum-num">2<span class="unit">h</span>15<span class="unit">m</span></div><div class="sum-lbl">used</div></div>
+            <div class="sum-track"><div class="line"><span class="dot"></span>3 of 11 done</div><div class="bar"><i style="width:27%"></i></div></div>
+          </div>
+          <div class="t-row done">
+            <div class="grip"><span></span><span></span><span></span></div>
+            <div class="t-time">5:30<span class="ampm">am</span></div>
+            <div class="ddisc religion"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/><path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/></svg></div>
+            <div class="t-text"><div class="t-tag">religion</div><div class="t-name">Fajr · Quran</div></div>
+            <div class="t-dur" style="opacity:0">25m</div>
+          </div>
+          <div class="t-row done">
+            <div class="grip"><span></span><span></span><span></span></div>
+            <div class="t-time">6:30<span class="ampm">am</span></div>
+            <div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11"/></svg></div>
+            <div class="t-text"><div class="t-tag">fitness</div><div class="t-name">deadlift · 5×3 @ 96kg</div></div>
+            <div class="t-dur" style="opacity:0">75m</div>
+          </div>
+          <div class="t-row live">
+            <div class="grip"><span></span><span></span><span></span></div>
+            <div class="t-time">9:24<span class="ampm">am</span></div>
+            <div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div>
+            <div class="t-text"><div class="t-tag">business · in flow</div><div class="t-name">Q2 launch brief</div></div>
+            <div class="t-dur" style="background:var(--blue-soft);color:var(--blue);box-shadow:inset 0 0 0 0.5px rgba(0,122,255,0.20)">42m left</div>
+          </div>
+          <div class="t-prayer">
+            <div class="pmoon"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M16.5 14.5a6.5 6.5 0 11-7-9.5 5.5 5.5 0 007 9.5z" fill="#2F5A3E"/></svg></div>
+            <div class="pname">Dhuhr <span style="font-weight:500;color:var(--prayer-ink-2);font-size:11.5px;margin-left:4px">12:47</span></div>
+            <div class="pwhen">in 3h 23m</div>
+          </div>
+          <div class="t-row">
+            <div class="grip"><span></span><span></span><span></span></div>
+            <div class="t-time">1:05<span class="ampm">pm</span></div>
+            <div class="ddisc religion"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/><path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/></svg></div>
+            <div class="t-text"><div class="t-tag">religion</div><div class="t-name">Quran · 15 min</div></div>
+            <div class="t-dur">15m</div>
+          </div>
+          <div class="t-row">
+            <div class="grip"><span></span><span></span><span></span></div>
+            <div class="t-time">2:30<span class="ampm">pm</span></div>
+            <div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div>
+            <div class="t-text"><div class="t-tag">business</div><div class="t-name">client calls · 3 stacked</div></div>
+            <div class="t-dur">90m</div>
+          </div>
+        </div>
+        <div class="dcol-stats">
+          <div class="stats-card">
+            <h3>today's stats</h3>
+            <div class="stat-row"><div class="k">scheduled</div><div class="v">6<span class="unit">h</span> 40<span class="unit">m</span></div></div>
+            <div class="stat-row"><div class="k">used</div><div class="v">2<span class="unit">h</span> 15<span class="unit">m</span></div></div>
+            <div class="stat-row"><div class="k">elastic shift</div><div class="v">+18<span class="unit">m</span></div></div>
+            <div class="prayer-stack">
+              <div class="pname">prayers</div>
+              <div class="pp"><span class="pdot"></span>Fajr<span class="ptime">5:14</span></div>
+              <div class="pp"><span class="pdot"></span>Dhuhr<span class="ptime">12:47</span></div>
+              <div class="pp"><span class="pdot dim"></span>Asr<span class="ptime">3:58</span></div>
+              <div class="pp"><span class="pdot dim"></span>Maghrib<span class="ptime">6:32</span></div>
+              <div class="pp"><span class="pdot dim"></span>Isha<span class="ptime">8:01</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>
