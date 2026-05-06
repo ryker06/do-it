@@ -226,11 +226,17 @@ export function ClientView({ id }: { id: string }) {
             {DOMAIN_NAMES[domainId]}
           </span>
         </div>
+        {/* memoji */}
+        <div className="me-avatar" style={{ marginLeft: "auto" }}>
+          <img
+            src="https://www.tapback.co/api/avatar/jay.webp?color=7"
+            alt="Adam"
+          />
+        </div>
         {/* more */}
         <button
           onClick={() => router.push(`/visions/${visionId}/edit`)}
           style={{
-            marginLeft: "auto",
             width: 34,
             height: 34,
             borderRadius: "50%",

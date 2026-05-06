@@ -18,7 +18,8 @@ export default function RootPage() {
     } catch {
       done = false;
     }
-    window.location.replace(done ? "/now" : "/onboarding");
+    const BASE = process.env.NODE_ENV === "production" ? "/do-it" : "";
+    window.location.replace(BASE + (done ? "/now/" : "/onboarding/"));
   }, []);
 
   return (

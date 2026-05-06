@@ -199,6 +199,12 @@ export function ClientView({ id }: { id: string }) {
         >
           <DomainGlyph id={domainId} size={24} />
         </div>
+        <div className="me-avatar">
+          <img
+            src="https://www.tapback.co/api/avatar/jay.webp?color=7"
+            alt="Adam"
+          />
+        </div>
       </div>
 
       {/* eyebrow */}
