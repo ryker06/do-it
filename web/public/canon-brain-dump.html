@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — BRAIN DUMP</title>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+    --glyph:#0A0A0F;
+
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    --blue:#007AFF;
+    --blue-deep:#0062CC;
+    --blue-soft:rgba(0,122,255,0.10);
+    --blue-glow:rgba(0,122,255,0.20);
+    --blue-tint-1:#E6F0FF;
+    --blue-tint-2:#D2E2FF;
+
+    --mint:#34C7A8;
+    --pink:#F25B8A;
+    --green:#34C759;
+    --green-deep:#248A3D;
+
+    --d-business-1:#E1ECFF;  --d-business-2:#C9DBFF;
+    --d-religion-1:#E2F4E6;  --d-religion-2:#C0E5C8;
+    --d-learning-1:#FFE3EB;  --d-learning-2:#FFCFDC;
+    --d-fitness-1:#FFD0DA;   --d-fitness-2:#FFB6C5;
+    --d-home-1:#E5ECF0;      --d-home-2:#CFDCE3;
+
+    --shadow-sheet:
+      0 -1px 0 rgba(255,255,255,0.95) inset,
+      0 0 0 0.5px rgba(60,60,67,0.08),
+      0 -2px 8px rgba(20,20,30,0.04),
+      0 -22px 60px -10px rgba(20,20,30,0.20),
+      0 -40px 80px -20px rgba(20,20,30,0.22);
+    --shadow-mic:
+      0 0 0 0.5px rgba(0,90,200,0.30),
+      0 18px 38px -12px rgba(0,122,255,0.45),
+      0 8px 18px -8px rgba(20,20,30,0.18),
+      inset 0 1px 0 rgba(255,255,255,0.30);
+    --shadow-mic-rec:
+      0 0 0 0.5px rgba(0,90,200,0.40),
+      0 22px 50px -10px rgba(0,122,255,0.65),
+      0 10px 22px -8px rgba(20,20,30,0.22),
+      inset 0 1px 0 rgba(255,255,255,0.30);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;gap:56px;flex-wrap:wrap;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+  .col{display:flex;flex-direction:column;align-items:center;gap:18px;}
+  .col-label{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8E8E93;font-weight:600;}
+
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+
+  /* ───── BACKGROUND NOW (dimmed scrim) ───── */
+  .behind{position:absolute;inset:0;padding:54px 20px 0;display:flex;flex-direction:column;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 4px;margin-bottom:18px;}
+  .greet-day{font-size:11.5px;font-weight:600;color:var(--label);letter-spacing:0.04em;}
+  .greet-name{font-size:24px;font-weight:700;color:var(--ink);letter-spacing:-0.035em;line-height:1.05;margin-top:3px;}
+  .greet-name .sub{color:var(--label);font-weight:500;letter-spacing:-0.022em;}
+  .me-avatar{
+    width:42px;height:42px;border-radius:50%;background:#F2F2F7;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;
+    box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(60,60,67,0.10),0 2px 6px rgba(20,20,30,0.10);
+  }
+  .me-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  .prayer{
+    margin:0 0 18px;
+    background:linear-gradient(180deg,#EAF6EE 0%,#DCEFE3 100%);
+    border-radius:18px;padding:11px 13px 11px 11px;
+    display:flex;align-items:center;gap:12px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.9),inset 0 0 0 0.5px rgba(47,90,62,0.10),0 6px 16px -10px rgba(47,90,62,0.16);
+  }
+  .prayer .disc{width:32px;height:32px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 0.5px rgba(47,90,62,0.10),0 1px 2px rgba(47,90,62,0.10);}
+  .prayer .name{font-size:14px;font-weight:600;color:#1F3A2A;letter-spacing:-0.018em;}
+  .prayer .at{font-size:13px;color:#5E8A6E;font-weight:500;margin-left:3px;}
+  .prayer .count{margin-left:auto;font-size:12.5px;font-weight:600;color:#2F5A3E;background:rgba(255,255,255,0.85);padding:5px 11px;border-radius:999px;font-variant-numeric:tabular-nums;box-shadow:0 0 0 0.5px rgba(47,90,62,0.10);}
+
+  .hero{
+    background:#fff;border-radius:30px;padding:18px 20px 20px;
+    box-shadow:0 0 0 0.5px rgba(60,60,67,0.06),0 12px 28px -14px rgba(20,20,30,0.10),0 26px 50px -28px rgba(20,20,30,0.14);
+    margin-bottom:18px;
+  }
+  .card-eyebrow{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--label-2);margin-bottom:14px;}
+  .card-eyebrow .pip{width:6px;height:6px;border-radius:50%;background:var(--label);}
+  .card-eyebrow .at{color:var(--label);font-weight:500;}
+  .badge-row{display:flex;align-items:center;gap:11px;margin-bottom:14px;}
+  .ddisc{
+    width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06),inset 0 -2px 4px rgba(20,20,30,0.04),0 1px 2px rgba(20,20,30,0.04);
+  }
+  .ddisc svg{width:20px;height:20px;color:var(--glyph);stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .ddisc.business{background:linear-gradient(180deg,var(--d-business-1) 0%,var(--d-business-2) 100%);}
+  .ddisc.religion{background:linear-gradient(180deg,var(--d-religion-1) 0%,var(--d-religion-2) 100%);}
+  .ddisc.learning{background:linear-gradient(180deg,var(--d-learning-1) 0%,var(--d-learning-2) 100%);}
+  .ddisc.fitness {background:linear-gradient(180deg,var(--d-fitness-1) 0%,var(--d-fitness-2) 100%);}
+  .ddisc.home    {background:linear-gradient(180deg,var(--d-home-1) 0%,var(--d-home-2) 100%);}
+  .domain-meta{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+  .domain-name{font-size:13px;font-weight:700;color:var(--ink-2);}
+  .domain-sub{font-size:12px;color:var(--label);font-weight:500;}
+  .task-title{font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-0.045em;line-height:0.99;margin-bottom:14px;}
+  .meta-row{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap;}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:999px;padding:7px 11px 7px 9px;font-size:12.5px;font-weight:600;color:var(--ink-2);box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 1px rgba(20,20,30,0.03);}
+  .chip svg{width:12px;height:12px;}
+  .cta{
+    width:100%;background:linear-gradient(180deg,#1A1A20 0%,#000 100%);color:#fff;border:none;border-radius:999px;
+    padding:15px 20px;font-size:15.5px;font-weight:600;letter-spacing:-0.014em;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    box-shadow:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+    font-family:inherit;
+  }
+  .cta .play{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.16);display:inline-flex;align-items:center;justify-content:center;}
+  .cta .dur{margin-left:6px;color:rgba(255,255,255,0.55);font-weight:500;}
+
+  /* dim scrim */
+  .scrim{
+    position:absolute;inset:0;z-index:5;
+    background:rgba(18,18,24,0.36);
+    backdrop-filter:blur(14px) saturate(140%);
+    -webkit-backdrop-filter:blur(14px) saturate(140%);
+  }
+
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;height:84px;
+    display:flex;align-items:flex-start;justify-content:space-around;padding:12px 24px 0;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:saturate(200%) blur(28px);
+    -webkit-backdrop-filter:saturate(200%) blur(28px);
+    border-top:0.5px solid var(--hairline);z-index:4;
+  }
+  .tab{display:flex;flex-direction:column;align-items:center;color:var(--label);}
+  .tab .pill{padding:9px 18px;border-radius:999px;background:transparent;}
+  .tab.active .pill{background:var(--inset-2);}
+  .tab .pill svg{width:22px;height:22px;display:block;}
+  .tab.active svg{stroke:var(--ink);}
+  .tab svg{stroke:#8E8E93;}
+
+  /* ───── BOTTOM SHEET ───── */
+  .sheet{
+    position:absolute;left:0;right:0;bottom:0;z-index:10;
+    background:#FFFFFF;
+    border-top-left-radius:32px;border-top-right-radius:32px;
+    padding:10px 22px 24px;
+    box-shadow:var(--shadow-sheet);
+  }
+  .sheet::before{
+    content:"";position:absolute;inset:0;
+    border-top-left-radius:32px;border-top-right-radius:32px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95);
+    pointer-events:none;
+  }
+  .handle{width:38px;height:5px;border-radius:999px;background:rgba(60,60,67,0.22);margin:0 auto 14px;}
+
+  .sheet-eyebrow{
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    font-size:11px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .sheet-eyebrow .dot{width:4px;height:4px;border-radius:50%;background:var(--label);}
+  .sheet-eyebrow .lead{color:var(--label-2);}
+  .sheet-eyebrow .trail{color:var(--label);font-weight:600;letter-spacing:0.10em;}
+
+  /* ── MIC stack ── */
+  .mic-stack{
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+    margin-bottom:20px;
+  }
+  .mic-wrap{
+    position:relative;width:160px;height:160px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ring{
+    position:absolute;border-radius:50%;
+    border:1px solid rgba(0,122,255,0.18);
+    pointer-events:none;
+  }
+  .ring.r1{inset:18px;}
+  .ring.r2{inset:4px;border-color:rgba(0,122,255,0.10);}
+  /* recording rings: pulse outward */
+  .recording .ring.r1{
+    animation:ringPulse 2.0s ease-out infinite;
+    border-color:rgba(0,122,255,0.30);
+  }
+  .recording .ring.r2{
+    animation:ringPulse 2.0s ease-out 0.6s infinite;
+    border-color:rgba(0,122,255,0.20);
+  }
+  @keyframes ringPulse{
+    0%{transform:scale(0.85);opacity:0.9;}
+    80%{transform:scale(1.18);opacity:0;}
+    100%{transform:scale(1.18);opacity:0;}
+  }
+
+  .mic{
+    width:96px;height:96px;border-radius:50%;
+    background:linear-gradient(180deg,#3FA0FF 0%,#0A78FF 55%,#0062D6 100%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow-mic);
+    position:relative;
+    transition:transform .15s ease, box-shadow .25s ease;
+  }
+  .recording .mic{
+    box-shadow:var(--shadow-mic-rec);
+    transform:scale(1.02);
+  }
+  .mic::after{
+    content:"";position:absolute;inset:6px;border-radius:50%;
+    background:radial-gradient(60% 50% at 50% 28%, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 60%);
+    pointer-events:none;
+  }
+  .mic svg{width:34px;height:34px;color:#fff;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none;position:relative;z-index:2;}
+
+  /* recording: replace icon with three live waveform bars */
+  .mic .wave{display:none;gap:4px;align-items:center;height:34px;position:relative;z-index:2;}
+  .mic .wave i{
+    display:block;width:4px;border-radius:2px;
+    background:rgba(255,255,255,0.95);
+    box-shadow:0 0 6px rgba(255,255,255,0.4);
+  }
+  .recording .mic svg{display:none;}
+  .recording .mic .wave{display:flex;}
+  .mic .wave i:nth-child(1){height:14px;animation:bar 0.9s ease-in-out infinite;}
+  .mic .wave i:nth-child(2){height:26px;animation:bar 0.7s ease-in-out 0.1s infinite;}
+  .mic .wave i:nth-child(3){height:18px;animation:bar 1.0s ease-in-out 0.2s infinite;}
+  .mic .wave i:nth-child(4){height:28px;animation:bar 0.8s ease-in-out 0.3s infinite;}
+  .mic .wave i:nth-child(5){height:12px;animation:bar 0.85s ease-in-out 0.15s infinite;}
+  @keyframes bar{
+    0%,100%{transform:scaleY(0.45);}
+    50%{transform:scaleY(1);}
+  }
+
+  .mic-label{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:13px;font-weight:600;color:var(--label-2);
+    letter-spacing:-0.012em;
+  }
+  .mic-label .live-dot{
+    width:7px;height:7px;border-radius:50%;background:var(--blue);
+    box-shadow:0 0 0 3px var(--blue-glow);
+    animation:pulseDot 1.6s ease-in-out infinite;
+  }
+  @keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.55;transform:scale(0.8);}}
+  .mic-label.live{color:var(--blue);}
+
+  /* ── transcript area ── */
+  .transcript{
+    background:var(--inset);
+    border-radius:18px;
+    height:120px;
+    padding:14px 16px;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2), inset 0 1px 1px rgba(20,20,30,0.02);
+    margin-bottom:16px;
+    position:relative;
+    overflow:hidden;
+  }
+  .transcript .placeholder{
+    font-size:14px;color:var(--label);font-weight:500;letter-spacing:-0.012em;
+    line-height:1.45;
+  }
+  .transcript .text{
+    font-size:14.5px;color:var(--ink-2);font-weight:500;letter-spacing:-0.014em;
+    line-height:1.5;
+  }
+  .transcript .text .word{
+    opacity:0;
+    animation:wordIn 0.4s ease forwards;
+  }
+  .transcript .text .word:nth-child(1){animation-delay:0.05s;}
+  .transcript .text .word:nth-child(2){animation-delay:0.18s;}
+  .transcript .text .word:nth-child(3){animation-delay:0.32s;}
+  .transcript .text .word:nth-child(4){animation-delay:0.48s;}
+  .transcript .text .word:nth-child(5){animation-delay:0.65s;}
+  .transcript .text .word:nth-child(6){animation-delay:0.85s;}
+  .transcript .text .word:nth-child(7){animation-delay:1.05s;}
+  .transcript .text .word:nth-child(8){animation-delay:1.25s;}
+  .transcript .text .word:nth-child(9){animation-delay:1.45s;}
+  .transcript .text .word:nth-child(10){animation-delay:1.65s;}
+  .transcript .text .word:nth-child(11){animation-delay:1.85s;}
+  .transcript .text .word:nth-child(12){animation-delay:2.05s;}
+  .transcript .text .word:nth-child(13){animation-delay:2.25s;}
+  .transcript .text .word:nth-child(14){animation-delay:2.45s;}
+  .transcript .text .word:nth-child(15){animation-delay:2.65s;}
+  .transcript .text .word:nth-child(16){animation-delay:2.85s;}
+  .transcript .text .word:nth-child(17){animation-delay:3.05s;}
+  .transcript .text .word:nth-child(18){animation-delay:3.25s;}
+  .transcript .text .word:nth-child(19){animation-delay:3.45s;}
+  .transcript .text .word:nth-child(20){animation-delay:3.65s;}
+  .transcript .text .word:nth-child(n+21){animation-delay:3.85s;}
+  @keyframes wordIn{from{opacity:0;transform:translateY(2px);}to{opacity:1;transform:translateY(0);}}
+  /* live caret */
+  .transcript .text .caret{
+    display:inline-block;width:2px;height:14px;
+    background:var(--blue);vertical-align:-2px;margin-left:1px;
+    border-radius:1px;
+    animation:caret 0.9s ease-in-out infinite;
+    opacity:0;animation-delay:3.9s;
+    animation-fill-mode:forwards;
+  }
+  @keyframes caret{
+    0%,100%{opacity:1;}
+    50%{opacity:0.2;}
+  }
+
+  /* ── domain chip picker ── */
+  .domain-picker{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:18px;padding:0 2px;
+  }
+  .domain-picker .label{
+    font-size:11px;font-weight:700;color:var(--label);
+    letter-spacing:0.12em;text-transform:uppercase;
+  }
+  .chips{display:flex;gap:9px;align-items:center;}
+  .chip-disc{
+    width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06),inset 0 -2px 4px rgba(20,20,30,0.04),0 1px 2px rgba(20,20,30,0.04);
+    cursor:pointer;
+    position:relative;
+    transition:transform .12s ease;
+  }
+  .chip-disc svg{width:17px;height:17px;color:var(--glyph);stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .chip-disc.business{background:linear-gradient(180deg,var(--d-business-1) 0%,var(--d-business-2) 100%);}
+  .chip-disc.religion{background:linear-gradient(180deg,var(--d-religion-1) 0%,var(--d-religion-2) 100%);}
+  .chip-disc.learning{background:linear-gradient(180deg,var(--d-learning-1) 0%,var(--d-learning-2) 100%);}
+  .chip-disc.fitness {background:linear-gradient(180deg,var(--d-fitness-1) 0%,var(--d-fitness-2) 100%);}
+  .chip-disc.home    {background:linear-gradient(180deg,var(--d-home-1) 0%,var(--d-home-2) 100%);}
+  .chip-disc.idle{filter:saturate(0.55) opacity(0.85);}
+  .chip-disc.active{
+    transform:scale(1.06);
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.08),
+      inset 0 -2px 4px rgba(20,20,30,0.05),
+      0 0 0 2px #fff,
+      0 0 0 4px var(--blue),
+      0 6px 14px -6px rgba(0,122,255,0.45);
+  }
+  .chip-disc.active::after{
+    content:"";position:absolute;right:-3px;top:-3px;
+    width:14px;height:14px;border-radius:50%;
+    background:var(--blue);
+    border:2px solid #fff;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-size:9px 9px;
+    background-position:center;
+    background-repeat:no-repeat;
+  }
+
+  /* ── save bar ── */
+  .save-pill{
+    width:100%;
+    background:linear-gradient(180deg,#1A1A20 0%,#000 100%);
+    color:#fff;border:none;border-radius:999px;
+    padding:15px 20px;
+    font-size:15px;font-weight:600;letter-spacing:-0.014em;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.08) inset,
+      0 0 0 0.5px rgba(0,0,0,0.5),
+      0 14px 30px -14px rgba(10,10,20,0.45);
+    font-family:inherit;cursor:pointer;
+    margin-bottom:6px;
+  }
+  .save-pill .dur{color:rgba(255,255,255,0.50);font-weight:500;letter-spacing:-0.01em;}
+  .save-pill .check{
+    width:18px;height:18px;border-radius:50%;
+    background:rgba(255,255,255,0.16);
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .save-pill .check svg{width:10px;height:10px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  /* idle state save (greyed) */
+  .save-pill.muted{
+    background:linear-gradient(180deg,#2A2A30 0%,#16161A 100%);
+    box-shadow:0 1px 0 rgba(255,255,255,0.06) inset,0 0 0 0.5px rgba(0,0,0,0.4),0 8px 18px -10px rgba(10,10,20,0.30);
+    color:rgba(255,255,255,0.55);
+  }
+  .save-pill.muted .dur{color:rgba(255,255,255,0.30);}
+
+  .cancel{
+    display:block;width:100%;
+    padding:10px 0 2px;text-align:center;
+    font-size:14px;font-weight:600;color:var(--label-2);letter-spacing:-0.018em;
+    background:none;border:0;cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<!-- ───────────────── IDLE ───────────────── -->
+<div class="col">
+  <div class="col-label">Idle · ready</div>
+  <div class="phone">
+
+    <!-- BACKGROUND NOW -->
+    <div class="behind">
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 9:24</div>
+          <div class="greet-name">Morning, Adam <span class="sub">· let's start</span></div>
+        </div>
+        <div class="me-avatar"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/></div>
+      </div>
+      <div class="prayer">
+        <div class="disc"><svg viewBox="0 0 24 24" fill="none"><path d="M16.5 14.5a6.5 6.5 0 11-7-9.5 5.5 5.5 0 007 9.5z" fill="#2F5A3E"/></svg></div>
+        <div class="name">Dhuhr <span class="at">· 12:47</span></div>
+        <div class="count">in 3h 23m</div>
+      </div>
+      <div class="hero">
+        <div class="card-eyebrow"><span class="pip"></span>Up next<span class="at">· in a moment</span></div>
+        <div class="badge-row">
+          <div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div>
+          <div class="domain-meta">
+            <div class="domain-name">Business</div>
+            <div class="domain-sub">Step 2 of 4 today</div>
+          </div>
+        </div>
+        <div class="task-title">Write the<br/>Q2 launch brief</div>
+        <div class="meta-row">
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#1C1C1E" stroke-width="2"/><path d="M12 7v5l3 2" stroke="#1C1C1E" stroke-width="2" stroke-linecap="round"/></svg>60 min</span>
+          <span class="chip">Step 2 of 4</span>
+        </div>
+        <button class="cta">
+          <span class="play"><svg viewBox="0 0 12 12"><path d="M2 1.5v9l8-4.5z" fill="#fff"/></svg></span>
+          Start <span class="dur">· 60 min</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SCRIM -->
+    <div class="scrim"></div>
+
+    <!-- TABBAR -->
+    <div class="tabbar">
+      <div class="tab active"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></svg></div></div>
+      <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/><path d="M3.5 10h17" stroke-width="1.7"/><path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/></svg></div></div>
+      <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="5" rx="2" stroke-width="1.7"/><rect x="3.5" y="11.5" width="17" height="5" rx="2" stroke-width="1.7"/><rect x="3.5" y="18.5" width="11" height="2" rx="1" stroke-width="1.7"/></svg></div></div>
+      <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/></svg></div></div>
+    </div>
+
+    <!-- ───── SHEET ───── -->
+    <div class="sheet">
+      <div class="handle"></div>
+      <div class="sheet-eyebrow">
+        <span class="lead">Brain dump</span>
+        <span class="dot"></span>
+        <span class="trail">drop a thought</span>
+      </div>
+
+      <div class="mic-stack">
+        <div class="mic-wrap">
+          <div class="ring r2"></div>
+          <div class="ring r1"></div>
+          <button class="mic" aria-label="Tap to record">
+            <svg viewBox="0 0 24 24">
+              <rect x="9" y="3" width="6" height="12" rx="3"/>
+              <path d="M5.5 11a6.5 6.5 0 0013 0"/>
+              <path d="M12 17.5V21"/>
+              <path d="M9 21h6"/>
+            </svg>
+            <div class="wave"><i></i><i></i><i></i><i></i><i></i></div>
+          </button>
+        </div>
+        <div class="mic-label">Tap to record</div>
+      </div>
+
+      <div class="transcript">
+        <div class="placeholder">Speak it. We'll catch every word and sort it overnight.</div>
+      </div>
+
+      <div class="domain-picker">
+        <div class="label">Tag domain</div>
+        <div class="chips">
+          <div class="chip-disc business idle"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div>
+          <div class="chip-disc religion idle"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/><path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/></svg></div>
+          <div class="chip-disc learning idle"><svg viewBox="0 0 24 24"><path d="M3 9l9-4 9 4-9 4-9-4z"/><path d="M7 11v4c0 1.5 2.5 3 5 3s5-1.5 5-3v-4"/><path d="M21 9v5"/></svg></div>
+          <div class="chip-disc fitness idle"><svg viewBox="0 0 24 24"><path d="M6 9v6M3 10.5v3M18 9v6M21 10.5v3"/><rect x="6" y="9" width="12" height="6" rx="1.2"/></svg></div>
+          <div class="chip-disc home idle"><svg viewBox="0 0 24 24"><path d="M3.5 11l8.5-7 8.5 7"/><path d="M5.5 9.7V20h13V9.7"/><path d="M10 20v-5h4v5"/></svg></div>
+        </div>
+      </div>
+
+      <button class="save-pill muted">
+        <span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+        Save <span class="dur">· syncs at 4 am</span>
+      </button>
+      <button class="cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ───────────────── RECORDING ───────────────── -->
+<div class="col">
+  <div class="col-label">Recording · live</div>
+  <div class="phone">
+
+    <div class="behind">
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 9:24</div>
+          <div class="greet-name">Morning, Adam <span class="sub">· let's start</span></div>
+        </div>
+        <div class="me-avatar"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/></div>
+      </div>
+      <div class="prayer">
+        <div class="disc"><svg viewBox="0 0 24 24" fill="none"><path d="M16.5 14.5a6.5 6.5 0 11-7-9.5 5.5 5.5 0 007 9.5z" fill="#2F5A3E"/></svg></div>
+        <div class="name">Dhuhr <span class="at">· 12:47</span></div>
+        <div class="count">in 3h 23m</div>
+      </div>
+      <div class="hero">
+        <div class="card-eyebrow"><span class="pip"></span>Up next<span class="at">· in a moment</span></div>
+        <div class="badge-row">
+          <div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div>
+          <div class="domain-meta">
+            <div class="domain-name">Business</div>
+            <div class="domain-sub">Step 2 of 4 today</div>
+          </div>
+        </div>
+        <div class="task-title">Write the<br/>Q2 launch brief</div>
+        <div class="meta-row">
+          <span class="chip">60 min</span>
+          <span class="chip">Step 2 of 4</span>
+        </div>
+        <button class="cta">
+          <span class="play"><svg viewBox="0 0 12 12"><path d="M2 1.5v9l8-4.5z" fill="#fff"/></svg></span>
+          Start <span class="dur">· 60 min</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="scrim"></div>
+
+    <div class="tabbar">
+      <div class="tab active"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></svg></div></div>
+      <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/><path d="M3.5 10h17" stroke-width="1.7"/><path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/></svg></div></div>
+      <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="5" rx="2" stroke-width="1.7"/><rect x="3.5" y="11.5" width="17" height="5" rx="2" stroke-width="1.7"/><rect x="3.5" y="18.5" width="11" height="2" rx="1" stroke-width="1.7"/></svg></div></div>
+      <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/></svg></div></div>
+    </div>
+
+    <!-- SHEET RECORDING -->
+    <div class="sheet recording">
+      <div class="handle"></div>
+      <div class="sheet-eyebrow">
+        <span class="lead">Brain dump</span>
+        <span class="dot"></span>
+        <span class="trail">drop a thought</span>
+      </div>
+
+      <div class="mic-stack">
+        <div class="mic-wrap">
+          <div class="ring r2"></div>
+          <div class="ring r1"></div>
+          <button class="mic" aria-label="Recording">
+            <svg viewBox="0 0 24 24">
+              <rect x="9" y="3" width="6" height="12" rx="3"/>
+              <path d="M5.5 11a6.5 6.5 0 0013 0"/>
+              <path d="M12 17.5V21"/>
+              <path d="M9 21h6"/>
+            </svg>
+            <div class="wave"><i></i><i></i><i></i><i></i><i></i></div>
+          </button>
+        </div>
+        <div class="mic-label live"><span class="live-dot"></span>Listening...</div>
+      </div>
+
+      <div class="transcript">
+        <div class="text"><span class="word">We </span><span class="word">build </span><span class="word">templates </span><span class="word">engine, </span><span class="word">idea: </span><span class="word">build </span><span class="word">a </span><span class="word">Framer-import-to-Webflow </span><span class="word">pipeline </span><span class="word">that </span><span class="word">runs </span><span class="word">nightly </span><span class="word">on </span><span class="word">a </span><span class="word">watched </span><span class="word">folder.</span><span class="caret"></span></div>
+      </div>
+
+      <div class="domain-picker">
+        <div class="label">Tag domain</div>
+        <div class="chips">
+          <div class="chip-disc business active"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div>
+          <div class="chip-disc religion idle"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/><path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/></svg></div>
+          <div class="chip-disc learning idle"><svg viewBox="0 0 24 24"><path d="M3 9l9-4 9 4-9 4-9-4z"/><path d="M7 11v4c0 1.5 2.5 3 5 3s5-1.5 5-3v-4"/><path d="M21 9v5"/></svg></div>
+          <div class="chip-disc fitness idle"><svg viewBox="0 0 24 24"><path d="M6 9v6M3 10.5v3M18 9v6M21 10.5v3"/><rect x="6" y="9" width="12" height="6" rx="1.2"/></svg></div>
+          <div class="chip-disc home idle"><svg viewBox="0 0 24 24"><path d="M3.5 11l8.5-7 8.5 7"/><path d="M5.5 9.7V20h13V9.7"/><path d="M10 20v-5h4v5"/></svg></div>
+        </div>
+      </div>
+
+      <button class="save-pill">
+        <span class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+        Save <span class="dur">· syncs at 4 am</span>
+      </button>
+      <button class="cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

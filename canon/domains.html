@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — DOMAINS</title>
+<style>
+  :root{
+    /* ── surfaces ── */
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    /* ── ink ── */
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+
+    --glyph:#0A0A0F;
+
+    /* ── hairlines ── */
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    /* ── ACCENTS (used very sparingly here) ── */
+    --blue:#007AFF;
+    --blue-soft:rgba(0,122,255,0.10);
+    --blue-glow:rgba(0,122,255,0.20);
+    --green:#34C759;
+    --green-deep:#248A3D;
+    --green-soft:rgba(52,199,89,0.14);
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-stack:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 8px 22px -14px rgba(20,20,30,0.12);
+    --shadow-row:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 6px 16px -12px rgba(20,20,30,0.10);
+
+    --gap:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  /* ── phone shell ── */
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    padding:54px 20px 0;
+  }
+
+  /* ───────── topbar ───────── */
+  .topbar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 4px;margin-bottom:18px;
+  }
+  .greet-day{
+    font-size:11.5px;font-weight:600;color:var(--label);
+    letter-spacing:0.04em;
+  }
+  .greet-name{
+    font-size:24px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.035em;line-height:1.05;margin-top:3px;
+  }
+  .greet-name .sub{color:var(--label);font-weight:500;letter-spacing:-0.022em;}
+  .me-avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:#F2F2F7;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;flex-shrink:0;
+    box-shadow:
+      0 0 0 2px #fff,
+      0 0 0 3px rgba(60,60,67,0.10),
+      0 2px 6px rgba(20,20,30,0.10);
+  }
+  .me-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* ───────── eyebrow ───────── */
+  .section-eyebrow{
+    display:flex;align-items:center;gap:10px;
+    padding:0 6px;margin:4px 0 14px;
+  }
+  .section-eyebrow .lbl{
+    font-size:10.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+  }
+  .section-eyebrow .rule{
+    flex:1;height:1px;background:var(--hairline-2);
+  }
+  .section-eyebrow .meta{
+    font-size:11.5px;color:var(--label-2);font-weight:600;
+    letter-spacing:-0.005em;
+  }
+
+  /* ───────── scroll area ───────── */
+  .scroll{
+    position:relative;z-index:2;
+    flex:1;
+    overflow-y:auto;
+    padding:2px 4px 110px;
+    margin:0 -4px;
+    -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+            mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+  }
+  .scroll::-webkit-scrollbar{display:none;}
+
+  /* ───────── domain card ───────── */
+  .dcard{
+    position:relative;
+    background:var(--card);
+    border-radius:22px;
+    padding:14px 14px 14px 12px;
+    margin-bottom:var(--gap);
+    box-shadow:var(--shadow-row);
+  }
+  .dcard::before{
+    content:"";position:absolute;inset:0;border-radius:22px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+
+  .dcard-head{
+    display:flex;align-items:center;gap:12px;
+  }
+
+  /* domain disc — same Lucide-on-pastel system */
+  .ddisc{
+    width:42px;height:42px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;position:relative;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .ddisc svg{
+    width:22px;height:22px;display:block;
+    color:var(--glyph);
+    stroke:currentColor;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;
+    fill:none;
+  }
+  .ddisc.business{background:linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%);}
+  .ddisc.religion {background:linear-gradient(180deg,#E2F4E6 0%, #C0E5C8 100%);}
+  .ddisc.learning {background:linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%);}
+  .ddisc.fitness  {background:linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%);}
+  .ddisc.home     {background:linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%);}
+
+  .dcard-body{
+    display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;
+  }
+  .dcard-name{
+    font-size:16px;font-weight:600;color:var(--ink);
+    letter-spacing:-0.024em;line-height:1.15;
+  }
+  /* metadata row — same register as today's row meta */
+  .dcard-meta{
+    display:flex;align-items:center;gap:6px;
+    font-size:11px;font-weight:600;color:var(--label);
+    letter-spacing:0.005em;line-height:1.1;
+    overflow:hidden;white-space:nowrap;
+  }
+  .dcard-meta .rhythm{
+    color:var(--label-2);font-weight:700;
+    letter-spacing:0.02em;
+  }
+  .dcard-meta .sep{color:rgba(60,60,67,0.28);font-weight:600;}
+  .dcard-meta .dir{
+    display:inline-flex;align-items:center;gap:3px;
+    color:var(--label-2);font-weight:600;
+  }
+  .dcard-meta .dir svg{width:9px;height:9px;display:block;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .dcard-meta .last{color:var(--label);font-weight:500;letter-spacing:-0.005em;}
+
+  .dcard-chev{
+    width:22px;height:22px;border-radius:50%;
+    background:var(--inset);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .dcard-chev svg{width:9px;height:9px;stroke:var(--label-2);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  /* next-action pill — quiet inset row, suggestion register */
+  .next{
+    margin:11px 0 0 0;
+    padding:9px 12px 9px 11px;
+    background:var(--inset);
+    border-radius:14px;
+    display:flex;align-items:center;gap:9px;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .next .lbl{
+    font-size:9.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+    flex-shrink:0;
+  }
+  .next .vline{
+    width:1px;height:11px;background:var(--hairline);
+    flex-shrink:0;
+  }
+  .next .text{
+    font-size:13px;font-weight:500;color:var(--ink-2);
+    letter-spacing:-0.016em;line-height:1.2;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    flex:1;min-width:0;
+  }
+  .next .go{
+    width:18px;height:18px;border-radius:50%;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px var(--hairline);
+  }
+  .next .go svg{width:7.5px;height:7.5px;stroke:var(--ink-2);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  /* rhythm tone — keep neutral. Quiet period sits a touch dimmer. */
+  .dcard.quiet .dcard-name{color:var(--ink-2);}
+  .dcard.quiet .ddisc{filter:saturate(0.85);}
+
+  /* ───────── tab bar ───────── */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;
+    height:84px;
+    display:flex;align-items:flex-start;justify-content:space-around;
+    padding:12px 24px 0;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:saturate(200%) blur(28px);
+    -webkit-backdrop-filter:saturate(200%) blur(28px);
+    border-top:0.5px solid var(--hairline);
+    z-index:3;
+  }
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--label);}
+  .tab .pill{padding:9px 18px;border-radius:999px;background:transparent;transition:background .2s ease;}
+  .tab.active .pill{background:var(--inset-2);}
+  .tab .pill svg{width:22px;height:22px;display:block;}
+  .tab.active svg{stroke:var(--ink);}
+  .tab svg{stroke:#8E8E93;}
+
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <!-- topbar -->
+    <div class="topbar">
+      <div>
+        <div class="greet-day">Wed · 9:42</div>
+        <div class="greet-name">Domains <span class="sub">· how life is moving</span></div>
+      </div>
+      <div class="me-avatar">
+        <img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/>
+      </div>
+    </div>
+
+    <!-- eyebrow -->
+    <div class="section-eyebrow">
+      <span class="lbl">Five areas</span>
+      <span class="rule"></span>
+      <span class="meta">this week</span>
+    </div>
+
+    <!-- list -->
+    <div class="scroll">
+
+      <!-- BUSINESS — strong rhythm · improving · today -->
+      <div class="dcard">
+        <div class="dcard-head">
+          <div class="ddisc business" aria-label="Business">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+              <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+              <path d="M3 13h18"/>
+            </svg>
+          </div>
+          <div class="dcard-body">
+            <div class="dcard-name">Business</div>
+            <div class="dcard-meta">
+              <span class="rhythm">Strong rhythm</span>
+              <span class="sep">·</span>
+              <span class="dir">
+                <svg viewBox="0 0 24 24"><path d="M5 17L12 9l3 3 5-6"/><path d="M14 7h6v6"/></svg>
+                improving
+              </span>
+              <span class="sep">·</span>
+              <span class="last">today</span>
+            </div>
+          </div>
+          <div class="dcard-chev">
+            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </div>
+        <div class="next">
+          <span class="lbl">Next</span>
+          <span class="vline"></span>
+          <span class="text">Cold email Reiner</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </div>
+
+      <!-- RELIGION — stable rhythm · stable · today -->
+      <div class="dcard">
+        <div class="dcard-head">
+          <div class="ddisc religion" aria-label="Religion">
+            <svg viewBox="0 0 24 24">
+              <path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/>
+              <path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/>
+            </svg>
+          </div>
+          <div class="dcard-body">
+            <div class="dcard-name">Religion</div>
+            <div class="dcard-meta">
+              <span class="rhythm">Stable rhythm</span>
+              <span class="sep">·</span>
+              <span class="dir">
+                <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
+                steady
+              </span>
+              <span class="sep">·</span>
+              <span class="last">today</span>
+            </div>
+          </div>
+          <div class="dcard-chev">
+            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </div>
+        <div class="next">
+          <span class="lbl">Next</span>
+          <span class="vline"></span>
+          <span class="text">Dhuhr in your block</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </div>
+
+      <!-- LEARNING — stable rhythm · improving · yesterday -->
+      <div class="dcard">
+        <div class="dcard-head">
+          <div class="ddisc learning" aria-label="Learning">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 9.5l9-4.5 9 4.5-9 4.5-9-4.5z"/>
+              <path d="M7 11.2v4.3c0 1.4 2.3 2.5 5 2.5s5-1.1 5-2.5v-4.3"/>
+              <path d="M21 9.5v5"/>
+            </svg>
+          </div>
+          <div class="dcard-body">
+            <div class="dcard-name">Learning</div>
+            <div class="dcard-meta">
+              <span class="rhythm">Stable rhythm</span>
+              <span class="sep">·</span>
+              <span class="dir">
+                <svg viewBox="0 0 24 24"><path d="M5 17L12 9l3 3 5-6"/><path d="M14 7h6v6"/></svg>
+                improving
+              </span>
+              <span class="sep">·</span>
+              <span class="last">yesterday</span>
+            </div>
+          </div>
+          <div class="dcard-chev">
+            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </div>
+        <div class="next">
+          <span class="lbl">Next</span>
+          <span class="vline"></span>
+          <span class="text">20 min on the design extractor</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </div>
+
+      <!-- FITNESS — weak rhythm · improving · 2 days ago -->
+      <div class="dcard quiet">
+        <div class="dcard-head">
+          <div class="ddisc fitness" aria-label="Fitness">
+            <svg viewBox="0 0 24 24">
+              <path d="M6 9v6M3 10.5v3M18 9v6M21 10.5v3"/>
+              <rect x="6" y="9" width="12" height="6" rx="1.2"/>
+            </svg>
+          </div>
+          <div class="dcard-body">
+            <div class="dcard-name">Fitness</div>
+            <div class="dcard-meta">
+              <span class="rhythm">Weak rhythm</span>
+              <span class="sep">·</span>
+              <span class="dir">
+                <svg viewBox="0 0 24 24"><path d="M5 17L12 9l3 3 5-6"/><path d="M14 7h6v6"/></svg>
+                improving
+              </span>
+              <span class="sep">·</span>
+              <span class="last">2 days ago</span>
+            </div>
+          </div>
+          <div class="dcard-chev">
+            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </div>
+        <div class="next">
+          <span class="lbl">Next</span>
+          <span class="vline"></span>
+          <span class="text">Gym tonight, 60 min</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </div>
+
+      <!-- HOME — stable rhythm · stable · yesterday -->
+      <div class="dcard">
+        <div class="dcard-head">
+          <div class="ddisc home" aria-label="Home">
+            <svg viewBox="0 0 24 24">
+              <path d="M3.5 11l8.5-7 8.5 7"/>
+              <path d="M5.5 9.7V20h13V9.7"/>
+              <path d="M10 20v-5h4v5"/>
+            </svg>
+          </div>
+          <div class="dcard-body">
+            <div class="dcard-name">Home</div>
+            <div class="dcard-meta">
+              <span class="rhythm">Stable rhythm</span>
+              <span class="sep">·</span>
+              <span class="dir">
+                <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
+                steady
+              </span>
+              <span class="sep">·</span>
+              <span class="last">yesterday</span>
+            </div>
+          </div>
+          <div class="dcard-chev">
+            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </div>
+        <div class="next">
+          <span class="lbl">Next</span>
+          <span class="vline"></span>
+          <span class="text">Laundry + balcony</span>
+          <span class="go"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- tabbar — DOMAINS active (third tab, 2x2 squares glyph) -->
+    <div class="tabbar">
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <circle cx="12" cy="12" r="3" fill="#8E8E93" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/>
+            <path d="M3.5 10h17" stroke-width="1.7"/>
+            <path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab active">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="13" y="3.5" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="3.5" y="13" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="13" y="13" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

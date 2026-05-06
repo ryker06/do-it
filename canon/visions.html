@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — VISIONS</title>
+<style>
+  :root{
+    /* surfaces */
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    /* ink */
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+    --glyph:#0A0A0F;
+
+    /* hairlines */
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    /* domain tints — same family across NOW / TODAY / DOMAINS */
+    --t-business-1:#E1ECFF; --t-business-2:#C9DBFF;
+    --t-religion-1:#E2F4E6; --t-religion-2:#C0E5C8;
+    --t-learning-1:#FFE3EB; --t-learning-2:#FFCFDC;
+    --t-fitness-1:#FFD0DA;  --t-fitness-2:#FFB6C5;
+    --t-home-1:#E5ECF0;     --t-home-2:#CFDCE3;
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-cell:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 8px 18px -14px rgba(20,20,30,0.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  /* phone shell */
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    padding:54px 20px 0;
+  }
+
+  /* topbar (locked) */
+  .topbar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 4px;margin-bottom:18px;
+  }
+  .greet-day{
+    font-size:11.5px;font-weight:600;color:var(--label);
+    letter-spacing:0.04em;
+  }
+  .greet-name{
+    font-size:24px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.035em;line-height:1.05;margin-top:3px;
+  }
+  .greet-name .sub{color:var(--label);font-weight:500;letter-spacing:-0.022em;}
+  .me-avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:#F2F2F7;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;flex-shrink:0;
+    box-shadow:
+      0 0 0 2px #fff,
+      0 0 0 3px rgba(60,60,67,0.10),
+      0 2px 6px rgba(20,20,30,0.10);
+  }
+  .me-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* eyebrow (locked) */
+  .section-eyebrow{
+    display:flex;align-items:center;gap:10px;
+    padding:0 6px;margin:4px 0 14px;
+  }
+  .section-eyebrow .lbl{
+    font-size:10.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+  }
+  .section-eyebrow .rule{
+    flex:1;height:1px;background:var(--hairline-2);
+  }
+  .section-eyebrow .meta{
+    font-size:11.5px;color:var(--label-2);font-weight:600;
+    letter-spacing:-0.005em;
+  }
+
+  /* scroll area */
+  .scroll{
+    position:relative;z-index:2;
+    flex:1;
+    overflow-y:auto;
+    padding:2px 4px 110px;
+    margin:0 -4px;
+    -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+            mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+  }
+  .scroll::-webkit-scrollbar{display:none;}
+
+  /* ─────────────────────────────────────────
+     LAYOUT — distinct from NOW/TODAY/DOMAINS
+     One asymmetric hero tile, then a 2-col grid of quiet vision cells.
+     ───────────────────────────────────────── */
+
+  /* HERO — featured "Plan for Life" tile, full-width, asymmetric */
+  .hero{
+    position:relative;
+    border-radius:24px;
+    padding:18px 18px 18px;
+    margin-bottom:18px;
+    background:var(--card);
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+    isolation:isolate;
+    min-height:158px;
+    display:flex;flex-direction:column;justify-content:flex-end;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;border-radius:24px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;z-index:2;
+  }
+  /* sweeping aura — wider, richer than cells. The "horizon". */
+  .hero .aura{
+    position:absolute;
+    right:-80px;top:-90px;
+    width:420px;height:340px;
+    border-radius:50%;
+    filter:blur(36px);
+    opacity:0.85;
+    z-index:0;pointer-events:none;
+    background:radial-gradient(closest-side,
+      rgba(255,207,220,0.95),
+      rgba(255,227,235,0.65) 50%,
+      transparent 78%);
+  }
+  .hero .aura-2{
+    position:absolute;
+    left:-60px;bottom:-80px;
+    width:280px;height:220px;
+    border-radius:50%;
+    filter:blur(38px);
+    opacity:0.55;
+    z-index:0;pointer-events:none;
+    background:radial-gradient(closest-side,
+      rgba(225,236,255,0.95),
+      rgba(225,236,255,0.5) 55%,
+      transparent 78%);
+  }
+  .hero-top{
+    position:relative;z-index:3;
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:48px;
+  }
+  .hero-eyebrow{
+    font-size:9.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.16em;text-transform:uppercase;
+  }
+  .hero-pin{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:4px 8px 4px 7px;
+    background:rgba(255,255,255,0.7);
+    border-radius:999px;
+    box-shadow:inset 0 0 0 0.5px var(--hairline);
+    font-size:9.5px;font-weight:700;color:var(--ink-2);
+    letter-spacing:0.10em;text-transform:uppercase;
+  }
+  .hero-pin svg{width:9px;height:9px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .hero-spark{
+    margin-left:auto;
+    width:18px;height:18px;
+    color:var(--label-2);opacity:0.6;
+  }
+  .hero-spark svg{width:100%;height:100%;stroke:currentColor;stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+
+  .hero-body{
+    position:relative;z-index:3;
+    display:flex;align-items:flex-end;gap:14px;
+  }
+  .hero .ddisc{
+    width:46px;height:46px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    background:linear-gradient(180deg,var(--t-learning-1) 0%, var(--t-learning-2) 100%);
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .hero .ddisc svg{width:24px;height:24px;color:var(--glyph);stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .hero-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+  .hero-title{
+    font-size:22px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.038em;line-height:1.05;
+  }
+  .hero-tag{
+    font-size:13px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.012em;line-height:1.25;
+  }
+
+  /* GRID — 2 columns, generous gap, quiet cells */
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  .cell{
+    position:relative;
+    background:var(--card);
+    border-radius:20px;
+    padding:14px 13px 14px 13px;
+    box-shadow:var(--shadow-cell);
+    overflow:hidden;
+    isolation:isolate;
+    min-height:128px;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .cell::before{
+    content:"";position:absolute;inset:0;border-radius:20px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;z-index:2;
+  }
+  /* tinted aura — softer, smaller than hero. One per cell. */
+  .cell .aura{
+    position:absolute;
+    right:-30px;top:-26px;
+    width:150px;height:120px;
+    border-radius:50%;
+    filter:blur(22px);
+    opacity:0.65;
+    z-index:0;pointer-events:none;
+  }
+  .cell.business .aura{background:radial-gradient(closest-side, var(--t-business-2), var(--t-business-1) 55%, transparent 75%);}
+  .cell.religion .aura{background:radial-gradient(closest-side, var(--t-religion-2), var(--t-religion-1) 55%, transparent 75%);}
+  .cell.learning .aura{background:radial-gradient(closest-side, var(--t-learning-2), var(--t-learning-1) 55%, transparent 75%);}
+  .cell.fitness  .aura{background:radial-gradient(closest-side, var(--t-fitness-2),  var(--t-fitness-1)  55%, transparent 75%);}
+  .cell.home     .aura{background:radial-gradient(closest-side, var(--t-home-2),     var(--t-home-1)     55%, transparent 75%);}
+
+  /* the one signature accent — sparkle, top-right */
+  .cell .spark{
+    position:absolute;top:11px;right:11px;
+    width:11px;height:11px;
+    z-index:3;
+    color:var(--label-2);opacity:0.55;
+  }
+  .cell .spark svg{width:100%;height:100%;display:block;
+    stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  /* domain disc */
+  .cell .ddisc{
+    width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;position:relative;z-index:3;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .cell .ddisc svg{
+    width:18px;height:18px;display:block;
+    color:var(--glyph);
+    stroke:currentColor;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;fill:none;
+  }
+  .cell.business .ddisc{background:linear-gradient(180deg,var(--t-business-1) 0%, var(--t-business-2) 100%);}
+  .cell.religion .ddisc{background:linear-gradient(180deg,var(--t-religion-1) 0%, var(--t-religion-2) 100%);}
+  .cell.learning .ddisc{background:linear-gradient(180deg,var(--t-learning-1) 0%, var(--t-learning-2) 100%);}
+  .cell.fitness  .ddisc{background:linear-gradient(180deg,var(--t-fitness-1) 0%, var(--t-fitness-2) 100%);}
+  .cell.home     .ddisc{background:linear-gradient(180deg,var(--t-home-1) 0%, var(--t-home-2) 100%);}
+
+  .cell-text{
+    position:relative;z-index:3;
+    display:flex;flex-direction:column;gap:3px;
+    margin-top:auto;
+  }
+  .cell-title{
+    font-size:15.5px;font-weight:600;color:var(--ink);
+    letter-spacing:-0.028em;line-height:1.15;
+  }
+  .cell-tag{
+    font-size:11.5px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.008em;line-height:1.25;
+  }
+
+  /* tabbar (locked) */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;
+    height:84px;
+    display:flex;align-items:flex-start;justify-content:space-around;
+    padding:12px 24px 0;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:saturate(200%) blur(28px);
+    -webkit-backdrop-filter:saturate(200%) blur(28px);
+    border-top:0.5px solid var(--hairline);
+    z-index:3;
+  }
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--label);}
+  .tab .pill{padding:9px 18px;border-radius:999px;background:transparent;transition:background .2s ease;}
+  .tab.active .pill{background:var(--inset-2);}
+  .tab .pill svg{width:22px;height:22px;display:block;}
+  .tab.active svg{stroke:var(--ink);}
+  .tab svg{stroke:#8E8E93;}
+
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <!-- topbar -->
+    <div class="topbar">
+      <div>
+        <div class="greet-day">Wed · 9:42</div>
+        <div class="greet-name">Visions <span class="sub">· where you're headed</span></div>
+      </div>
+      <div class="me-avatar">
+        <img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/>
+      </div>
+    </div>
+
+    <!-- eyebrow -->
+    <div class="section-eyebrow">
+      <span class="lbl">What you're building</span>
+      <span class="rule"></span>
+      <span class="meta">8 threads</span>
+    </div>
+
+    <div class="scroll">
+
+      <!-- HERO — Plan for Life, anchoring the screen -->
+      <div class="hero">
+        <div class="aura"></div>
+        <div class="aura-2"></div>
+
+        <div class="hero-top">
+          <span class="hero-pin">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7-6-7-12a7 7 0 1114 0c0 6-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            The spine
+          </span>
+          <span class="hero-spark">
+            <svg viewBox="0 0 24 24"><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/><path d="M5.6 5.6l4.2 4.2M14.2 14.2l4.2 4.2M5.6 18.4l4.2-4.2M14.2 9.8l4.2-4.2"/></svg>
+          </span>
+        </div>
+
+        <div class="hero-body">
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 9.5l9-4.5 9 4.5-9 4.5-9-4.5z"/>
+              <path d="M7 11.2v4.3c0 1.4 2.3 2.5 5 2.5s5-1.1 5-2.5v-4.3"/>
+              <path d="M21 9.5v5"/>
+            </svg>
+          </div>
+          <div class="hero-text">
+            <div class="hero-title">Plan for Life</div>
+            <div class="hero-tag">The shape of the next ten years.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-col grid of quiet vision cells -->
+      <div class="grid">
+
+        <!-- BUSINESS — Webuild -->
+        <div class="cell business">
+          <div class="aura"></div>
+          <div class="spark">
+            <svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg>
+          </div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+              <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+              <path d="M3 13h18"/>
+            </svg>
+          </div>
+          <div class="cell-text">
+            <div class="cell-title">Webuild</div>
+            <div class="cell-tag">Site shop that runs itself</div>
+          </div>
+        </div>
+
+        <!-- LEARNING — Jarvis × Claude -->
+        <div class="cell learning">
+          <div class="aura"></div>
+          <div class="spark">
+            <svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg>
+          </div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 9.5l9-4.5 9 4.5-9 4.5-9-4.5z"/>
+              <path d="M7 11.2v4.3c0 1.4 2.3 2.5 5 2.5s5-1.1 5-2.5v-4.3"/>
+              <path d="M21 9.5v5"/>
+            </svg>
+          </div>
+          <div class="cell-text">
+            <div class="cell-title">Jarvis × Claude</div>
+            <div class="cell-tag">A brain that compounds</div>
+          </div>
+        </div>
+
+        <!-- BUSINESS — Dr. Lashin -->
+        <div class="cell business">
+          <div class="aura"></div>
+          <div class="spark">
+            <svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg>
+          </div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+              <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+              <path d="M3 13h18"/>
+            </svg>
+          </div>
+          <div class="cell-text">
+            <div class="cell-title">Dr. Lashin</div>
+            <div class="cell-tag">Where doctors land and pass</div>
+          </div>
+        </div>
+
+        <!-- LEARNING — Brain -->
+        <div class="cell learning">
+          <div class="aura"></div>
+          <div class="spark">
+            <svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg>
+          </div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 9.5l9-4.5 9 4.5-9 4.5-9-4.5z"/>
+              <path d="M7 11.2v4.3c0 1.4 2.3 2.5 5 2.5s5-1.1 5-2.5v-4.3"/>
+              <path d="M21 9.5v5"/>
+            </svg>
+          </div>
+          <div class="cell-text">
+            <div class="cell-title">Second Brain</div>
+            <div class="cell-tag">Every thought, one shape</div>
+          </div>
+        </div>
+
+        <!-- FITNESS -->
+        <div class="cell fitness">
+          <div class="aura"></div>
+          <div class="spark">
+            <svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg>
+          </div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <path d="M6 9v6M3 10.5v3M18 9v6M21 10.5v3"/>
+              <rect x="6" y="9" width="12" height="6" rx="1.2"/>
+            </svg>
+          </div>
+          <div class="cell-text">
+            <div class="cell-title">A body that holds</div>
+            <div class="cell-tag">Combat and gym, woven in</div>
+          </div>
+        </div>
+
+        <!-- RELIGION -->
+        <div class="cell religion">
+          <div class="aura"></div>
+          <div class="spark">
+            <svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg>
+          </div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/>
+              <path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/>
+            </svg>
+          </div>
+          <div class="cell-text">
+            <div class="cell-title">A steady deen</div>
+            <div class="cell-tag">Five prayers, Quran, learning</div>
+          </div>
+        </div>
+
+        <!-- HOME -->
+        <div class="cell home">
+          <div class="aura"></div>
+          <div class="spark">
+            <svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg>
+          </div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <path d="M3.5 11l8.5-7 8.5 7"/>
+              <path d="M5.5 9.7V20h13V9.7"/>
+              <path d="M10 20v-5h4v5"/>
+            </svg>
+          </div>
+          <div class="cell-text">
+            <div class="cell-title">A room that flows</div>
+            <div class="cell-tag">Nothing in it interrupts</div>
+          </div>
+        </div>
+
+        <!-- BUSINESS — Do It app -->
+        <div class="cell business">
+          <div class="aura"></div>
+          <div class="spark">
+            <svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg>
+          </div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+              <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+              <path d="M3 13h18"/>
+            </svg>
+          </div>
+          <div class="cell-text">
+            <div class="cell-title">Do It</div>
+            <div class="cell-tag">The app you live inside</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- tabbar — VISIONS active -->
+    <div class="tabbar">
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <circle cx="12" cy="12" r="3" fill="#8E8E93" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/>
+            <path d="M3.5 10h17" stroke-width="1.7"/>
+            <path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="13" y="3.5" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="3.5" y="13" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="13" y="13" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab active">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

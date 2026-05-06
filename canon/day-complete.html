@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — Day complete</title>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+
+    --glyph:#0A0A0F;
+
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    --blue:#007AFF;
+    --blue-deep:#0062CC;
+    --blue-soft:rgba(0,122,255,0.10);
+    --blue-glow:rgba(0,122,255,0.20);
+
+    --green:#34C759;
+    --green-deep:#248A3D;
+    --green-soft:rgba(52,199,89,0.14);
+
+    --d-business:#E1ECFF;
+    --d-religion:#E2F4E6;
+    --d-learning:#FFE3EB;
+    --d-fitness:#FFD0DA;
+    --d-home:#E5ECF0;
+
+    /* dusk: a calm end-of-day ambient. Cool, low-saturation. NOT purple, NOT orange. */
+    --dusk-1:#EEF3F8;
+    --dusk-2:#E3EAF1;
+    --dusk-ink:#2B3A47;
+    --dusk-ink-2:#5C6B79;
+    --dusk-ring:rgba(43,58,71,0.10);
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-press:
+      0 1px 0 rgba(255,255,255,0.08) inset,
+      0 0 0 0.5px rgba(0,0,0,0.5),
+      0 18px 38px -18px rgba(10,10,20,0.55),
+      0 6px 14px -6px rgba(10,10,20,0.30);
+    --shadow-stack:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 8px 22px -14px rgba(20,20,30,0.12);
+    --shadow-pill:
+      0 0 0 0.5px rgba(60,60,67,0.08),
+      0 1px 2px rgba(20,20,30,0.04),
+      0 1px 0 rgba(255,255,255,0.7) inset;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;
+    background:
+      radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  .col{display:flex;flex-direction:column;align-items:center;gap:18px;}
+  .col-label{
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    color:#8E8E93;font-weight:600;
+  }
+
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    padding:54px 20px 0;
+  }
+
+  /* dusk halo — the only "vibe" element, very quiet */
+  .halo{
+    position:absolute;
+    top:0;left:0;right:0;height:520px;
+    background:
+      radial-gradient(110% 70% at 50% -10%, rgba(120,150,180,0.10) 0%, rgba(120,150,180,0.03) 38%, transparent 68%),
+      radial-gradient(80% 60% at 85% 0%, rgba(180,200,220,0.18) 0%, transparent 55%);
+    pointer-events:none;
+  }
+
+  /* topbar */
+  .topbar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 4px;margin-bottom:18px;
+  }
+  .greet-day{
+    font-size:11.5px;font-weight:600;color:var(--label);
+    letter-spacing:0.04em;
+  }
+  .greet-name{
+    font-size:24px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.035em;line-height:1.05;margin-top:3px;
+  }
+  .greet-name .sub{
+    color:var(--label);font-weight:500;letter-spacing:-0.022em;
+  }
+  .me-avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:#F2F2F7;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;flex-shrink:0;
+    box-shadow:
+      0 0 0 2px #fff,
+      0 0 0 3px rgba(60,60,67,0.10),
+      0 2px 6px rgba(20,20,30,0.10);
+  }
+  .me-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* HERO — quiet recognition */
+  .hero{
+    position:relative;z-index:2;
+    margin-top:40px;
+    padding:6px 8px 0;
+  }
+  .hero-eyebrow{
+    display:flex;align-items:center;gap:8px;
+    font-size:11.5px;font-weight:700;color:var(--dusk-ink-2);
+    letter-spacing:0.14em;text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .hero-eyebrow .dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--dusk-ink-2);opacity:.6;
+  }
+  .hero-headline{
+    font-size:46px;font-weight:800;color:var(--ink);
+    letter-spacing:-0.05em;line-height:0.96;
+  }
+  .hero-headline .soft{
+    color:var(--label);font-weight:600;
+  }
+  .hero-sub{
+    margin-top:14px;
+    font-size:14.5px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.012em;
+  }
+  .hero-sub b{color:var(--ink-2);font-weight:700;}
+
+  /* recap strip — 5 domains as presence, no numbers */
+  .recap{
+    position:relative;z-index:2;
+    margin:30px 8px 0;
+    display:flex;align-items:center;gap:10px;
+  }
+  .recap-label{
+    font-size:11px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+    margin-right:4px;
+  }
+  .recap-discs{display:flex;align-items:center;gap:-6px;}
+  .recap-discs .ddisc{
+    margin-left:-8px;
+    box-shadow:
+      0 0 0 2px #fff,
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .recap-discs .ddisc:first-child{margin-left:0;}
+
+  .ddisc{
+    width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;position:relative;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .ddisc svg{
+    width:17px;height:17px;display:block;
+    color:var(--glyph);
+    stroke:currentColor;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    fill:none;
+  }
+  .ddisc.business{background:linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%);}
+  .ddisc.religion {background:linear-gradient(180deg,#E2F4E6 0%, #C0E5C8 100%);}
+  .ddisc.learning {background:linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%);}
+  .ddisc.fitness  {background:linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%);}
+  .ddisc.home     {background:linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%);}
+  .ddisc.lg{width:42px;height:42px;}
+  .ddisc.lg svg{width:21px;height:21px;}
+
+  /* divider — barely there */
+  .calm-rule{
+    position:relative;z-index:2;
+    margin:30px 8px 0;
+    height:0.5px;background:var(--hairline);
+  }
+
+  /* Tomorrow card — soft dusk tint */
+  .tomorrow{
+    position:relative;z-index:2;
+    margin:22px 0 0;
+    background:linear-gradient(180deg, var(--dusk-1) 0%, var(--dusk-2) 100%);
+    border-radius:24px;
+    padding:14px 14px 14px 12px;
+    display:flex;align-items:center;gap:13px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.85),
+      inset 0 0 0 0.5px var(--dusk-ring),
+      0 1px 2px rgba(43,58,71,0.04),
+      0 10px 22px -14px rgba(43,58,71,0.16);
+  }
+  .tomorrow .text{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}
+  .tomorrow .tag{
+    font-size:10.5px;color:var(--dusk-ink-2);font-weight:700;
+    letter-spacing:0.14em;text-transform:uppercase;
+    display:flex;align-items:center;gap:6px;
+  }
+  .tomorrow .tag .dom{
+    color:var(--dusk-ink);
+    opacity:.85;
+  }
+  .tomorrow .tag .sep{opacity:.45;}
+  .tomorrow .name{
+    font-size:15px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.022em;
+    line-height:1.2;
+  }
+  .tomorrow .when-pill{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:12px;font-weight:600;color:var(--dusk-ink);
+    background:rgba(255,255,255,0.85);
+    padding:6px 11px;border-radius:999px;
+    letter-spacing:-0.008em;font-variant-numeric:tabular-nums;
+    box-shadow:
+      0 0 0 0.5px var(--dusk-ring),
+      0 1px 2px rgba(43,58,71,0.06);
+    flex-shrink:0;
+    backdrop-filter:saturate(180%) blur(10px);
+    -webkit-backdrop-filter:saturate(180%) blur(10px);
+  }
+  .tomorrow .when-pill svg{width:10px;height:10px;}
+
+  /* Action pills */
+  .actions{
+    position:relative;z-index:2;
+    margin-top:18px;
+    display:flex;flex-direction:column;gap:9px;
+  }
+  .cta{
+    width:100%;
+    background:linear-gradient(180deg, #1A1A20 0%, #000000 100%);
+    color:#fff;
+    border:none;
+    border-radius:999px;
+    padding:15px 20px;
+    font-size:15.5px;font-weight:600;letter-spacing:-0.014em;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    box-shadow:var(--shadow-press);
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .cta svg{width:14px;height:14px;}
+  .cta-ghost{
+    width:100%;
+    background:transparent;
+    color:var(--label-2);
+    border:none;
+    border-radius:999px;
+    padding:13px 20px;
+    font-size:14px;font-weight:600;letter-spacing:-0.012em;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    cursor:pointer;font-family:inherit;
+  }
+  .cta-ghost svg{width:13px;height:13px;opacity:.7;}
+
+  /* tab bar */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;
+    height:84px;
+    display:flex;align-items:flex-start;justify-content:space-around;
+    padding:12px 24px 0;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:saturate(200%) blur(28px);
+    -webkit-backdrop-filter:saturate(200%) blur(28px);
+    border-top:0.5px solid var(--hairline);
+    z-index:3;
+  }
+  .tab{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    color:var(--label);
+  }
+  .tab .pill{
+    padding:9px 18px;border-radius:999px;
+    background:transparent;
+    transition:background .2s ease;
+  }
+  .tab.active .pill{background:var(--inset-2);}
+  .tab .pill svg{width:22px;height:22px;display:block;}
+  .tab.active svg{stroke:var(--ink);}
+  .tab svg{stroke:#8E8E93;}
+
+</style>
+</head>
+<body>
+
+<div class="col">
+  <div class="col-label">Day complete</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="halo"></div>
+
+      <!-- topbar -->
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 18:42</div>
+          <div class="greet-name">Evening, Adam <span class="sub">· that's the day</span></div>
+        </div>
+        <div class="me-avatar">
+          <img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/>
+        </div>
+      </div>
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-eyebrow">
+          <span class="dot"></span>
+          Day complete
+        </div>
+        <div class="hero-headline">
+          That's it<br/>
+          <span class="soft">for today.</span>
+        </div>
+        <div class="hero-sub">
+          <b>5 blocks.</b> 4 hours. Calm execution.
+        </div>
+      </div>
+
+      <!-- recap of domains -->
+      <div class="recap">
+        <div class="recap-label">Today</div>
+        <div class="recap-discs">
+          <div class="ddisc business" aria-label="Business">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+              <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+              <path d="M3 13h18"/>
+            </svg>
+          </div>
+          <div class="ddisc religion" aria-label="Religion">
+            <svg viewBox="0 0 24 24">
+              <path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/>
+              <path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/>
+            </svg>
+          </div>
+          <div class="ddisc learning" aria-label="Learning">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 9l9-4 9 4-9 4-9-4z"/>
+              <path d="M7 11v4.5c0 1 2.2 2.5 5 2.5s5-1.5 5-2.5V11"/>
+              <path d="M21 9v5"/>
+            </svg>
+          </div>
+          <div class="ddisc fitness" aria-label="Fitness">
+            <svg viewBox="0 0 24 24">
+              <path d="M6.5 9.5L3.5 12.5l3 3"/>
+              <path d="M17.5 14.5l3-3-3-3"/>
+              <path d="M9 7.5l1.5-1.5 7 7L16 14.5"/>
+              <path d="M14 17.5l-1.5 1.5-7-7L7 10.5"/>
+            </svg>
+          </div>
+          <div class="ddisc home" aria-label="Home">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 11l8-7 8 7"/>
+              <path d="M6 10v9h12v-9"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="calm-rule"></div>
+
+      <!-- Tomorrow preview -->
+      <div class="tomorrow">
+        <div class="ddisc business lg" aria-label="Business">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+            <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+            <path d="M3 13h18"/>
+          </svg>
+        </div>
+        <div class="text">
+          <div class="tag">
+            <span>Tomorrow</span>
+            <span class="sep">·</span>
+            <span class="dom">Webuild</span>
+          </div>
+          <div class="name">Finish landing draft</div>
+        </div>
+        <div class="when-pill">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#2B3A47" stroke-width="2"/><path d="M12 7v5l3 2" stroke="#2B3A47" stroke-width="2" stroke-linecap="round"/></svg>
+          60 min
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <button class="cta">
+          Preview tomorrow
+          <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="cta-ghost">
+          Just rest
+        </button>
+      </div>
+
+      <!-- tabbar -->
+      <div class="tabbar">
+        <div class="tab active">
+          <div class="pill">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+              <circle cx="12" cy="12" r="3" fill="#000" stroke="none"/>
+            </svg>
+          </div>
+        </div>
+        <div class="tab">
+          <div class="pill">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/>
+              <path d="M3.5 10h17" stroke-width="1.7"/>
+              <path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div class="tab">
+          <div class="pill">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="3.5" y="4.5" width="17" height="5" rx="2" stroke-width="1.7"/>
+              <rect x="3.5" y="11.5" width="17" height="5" rx="2" stroke-width="1.7"/>
+              <rect x="3.5" y="18.5" width="11" height="2" rx="1" stroke-width="1.7"/>
+            </svg>
+          </div>
+        </div>
+        <div class="tab">
+          <div class="pill">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+              <path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — Yesterday</title>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+    --label-3:#A8A8AE;
+
+    --glyph:#0A0A0F;
+
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    --green:#34C759;
+    --green-deep:#248A3D;
+    --green-soft:rgba(52,199,89,0.14);
+
+    /* prayer / anchor mint — same as today */
+    --prayer-bg-1:#EAF6EE;
+    --prayer-bg-2:#DCEFE3;
+    --prayer-ink:#2F5A3E;
+    --prayer-ink-2:#5E8A6E;
+    --prayer-ring:rgba(47,90,62,0.10);
+
+    /* dusk — calm retrospective accent. cool, low sat. NOT purple, NOT orange. */
+    --dusk-1:#EEF3F8;
+    --dusk-2:#E3EAF1;
+    --dusk-ink:#4A5A6A;
+    --dusk-ink-2:#6E7E8E;
+    --dusk-ring:rgba(74,90,106,0.14);
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-stack:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 8px 22px -14px rgba(20,20,30,0.12);
+    --shadow-row:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 6px 16px -12px rgba(20,20,30,0.10);
+
+    --row-h:60px;
+    --gap:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    padding:54px 20px 0;
+    background:
+      radial-gradient(120% 50% at 50% 0%, rgba(238,243,248,0.7) 0%, rgba(255,255,255,0) 55%),
+      #FFFFFF;
+  }
+
+  /* ───────── topbar ───────── */
+  .topbar{
+    display:flex;align-items:center;gap:10px;
+    padding:0 4px;margin-bottom:18px;
+  }
+  .back{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--inset);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .back svg{width:14px;height:14px;color:var(--ink-2);stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .topbar .title-wrap{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .topbar .eyebrow{
+    font-size:10.5px;font-weight:700;color:var(--label-3);
+    letter-spacing:0.16em;text-transform:uppercase;
+  }
+  .topbar .day{
+    font-size:17px;font-weight:600;color:var(--ink-2);
+    letter-spacing:-0.024em;line-height:1.1;
+  }
+  .topbar .day .muted{color:var(--label);font-weight:500;}
+
+  /* ───────── quiet hero strip ───────── */
+  .hero{
+    margin:0 4px 18px;
+    padding:16px 18px;
+    background:linear-gradient(180deg, var(--dusk-1) 0%, var(--dusk-2) 100%);
+    border-radius:20px;
+    position:relative;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.85),
+      inset 0 0 0 0.5px var(--dusk-ring),
+      0 1px 2px rgba(20,30,45,0.03),
+      0 8px 22px -14px rgba(20,30,45,0.10);
+  }
+  .hero .line-1{
+    font-size:13px;font-weight:600;color:var(--dusk-ink);
+    letter-spacing:-0.012em;line-height:1.35;
+    display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;
+  }
+  .hero .line-1 .num{
+    color:var(--ink-2);font-weight:700;letter-spacing:-0.018em;
+    font-variant-numeric:tabular-nums;
+  }
+  .hero .line-1 .sep{color:var(--dusk-ink-2);}
+  .hero .line-2{
+    margin-top:6px;
+    font-size:12px;font-weight:500;color:var(--dusk-ink-2);
+    letter-spacing:-0.005em;line-height:1.4;
+  }
+  .hero .line-2 .pickup{color:var(--prayer-ink);font-weight:600;}
+
+  /* dusk glyph in corner — small calendar/leaf-y mark */
+  .hero .mark{
+    position:absolute;top:14px;right:14px;
+    width:22px;height:22px;border-radius:50%;
+    background:rgba(255,255,255,0.6);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 0.5px var(--dusk-ring);
+  }
+  .hero .mark svg{width:11px;height:11px;color:var(--dusk-ink);
+    stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  /* ───────── timeline ───────── */
+  .timeline-wrap{
+    flex:1;
+    overflow-y:auto;
+    padding:2px 4px 130px;
+    margin:0 -4px;
+    -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+            mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+  }
+  .timeline-wrap::-webkit-scrollbar{display:none;}
+
+  .section-eyebrow{
+    display:flex;align-items:center;gap:10px;
+    padding:0 6px;margin:2px 0 14px;
+  }
+  .section-eyebrow .lbl{
+    font-size:10px;font-weight:700;color:var(--label-3);
+    letter-spacing:0.18em;text-transform:uppercase;
+  }
+  .section-eyebrow .rule{flex:1;height:1px;background:var(--hairline-2);}
+
+  .timeline{
+    position:relative;
+    padding-left:30px;
+  }
+  .timeline::before{
+    content:"";
+    position:absolute;
+    left:18px;top:8px;bottom:8px;
+    width:1.5px;
+    background:linear-gradient(180deg,
+      transparent 0%,
+      var(--hairline) 6%,
+      var(--hairline) 94%,
+      transparent 100%);
+    border-radius:2px;
+  }
+
+  .block{position:relative;margin-bottom:14px;}
+  .block::before{
+    content:"";
+    position:absolute;
+    left:-19px;top:calc(var(--row-h)/2 - 5px);
+    width:10px;height:10px;border-radius:50%;
+    background:#fff;
+    box-shadow:
+      0 0 0 1.5px var(--hairline-strong),
+      0 0 0 3px #fff;
+  }
+  .block.done::before{
+    background:var(--green-deep);
+    box-shadow:
+      0 0 0 1.5px var(--green-deep),
+      0 0 0 3px #fff;
+    opacity:0.8;
+  }
+  .block.moved::before{
+    background:#fff;
+    box-shadow:
+      0 0 0 1.5px var(--dusk-ink-2),
+      0 0 0 3px #fff;
+  }
+  .block.anchor::before{
+    background:var(--prayer-ink);
+    box-shadow:
+      0 0 0 1.5px var(--prayer-ink),
+      0 0 0 3px #fff;
+    top:calc(48px/2 - 5px);
+    opacity:0.85;
+  }
+
+  /* ───────── row — yesterday register: faded ink ───────── */
+  .row{
+    height:var(--row-h);
+    background:var(--card);
+    border-radius:18px;
+    padding:0 12px 0 10px;
+    display:flex;align-items:center;gap:11px;
+    box-shadow:var(--shadow-row);
+    position:relative;
+    overflow:hidden;
+  }
+  .row::before{
+    content:"";position:absolute;inset:0;border-radius:18px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+
+  .ddisc{
+    width:32px;height:32px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .ddisc svg{
+    width:17px;height:17px;display:block;
+    color:var(--glyph);
+    stroke:currentColor;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;
+    fill:none;
+  }
+  .ddisc.business{background:linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%);}
+  .ddisc.religion {background:linear-gradient(180deg,#E2F4E6 0%, #C0E5C8 100%);}
+  .ddisc.learning {background:linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%);}
+  .ddisc.fitness  {background:linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%);}
+  .ddisc.home     {background:linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%);}
+
+  .row .body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+  .row .title{
+    font-size:14px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.018em;line-height:1.18;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .row .meta{
+    display:flex;align-items:center;gap:6px;
+    font-size:10.5px;font-weight:600;color:var(--label-3);
+    letter-spacing:0.005em;line-height:1.1;
+    overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+    min-width:0;
+  }
+  .row .meta .dom{
+    color:var(--label);font-weight:700;
+    letter-spacing:0.02em;
+  }
+  .row .meta .sep{color:rgba(60,60,67,0.22);}
+  .row .right{display:flex;align-items:center;flex-shrink:0;margin-left:6px;}
+
+  /* yesterday — done is the calm baseline. faint check, mint tint. */
+  .check{
+    width:22px;height:22px;border-radius:50%;
+    background:var(--green-soft);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 0.5px rgba(52,199,89,0.18);
+  }
+  .check svg{width:11px;height:11px;}
+  .check svg path{stroke:var(--green-deep);}
+
+  /* moved-to-today badge — positive, calm dusk pill */
+  .moved-pill{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:9.5px;font-weight:700;
+    letter-spacing:0.08em;text-transform:uppercase;
+    padding:5px 9px 5px 7px;border-radius:999px;
+    background:rgba(255,255,255,0.7);
+    color:var(--dusk-ink);
+    box-shadow:inset 0 0 0 0.5px var(--dusk-ring);
+    white-space:nowrap;
+  }
+  .moved-pill svg{width:9px;height:9px;color:var(--dusk-ink);
+    stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  /* faded done state — yesterday default */
+  .block.done .ddisc{filter:saturate(0.55);opacity:0.78;}
+  .block.done .row{background:transparent;box-shadow:inset 0 0 0 0.5px var(--hairline-2);}
+  .block.done .row::before{display:none;}
+
+  /* moved row — slightly cooler card */
+  .block.moved .row{
+    background:linear-gradient(180deg,#FAFCFE 0%,#F4F7FB 100%);
+    box-shadow:
+      inset 0 0 0 0.5px var(--dusk-ring),
+      0 1px 1px rgba(20,30,45,0.02);
+  }
+  .block.moved .ddisc{filter:saturate(0.55);opacity:0.78;}
+  .block.moved .title{color:var(--dusk-ink);}
+
+  /* ───────── anchor (yesterday) — calm mint, slightly muted ───────── */
+  .anchor-card{
+    height:48px;
+    background:linear-gradient(180deg, var(--prayer-bg-1) 0%, var(--prayer-bg-2) 100%);
+    border-radius:16px;
+    padding:0 12px 0 10px;
+    display:flex;align-items:center;gap:11px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.9),
+      inset 0 0 0 0.5px var(--prayer-ring),
+      0 1px 2px rgba(47,90,62,0.04),
+      0 4px 12px -8px rgba(47,90,62,0.14);
+    opacity:0.92;
+  }
+  .anchor-card .disc{
+    width:28px;height:28px;border-radius:50%;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 0.5px var(--prayer-ring),0 1px 2px rgba(47,90,62,0.10);
+    flex-shrink:0;
+  }
+  .anchor-card .disc svg{width:15px;height:15px;}
+  .anchor-card .name{font-size:13px;font-weight:700;color:#1F3A2A;letter-spacing:-0.014em;}
+  .anchor-card .at{font-size:11.5px;color:var(--prayer-ink-2);font-weight:500;margin-left:1px;letter-spacing:-0.006em;}
+  .anchor-card .pill{
+    margin-left:auto;
+    font-size:9.5px;font-weight:700;color:var(--prayer-ink);
+    background:rgba(255,255,255,0.85);
+    padding:4px 9px;border-radius:999px;
+    letter-spacing:0.10em;text-transform:uppercase;
+    box-shadow:0 0 0 0.5px var(--prayer-ring),0 1px 2px rgba(47,90,62,0.06);
+  }
+
+  /* ───────── domain dot strip ───────── */
+  .domains-strip{
+    margin:18px 4px 14px;
+    padding:14px 16px;
+    background:var(--card);
+    border-radius:18px;
+    box-shadow:var(--shadow-row);
+    position:relative;
+  }
+  .domains-strip::before{
+    content:"";position:absolute;inset:0;border-radius:18px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+  .domains-strip .lbl{
+    font-size:10px;font-weight:700;color:var(--label-3);
+    letter-spacing:0.16em;text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .domains-row{
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .ddom{
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    flex:1;
+  }
+  .ddom .dot{
+    width:10px;height:10px;border-radius:50%;
+    box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.08);
+  }
+  .ddom.business .dot{background:#A8C2F0;}
+  .ddom.religion .dot{background:#9CD0AB;}
+  .ddom.learning .dot{background:#F0AEC0;}
+  .ddom.fitness  .dot{background:#F09AAE;}
+  .ddom.home     .dot{background:#B5C4CD;}
+  .ddom.untouched .dot{
+    background:transparent;
+    box-shadow:inset 0 0 0 1px var(--hairline-strong);
+  }
+  .ddom .name{font-size:9.5px;font-weight:700;color:var(--label-2);letter-spacing:0.04em;}
+  .ddom .mins{font-size:10px;font-weight:600;color:var(--label);letter-spacing:-0.01em;font-variant-numeric:tabular-nums;}
+  .ddom.untouched .name{color:var(--label-3);}
+  .ddom.untouched .mins{color:var(--label-3);font-weight:500;}
+
+  /* ───────── reflection card ───────── */
+  .reflect{
+    margin:0 4px 18px;
+    padding:14px 14px 14px 14px;
+    background:var(--card);
+    border-radius:18px;
+    box-shadow:var(--shadow-row);
+    display:flex;align-items:center;gap:12px;
+    position:relative;
+  }
+  .reflect::before{
+    content:"";position:absolute;inset:0;border-radius:18px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+  .reflect .pencil{
+    width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(180deg,#F7F8FB 0%, #ECEFF4 100%);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .reflect .pencil svg{width:15px;height:15px;color:var(--dusk-ink);
+    stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .reflect .body{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+  .reflect .lead{font-size:13.5px;font-weight:600;color:var(--ink-2);letter-spacing:-0.018em;}
+  .reflect .hint{font-size:11px;font-weight:500;color:var(--label);letter-spacing:-0.005em;}
+  .reflect .chev{
+    width:22px;height:22px;border-radius:50%;
+    background:var(--inset);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .reflect .chev svg{width:9px;height:9px;color:var(--label-2);
+    stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  /* ───────── footer link ───────── */
+  .back-to-today{
+    text-align:center;margin:6px 4px 22px;
+  }
+  .back-to-today a{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:12px;font-weight:600;color:var(--label-2);
+    letter-spacing:-0.005em;text-decoration:none;
+    padding:8px 12px;border-radius:999px;
+  }
+  .back-to-today a svg{width:10px;height:10px;color:var(--label-2);
+    stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <!-- topbar -->
+    <div class="topbar">
+      <div class="back" aria-label="Back">
+        <svg viewBox="0 0 24 24"><path d="M14 6l-6 6 6 6"/></svg>
+      </div>
+      <div class="title-wrap">
+        <div class="eyebrow">Yesterday</div>
+        <div class="day">Tuesday <span class="muted">· May 5</span></div>
+      </div>
+    </div>
+
+    <!-- hero -->
+    <div class="hero">
+      <div class="mark">
+        <svg viewBox="0 0 24 24"><path d="M12 4v16M4 12h16"/></svg>
+      </div>
+      <div class="line-1">
+        <span class="num">5</span><span>blocks</span>
+        <span class="sep">·</span>
+        <span class="num">3<span style="font-weight:600;color:var(--dusk-ink-2);font-size:11px;">h</span> 40<span style="font-weight:600;color:var(--dusk-ink-2);font-size:11px;">m</span></span>
+        <span>focused.</span>
+      </div>
+      <div class="line-2">
+        1 paused, <span class="pickup">picked up today</span>.
+      </div>
+    </div>
+
+    <!-- timeline -->
+    <div class="timeline-wrap">
+
+      <div class="section-eyebrow">
+        <span class="lbl">How yesterday breathed</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="timeline">
+
+        <!-- DONE -->
+        <div class="block done">
+          <div class="row">
+            <div class="ddisc business" aria-label="Business">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+                <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+                <path d="M3 13h18"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Investor follow-ups</div>
+              <div class="meta">
+                <span class="dom">Business</span>
+                <span class="sep">·</span>
+                <span>45 min</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="check">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DONE -->
+        <div class="block done">
+          <div class="row">
+            <div class="ddisc religion" aria-label="Religion">
+              <svg viewBox="0 0 24 24">
+                <path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/>
+                <path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Quran · morning page</div>
+              <div class="meta">
+                <span class="dom">Religion</span>
+                <span class="sep">·</span>
+                <span>20 min</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="check">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANCHOR — Asr -->
+        <div class="block anchor">
+          <div class="anchor-card">
+            <div class="disc">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M16.5 14.5a6.5 6.5 0 11-7-9.5 5.5 5.5 0 007 9.5z" fill="#2F5A3E"/>
+              </svg>
+            </div>
+            <div class="name">Asr <span class="at">· 15:42</span></div>
+            <div class="pill">Anchor</div>
+          </div>
+        </div>
+
+        <!-- DONE -->
+        <div class="block done">
+          <div class="row">
+            <div class="ddisc fitness" aria-label="Fitness">
+              <svg viewBox="0 0 24 24">
+                <path d="M6 9v6M3 10.5v3M18 9v6M21 10.5v3"/>
+                <rect x="6" y="9" width="12" height="6" rx="1.2"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Pull session</div>
+              <div class="meta">
+                <span class="dom">Fitness</span>
+                <span class="sep">·</span>
+                <span>55 min</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="check">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MOVED -->
+        <div class="block moved">
+          <div class="row">
+            <div class="ddisc learning" aria-label="Learning">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 9.5l9-4.5 9 4.5-9 4.5-9-4.5z"/>
+                <path d="M7 11.2v4.3c0 1.4 2.3 2.5 5 2.5s5-1.1 5-2.5v-4.3"/>
+                <path d="M21 9.5v5"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Framer course · module 3</div>
+              <div class="meta">
+                <span class="dom">Learning</span>
+                <span class="sep">·</span>
+                <span>45 min</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="moved-pill">
+                <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                Picked up today
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DONE -->
+        <div class="block done">
+          <div class="row">
+            <div class="ddisc home" aria-label="Home">
+              <svg viewBox="0 0 24 24">
+                <path d="M3.5 11l8.5-7 8.5 7"/>
+                <path d="M5.5 9.7V20h13V9.7"/>
+                <path d="M10 20v-5h4v5"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Tidy desk, water plants</div>
+              <div class="meta">
+                <span class="dom">Home</span>
+                <span class="sep">·</span>
+                <span>20 min</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="check">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- domain dot strip -->
+      <div class="domains-strip">
+        <div class="lbl">Domains touched</div>
+        <div class="domains-row">
+          <div class="ddom business">
+            <div class="dot"></div>
+            <div class="name">Business</div>
+            <div class="mins">45m</div>
+          </div>
+          <div class="ddom religion">
+            <div class="dot"></div>
+            <div class="name">Religion</div>
+            <div class="mins">20m</div>
+          </div>
+          <div class="ddom fitness">
+            <div class="dot"></div>
+            <div class="name">Fitness</div>
+            <div class="mins">55m</div>
+          </div>
+          <div class="ddom home">
+            <div class="dot"></div>
+            <div class="name">Home</div>
+            <div class="mins">20m</div>
+          </div>
+          <div class="ddom untouched">
+            <div class="dot"></div>
+            <div class="name">Learning</div>
+            <div class="mins">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- reflection -->
+      <div class="reflect">
+        <div class="pencil">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 20l4-1 11-11-3-3L5 16l-1 4z"/>
+            <path d="M14 7l3 3"/>
+          </svg>
+        </div>
+        <div class="body">
+          <div class="lead">Add a reflection</div>
+          <div class="hint">One line on how yesterday felt.</div>
+        </div>
+        <div class="chev">
+          <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </div>
+
+      <!-- back to today -->
+      <div class="back-to-today">
+        <a href="#">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          Back to today
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

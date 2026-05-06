@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — TODAY</title>
+<style>
+  :root{
+    /* ── surfaces ── */
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    /* ── ink ── */
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+
+    --glyph:#0A0A0F;
+
+    /* ── hairlines ── */
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    /* ── ACCENTS ── */
+    --blue:#007AFF;
+    --blue-deep:#0062CC;
+    --blue-soft:rgba(0,122,255,0.10);
+    --blue-glow:rgba(0,122,255,0.20);
+
+    --green:#34C759;
+    --green-deep:#248A3D;
+    --green-soft:rgba(52,199,89,0.14);
+
+    --prayer-bg-1:#EAF6EE;
+    --prayer-bg-2:#DCEFE3;
+    --prayer-ink:#2F5A3E;
+    --prayer-ink-2:#5E8A6E;
+    --prayer-ring:rgba(47,90,62,0.10);
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-stack:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 8px 22px -14px rgba(20,20,30,0.12);
+    --shadow-row:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 6px 16px -12px rgba(20,20,30,0.10);
+
+    /* one row height — every state matches this */
+    --row-h:64px;
+
+    /* one gap value — used everywhere for breathing room */
+    --gap:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  /* ── phone shell ── */
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    padding:54px 20px 0;
+  }
+
+  /* ───────── topbar ───────── */
+  .topbar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 4px;margin-bottom:var(--gap);
+  }
+  .greet-day{
+    font-size:11.5px;font-weight:600;color:var(--label);
+    letter-spacing:0.04em;
+  }
+  .greet-name{
+    font-size:24px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.035em;line-height:1.05;margin-top:3px;
+  }
+  .greet-name .sub{color:var(--label);font-weight:500;letter-spacing:-0.022em;}
+  .me-avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:#F2F2F7;
+    display:flex;align-items:center;justify-content:center;
+    overflow:hidden;flex-shrink:0;
+    box-shadow:
+      0 0 0 2px #fff,
+      0 0 0 3px rgba(60,60,67,0.10),
+      0 2px 6px rgba(20,20,30,0.10);
+  }
+  .me-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* ───────── summary band ─────────
+     Single unit: number + unit + label live on one tight baseline cluster,
+     at the same metadata register as the rows. No "giant + tiny" split. */
+  .summary{
+    position:relative;z-index:2;
+    margin:0 4px calc(var(--gap) + 8px);
+    padding:13px 16px;
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:var(--shadow-stack);
+    display:flex;align-items:center;gap:14px;
+  }
+  .summary::before{
+    content:"";position:absolute;inset:0;border-radius:20px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.06);
+    pointer-events:none;
+  }
+  .sum-stat{display:flex;flex-direction:column;gap:3px;min-width:0;}
+  .sum-num{
+    font-size:17px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.026em;line-height:1;
+    font-variant-numeric:tabular-nums;
+    display:inline-flex;align-items:baseline;gap:1px;
+  }
+  .sum-num .unit{
+    font-weight:600;color:var(--label-2);font-size:11.5px;
+    letter-spacing:-0.005em;margin-left:0.5px;margin-right:3px;
+  }
+  .sum-num .unit:last-child{margin-right:0;}
+  .sum-lbl{
+    font-size:10px;font-weight:700;color:var(--label);
+    letter-spacing:0.10em;text-transform:uppercase;
+  }
+  .sum-divider{
+    width:1px;align-self:stretch;
+    background:var(--hairline-2);
+    margin:4px 4px;
+  }
+  .sum-track{
+    margin-left:auto;
+    display:flex;flex-direction:column;align-items:flex-end;gap:6px;
+    min-width:108px;
+  }
+  .sum-track .line{
+    font-size:11px;color:var(--label-2);font-weight:600;
+    letter-spacing:-0.005em;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .sum-track .line .dot{
+    width:5px;height:5px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 0 3px var(--green-soft);
+  }
+  .sum-track .bar{
+    width:108px;height:4px;border-radius:999px;
+    background:var(--inset-2);overflow:hidden;
+    box-shadow:inset 0 0.5px 1px rgba(20,20,30,0.05);
+  }
+  .sum-track .bar i{
+    display:block;height:100%;
+    background:linear-gradient(90deg,#1C1C1E 0%, #3A3A3C 100%);
+    border-radius:999px;
+  }
+
+  /* ───────── timeline ───────── */
+  .timeline-wrap{
+    position:relative;z-index:2;
+    flex:1;
+    overflow-y:auto;
+    padding:6px 4px 110px;
+    margin:0 -4px;
+    -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+            mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+  }
+  .timeline-wrap::-webkit-scrollbar{display:none;}
+
+  .section-eyebrow{
+    display:flex;align-items:center;gap:8px;
+    padding:0 6px;margin:4px 0 var(--gap);
+  }
+  .section-eyebrow .lbl{
+    font-size:10.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+  }
+  .section-eyebrow .rule{
+    flex:1;height:1px;background:var(--hairline-2);
+  }
+
+  .timeline{
+    position:relative;
+    padding-left:30px;
+  }
+  .timeline::before{
+    content:"";
+    position:absolute;
+    left:18px;top:8px;bottom:8px;
+    width:1.5px;
+    background:linear-gradient(180deg,
+      transparent 0%,
+      var(--hairline-strong) 6%,
+      var(--hairline-strong) 94%,
+      transparent 100%);
+    border-radius:2px;
+  }
+
+  .block{
+    position:relative;
+    margin-bottom:var(--gap);
+  }
+  /* node on rail — vertically centered against fixed row height */
+  .block::before{
+    content:"";
+    position:absolute;
+    left:-19px;top:calc(var(--row-h)/2 - 5.5px);
+    width:11px;height:11px;border-radius:50%;
+    background:#fff;
+    box-shadow:
+      0 0 0 1.5px var(--hairline-strong),
+      0 0 0 3px #fff;
+  }
+  .block.done::before{
+    background:var(--ink-2);
+    box-shadow:
+      0 0 0 1.5px var(--ink-2),
+      0 0 0 3px #fff;
+  }
+  .block.flow::before{
+    background:var(--blue);
+    box-shadow:
+      0 0 0 1.5px var(--blue),
+      0 0 0 3px #fff,
+      0 0 0 6px var(--blue-soft);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 1.5px var(--blue),0 0 0 3px #fff,0 0 0 6px var(--blue-soft);}50%{box-shadow:0 0 0 1.5px var(--blue),0 0 0 3px #fff,0 0 0 8px rgba(0,122,255,0.04);}}
+  .block.anchor::before{
+    background:var(--prayer-ink);
+    box-shadow:
+      0 0 0 1.5px var(--prayer-ink),
+      0 0 0 3px #fff;
+    top:calc(50% - 5.5px);
+  }
+
+  /* ──────── ROW: locked height, two-tier type only ────────
+     Tier A — the title (one strong line)
+     Tier B — metadata band: domain · subdomain · duration · status
+              all live at the SAME register: 11px / 600 / wide-tracked / label color
+     Active and Done states never change row height — only color & weight. */
+  .row{
+    height:var(--row-h);
+    background:var(--card);
+    border-radius:20px;
+    padding:0 14px 0 12px;
+    display:flex;align-items:center;gap:12px;
+    box-shadow:var(--shadow-row);
+    position:relative;
+    overflow:hidden;
+  }
+  .row::before{
+    content:"";position:absolute;inset:0;border-radius:20px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+
+  .ddisc{
+    width:36px;height:36px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;position:relative;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .ddisc svg{
+    width:19px;height:19px;display:block;
+    color:var(--glyph);
+    stroke:currentColor;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;
+    fill:none;
+  }
+  .ddisc.business{background:linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%);}
+  .ddisc.religion {background:linear-gradient(180deg,#E2F4E6 0%, #C0E5C8 100%);}
+  .ddisc.learning {background:linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%);}
+  .ddisc.fitness  {background:linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%);}
+  .ddisc.home     {background:linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%);}
+
+  .row .body{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}
+
+  /* TIER A — title */
+  .row .title{
+    font-size:15px;font-weight:500;color:var(--ink);
+    letter-spacing:-0.022em;line-height:1.18;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+
+  /* TIER B — metadata band (eyebrow + duration live here, same register) */
+  .row .meta{
+    display:flex;align-items:center;gap:6px;
+    font-size:11px;font-weight:600;color:var(--label);
+    letter-spacing:0.005em;line-height:1.1;
+    overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+    min-width:0;
+  }
+  .row .meta .dom{
+    color:var(--label-2);font-weight:700;
+    letter-spacing:0.02em;
+  }
+  .row .meta .sep{color:rgba(60,60,67,0.28);font-weight:600;}
+  .row .meta .sub{
+    color:var(--label);font-weight:500;letter-spacing:-0.005em;
+    overflow:hidden;text-overflow:ellipsis;
+  }
+
+  /* Right column — status pill is the ONLY right-side element.
+     Duration migrated into the meta band so we run two tiers, not four. */
+  .row .right{
+    display:flex;align-items:center;
+    flex-shrink:0;
+    margin-left:6px;
+  }
+
+  .status{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:10.5px;font-weight:700;
+    letter-spacing:0.06em;text-transform:uppercase;
+    padding:5px 10px 5px 9px;border-radius:999px;
+    background:var(--inset);
+    color:var(--label-2);
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+    white-space:nowrap;
+  }
+  .status svg{width:9px;height:9px;display:block;}
+  .status.done{
+    color:var(--green-deep);
+    background:var(--green-soft);
+    box-shadow:inset 0 0 0 0.5px rgba(52,199,89,0.20);
+  }
+  .status.flow{
+    color:var(--blue);
+    background:var(--blue-soft);
+    box-shadow:inset 0 0 0 0.5px rgba(0,122,255,0.20);
+  }
+  .status.flow .ldot{
+    width:5px;height:5px;border-radius:50%;background:var(--blue);
+    box-shadow:0 0 0 3px var(--blue-glow);
+    animation:pulse2 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse2{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.55;transform:scale(.85);}}
+  .status.adjusted{
+    color:#7A5A1F;
+    background:#FBF1DC;
+    box-shadow:inset 0 0 0 0.5px rgba(180,140,40,0.22);
+  }
+
+  /* DONE — softened, never line-through (was adding visual noise) */
+  .block.done .row{
+    background:transparent;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .block.done .row::before{display:none;}
+  .block.done .ddisc{filter:saturate(0.55);opacity:0.8;}
+  .block.done .title{color:var(--label-2);font-weight:500;}
+  .block.done .meta{color:var(--label);}
+
+  /* FLOW — same height, distinguished by ring + glow + tinted card.
+     Progress indicator becomes a subtle bottom-edge line — does NOT add height. */
+  .block.flow .row{
+    background:linear-gradient(180deg,#FFFFFF 0%,#F7FAFF 100%);
+    box-shadow:
+      0 0 0 0.5px rgba(0,122,255,0.22),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 14px 30px -14px rgba(0,122,255,0.22),
+      0 6px 14px -8px rgba(20,20,30,0.10);
+  }
+  .block.flow .row::before{
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(0,122,255,0.20);
+  }
+  .block.flow .title{color:var(--ink);}
+  /* progress as a thin underline along the row's bottom edge */
+  .block.flow .row::after{
+    content:"";
+    position:absolute;left:14px;right:14px;bottom:6px;
+    height:2px;border-radius:999px;
+    background:var(--inset-2);
+  }
+  .flow-bar{
+    position:absolute;left:14px;bottom:6px;
+    height:2px;border-radius:999px;
+    width:24%;
+    background:linear-gradient(90deg, var(--blue) 0%, #2E96FF 100%);
+    box-shadow:0 0 6px var(--blue-glow);
+    z-index:1;
+  }
+
+  /* ANCHOR — slightly shorter row visually, but we keep total block height
+     by giving the anchor its own consistent height that aligns with the rail. */
+  .anchor-card{
+    height:48px;
+    background:linear-gradient(180deg, var(--prayer-bg-1) 0%, var(--prayer-bg-2) 100%);
+    border-radius:16px;
+    padding:0 12px 0 10px;
+    display:flex;align-items:center;gap:11px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.9),
+      inset 0 0 0 0.5px var(--prayer-ring),
+      0 1px 2px rgba(47,90,62,0.04),
+      0 6px 16px -10px rgba(47,90,62,0.16);
+  }
+  .anchor-card .disc{
+    width:30px;height:30px;border-radius:50%;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:
+      0 0 0 0.5px var(--prayer-ring),
+      0 1px 2px rgba(47,90,62,0.10);
+    flex-shrink:0;
+  }
+  .anchor-card .disc svg{width:16px;height:16px;}
+  .anchor-card .name{font-size:13.5px;font-weight:700;color:#1F3A2A;letter-spacing:-0.016em;}
+  .anchor-card .at{font-size:12px;color:var(--prayer-ink-2);font-weight:500;margin-left:2px;letter-spacing:-0.008em;}
+  .anchor-card .pill{
+    margin-left:auto;
+    font-size:10px;font-weight:700;color:var(--prayer-ink);
+    background:rgba(255,255,255,0.85);
+    padding:4px 9px;border-radius:999px;
+    letter-spacing:0.10em;text-transform:uppercase;
+    box-shadow:
+      0 0 0 0.5px var(--prayer-ring),
+      0 1px 2px rgba(47,90,62,0.06);
+  }
+
+  /* ───────── tab bar ───────── */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;
+    height:84px;
+    display:flex;align-items:flex-start;justify-content:space-around;
+    padding:12px 24px 0;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:saturate(200%) blur(28px);
+    -webkit-backdrop-filter:saturate(200%) blur(28px);
+    border-top:0.5px solid var(--hairline);
+    z-index:3;
+  }
+  .tab{
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    color:var(--label);
+  }
+  .tab .pill{
+    padding:9px 18px;border-radius:999px;
+    background:transparent;transition:background .2s ease;
+  }
+  .tab.active .pill{background:var(--inset-2);}
+  .tab .pill svg{width:22px;height:22px;display:block;}
+  .tab.active svg{stroke:var(--ink);}
+  .tab svg{stroke:#8E8E93;}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <!-- topbar -->
+    <div class="topbar">
+      <div>
+        <div class="greet-day">Wed · 9:42</div>
+        <div class="greet-name">Today <span class="sub">· calmly on track</span></div>
+      </div>
+      <div class="me-avatar">
+        <img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/>
+      </div>
+    </div>
+
+    <!-- summary -->
+    <div class="summary">
+      <div class="sum-stat">
+        <div class="sum-num">1<span class="unit">h</span>00<span class="unit">m</span></div>
+        <div class="sum-lbl">Done</div>
+      </div>
+      <div class="sum-divider"></div>
+      <div class="sum-stat">
+        <div class="sum-num">3<span class="unit">h</span>40<span class="unit">m</span></div>
+        <div class="sum-lbl">Ahead</div>
+      </div>
+      <div class="sum-track">
+        <div class="line"><span class="dot"></span> 6 blocks · 1 anchor</div>
+        <div class="bar"><i style="width:21%"></i></div>
+      </div>
+    </div>
+
+    <!-- timeline -->
+    <div class="timeline-wrap">
+
+      <div class="section-eyebrow">
+        <span class="lbl">The day</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="timeline">
+
+        <!-- DONE -->
+        <div class="block done">
+          <div class="row">
+            <div class="ddisc business" aria-label="Business">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+                <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+                <path d="M3 13h18"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Dr. Lashin landing draft</div>
+              <div class="meta">
+                <span class="dom">Business</span>
+                <span class="sep">·</span>
+                <span class="sub">60 min</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="status done">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#248A3D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Done
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IN FLOW -->
+        <div class="block flow">
+          <div class="row">
+            <div class="ddisc religion" aria-label="Religion">
+              <svg viewBox="0 0 24 24">
+                <path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/>
+                <path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Quran · read &amp; reflect</div>
+              <div class="meta">
+                <span class="dom">Religion</span>
+                <span class="sep">·</span>
+                <span class="sub">20 min · 24% done</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="status flow"><span class="ldot"></span>In flow</div>
+            </div>
+            <div class="flow-bar"></div>
+          </div>
+        </div>
+
+        <!-- ANCHOR -->
+        <div class="block anchor">
+          <div class="anchor-card">
+            <div class="disc">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M16.5 14.5a6.5 6.5 0 11-7-9.5 5.5 5.5 0 007 9.5z" fill="#2F5A3E"/>
+              </svg>
+            </div>
+            <div class="name">Dhuhr <span class="at">· 12:47</span></div>
+            <div class="pill">Anchor</div>
+          </div>
+        </div>
+
+        <!-- IDLE 1 -->
+        <div class="block">
+          <div class="row">
+            <div class="ddisc learning" aria-label="Learning">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 9.5l9-4.5 9 4.5-9 4.5-9-4.5z"/>
+                <path d="M7 11.2v4.3c0 1.4 2.3 2.5 5 2.5s5-1.1 5-2.5v-4.3"/>
+                <path d="M21 9.5v5"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Research Framer templates</div>
+              <div class="meta">
+                <span class="dom">Learning</span>
+                <span class="sep">·</span>
+                <span class="sub">45 min</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="status">Up next</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IDLE 2 — adjusted -->
+        <div class="block">
+          <div class="row">
+            <div class="ddisc business" aria-label="Business">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+                <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+                <path d="M3 13h18"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Cold emails — batch send</div>
+              <div class="meta">
+                <span class="dom">Business</span>
+                <span class="sep">·</span>
+                <span class="sub">30 min</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="status adjusted">+12m</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IDLE 3 -->
+        <div class="block">
+          <div class="row">
+            <div class="ddisc fitness" aria-label="Fitness">
+              <svg viewBox="0 0 24 24">
+                <path d="M6 9v6M3 10.5v3M18 9v6M21 10.5v3"/>
+                <rect x="6" y="9" width="12" height="6" rx="1.2"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Push session</div>
+              <div class="meta">
+                <span class="dom">Fitness</span>
+                <span class="sep">·</span>
+                <span class="sub">60 min</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="status">Later</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- IDLE 4 -->
+        <div class="block">
+          <div class="row">
+            <div class="ddisc home" aria-label="Home">
+              <svg viewBox="0 0 24 24">
+                <path d="M3.5 11l8.5-7 8.5 7"/>
+                <path d="M5.5 9.7V20h13V9.7"/>
+                <path d="M10 20v-5h4v5"/>
+              </svg>
+            </div>
+            <div class="body">
+              <div class="title">Laundry, clear desk</div>
+              <div class="meta">
+                <span class="dom">Home</span>
+                <span class="sep">·</span>
+                <span class="sub">25 min</span>
+              </div>
+            </div>
+            <div class="right">
+              <div class="status">Later</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- tabbar -->
+    <div class="tabbar">
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <circle cx="12" cy="12" r="3" fill="#8E8E93" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab active">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/>
+            <path d="M3.5 10h17" stroke-width="1.7"/>
+            <path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="4.5" width="17" height="5" rx="2" stroke-width="1.7"/>
+            <rect x="3.5" y="11.5" width="17" height="5" rx="2" stroke-width="1.7"/>
+            <rect x="3.5" y="18.5" width="11" height="2" rx="1" stroke-width="1.7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

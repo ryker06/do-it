@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — ROUTINES</title>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+    --glyph:#0A0A0F;
+
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    --blue:#007AFF;
+    --blue-deep:#0062CC;
+    --blue-soft:rgba(0,122,255,0.10);
+    --green:#34C759;
+    --green-deep:#248A3D;
+    --green-soft:rgba(52,199,89,0.14);
+
+    /* routine palette — distinct, calm, used as small color pips
+       per Adam's note: each routine reads at a glance via a single
+       muted color tag, not loud blocks of color. */
+    --r-weekday:#0A0A0F;        /* ink — the default pattern */
+    --r-recovery:#7C8FA0;       /* steel */
+    --r-friday:#5E8A6E;          /* deep mint */
+    --r-sunday:#94707F;          /* dusty rose */
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-row:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 6px 16px -12px rgba(20,20,30,0.10);
+
+    --gap:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    padding:54px 20px 0;
+  }
+
+  /* ───── topbar ───── */
+  .topbar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 2px;margin-bottom:16px;
+  }
+  .topbar .back{
+    display:inline-flex;align-items:center;gap:6px;
+    color:var(--blue);font-size:15px;font-weight:600;
+    letter-spacing:-0.018em;padding:6px 6px 6px 2px;
+  }
+  .topbar .back svg{width:11px;height:18px;stroke:var(--blue);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .topbar .title-block{
+    display:flex;flex-direction:column;align-items:center;gap:1px;
+    transform:translateX(-6px);
+  }
+  .topbar .eyebrow{
+    font-size:10.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.16em;text-transform:uppercase;
+  }
+  .topbar .title{
+    font-size:15.5px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.022em;
+  }
+  .topbar .add{
+    width:32px;height:32px;border-radius:50%;
+    background:linear-gradient(180deg,#1C1C1E 0%, #0A0A0F 100%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.30),
+      0 1px 0 rgba(255,255,255,0.08) inset,
+      0 4px 10px -4px rgba(20,20,30,0.45);
+  }
+  .topbar .add svg{width:13px;height:13px;stroke:#fff;stroke-width:2.6;stroke-linecap:round;fill:none;}
+
+  /* ───── scroll ───── */
+  .scroll{
+    position:relative;z-index:2;
+    flex:1;overflow-y:auto;
+    padding:0 2px 110px;margin:0 -2px;
+    -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+            mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+  }
+  .scroll::-webkit-scrollbar{display:none;}
+
+  /* ───── hero: this week ───── */
+  .week{
+    background:var(--card);
+    border-radius:22px;
+    padding:16px 14px 14px;
+    box-shadow:var(--shadow-card);
+    position:relative;
+    margin:2px 0 18px;
+  }
+  .week::before{
+    content:"";position:absolute;inset:0;border-radius:22px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+  .week .head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    padding:0 4px;margin-bottom:12px;
+  }
+  .week .head .lbl{
+    font-size:10.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+  }
+  .week .head .meta{
+    font-size:11.5px;font-weight:600;color:var(--label-2);
+    letter-spacing:-0.005em;
+  }
+  .week .head .meta b{color:var(--ink-2);font-weight:700;}
+
+  .week-strip{
+    display:flex;justify-content:space-between;gap:5px;
+  }
+  .wcol{
+    flex:1;
+    display:flex;flex-direction:column;align-items:stretch;gap:6px;
+    min-width:0;
+  }
+  .wcol .dchip{
+    height:42px;border-radius:12px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:1px;
+    font-family:inherit;
+    background:var(--inset);
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+    cursor:pointer;
+    transition:all .15s ease;
+    position:relative;
+  }
+  .wcol .dchip .dl{
+    font-size:11.5px;font-weight:700;color:var(--label-2);
+    letter-spacing:0.04em;line-height:1;
+  }
+  .wcol .dchip .dn{
+    font-size:9px;font-weight:600;color:var(--label);
+    letter-spacing:0.02em;line-height:1;font-variant-numeric:tabular-nums;
+  }
+  /* assigned: filled ink */
+  .wcol .dchip.on{
+    background:#0A0A0F;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      0 1px 2px rgba(20,20,30,0.16),
+      0 4px 10px -6px rgba(20,20,30,0.30);
+  }
+  .wcol .dchip.on .dl{color:#fff;}
+  .wcol .dchip.on .dn{color:rgba(255,255,255,0.55);}
+
+  /* today ring — subtle blue outline on today's chip */
+  .wcol .dchip.today{
+    box-shadow:
+      0 0 0 1.5px var(--blue),
+      0 1px 2px rgba(0,122,255,0.18);
+  }
+  .wcol .dchip.today.on{
+    box-shadow:
+      0 0 0 1.5px var(--blue),
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      0 4px 10px -6px rgba(20,20,30,0.30);
+  }
+
+  /* tiny routine pill below day */
+  .wcol .rpill{
+    height:18px;border-radius:6px;
+    display:flex;align-items:center;justify-content:center;gap:4px;
+    padding:0 5px;
+    font-size:8.5px;font-weight:700;color:var(--ink-2);
+    letter-spacing:0.01em;
+    background:var(--inset);
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+    overflow:hidden;
+    white-space:nowrap;text-overflow:ellipsis;
+    min-width:0;
+  }
+  .wcol .rpill .dot{
+    width:5px;height:5px;border-radius:50%;flex-shrink:0;
+    background:var(--label);
+  }
+  .wcol .rpill .lbl{
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    font-size:8.5px;
+  }
+  .wcol .rpill.empty{
+    background:transparent;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+    border-style:dashed;
+  }
+  .wcol .rpill.empty .lbl{color:var(--label);font-weight:500;}
+  .wcol .rpill.empty .dot{display:none;}
+
+  .wcol .rpill.weekday  .dot{background:var(--r-weekday);}
+  .wcol .rpill.recovery .dot{background:var(--r-recovery);}
+  .wcol .rpill.friday   .dot{background:var(--r-friday);}
+  .wcol .rpill.sunday   .dot{background:var(--r-sunday);}
+
+  /* friday gets two stacked pills (overlay) */
+  .wcol .rstack{display:flex;flex-direction:column;gap:3px;}
+
+  /* ───── eyebrow ───── */
+  .section-eyebrow{
+    display:flex;align-items:center;gap:10px;
+    padding:0 6px;margin:6px 0 12px;
+  }
+  .section-eyebrow .lbl{
+    font-size:10.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+  }
+  .section-eyebrow .rule{flex:1;height:1px;background:var(--hairline-2);}
+  .section-eyebrow .meta{
+    font-size:11px;color:var(--label-2);font-weight:600;
+    letter-spacing:-0.005em;
+  }
+
+  /* ───── routine card ───── */
+  .rlist{display:flex;flex-direction:column;gap:12px;margin:0 2px;}
+  .rcard{
+    background:var(--card);
+    border-radius:20px;
+    padding:14px 14px 13px;
+    box-shadow:var(--shadow-row);
+    position:relative;
+    overflow:hidden;
+  }
+  .rcard::before{
+    content:"";position:absolute;inset:0;border-radius:20px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+  /* color rail on left */
+  .rcard::after{
+    content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;
+    border-radius:0 3px 3px 0;
+    background:var(--rail,var(--label));
+  }
+  .rcard.weekday  {--rail:var(--r-weekday);}
+  .rcard.recovery {--rail:var(--r-recovery);}
+  .rcard.friday   {--rail:var(--r-friday);}
+  .rcard.sunday   {--rail:var(--r-sunday);}
+
+  .rcard .top{
+    display:flex;align-items:flex-start;gap:10px;
+    margin-bottom:11px;
+  }
+  .rcard .info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+  .rcard .name{
+    font-size:16px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.024em;line-height:1.15;
+  }
+  .rcard .sub{
+    display:flex;align-items:center;gap:6px;
+    font-size:11.5px;font-weight:600;color:var(--label-2);
+    letter-spacing:-0.005em;
+    font-variant-numeric:tabular-nums;
+  }
+  .rcard .sub .sep{color:rgba(60,60,67,0.28);}
+  .rcard .sub b{color:var(--ink-2);font-weight:700;}
+
+  .rcard .chev{
+    width:26px;height:26px;border-radius:50%;
+    background:var(--inset);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .rcard .chev svg{width:9px;height:14px;stroke:var(--label-2);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  /* day badges */
+  .rcard .bottom{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+  }
+  .day-badges{display:flex;gap:3px;}
+  .daybadge{
+    font-size:9.5px;font-weight:700;color:var(--label-2);
+    letter-spacing:0.04em;
+    width:18px;height:18px;border-radius:5px;
+    background:var(--inset);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .daybadge.on{
+    background:var(--rail,#0A0A0F);color:#fff;
+    box-shadow:none;
+  }
+
+  /* domain dot strip */
+  .domain-strip{
+    display:flex;align-items:center;gap:-4px;
+  }
+  .ddot{
+    width:20px;height:20px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      0 1px 2px rgba(20,20,30,0.04),
+      0 0 0 1.5px #fff;
+    margin-left:-5px;
+  }
+  .ddot:first-child{margin-left:0;}
+  .ddot svg{
+    width:10px;height:10px;display:block;
+    color:var(--glyph);
+    stroke:currentColor;stroke-width:2.2;
+    stroke-linecap:round;stroke-linejoin:round;
+    fill:none;
+  }
+  .ddot.business{background:linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%);}
+  .ddot.religion {background:linear-gradient(180deg,#E2F4E6 0%, #C0E5C8 100%);}
+  .ddot.learning {background:linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%);}
+  .ddot.fitness  {background:linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%);}
+  .ddot.home     {background:linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%);}
+
+  /* ───── new routine row ───── */
+  .new-routine{
+    margin:14px 2px 0;
+    height:60px;border-radius:18px;
+    border:1px dashed var(--hairline-strong);
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    color:var(--label-2);
+    background:transparent;
+    cursor:pointer;
+  }
+  .new-routine .plus{
+    width:24px;height:24px;border-radius:50%;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-strong);
+    color:var(--ink-2);
+  }
+  .new-routine .plus svg{width:11px;height:11px;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;fill:none;}
+  .new-routine .lbl{
+    font-size:13.5px;font-weight:600;color:var(--label-2);
+    letter-spacing:-0.012em;
+  }
+
+  /* ───── tab bar ───── */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;
+    height:84px;
+    display:flex;align-items:flex-start;justify-content:space-around;
+    padding:12px 24px 0;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:saturate(200%) blur(28px);
+    -webkit-backdrop-filter:saturate(200%) blur(28px);
+    border-top:0.5px solid var(--hairline);
+    z-index:3;
+  }
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--label);}
+  .tab .pill{padding:9px 18px;border-radius:999px;background:transparent;}
+  .tab.active .pill{background:var(--inset-2);}
+  .tab .pill svg{width:22px;height:22px;display:block;}
+  .tab.active svg{stroke:var(--ink);}
+  .tab svg{stroke:#8E8E93;}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <!-- topbar -->
+    <div class="topbar">
+      <a class="back">
+        <svg viewBox="0 0 11 18"><path d="M9 1L2 9l7 8"/></svg>
+        Settings
+      </a>
+      <div class="title-block">
+        <div class="eyebrow">Routines</div>
+        <div class="title">Your week</div>
+      </div>
+      <div class="add" aria-label="New routine">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
+    </div>
+
+    <div class="scroll">
+
+      <!-- ───── this week assignment ───── -->
+      <div class="week">
+        <div class="head">
+          <span class="lbl">This week</span>
+          <span class="meta">tap a day to reassign · <b>6 of 7</b> set</span>
+        </div>
+
+        <div class="week-strip">
+
+          <!-- Mon -->
+          <div class="wcol">
+            <div class="dchip on"><div class="dl">M</div><div class="dn">04</div></div>
+            <div class="rpill weekday"><span class="dot"></span><span class="lbl">Wkdy</span></div>
+          </div>
+          <!-- Tue -->
+          <div class="wcol">
+            <div class="dchip on"><div class="dl">T</div><div class="dn">05</div></div>
+            <div class="rpill weekday"><span class="dot"></span><span class="lbl">Wkdy</span></div>
+          </div>
+          <!-- Wed (today) -->
+          <div class="wcol">
+            <div class="dchip on today"><div class="dl">W</div><div class="dn">06</div></div>
+            <div class="rpill weekday"><span class="dot"></span><span class="lbl">Wkdy</span></div>
+          </div>
+          <!-- Thu -->
+          <div class="wcol">
+            <div class="dchip on"><div class="dl">T</div><div class="dn">07</div></div>
+            <div class="rpill weekday"><span class="dot"></span><span class="lbl">Wkdy</span></div>
+          </div>
+          <!-- Fri — overlap (Wkdy + Friday cycle) -->
+          <div class="wcol">
+            <div class="dchip on"><div class="dl">F</div><div class="dn">08</div></div>
+            <div class="rstack">
+              <div class="rpill weekday"><span class="dot"></span><span class="lbl">Wkdy</span></div>
+              <div class="rpill friday"><span class="dot"></span><span class="lbl">Fri pm</span></div>
+            </div>
+          </div>
+          <!-- Sat -->
+          <div class="wcol">
+            <div class="dchip on"><div class="dl">S</div><div class="dn">09</div></div>
+            <div class="rpill recovery"><span class="dot"></span><span class="lbl">Recov</span></div>
+          </div>
+          <!-- Sun — empty for demo (will set Sunday slow) -->
+          <div class="wcol">
+            <div class="dchip"><div class="dl">S</div><div class="dn">10</div></div>
+            <div class="rpill empty"><span class="lbl">+ set</span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ───── routines list ───── -->
+      <div class="section-eyebrow">
+        <span class="lbl">Routines</span>
+        <span class="rule"></span>
+        <span class="meta">4 templates</span>
+      </div>
+
+      <div class="rlist">
+
+        <!-- 1 Weekday morning -->
+        <div class="rcard weekday">
+          <div class="top">
+            <div class="info">
+              <div class="name">Weekday morning</div>
+              <div class="sub">
+                <span><b>5</b> blocks</span>
+                <span class="sep">·</span>
+                <span>4<span style="color:var(--label);font-weight:600;font-size:10.5px">h</span> 05<span style="color:var(--label);font-weight:600;font-size:10.5px">m</span></span>
+              </div>
+            </div>
+            <div class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+          <div class="bottom">
+            <div class="day-badges">
+              <span class="daybadge on">M</span><span class="daybadge on">T</span><span class="daybadge on">W</span><span class="daybadge on">T</span><span class="daybadge on">F</span><span class="daybadge">S</span><span class="daybadge">S</span>
+            </div>
+            <div class="domain-strip">
+              <div class="ddot religion"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/></svg></div>
+              <div class="ddot business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div>
+              <div class="ddot learning"><svg viewBox="0 0 24 24"><path d="M3 9.5l9-4.5 9 4.5-9 4.5-9-4.5z"/><path d="M7 11.2v4.3c0 1.4 2.3 2.5 5 2.5s5-1.1 5-2.5v-4.3"/></svg></div>
+              <div class="ddot fitness"><svg viewBox="0 0 24 24"><path d="M6 9v6M3 10.5v3M18 9v6M21 10.5v3"/><rect x="6" y="9" width="12" height="6" rx="1.2"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Recovery day -->
+        <div class="rcard recovery">
+          <div class="top">
+            <div class="info">
+              <div class="name">Recovery day</div>
+              <div class="sub">
+                <span><b>3</b> blocks</span>
+                <span class="sep">·</span>
+                <span>1<span style="color:var(--label);font-weight:600;font-size:10.5px">h</span> 50<span style="color:var(--label);font-weight:600;font-size:10.5px">m</span></span>
+              </div>
+            </div>
+            <div class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+          <div class="bottom">
+            <div class="day-badges">
+              <span class="daybadge">M</span><span class="daybadge">T</span><span class="daybadge">W</span><span class="daybadge">T</span><span class="daybadge">F</span><span class="daybadge on">S</span><span class="daybadge">S</span>
+            </div>
+            <div class="domain-strip">
+              <div class="ddot religion"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/></svg></div>
+              <div class="ddot home"><svg viewBox="0 0 24 24"><path d="M3.5 11l8.5-7 8.5 7"/><path d="M5.5 9.7V20h13V9.7"/></svg></div>
+              <div class="ddot fitness"><svg viewBox="0 0 24 24"><path d="M6 9v6M3 10.5v3M18 9v6M21 10.5v3"/><rect x="6" y="9" width="12" height="6" rx="1.2"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Friday cycle -->
+        <div class="rcard friday">
+          <div class="top">
+            <div class="info">
+              <div class="name">Friday cycle <span style="font-size:11px;font-weight:600;color:var(--label);letter-spacing:-0.005em;margin-left:4px;">· evening overlay</span></div>
+              <div class="sub">
+                <span><b>2</b> blocks</span>
+                <span class="sep">·</span>
+                <span>1<span style="color:var(--label);font-weight:600;font-size:10.5px">h</span> 10<span style="color:var(--label);font-weight:600;font-size:10.5px">m</span></span>
+              </div>
+            </div>
+            <div class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+          <div class="bottom">
+            <div class="day-badges">
+              <span class="daybadge">M</span><span class="daybadge">T</span><span class="daybadge">W</span><span class="daybadge">T</span><span class="daybadge on">F</span><span class="daybadge">S</span><span class="daybadge">S</span>
+            </div>
+            <div class="domain-strip">
+              <div class="ddot religion"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/></svg></div>
+              <div class="ddot learning"><svg viewBox="0 0 24 24"><path d="M3 9.5l9-4.5 9 4.5-9 4.5-9-4.5z"/><path d="M7 11.2v4.3c0 1.4 2.3 2.5 5 2.5s5-1.1 5-2.5v-4.3"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Sunday slow -->
+        <div class="rcard sunday">
+          <div class="top">
+            <div class="info">
+              <div class="name">Sunday slow</div>
+              <div class="sub">
+                <span><b>2</b> blocks</span>
+                <span class="sep">·</span>
+                <span>1<span style="color:var(--label);font-weight:600;font-size:10.5px">h</span> 30<span style="color:var(--label);font-weight:600;font-size:10.5px">m</span></span>
+                <span class="sep">·</span>
+                <span style="color:var(--label);font-weight:500">unassigned this week</span>
+              </div>
+            </div>
+            <div class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+          </div>
+          <div class="bottom">
+            <div class="day-badges">
+              <span class="daybadge">M</span><span class="daybadge">T</span><span class="daybadge">W</span><span class="daybadge">T</span><span class="daybadge">F</span><span class="daybadge">S</span><span class="daybadge on">S</span>
+            </div>
+            <div class="domain-strip">
+              <div class="ddot religion"><svg viewBox="0 0 24 24"><path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/></svg></div>
+              <div class="ddot home"><svg viewBox="0 0 24 24"><path d="M3.5 11l8.5-7 8.5 7"/><path d="M5.5 9.7V20h13V9.7"/></svg></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- new routine -->
+      <div class="new-routine">
+        <span class="plus"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+        <span class="lbl">New routine</span>
+      </div>
+
+    </div>
+
+    <!-- tab bar -->
+    <div class="tabbar">
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <circle cx="12" cy="12" r="3" fill="#8E8E93" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/>
+            <path d="M3.5 10h17" stroke-width="1.7"/>
+            <path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="13" y="3.5" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="3.5" y="13" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="13" y="13" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab active">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="4.5" width="17" height="5" rx="2" stroke-width="1.7"/>
+            <rect x="3.5" y="11.5" width="17" height="5" rx="2" stroke-width="1.7"/>
+            <rect x="3.5" y="18.5" width="11" height="2" rx="1" stroke-width="1.7"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

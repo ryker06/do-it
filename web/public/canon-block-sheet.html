@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — BLOCK SHEET</title>
+<style>
+  :root{
+    /* surfaces */
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    /* ink */
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+    --glyph:#0A0A0F;
+
+    /* hairlines */
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    /* accents (no purple, no orange) */
+    --blue:#007AFF;
+    --blue-deep:#0062CC;
+    --blue-soft:rgba(0,122,255,0.10);
+    --blue-glow:rgba(0,122,255,0.20);
+
+    --mint:#34C7A8;
+    --mint-deep:#1E8C77;
+    --mint-soft:rgba(52,199,168,0.14);
+
+    --pink:#F25B8A;
+    --pink-deep:#C73E6B;
+    --pink-soft:rgba(242,91,138,0.12);
+
+    --grey-soft:#EFEFF4;
+    --grey-soft-2:#E6E6EC;
+
+    --row-h:64px;
+    --gap:18px;
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-row:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 6px 16px -12px rgba(20,20,30,0.10);
+    --shadow-sheet:
+      0 -1px 0 rgba(255,255,255,0.95) inset,
+      0 0 0 0.5px rgba(60,60,67,0.08),
+      0 -2px 8px rgba(20,20,30,0.04),
+      0 -22px 60px -10px rgba(20,20,30,0.20),
+      0 -40px 80px -20px rgba(20,20,30,0.22);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  /* phone shell */
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+
+  /* ─────────────────────────────────────────────
+     BACKGROUND TODAY (dimmed scrim)
+     simplified, sized to live behind the sheet
+     ───────────────────────────────────────────── */
+  .behind{
+    position:absolute;inset:0;
+    padding:54px 20px 0;
+    display:flex;flex-direction:column;
+  }
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 4px;margin-bottom:var(--gap);
+  }
+  .greet-day{font-size:11.5px;font-weight:600;color:var(--label);letter-spacing:0.04em;}
+  .greet-name{font-size:24px;font-weight:700;color:var(--ink);letter-spacing:-0.035em;line-height:1.05;margin-top:3px;}
+  .greet-name .sub{color:var(--label);font-weight:500;letter-spacing:-0.022em;}
+  .me-avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:#F2F2F7;display:flex;align-items:center;justify-content:center;overflow:hidden;
+    box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(60,60,67,0.10),0 2px 6px rgba(20,20,30,0.10);
+  }
+  .me-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  .summary{
+    margin:0 4px calc(var(--gap) + 8px);
+    padding:13px 16px;background:var(--card);border-radius:20px;
+    box-shadow:0 0 0 0.5px rgba(60,60,67,0.05),0 8px 22px -14px rgba(20,20,30,0.12);
+    display:flex;align-items:center;gap:14px;
+  }
+  .sum-stat{display:flex;flex-direction:column;gap:3px;}
+  .sum-num{font-size:17px;font-weight:700;letter-spacing:-0.026em;line-height:1;font-variant-numeric:tabular-nums;}
+  .sum-num .unit{font-weight:600;color:var(--label-2);font-size:11.5px;margin-right:3px;}
+  .sum-lbl{font-size:10px;font-weight:700;color:var(--label);letter-spacing:0.10em;text-transform:uppercase;}
+  .sum-divider{width:1px;align-self:stretch;background:var(--hairline-2);margin:4px 4px;}
+  .sum-track{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+  .sum-track .line{font-size:11px;color:var(--label-2);font-weight:600;display:inline-flex;align-items:center;gap:6px;}
+  .sum-track .line .dot{width:5px;height:5px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 3px var(--mint-soft);}
+  .sum-track .bar{width:108px;height:4px;border-radius:999px;background:var(--inset-2);overflow:hidden;}
+  .sum-track .bar i{display:block;height:100%;background:linear-gradient(90deg,#1C1C1E 0%, #3A3A3C 100%);border-radius:999px;}
+
+  .timeline-wrap{flex:1;padding:6px 4px 110px;margin:0 -4px;overflow:hidden;}
+  .section-eyebrow{display:flex;align-items:center;gap:8px;padding:0 6px;margin:4px 0 var(--gap);}
+  .section-eyebrow .lbl{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.14em;text-transform:uppercase;}
+  .section-eyebrow .rule{flex:1;height:1px;background:var(--hairline-2);}
+
+  .timeline{position:relative;padding-left:30px;}
+  .timeline::before{
+    content:"";position:absolute;left:18px;top:8px;bottom:8px;width:1.5px;
+    background:linear-gradient(180deg,transparent 0%,var(--hairline-strong) 6%,var(--hairline-strong) 94%,transparent 100%);
+  }
+  .block{position:relative;margin-bottom:var(--gap);}
+  .block::before{
+    content:"";position:absolute;left:-19px;top:calc(var(--row-h)/2 - 5.5px);
+    width:11px;height:11px;border-radius:50%;background:#fff;
+    box-shadow:0 0 0 1.5px var(--hairline-strong),0 0 0 3px #fff;
+  }
+  .block.target::before{
+    background:var(--blue);
+    box-shadow:0 0 0 1.5px var(--blue),0 0 0 3px #fff,0 0 0 6px var(--blue-soft);
+  }
+  .row{
+    height:var(--row-h);background:var(--card);border-radius:20px;
+    padding:0 14px 0 12px;display:flex;align-items:center;gap:12px;
+    box-shadow:var(--shadow-row);position:relative;overflow:hidden;
+  }
+  .row::before{
+    content:"";position:absolute;inset:0;border-radius:20px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95),inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+  .ddisc{
+    width:36px;height:36px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06),inset 0 -2px 4px rgba(20,20,30,0.04),0 1px 2px rgba(20,20,30,0.04);
+  }
+  .ddisc svg{width:19px;height:19px;color:var(--glyph);stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  /* repalette: business -> soft blue, fitness -> pink, religion -> mint, home -> grey */
+  .ddisc.business{background:linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%);}
+  .ddisc.religion {background:linear-gradient(180deg,#D6F2EA 0%, #B8E6D6 100%);}
+  .ddisc.fitness  {background:linear-gradient(180deg,#FFD8E2 0%, #FFC0D0 100%);}
+  .ddisc.home     {background:linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%);}
+
+  .row .body{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;}
+  .row .title{font-size:15px;font-weight:500;color:var(--ink);letter-spacing:-0.022em;line-height:1.18;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .row .meta{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--label);}
+  .row .meta .dom{color:var(--label-2);font-weight:700;letter-spacing:0.02em;}
+  .row .meta .sep{color:rgba(60,60,67,0.28);}
+  .row .meta .sub{color:var(--label);font-weight:500;}
+  .row .right{display:flex;align-items:center;flex-shrink:0;margin-left:6px;}
+  .status{
+    display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;
+    letter-spacing:0.06em;text-transform:uppercase;padding:5px 10px;
+    border-radius:999px;background:var(--inset);color:var(--label-2);
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);white-space:nowrap;
+  }
+
+  /* dim scrim over today */
+  .scrim{
+    position:absolute;inset:0;z-index:5;
+    background:rgba(18,18,24,0.34);
+    backdrop-filter:blur(14px) saturate(140%);
+    -webkit-backdrop-filter:blur(14px) saturate(140%);
+  }
+
+  /* tab bar (visible behind the scrim, dimmed naturally by scrim) */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;height:84px;
+    display:flex;align-items:flex-start;justify-content:space-around;padding:12px 24px 0;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:saturate(200%) blur(28px);
+    -webkit-backdrop-filter:saturate(200%) blur(28px);
+    border-top:0.5px solid var(--hairline);
+    z-index:4;
+  }
+  .tab{display:flex;flex-direction:column;align-items:center;color:var(--label);}
+  .tab .pill{padding:9px 18px;border-radius:999px;background:transparent;}
+  .tab.active .pill{background:var(--inset-2);}
+  .tab .pill svg{width:22px;height:22px;display:block;}
+  .tab.active svg{stroke:var(--ink);}
+  .tab svg{stroke:#8E8E93;}
+
+  /* ─────────────────────────────────────────────
+     BOTTOM SHEET
+     ───────────────────────────────────────────── */
+  .sheet{
+    position:absolute;left:0;right:0;bottom:0;
+    z-index:10;
+    background:#FFFFFF;
+    border-top-left-radius:32px;border-top-right-radius:32px;
+    padding:10px 22px 26px;
+    box-shadow:var(--shadow-sheet);
+  }
+  .sheet::before{
+    content:"";position:absolute;inset:0;
+    border-top-left-radius:32px;border-top-right-radius:32px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95);
+    pointer-events:none;
+  }
+  .handle{
+    width:38px;height:5px;border-radius:999px;
+    background:rgba(60,60,67,0.22);
+    margin:0 auto 16px;
+  }
+
+  /* sheet header — domain disc + title + duration */
+  .sheet-head{
+    display:flex;align-items:center;gap:13px;
+    padding:2px 4px 16px;
+    border-bottom:0.5px solid var(--hairline-2);
+    margin-bottom:18px;
+  }
+  .sheet-head .ddisc{
+    width:44px;height:44px;
+  }
+  .sheet-head .ddisc svg{width:22px;height:22px;}
+  .sheet-head .info{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1;}
+  .sheet-head .title{
+    font-size:18px;font-weight:700;letter-spacing:-0.028em;color:var(--ink);
+    line-height:1.15;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .sheet-head .meta{
+    display:flex;align-items:center;gap:6px;
+    font-size:11.5px;font-weight:600;color:var(--label-2);
+  }
+  .sheet-head .meta .dom{font-weight:700;letter-spacing:0.02em;color:var(--label-2);}
+  .sheet-head .meta .sep{color:rgba(60,60,67,0.28);}
+  .sheet-head .meta .sub{font-weight:500;color:var(--label);}
+  .sheet-head .idle-pill{
+    font-size:9.5px;font-weight:700;color:var(--label-2);
+    letter-spacing:0.10em;text-transform:uppercase;
+    padding:5px 9px;border-radius:999px;
+    background:var(--inset);
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+    align-self:flex-start;
+    margin-top:2px;
+  }
+
+  /* 2x2 action grid */
+  .grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;
+    margin-bottom:16px;
+  }
+  .act{
+    position:relative;
+    aspect-ratio:1.35/1;
+    border-radius:20px;
+    padding:14px 14px 12px;
+    display:flex;flex-direction:column;justify-content:space-between;
+    text-align:left;
+    overflow:hidden;
+    cursor:pointer;
+    transition:transform .12s ease;
+  }
+  .act:active{transform:scale(0.985);}
+  .act::before{
+    content:"";position:absolute;inset:0;border-radius:20px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.85), inset 0 0 0 0.5px rgba(60,60,67,0.06);
+    pointer-events:none;
+  }
+  .act .glyph{
+    width:32px;height:32px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,0.7);
+    box-shadow:inset 0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1.5px rgba(20,20,30,0.04);
+  }
+  .act .glyph svg{width:18px;height:18px;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .act .lbl{
+    font-size:14px;font-weight:600;letter-spacing:-0.018em;line-height:1.2;color:var(--ink-2);
+  }
+  .act .lbl .sub{
+    display:block;font-size:11px;font-weight:500;color:var(--label-2);letter-spacing:-0.005em;margin-top:2px;
+  }
+
+  /* primary — Start now (blue) */
+  .act.primary{
+    background:linear-gradient(180deg,#0A84FF 0%, #0066D6 100%);
+    box-shadow:
+      0 0 0 0.5px rgba(0,90,200,0.35),
+      0 10px 22px -10px rgba(0,122,255,0.55),
+      0 4px 10px -6px rgba(20,20,30,0.20);
+  }
+  .act.primary::before{box-shadow:inset 0 1px 0 rgba(255,255,255,0.30), inset 0 0 0 0.5px rgba(255,255,255,0.10);}
+  .act.primary .glyph{background:rgba(255,255,255,0.18);box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.22);}
+  .act.primary .glyph svg{stroke:#fff;}
+  .act.primary .lbl{color:#fff;}
+  .act.primary .lbl .sub{color:rgba(255,255,255,0.78);font-weight:500;}
+
+  /* mint — Add 15 min */
+  .act.mint{
+    background:linear-gradient(180deg,#E0F6EF 0%, #CDEEE2 100%);
+  }
+  .act.mint .glyph svg{stroke:var(--mint-deep);}
+  .act.mint .lbl{color:#1F4A3E;}
+  .act.mint .lbl .sub{color:#5A8275;}
+
+  /* pink — Move later */
+  .act.pink{
+    background:linear-gradient(180deg,#FFE4EC 0%, #FFD1DE 100%);
+  }
+  .act.pink .glyph svg{stroke:var(--pink-deep);}
+  .act.pink .lbl{color:#7A2A47;}
+  .act.pink .lbl .sub{color:#A0667D;}
+
+  /* grey — Skip today */
+  .act.grey{
+    background:linear-gradient(180deg,#F0F0F4 0%, #E4E4EA 100%);
+  }
+  .act.grey .glyph svg{stroke:var(--ink-3);}
+  .act.grey .lbl{color:var(--ink-2);}
+  .act.grey .lbl .sub{color:var(--label-2);}
+
+  /* domain pill + notes affordance */
+  .below{
+    display:flex;flex-direction:column;gap:10px;
+    margin-bottom:14px;
+  }
+  .row-line{
+    display:flex;align-items:center;
+    background:var(--inset);
+    border-radius:14px;
+    padding:11px 14px;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .row-line .lead{
+    font-size:10px;font-weight:700;color:var(--label);
+    letter-spacing:0.12em;text-transform:uppercase;
+    margin-right:10px;
+  }
+  .row-line .val{
+    font-size:13px;font-weight:600;color:var(--ink-2);letter-spacing:-0.018em;
+    display:inline-flex;align-items:center;gap:7px;
+  }
+  .row-line .val .swatch{
+    width:8px;height:8px;border-radius:50%;
+    background:linear-gradient(180deg,#C9DBFF 0%,#9DBBF7 100%);
+    box-shadow:inset 0 0 0 0.5px rgba(60,60,67,0.10);
+  }
+  .row-line .arrow{
+    margin-left:auto;color:var(--label);
+  }
+  .row-line .arrow svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+
+  .row-line.notes .val{color:var(--label);font-weight:500;font-style:normal;}
+  .row-line.notes .val em{font-style:normal;color:var(--label);}
+
+  .cancel{
+    display:block;width:100%;
+    padding:13px 0 4px;
+    text-align:center;
+    font-size:14px;font-weight:600;color:var(--label-2);letter-spacing:-0.018em;
+    background:none;border:0;cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- ───── BACKGROUND TODAY ───── -->
+  <div class="behind">
+    <div class="topbar">
+      <div>
+        <div class="greet-day">Wed · 9:42</div>
+        <div class="greet-name">Today <span class="sub">· calmly on track</span></div>
+      </div>
+      <div class="me-avatar">
+        <img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="sum-stat">
+        <div class="sum-num">1<span class="unit">h</span>00<span class="unit">m</span></div>
+        <div class="sum-lbl">Done</div>
+      </div>
+      <div class="sum-divider"></div>
+      <div class="sum-stat">
+        <div class="sum-num">3<span class="unit">h</span>40<span class="unit">m</span></div>
+        <div class="sum-lbl">Ahead</div>
+      </div>
+      <div class="sum-track">
+        <div class="line"><span class="dot"></span> 6 blocks · 1 anchor</div>
+        <div class="bar"><i style="width:21%"></i></div>
+      </div>
+    </div>
+
+    <div class="timeline-wrap">
+      <div class="section-eyebrow">
+        <span class="lbl">The day</span>
+        <span class="rule"></span>
+      </div>
+      <div class="timeline">
+        <div class="block">
+          <div class="row">
+            <div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6 9v6M3 10.5v3M18 9v6M21 10.5v3"/><rect x="6" y="9" width="12" height="6" rx="1.2"/></svg></div>
+            <div class="body"><div class="title">Push session</div><div class="meta"><span class="dom">Fitness</span><span class="sep">·</span><span class="sub">60 min</span></div></div>
+            <div class="right"><div class="status">Later</div></div>
+          </div>
+        </div>
+        <div class="block target">
+          <div class="row">
+            <div class="ddisc business"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg></div>
+            <div class="body"><div class="title">Cold emails — batch send</div><div class="meta"><span class="dom">Business</span><span class="sep">·</span><span class="sub">30 min</span></div></div>
+            <div class="right"><div class="status">Up next</div></div>
+          </div>
+        </div>
+        <div class="block">
+          <div class="row">
+            <div class="ddisc home"><svg viewBox="0 0 24 24"><path d="M3.5 11l8.5-7 8.5 7"/><path d="M5.5 9.7V20h13V9.7"/><path d="M10 20v-5h4v5"/></svg></div>
+            <div class="body"><div class="title">Laundry, clear desk</div><div class="meta"><span class="dom">Home</span><span class="sep">·</span><span class="sub">25 min</span></div></div>
+            <div class="right"><div class="status">Later</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabbar">
+      <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><circle cx="12" cy="12" r="3" fill="#8E8E93" stroke="none"/></svg></div></div>
+      <div class="tab active"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/><path d="M3.5 10h17" stroke-width="1.7"/><path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/></svg></div></div>
+      <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="5" rx="2" stroke-width="1.7"/><rect x="3.5" y="11.5" width="17" height="5" rx="2" stroke-width="1.7"/><rect x="3.5" y="18.5" width="11" height="2" rx="1" stroke-width="1.7"/></svg></div></div>
+      <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/></svg></div></div>
+    </div>
+  </div>
+
+  <!-- ───── SCRIM ───── -->
+  <div class="scrim"></div>
+
+  <!-- ───── BOTTOM SHEET ───── -->
+  <div class="sheet">
+    <div class="handle"></div>
+
+    <div class="sheet-head">
+      <div class="ddisc business" aria-label="Business">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+          <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+          <path d="M3 13h18"/>
+        </svg>
+      </div>
+      <div class="info">
+        <div class="title">Cold emails — batch send</div>
+        <div class="meta">
+          <span class="dom">Business</span>
+          <span class="sep">·</span>
+          <span class="sub">30 min</span>
+        </div>
+      </div>
+      <div class="idle-pill">Idle</div>
+    </div>
+
+    <div class="grid">
+      <!-- Start now -->
+      <button class="act primary">
+        <div class="glyph">
+          <svg viewBox="0 0 24 24"><path d="M7 5.5l11 6.5-11 6.5z" fill="#fff" stroke="#fff" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="lbl">Start now<span class="sub">Begin the 30 min</span></div>
+      </button>
+
+      <!-- Add 15 min -->
+      <button class="act mint">
+        <div class="glyph">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12.5" r="7.5"/><path d="M12 8.5V13l2.5 1.6"/><path d="M9 4.5h6"/></svg>
+        </div>
+        <div class="lbl">Add 15 min<span class="sub">Make it 45 min</span></div>
+      </button>
+
+      <!-- Move later -->
+      <button class="act pink">
+        <div class="glyph">
+          <svg viewBox="0 0 24 24"><path d="M5 12h13"/><path d="M14 7l5 5-5 5"/><path d="M5 5v14"/></svg>
+        </div>
+        <div class="lbl">Move later<span class="sub">Push down today</span></div>
+      </button>
+
+      <!-- Skip today -->
+      <button class="act grey">
+        <div class="glyph">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M16 7l3 5-3 5"/></svg>
+        </div>
+        <div class="lbl">Skip today<span class="sub">Roll to tomorrow</span></div>
+      </button>
+    </div>
+
+    <div class="below">
+      <div class="row-line">
+        <div class="lead">Domain</div>
+        <div class="val"><span class="swatch"></span>Business</div>
+        <div class="arrow"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+      </div>
+      <div class="row-line notes">
+        <div class="lead">Notes</div>
+        <div class="val"><em>Add a note for this block…</em></div>
+        <div class="arrow"><svg viewBox="0 0 24 24"><path d="M5 19l4-1 9-9-3-3-9 9-1 4z"/></svg></div>
+      </div>
+    </div>
+
+    <button class="cancel">Cancel</button>
+  </div>
+
+</div>
+
+</body>
+</html>

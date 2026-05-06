@@ -1,0 +1,781 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — ANCHOR INTERRUPT</title>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+
+    --glyph:#0A0A0F;
+
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    --blue:#007AFF;
+    --blue-deep:#0062CC;
+    --blue-soft:rgba(0,122,255,0.10);
+    --blue-glow:rgba(0,122,255,0.20);
+
+    --green:#34C759;
+    --green-deep:#248A3D;
+    --green-soft:rgba(52,199,89,0.14);
+
+    /* Prayer mint — calm, reverent. Locked from NOW canon. */
+    --prayer-bg-1:#EAF6EE;
+    --prayer-bg-2:#DCEFE3;
+    --prayer-ink:#2F5A3E;
+    --prayer-ink-deep:#1F3A2A;
+    --prayer-ink-2:#5E8A6E;
+    --prayer-ring:rgba(47,90,62,0.10);
+    --prayer-ring-2:rgba(47,90,62,0.16);
+    --prayer-soft:rgba(47,90,62,0.08);
+
+    /* Hero mint surface (state B) */
+    --hero-mint-1:#F0F8F2;
+    --hero-mint-2:#E2F0E6;
+
+    --d-business:#E1ECFF;
+    --d-business-2:#C9DBFF;
+    --d-religion:#E2F4E6;
+    --d-religion-2:#C0E5C8;
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-card-mint:
+      0 0 0 0.5px rgba(47,90,62,0.10),
+      0 1px 1px rgba(47,90,62,0.03),
+      0 12px 28px -14px rgba(47,90,62,0.16),
+      0 26px 50px -28px rgba(47,90,62,0.20);
+    --shadow-press:
+      0 1px 0 rgba(255,255,255,0.08) inset,
+      0 0 0 0.5px rgba(0,0,0,0.5),
+      0 18px 38px -18px rgba(10,10,20,0.55),
+      0 6px 14px -6px rgba(10,10,20,0.30);
+    --shadow-press-mint:
+      0 1px 0 rgba(255,255,255,0.30) inset,
+      0 0 0 0.5px rgba(31,90,68,0.40),
+      0 18px 38px -18px rgba(31,90,68,0.45),
+      0 6px 14px -6px rgba(31,90,68,0.25);
+    --shadow-stack:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 8px 22px -14px rgba(20,20,30,0.12);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;gap:56px;flex-wrap:wrap;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  .col{display:flex;flex-direction:column;align-items:center;gap:18px;}
+  .col-label{
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    color:#8E8E93;font-weight:600;
+  }
+
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    padding:54px 20px 0;
+  }
+
+  /* halo */
+  .halo{
+    position:absolute;top:0;left:0;right:0;height:340px;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(0,122,255,0.08) 0%, rgba(0,122,255,0.02) 35%, transparent 65%),
+      radial-gradient(80% 60% at 85% 0%, rgba(180,210,255,0.20) 0%, transparent 55%);
+    pointer-events:none;opacity:1;transition:opacity .4s ease;
+  }
+  .screen.prayer-mode .halo{
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(47,90,62,0.10) 0%, rgba(47,90,62,0.03) 35%, transparent 65%),
+      radial-gradient(80% 60% at 85% 0%, rgba(140,200,160,0.18) 0%, transparent 55%);
+  }
+
+  /* topbar */
+  .topbar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 4px;margin-bottom:18px;
+  }
+  .greet-day{font-size:11.5px;font-weight:600;color:var(--label);letter-spacing:0.04em;}
+  .greet-name{
+    font-size:24px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.035em;line-height:1.05;margin-top:3px;
+  }
+  .greet-name .sub{color:var(--label);font-weight:500;letter-spacing:-0.022em;}
+  .me-avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:#F2F2F7;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;
+    box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(60,60,67,0.10),0 2px 6px rgba(20,20,30,0.10);
+  }
+  .me-avatar.live{
+    box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--blue),0 2px 8px rgba(0,122,255,0.30);
+  }
+  .me-avatar.prayer{
+    box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--prayer-ink),0 2px 8px rgba(47,90,62,0.28);
+  }
+  .me-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+
+  /* ───── prayer banner — softly amplified for warning ───── */
+  .prayer{
+    position:relative;z-index:2;
+    margin:0 0 18px;
+    background:linear-gradient(180deg, var(--prayer-bg-1) 0%, var(--prayer-bg-2) 100%);
+    border-radius:18px;
+    padding:11px 13px 11px 11px;
+    display:flex;align-items:center;gap:12px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.9),
+      inset 0 0 0 0.5px var(--prayer-ring),
+      0 1px 2px rgba(47,90,62,0.04),
+      0 6px 16px -10px rgba(47,90,62,0.16);
+  }
+  .prayer.warn{
+    background:linear-gradient(180deg, #E2F2E8 0%, #CFE7D9 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.95),
+      inset 0 0 0 0.5px var(--prayer-ring-2),
+      0 1px 2px rgba(47,90,62,0.06),
+      0 8px 22px -10px rgba(47,90,62,0.24);
+  }
+  .prayer.now{
+    background:linear-gradient(180deg, #DDEEE3 0%, #C5DECF 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.95),
+      inset 0 0 0 0.5px var(--prayer-ring-2),
+      0 2px 4px rgba(47,90,62,0.08),
+      0 10px 26px -10px rgba(47,90,62,0.28);
+  }
+  .prayer .disc{
+    width:32px;height:32px;border-radius:50%;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 0.5px var(--prayer-ring),0 1px 2px rgba(47,90,62,0.10);
+    flex-shrink:0;
+  }
+  .prayer .disc svg{width:17px;height:17px;}
+  .prayer .pmsg{
+    display:flex;flex-direction:column;gap:1px;min-width:0;flex:1;
+  }
+  .prayer .name{
+    font-size:14px;font-weight:600;color:var(--prayer-ink-deep);
+    letter-spacing:-0.018em;
+    display:flex;align-items:baseline;gap:5px;
+  }
+  .prayer .name .at{font-size:13px;color:var(--prayer-ink-2);font-weight:500;letter-spacing:-0.01em;}
+  .prayer .hint{
+    font-size:11.5px;color:var(--prayer-ink-2);font-weight:500;
+    letter-spacing:-0.005em;line-height:1.2;
+  }
+  .prayer .count{
+    margin-left:auto;
+    font-size:12.5px;font-weight:600;color:var(--prayer-ink);
+    background:rgba(255,255,255,0.85);
+    padding:5px 11px;border-radius:999px;
+    letter-spacing:-0.012em;font-variant-numeric:tabular-nums;
+    box-shadow:0 0 0 0.5px var(--prayer-ring),0 1px 2px rgba(47,90,62,0.06);
+    flex-shrink:0;
+  }
+  .prayer .count.pulse{
+    background:#fff;
+    color:var(--prayer-ink-deep);
+    box-shadow:0 0 0 0.5px var(--prayer-ring-2),0 1px 2px rgba(47,90,62,0.10);
+    animation:soft-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes soft-pulse{0%,100%{box-shadow:0 0 0 0.5px var(--prayer-ring-2),0 0 0 0 rgba(47,90,62,0.18);}50%{box-shadow:0 0 0 0.5px var(--prayer-ring-2),0 0 0 6px rgba(47,90,62,0);}}
+
+  /* ── status mode (State B): banner shrinks to quiet pill since hero owns the prayer surface ── */
+  .prayer.status{
+    margin:0 auto 18px;
+    padding:6px 12px 6px 8px;
+    width:auto;align-self:flex-start;
+    background:rgba(255,255,255,0.55);
+    box-shadow:
+      inset 0 0 0 0.5px var(--prayer-ring),
+      0 1px 1px rgba(47,90,62,0.04);
+    gap:8px;
+    border-radius:999px;
+  }
+  .prayer.status .sdot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--prayer-ink);
+    box-shadow:0 0 0 3px var(--prayer-soft);
+    flex-shrink:0;
+    animation:soft-pulse 2.4s ease-in-out infinite;
+  }
+  .prayer.status .stext{
+    font-size:12px;font-weight:600;color:var(--prayer-ink-deep);
+    letter-spacing:-0.008em;
+    display:inline-flex;align-items:baseline;gap:5px;
+  }
+  .prayer.status .stext .at{
+    color:var(--prayer-ink-2);font-weight:500;font-variant-numeric:tabular-nums;
+  }
+
+  /* ───── HERO card ───── */
+  .hero{
+    position:relative;z-index:2;
+    background:var(--card);
+    border-radius:30px;
+    padding:18px 20px 20px;
+    box-shadow:var(--shadow-card);
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;border-radius:30px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.06);
+    pointer-events:none;
+  }
+  .hero.mint{
+    background:linear-gradient(180deg, var(--hero-mint-1) 0%, var(--hero-mint-2) 100%);
+    box-shadow:var(--shadow-card-mint);
+  }
+  .hero.mint::before{
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px var(--prayer-ring-2);
+  }
+
+  .card-eyebrow{
+    display:flex;align-items:center;gap:7px;
+    font-size:12px;font-weight:600;color:var(--label-2);
+    letter-spacing:-0.012em;margin-bottom:14px;
+  }
+  .card-eyebrow .pip{width:6px;height:6px;border-radius:50%;background:var(--label);flex-shrink:0;}
+  .card-eyebrow .at{color:var(--label);font-weight:500;}
+  .card-eyebrow.live{color:var(--blue);}
+  .card-eyebrow.live .pip{
+    background:var(--blue);
+    box-shadow:0 0 0 3px var(--blue-soft);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  .card-eyebrow.live .at{color:rgba(0,122,255,0.70);}
+  .card-eyebrow.mint{color:var(--prayer-ink);}
+  .card-eyebrow.mint .pip{
+    background:var(--prayer-ink);
+    box-shadow:0 0 0 3px var(--prayer-soft);
+  }
+  .card-eyebrow.mint .at{color:var(--prayer-ink-2);}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.55;transform:scale(.85);}}
+
+  .badge-row{display:flex;align-items:center;gap:11px;margin-bottom:14px;}
+  .ddisc{
+    width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;position:relative;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .ddisc svg{
+    width:20px;height:20px;display:block;
+    color:var(--glyph);stroke:currentColor;
+    stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;
+  }
+  .ddisc.business{background:linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%);}
+  .ddisc.religion{background:linear-gradient(180deg,#E2F4E6 0%, #C0E5C8 100%);}
+  .ddisc.sm{width:30px;height:30px;}
+  .ddisc.sm svg{width:16px;height:16px;stroke-width:2.1;}
+  /* large mint disc for prayer hero */
+  .ddisc.prayer-hero{
+    width:48px;height:48px;
+    background:linear-gradient(180deg,#FFFFFF 0%, #F0F8F3 100%);
+    box-shadow:
+      inset 0 0 0 0.5px var(--prayer-ring-2),
+      inset 0 -2px 4px rgba(47,90,62,0.05),
+      0 1px 3px rgba(47,90,62,0.10);
+  }
+  .ddisc.prayer-hero svg{width:24px;height:24px;color:var(--prayer-ink-deep);}
+
+  .domain-meta{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+  .domain-name{
+    font-size:13px;font-weight:700;color:var(--ink-2);
+    letter-spacing:-0.012em;
+    display:flex;align-items:center;gap:7px;
+  }
+  .domain-sub{font-size:12px;color:var(--label);font-weight:500;letter-spacing:-0.008em;}
+
+  .live-pill{
+    margin-left:auto;
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:10.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--blue);background:var(--blue-soft);
+    padding:5px 10px 5px 8px;border-radius:999px;
+    box-shadow:inset 0 0 0 0.5px rgba(0,122,255,0.20);
+  }
+  .live-pill .ldot{
+    width:6px;height:6px;border-radius:50%;background:var(--blue);
+    box-shadow:0 0 0 3px var(--blue-glow);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  /* paused pill — quiet, no alarm */
+  .paused-pill{
+    margin-left:auto;
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:10.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--label-2);background:var(--inset);
+    padding:5px 10px 5px 8px;border-radius:999px;
+    box-shadow:inset 0 0 0 0.5px var(--hairline);
+  }
+  .paused-pill .pp{
+    display:inline-flex;align-items:center;gap:2px;
+  }
+  .paused-pill .pp i{display:block;width:2px;height:8px;background:var(--label-2);border-radius:1px;}
+
+  /* ─── ACTIVE inner ─── */
+  .timer-block{margin-bottom:10px;}
+  .timer{
+    font-size:38px;font-weight:700;letter-spacing:-0.05em;
+    color:var(--ink);font-variant-numeric:tabular-nums;
+    line-height:1;display:flex;align-items:baseline;gap:0;
+  }
+  .timer .ms{font-size:38px;color:var(--ink);font-weight:700;letter-spacing:-0.05em;margin-left:1px;}
+  .timer.dim{color:var(--label-2);}
+  .timer.dim .ms{color:var(--label);}
+  .timer-sub{
+    margin-top:6px;
+    font-size:12.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.008em;
+  }
+  .timer-sub b{color:var(--blue);font-weight:700;}
+
+  .progress{
+    height:5px;background:var(--inset-2);border-radius:999px;
+    overflow:hidden;margin:12px 0 14px;position:relative;
+    box-shadow:inset 0 0.5px 1px rgba(20,20,30,0.06);
+  }
+  .progress span{
+    display:block;height:100%;
+    background:linear-gradient(90deg, var(--blue) 0%, #2E96FF 100%);
+    border-radius:999px;
+    box-shadow:0 0 8px var(--blue-glow);
+  }
+  .progress.muted span{
+    background:linear-gradient(90deg, #9AA0A6 0%, #B5BABF 100%);
+    box-shadow:none;
+  }
+
+  /* ── soft option pills (state A) ── */
+  .options{
+    display:flex;gap:8px;margin-bottom:10px;
+  }
+  .opt{
+    flex:1;
+    border:none;cursor:pointer;font-family:inherit;
+    padding:11px 12px;border-radius:14px;
+    font-size:13px;font-weight:600;letter-spacing:-0.012em;
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  }
+  .opt svg{width:13px;height:13px;}
+  .opt.mint{
+    background:linear-gradient(180deg,#E0F2E5 0%, #CCE6D4 100%);
+    color:var(--prayer-ink-deep);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.9),
+      inset 0 0 0 0.5px var(--prayer-ring-2),
+      0 1px 2px rgba(47,90,62,0.06);
+  }
+  .opt.mint svg{stroke:var(--prayer-ink-deep);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .opt.ghost{
+    background:#fff;color:var(--ink-2);
+    box-shadow:
+      inset 0 0 0 0.5px var(--hairline),
+      0 1px 1px rgba(20,20,30,0.03);
+  }
+  .opt.ghost svg{stroke:var(--ink-2);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+  /* ── CTAs ── */
+  .cta{
+    width:100%;
+    background:linear-gradient(180deg, #1A1A20 0%, #000000 100%);
+    color:#fff;border:none;border-radius:999px;
+    padding:15px 20px;
+    font-size:15.5px;font-weight:600;letter-spacing:-0.014em;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    box-shadow:var(--shadow-press);
+    cursor:pointer;font-family:inherit;
+  }
+  .cta .pause{
+    width:22px;height:22px;border-radius:6px;
+    background:rgba(255,255,255,0.18);
+    display:inline-flex;align-items:center;justify-content:center;gap:3px;
+  }
+  .cta .pause i{display:block;width:2.5px;height:9px;background:#fff;border-radius:1px;}
+  .cta .dur{
+    margin-left:6px;color:rgba(255,255,255,0.55);font-weight:500;
+    font-variant-numeric:tabular-nums;letter-spacing:-0.01em;
+  }
+
+  .cta.mint{
+    background:linear-gradient(180deg, #2E7B5E 0%, #1F5A45 100%);
+    box-shadow:var(--shadow-press-mint);
+  }
+  .cta.mint .check{
+    width:22px;height:22px;border-radius:50%;
+    background:rgba(255,255,255,0.20);
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .cta.mint .check svg{width:11px;height:11px;}
+
+  /* ── prayer hero title (state B) ── */
+  .pray-title{
+    font-size:26px;font-weight:800;color:var(--prayer-ink-deep);
+    letter-spacing:-0.038em;line-height:1.02;margin-bottom:6px;
+  }
+  .pray-title .at{color:var(--prayer-ink-2);font-weight:600;}
+  .pray-sub{
+    font-size:13px;color:var(--prayer-ink-2);font-weight:500;
+    letter-spacing:-0.008em;line-height:1.35;margin-bottom:18px;
+  }
+
+  /* paused-status row inside mint hero */
+  .pause-status{
+    margin-top:14px;
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;border-radius:14px;
+    background:rgba(255,255,255,0.55);
+    box-shadow:inset 0 0 0 0.5px var(--prayer-ring);
+    font-size:12px;color:var(--prayer-ink-2);font-weight:500;letter-spacing:-0.005em;
+  }
+  .pause-status .ic{
+    width:22px;height:22px;border-radius:50%;
+    background:#fff;flex-shrink:0;
+    display:inline-flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 0.5px var(--prayer-ring);
+  }
+  .pause-status .ic i{display:block;width:2px;height:8px;background:var(--prayer-ink-2);border-radius:1px;margin:0 1px;}
+  .pause-status .ic{gap:1.5px;}
+  .pause-status b{color:var(--prayer-ink-deep);font-weight:700;font-variant-numeric:tabular-nums;}
+  .pause-status .resume{
+    margin-left:auto;font-size:11.5px;color:var(--prayer-ink-2);font-weight:600;
+  }
+
+  .snooze{
+    display:block;width:100%;
+    margin-top:12px;text-align:center;
+    background:none;border:0;cursor:pointer;font-family:inherit;
+    font-size:12.5px;font-weight:600;color:var(--prayer-ink-2);
+    letter-spacing:-0.008em;
+    padding:6px 0 2px;
+  }
+  .snooze span{
+    border-bottom:1px solid var(--prayer-ring-2);padding-bottom:1px;
+  }
+
+  /* ───── BELOW-CARD: Then preview ───── */
+  .then-wrap{position:relative;z-index:2;margin-top:22px;padding:0 6px;}
+  .then-head{display:flex;align-items:baseline;justify-content:space-between;padding:0 4px;margin-bottom:10px;}
+  .then-title{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-0.022em;}
+  .then-title .when{color:var(--label);font-weight:500;margin-left:6px;}
+  .then-count{font-size:12px;color:var(--label);font-weight:500;letter-spacing:-0.005em;display:inline-flex;align-items:center;gap:4px;}
+  .then-count b{color:var(--ink-2);font-weight:700;}
+
+  .then-stack{position:relative;padding-bottom:10px;}
+  .peek{
+    position:absolute;left:18px;right:18px;
+    background:var(--card);border-radius:18px;
+    box-shadow:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 6px 14px -10px rgba(20,20,30,0.10);
+  }
+  .peek.p2{bottom:0;left:32px;right:32px;height:14px;opacity:0.55;}
+  .peek.p1{bottom:5px;left:25px;right:25px;height:14px;opacity:0.85;}
+
+  .then-row{
+    position:relative;background:var(--card);border-radius:20px;
+    padding:13px 14px 13px 12px;
+    display:flex;align-items:center;gap:12px;
+    box-shadow:var(--shadow-stack);margin-bottom:14px;
+  }
+  .then-row .text{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1;}
+  .then-row .domain-tag{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
+  .then-row .name{font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:-0.02em;}
+  .then-row .when-pill{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:12px;font-weight:600;color:var(--label-2);
+    background:var(--inset);padding:6px 10px;border-radius:999px;
+    letter-spacing:-0.008em;font-variant-numeric:tabular-nums;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);flex-shrink:0;
+  }
+  .then-row .when-pill svg{width:10px;height:10px;}
+
+  /* tab bar */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;height:84px;
+    display:flex;align-items:flex-start;justify-content:space-around;padding:12px 24px 0;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:saturate(200%) blur(28px);
+    -webkit-backdrop-filter:saturate(200%) blur(28px);
+    border-top:0.5px solid var(--hairline);z-index:3;
+  }
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--label);}
+  .tab .pill{padding:9px 18px;border-radius:999px;background:transparent;transition:background .2s ease;}
+  .tab.active .pill{background:var(--inset-2);}
+  .tab .pill svg{width:22px;height:22px;display:block;}
+  .tab.active svg{stroke:var(--ink);}
+  .tab svg{stroke:#8E8E93;}
+</style>
+</head>
+<body>
+
+<!-- ─────────────── STATE A — 5-MIN WARNING ─────────────── -->
+<div class="col">
+  <div class="col-label">State A · 5-min warning</div>
+  <div class="phone">
+    <div class="screen flow">
+      <div class="halo"></div>
+
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 12:42</div>
+          <div class="greet-name">In flow <span class="sub">· stay with it</span></div>
+        </div>
+        <div class="me-avatar live">
+          <img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/>
+        </div>
+      </div>
+
+      <!-- prayer banner — slightly amplified mint, message-led -->
+      <div class="prayer warn">
+        <div class="disc">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M16.5 14.5a6.5 6.5 0 11-7-9.5 5.5 5.5 0 007 9.5z" fill="#2F5A3E"/>
+          </svg>
+        </div>
+        <div class="pmsg">
+          <div class="name">Dhuhr <span class="at">· 12:47</span></div>
+          <div class="hint">Pause when you're ready</div>
+        </div>
+        <div class="count pulse">in 5 min</div>
+      </div>
+
+      <!-- HERO (block keeps running underneath) -->
+      <div class="hero">
+        <div class="card-eyebrow live">
+          <span class="pip"></span>
+          Now in flow
+          <span class="at">· stay with it</span>
+        </div>
+
+        <div class="badge-row">
+          <div class="ddisc business" aria-label="Business">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+              <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+              <path d="M3 13h18"/>
+            </svg>
+          </div>
+          <div class="domain-meta">
+            <div class="domain-name">Q2 launch brief</div>
+            <div class="domain-sub">Step 2 of 4 · deep focus</div>
+          </div>
+          <div class="live-pill"><span class="ldot"></span> Live</div>
+        </div>
+
+        <div class="timer-block">
+          <div class="timer">31<span class="ms">:46</span></div>
+          <div class="timer-sub">of 60 min · <b>47%</b> done</div>
+        </div>
+
+        <div class="progress"><span style="width:47%"></span></div>
+
+        <!-- soft option pair — appears above the primary CTA when prayer is approaching -->
+        <div class="options">
+          <button class="opt mint">
+            <svg viewBox="0 0 24 24">
+              <path d="M16.5 14.5a6.5 6.5 0 11-7-9.5 5.5 5.5 0 007 9.5z"/>
+            </svg>
+            Pause for prayer
+          </button>
+          <button class="opt ghost">
+            <svg viewBox="0 0 24 24">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+            Keep going
+          </button>
+        </div>
+
+        <button class="cta">
+          <span class="pause"><i></i><i></i></span>
+          Pause
+          <span class="dur">· hold time</span>
+        </button>
+      </div>
+
+      <!-- THEN -->
+      <div class="then-wrap">
+        <div class="then-head">
+          <div class="then-title">Then <span class="when">· when you're done</span></div>
+          <div class="then-count"><b>2</b> more today</div>
+        </div>
+        <div class="then-stack">
+          <div class="peek p2"></div>
+          <div class="peek p1"></div>
+          <div class="then-row">
+            <div class="ddisc religion sm" aria-label="Religion">
+              <svg viewBox="0 0 24 24">
+                <path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/>
+                <path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/>
+              </svg>
+            </div>
+            <div class="text">
+              <div class="domain-tag">Religion</div>
+              <div class="name">Quran · 15 min</div>
+            </div>
+            <div class="when-pill">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#6E6E73" stroke-width="2"/><path d="M12 7v5l3 2" stroke="#6E6E73" stroke-width="2" stroke-linecap="round"/></svg>
+              13:05
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <div class="tab active"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/><path d="M3.5 10h17" stroke-width="1.7"/><path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="5" rx="2" stroke-width="1.7"/><rect x="3.5" y="11.5" width="17" height="5" rx="2" stroke-width="1.7"/><rect x="3.5" y="18.5" width="11" height="2" rx="1" stroke-width="1.7"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── STATE B — PRAYER TIME ─────────────── -->
+<div class="col">
+  <div class="col-label">State B · Prayer time</div>
+  <div class="phone">
+    <div class="screen prayer-mode">
+      <div class="halo"></div>
+
+      <div class="topbar">
+        <div>
+          <div class="greet-day">Wed · 12:47</div>
+          <div class="greet-name">A moment <span class="sub">· for prayer</span></div>
+        </div>
+        <div class="me-avatar prayer">
+          <img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt="Adam"/>
+        </div>
+      </div>
+
+      <!-- prayer banner morphs to quiet status pill — hero card owns the prayer surface -->
+      <div class="prayer status">
+        <span class="sdot"></span>
+        <div class="stext">In prayer <span class="at">· 12:47</span></div>
+      </div>
+
+      <!-- HERO morphs to mint -->
+      <div class="hero mint">
+        <div class="card-eyebrow mint">
+          <span class="pip"></span>
+          In prayer
+          <span class="at">· no rush</span>
+        </div>
+
+        <div class="badge-row">
+          <div class="ddisc prayer-hero" aria-label="Prayer">
+            <svg viewBox="0 0 24 24">
+              <path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/>
+              <path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/>
+            </svg>
+          </div>
+          <div class="domain-meta">
+            <div class="domain-name" style="color:var(--prayer-ink-deep);">Religion · Anchor</div>
+            <div class="domain-sub" style="color:var(--prayer-ink-2);">Pray when ready · no countdown</div>
+          </div>
+          <div class="paused-pill"><span class="pp"><i></i><i></i></span> Paused</div>
+        </div>
+
+        <div class="pray-title">Dhuhr <span class="at">· 12:47</span></div>
+        <div class="pray-sub">Pray when you're ready. The day waits with you.</div>
+
+        <button class="cta mint">
+          <span class="check">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4L19 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Marked prayed
+        </button>
+
+        <div class="pause-status">
+          <span class="ic"><i></i><i></i></span>
+          Webuild paused at <b style="margin-left:3px;">28:14</b>
+          <span class="resume">· resume after</span>
+        </div>
+
+        <button class="snooze"><span>Snooze 10 min</span></button>
+      </div>
+
+      <!-- THEN -->
+      <div class="then-wrap">
+        <div class="then-head">
+          <div class="then-title">Then <span class="when">· after prayer</span></div>
+          <div class="then-count"><b>2</b> more today</div>
+        </div>
+        <div class="then-stack">
+          <div class="peek p2"></div>
+          <div class="peek p1"></div>
+          <div class="then-row">
+            <div class="ddisc business sm" aria-label="Business">
+              <svg viewBox="0 0 24 24">
+                <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+                <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+                <path d="M3 13h18"/>
+              </svg>
+            </div>
+            <div class="text">
+              <div class="domain-tag">Business · Resume</div>
+              <div class="name">Q2 launch brief · 28:14 left</div>
+            </div>
+            <div class="when-pill">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#6E6E73" stroke-width="2"/><path d="M12 7v5l3 2" stroke="#6E6E73" stroke-width="2" stroke-linecap="round"/></svg>
+              ready
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabbar">
+        <div class="tab active"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><circle cx="12" cy="12" r="3" fill="#000" stroke="none"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/><path d="M3.5 10h17" stroke-width="1.7"/><path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="5" rx="2" stroke-width="1.7"/><rect x="3.5" y="11.5" width="17" height="5" rx="2" stroke-width="1.7"/><rect x="3.5" y="18.5" width="11" height="2" rx="1" stroke-width="1.7"/></svg></div></div>
+        <div class="tab"><div class="pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke-width="1.7"/><path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/></svg></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

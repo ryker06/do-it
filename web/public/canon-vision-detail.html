@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — VISION DETAIL · Webuild</title>
+<style>
+  :root{
+    /* surfaces */
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    /* ink */
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+    --glyph:#0A0A0F;
+
+    /* hairlines */
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    /* domain tints — locked */
+    --t-business-1:#E1ECFF; --t-business-2:#C9DBFF;
+    --t-religion-1:#E2F4E6; --t-religion-2:#C0E5C8;
+    --t-learning-1:#FFE3EB; --t-learning-2:#FFCFDC;
+    --t-fitness-1:#FFD0DA;  --t-fitness-2:#FFB6C5;
+    --t-home-1:#E5ECF0;     --t-home-2:#CFDCE3;
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-row:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 6px 16px -12px rgba(20,20,30,0.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  /* phone shell */
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    padding:54px 0 0;
+  }
+
+  /* ───── nav row — back chevron + domain tag ───── */
+  .nav{
+    position:relative;z-index:4;
+    display:flex;align-items:center;gap:10px;
+    padding:0 20px;margin-bottom:8px;
+    height:36px;
+  }
+  .back{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--inset);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .back svg{width:11px;height:11px;stroke:var(--ink-2);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .dtag{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:5px 10px 5px 7px;
+    background:var(--inset);
+    border-radius:999px;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .dtag .dot{
+    width:14px;height:14px;border-radius:50%;
+    background:linear-gradient(180deg,var(--t-business-1) 0%, var(--t-business-2) 100%);
+    box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06);
+  }
+  .dtag .name{
+    font-size:11px;font-weight:700;color:var(--ink-2);
+    letter-spacing:0.06em;text-transform:uppercase;
+  }
+  .nav .more{
+    margin-left:auto;
+    width:34px;height:34px;border-radius:50%;
+    background:var(--inset);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .nav .more svg{width:14px;height:14px;color:var(--label-2);}
+  .nav .more svg circle{fill:currentColor;}
+
+  /* ───── scroll body ───── */
+  .scroll{
+    position:relative;z-index:2;
+    flex:1;overflow-y:auto;
+    padding:0 20px 110px;
+    -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+            mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+  }
+  .scroll::-webkit-scrollbar{display:none;}
+
+  /* ───── HERO — the vision portrait ───── */
+  .hero{
+    position:relative;
+    padding:30px 8px 28px;
+    margin:6px 0 22px;
+    text-align:center;
+    isolation:isolate;
+  }
+  /* sweeping aura — wide, soft, business-tinted; sits behind the disc */
+  .hero .aura{
+    position:absolute;
+    left:50%;top:6px;
+    transform:translateX(-50%);
+    width:340px;height:260px;
+    border-radius:50%;
+    filter:blur(40px);
+    opacity:0.85;
+    z-index:0;pointer-events:none;
+    background:radial-gradient(closest-side,
+      rgba(201,219,255,0.95),
+      rgba(225,236,255,0.55) 50%,
+      transparent 78%);
+  }
+  .hero .aura-2{
+    position:absolute;
+    left:50%;top:54px;
+    transform:translateX(-50%);
+    width:200px;height:140px;
+    border-radius:50%;
+    filter:blur(28px);
+    opacity:0.55;
+    z-index:0;pointer-events:none;
+    background:radial-gradient(closest-side,
+      rgba(225,236,255,0.95),
+      rgba(225,236,255,0.4) 55%,
+      transparent 80%);
+  }
+  /* the big disc — Webuild's face */
+  .hero .ddisc-xl{
+    position:relative;z-index:2;
+    width:96px;height:96px;border-radius:50%;
+    margin:0 auto 22px;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(180deg,var(--t-business-1) 0%, var(--t-business-2) 100%);
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -3px 8px rgba(20,20,30,0.05),
+      0 8px 22px -10px rgba(40,80,180,0.28),
+      0 2px 4px rgba(20,20,30,0.05);
+  }
+  .hero .ddisc-xl svg{
+    width:46px;height:46px;color:var(--glyph);
+    stroke:currentColor;stroke-width:1.8;
+    stroke-linecap:round;stroke-linejoin:round;fill:none;
+  }
+  .hero .title{
+    position:relative;z-index:2;
+    font-size:38px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.045em;line-height:1;
+    margin-bottom:11px;
+  }
+  .hero .tagline{
+    position:relative;z-index:2;
+    font-size:14.5px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.014em;line-height:1.35;
+    max-width:300px;margin:0 auto;
+  }
+
+  /* ───── eyebrow (locked) ───── */
+  .section-eyebrow{
+    display:flex;align-items:center;gap:10px;
+    padding:0 6px;margin:22px 0 12px;
+  }
+  .section-eyebrow .lbl{
+    font-size:10.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+  }
+  .section-eyebrow .rule{flex:1;height:1px;background:var(--hairline-2);}
+  .section-eyebrow .meta{
+    font-size:11.5px;color:var(--label-2);font-weight:600;
+    letter-spacing:-0.005em;
+  }
+
+  /* ───── description card ───── */
+  .desc{
+    position:relative;
+    background:var(--card);
+    border-radius:20px;
+    padding:16px 17px;
+    box-shadow:var(--shadow-row);
+    font-size:14.5px;line-height:1.5;
+    color:var(--ink-2);letter-spacing:-0.012em;font-weight:450;
+  }
+  .desc::before{
+    content:"";position:absolute;inset:0;border-radius:20px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+  .desc em{
+    font-style:normal;color:var(--ink);font-weight:600;
+  }
+
+  /* ───── sub-threads — quiet rows, stacked ───── */
+  .threads{
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:var(--shadow-row);
+    overflow:hidden;
+    position:relative;
+  }
+  .threads::before{
+    content:"";position:absolute;inset:0;border-radius:20px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;z-index:2;
+  }
+  .thread{
+    position:relative;
+    display:flex;align-items:center;gap:12px;
+    padding:13px 14px 13px 14px;
+  }
+  .thread + .thread::before{
+    content:"";position:absolute;left:46px;right:14px;top:0;
+    height:0.5px;background:var(--hairline-2);
+  }
+  .thread .ix{
+    width:30px;height:30px;border-radius:50%;
+    background:var(--inset);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .thread .ix svg{width:14px;height:14px;color:var(--ink-2);
+    stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .thread .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .thread .ttl{
+    font-size:14.5px;font-weight:600;color:var(--ink);
+    letter-spacing:-0.022em;line-height:1.2;
+  }
+  .thread .sub{
+    font-size:11.5px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.005em;line-height:1.2;
+  }
+  .thread .chev{
+    width:20px;height:20px;border-radius:50%;
+    background:var(--inset);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+  }
+  .thread .chev svg{width:8px;height:8px;stroke:var(--label-2);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  /* ───── connected blocks — recent today rows ───── */
+  .blocks{display:flex;flex-direction:column;gap:8px;}
+  .block{
+    position:relative;
+    background:var(--card);
+    border-radius:16px;
+    padding:11px 13px 11px 11px;
+    display:flex;align-items:center;gap:11px;
+    box-shadow:var(--shadow-row);
+  }
+  .block::before{
+    content:"";position:absolute;inset:0;border-radius:16px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+  .block .ddisc{
+    width:32px;height:32px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    background:linear-gradient(180deg,var(--t-business-1) 0%, var(--t-business-2) 100%);
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .block .ddisc svg{width:16px;height:16px;color:var(--glyph);
+    stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .block .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .block .ttl{
+    font-size:13.5px;font-weight:600;color:var(--ink);
+    letter-spacing:-0.02em;line-height:1.2;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .block .meta{
+    font-size:11px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.002em;line-height:1.15;
+  }
+  .block .meta .sep{color:rgba(60,60,67,0.28);margin:0 5px;}
+  .block .stamp{
+    font-size:10px;font-weight:700;color:var(--label-2);
+    letter-spacing:0.10em;text-transform:uppercase;
+    padding:4px 8px;border-radius:999px;
+    background:var(--inset);
+    box-shadow:inset 0 0 0 0.5px var(--hairline-2);
+    flex-shrink:0;
+  }
+  .block.done .stamp{
+    color:#248A3D;
+    background:rgba(52,199,89,0.12);
+    box-shadow:inset 0 0 0 0.5px rgba(52,199,89,0.20);
+  }
+
+  /* ───── next-move CTA ───── */
+  .cta-wrap{
+    margin-top:22px;
+  }
+  .cta{
+    width:100%;
+    padding:14px 18px;
+    border-radius:18px;
+    background:var(--ink);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    font-size:14.5px;font-weight:600;
+    letter-spacing:-0.018em;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.5),
+      0 12px 28px -14px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.10);
+    border:none;cursor:pointer;
+  }
+  .cta svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .cta-hint{
+    margin-top:10px;text-align:center;
+    font-size:11.5px;color:var(--label);font-weight:500;
+    letter-spacing:-0.005em;
+  }
+
+  /* ───── tabbar (locked) ───── */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;
+    height:84px;
+    display:flex;align-items:flex-start;justify-content:space-around;
+    padding:12px 24px 0;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:saturate(200%) blur(28px);
+    -webkit-backdrop-filter:saturate(200%) blur(28px);
+    border-top:0.5px solid var(--hairline);
+    z-index:3;
+  }
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--label);}
+  .tab .pill{padding:9px 18px;border-radius:999px;background:transparent;transition:background .2s ease;}
+  .tab.active .pill{background:var(--inset-2);}
+  .tab .pill svg{width:22px;height:22px;display:block;}
+  .tab.active svg{stroke:var(--ink);}
+  .tab svg{stroke:#8E8E93;}
+
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <!-- nav: back + domain tag + more -->
+    <div class="nav">
+      <div class="back">
+        <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+      </div>
+      <div class="dtag">
+        <span class="dot"></span>
+        <span class="name">Business</span>
+      </div>
+      <div class="more">
+        <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+      </div>
+    </div>
+
+    <div class="scroll">
+
+      <!-- HERO -->
+      <div class="hero">
+        <div class="aura"></div>
+        <div class="aura-2"></div>
+
+        <div class="ddisc-xl">
+          <!-- Lucide briefcase, sized large -->
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+            <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+            <path d="M3 13h18"/>
+          </svg>
+        </div>
+
+        <div class="title">Webuild</div>
+        <div class="tagline">The website + solutions company that runs on its own.</div>
+      </div>
+
+      <!-- Description -->
+      <div class="desc">
+        A site shop that ships fast, beautiful, near-free websites to founders and small teams — <em>powered by templates, lead gen, and a closing pipeline that quietly compounds in the background</em>. The work flows in. The work flows out.
+      </div>
+
+      <!-- Sub-threads -->
+      <div class="section-eyebrow">
+        <span class="lbl">The threads</span>
+        <span class="rule"></span>
+        <span class="meta">5 parts</span>
+      </div>
+
+      <div class="threads">
+
+        <div class="thread">
+          <div class="ix">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.4"/><rect x="14" y="3" width="7" height="7" rx="1.4"/><rect x="3" y="14" width="7" height="7" rx="1.4"/><rect x="14" y="14" width="7" height="7" rx="1.4"/></svg>
+          </div>
+          <div class="body">
+            <div class="ttl">Templates engine</div>
+            <div class="sub">The reusable spine — Framer, Webflow, code</div>
+          </div>
+          <div class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+        </div>
+
+        <div class="thread">
+          <div class="ix">
+            <svg viewBox="0 0 24 24"><path d="M4 18l5-5 4 4 7-9"/><path d="M14 8h6v6"/></svg>
+          </div>
+          <div class="body">
+            <div class="ttl">Lead generation</div>
+            <div class="sub">Where the right founders find us</div>
+          </div>
+          <div class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+        </div>
+
+        <div class="thread">
+          <div class="ix">
+            <svg viewBox="0 0 24 24"><path d="M3 7l9 6 9-6"/><rect x="3" y="6" width="18" height="13" rx="2"/></svg>
+          </div>
+          <div class="body">
+            <div class="ttl">Cold email automation</div>
+            <div class="sub">A patient, quiet outbound loop</div>
+          </div>
+          <div class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+        </div>
+
+        <div class="thread">
+          <div class="ix">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M6 6v6a6 6 0 0012 0V6"/><path d="M9 21h6"/><path d="M12 18v3"/></svg>
+          </div>
+          <div class="body">
+            <div class="ttl">Closing pipeline</div>
+            <div class="sub">Calls, scope, signed — without friction</div>
+          </div>
+          <div class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+        </div>
+
+        <div class="thread">
+          <div class="ix">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 010 18"/><path d="M12 3a14 14 0 000 18"/></svg>
+          </div>
+          <div class="body">
+            <div class="ttl">Webuild.solutions / .tech / .de</div>
+            <div class="sub">The faces of the same engine</div>
+          </div>
+          <div class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+        </div>
+
+      </div>
+
+      <!-- Connected blocks -->
+      <div class="section-eyebrow">
+        <span class="lbl">Recent blocks</span>
+        <span class="rule"></span>
+        <span class="meta">tagged here</span>
+      </div>
+
+      <div class="blocks">
+
+        <div class="block">
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg>
+          </div>
+          <div class="body">
+            <div class="ttl">Finish Dr. Lashin landing draft</div>
+            <div class="meta">today<span class="sep">·</span>60 min</div>
+          </div>
+          <div class="stamp">today</div>
+        </div>
+
+        <div class="block done">
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg>
+          </div>
+          <div class="body">
+            <div class="ttl">Cold emails — batch send</div>
+            <div class="meta">yesterday<span class="sep">·</span>30 min</div>
+          </div>
+          <div class="stamp">done</div>
+        </div>
+
+        <div class="block done">
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2.2"/><path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/><path d="M3 13h18"/></svg>
+          </div>
+          <div class="body">
+            <div class="ttl">Template engine v2 — wireframe</div>
+            <div class="meta">Mon<span class="sep">·</span>90 min</div>
+          </div>
+          <div class="stamp">done</div>
+        </div>
+
+      </div>
+
+      <!-- Next move -->
+      <div class="cta-wrap">
+        <button class="cta">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Add to today
+        </button>
+        <div class="cta-hint">Plant a 60-min block on this vision.</div>
+      </div>
+
+    </div>
+
+    <!-- tabbar — VISIONS active -->
+    <div class="tabbar">
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <circle cx="12" cy="12" r="3" fill="#8E8E93" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/>
+            <path d="M3.5 10h17" stroke-width="1.7"/>
+            <path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="13" y="3.5" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="3.5" y="13" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="13" y="13" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab active">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

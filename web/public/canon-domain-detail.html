@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — DOMAIN · Business</title>
+<style>
+  :root{
+    /* surfaces */
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    /* ink */
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+    --glyph:#0A0A0F;
+
+    /* hairlines */
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    /* domain tints */
+    --t-business-1:#E1ECFF; --t-business-2:#C9DBFF;
+    --t-religion-1:#E2F4E6; --t-religion-2:#C0E5C8;
+    --t-learning-1:#FFE3EB; --t-learning-2:#FFCFDC;
+    --t-fitness-1:#FFD0DA;  --t-fitness-2:#FFB6C5;
+    --t-home-1:#E5ECF0;     --t-home-2:#CFDCE3;
+
+    --green:#34C759;
+    --green-deep:#248A3D;
+    --green-soft:rgba(52,199,89,0.14);
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-row:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 6px 16px -12px rgba(20,20,30,0.10);
+    --shadow-cell:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 8px 18px -14px rgba(20,20,30,0.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  /* phone shell */
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    padding:54px 20px 0;
+  }
+
+  /* ───────── topbar — back + title + domain disc ───────── */
+  .topbar{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 4px;margin-bottom:18px;
+    gap:10px;
+  }
+  .back{
+    width:34px;height:34px;border-radius:50%;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:
+      0 0 0 0.5px var(--hairline),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .back svg{width:13px;height:13px;stroke:var(--ink-2);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .title-wrap{flex:1;min-width:0;margin-left:2px;}
+  .greet-day{
+    font-size:11.5px;font-weight:600;color:var(--label);
+    letter-spacing:0.04em;
+  }
+  .greet-name{
+    font-size:24px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.035em;line-height:1.05;margin-top:3px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .greet-name .sub{color:var(--label);font-weight:500;letter-spacing:-0.022em;}
+  /* full-size domain disc replaces avatar slot */
+  .head-disc{
+    width:46px;height:46px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;position:relative;
+    background:linear-gradient(180deg,var(--t-business-1) 0%, var(--t-business-2) 100%);
+    box-shadow:
+      0 0 0 2px #fff,
+      0 0 0 3px rgba(60,60,67,0.10),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 2px 6px rgba(20,20,30,0.10);
+  }
+  .head-disc svg{
+    width:24px;height:24px;display:block;color:var(--glyph);
+    stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;
+  }
+
+  /* ───────── eyebrow ───────── */
+  .section-eyebrow{
+    display:flex;align-items:center;gap:10px;
+    padding:0 6px;margin:4px 0 14px;
+  }
+  .section-eyebrow .lbl{
+    font-size:10.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+  }
+  .section-eyebrow .rule{flex:1;height:1px;background:var(--hairline-2);}
+  .section-eyebrow .meta{
+    font-size:11.5px;color:var(--label-2);font-weight:600;
+    letter-spacing:-0.005em;
+  }
+
+  /* scroll area */
+  .scroll{
+    position:relative;z-index:2;
+    flex:1;
+    overflow-y:auto;
+    padding:2px 4px 110px;
+    margin:0 -4px;
+    -webkit-mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+            mask-image:linear-gradient(180deg, #000 0%, #000 92%, transparent 100%);
+  }
+  .scroll::-webkit-scrollbar{display:none;}
+
+  /* ───────── HERO STRIP — momentum word, calm and large ───────── */
+  .hero{
+    position:relative;
+    background:var(--card);
+    border-radius:24px;
+    padding:18px 18px 16px;
+    margin-bottom:20px;
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+    isolation:isolate;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;border-radius:24px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;z-index:2;
+  }
+  .hero .aura{
+    position:absolute;
+    right:-70px;top:-70px;
+    width:280px;height:220px;
+    border-radius:50%;
+    filter:blur(34px);
+    opacity:0.7;
+    z-index:0;pointer-events:none;
+    background:radial-gradient(closest-side, var(--t-business-2), var(--t-business-1) 55%, transparent 78%);
+  }
+
+  .hero-eyebrow{
+    position:relative;z-index:3;
+    display:flex;align-items:center;gap:8px;
+    margin-bottom:10px;
+  }
+  .hero-eyebrow .lbl{
+    font-size:9.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.16em;text-transform:uppercase;
+  }
+  .hero-eyebrow .dot{width:4px;height:4px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px var(--green-soft);}
+  .hero-eyebrow .live{
+    font-size:9.5px;font-weight:700;color:var(--green-deep);
+    letter-spacing:0.10em;text-transform:uppercase;
+  }
+
+  .hero-title{
+    position:relative;z-index:3;
+    font-size:34px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.040em;line-height:1.02;
+    display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;
+  }
+  .hero-title .word{}
+  .hero-title .arrow{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:28px;height:28px;border-radius:50%;
+    background:var(--green-soft);
+    flex-shrink:0;
+    margin-bottom:4px;
+  }
+  .hero-title .arrow svg{width:13px;height:13px;stroke:var(--green-deep);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  .hero-meta{
+    position:relative;z-index:3;
+    margin-top:6px;
+    display:flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.012em;
+  }
+  .hero-meta .sep{color:rgba(60,60,67,0.28);font-weight:600;}
+  .hero-meta .strong{color:var(--ink-2);font-weight:600;}
+
+  /* ───────── stat strip — minimal sparkline ───────── */
+  .stat-strip{
+    position:relative;
+    background:var(--card);
+    border-radius:18px;
+    padding:13px 16px;
+    margin-bottom:22px;
+    display:flex;align-items:center;gap:14px;
+    box-shadow:var(--shadow-row);
+  }
+  .stat-strip::before{
+    content:"";position:absolute;inset:0;border-radius:18px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+  .stat-num{
+    font-size:18px;font-weight:700;color:var(--ink);
+    letter-spacing:-0.030em;line-height:1;
+  }
+  .stat-num .unit{font-size:11px;font-weight:600;color:var(--label-2);letter-spacing:-0.005em;margin-left:1px;}
+  .stat-lbl{
+    font-size:10.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.12em;text-transform:uppercase;
+    margin-top:3px;
+  }
+  .stat-col{display:flex;flex-direction:column;}
+  .stat-vline{width:1px;height:26px;background:var(--hairline);}
+  .spark{
+    flex:1;height:30px;display:block;
+    margin-left:auto;
+    color:var(--green-deep);
+    opacity:0.85;
+  }
+  .spark svg{width:100%;height:100%;display:block;overflow:visible;}
+
+  /* ───────── recent activity list ───────── */
+  .activity{
+    background:var(--card);
+    border-radius:20px;
+    padding:4px 0;
+    margin-bottom:22px;
+    box-shadow:var(--shadow-row);
+    position:relative;
+    overflow:hidden;
+  }
+  .activity::before{
+    content:"";position:absolute;inset:0;border-radius:20px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+  .arow{
+    display:flex;align-items:center;gap:12px;
+    padding:11px 14px;
+    position:relative;
+  }
+  .arow + .arow::before{
+    content:"";position:absolute;left:46px;right:14px;top:0;
+    height:0.5px;background:var(--hairline-2);
+  }
+  .acheck{
+    width:18px;height:18px;border-radius:50%;
+    background:var(--green-soft);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .acheck svg{width:9px;height:9px;stroke:var(--green-deep);stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .atext{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
+  .atitle{
+    font-size:14px;font-weight:500;color:var(--ink-2);
+    letter-spacing:-0.018em;line-height:1.2;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .ameta{
+    font-size:11px;font-weight:500;color:var(--label);
+    letter-spacing:-0.005em;line-height:1.2;
+  }
+  .ameta .dur{color:var(--label-2);font-weight:600;}
+  .ameta .sep{color:rgba(60,60,67,0.28);font-weight:600;margin:0 2px;}
+
+  /* ───────── visions horizontal rail ───────── */
+  .rail{
+    margin:0 -20px 22px;
+    padding:0 16px 4px;
+    display:flex;gap:12px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-mask-image:linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%);
+            mask-image:linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%);
+  }
+  .rail::-webkit-scrollbar{display:none;}
+  .vcell{
+    position:relative;
+    flex:0 0 168px;
+    background:var(--card);
+    border-radius:18px;
+    padding:13px 13px 13px;
+    box-shadow:var(--shadow-cell);
+    overflow:hidden;
+    isolation:isolate;
+    min-height:118px;
+    display:flex;flex-direction:column;gap:8px;
+    scroll-snap-align:start;
+  }
+  .vcell::before{
+    content:"";position:absolute;inset:0;border-radius:18px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;z-index:2;
+  }
+  .vcell .aura{
+    position:absolute;
+    right:-30px;top:-26px;
+    width:140px;height:110px;
+    border-radius:50%;
+    filter:blur(22px);
+    opacity:0.65;
+    z-index:0;pointer-events:none;
+    background:radial-gradient(closest-side, var(--t-business-2), var(--t-business-1) 55%, transparent 75%);
+  }
+  .vcell .vspark{
+    position:absolute;top:10px;right:10px;width:10px;height:10px;z-index:3;
+    color:var(--label-2);opacity:0.55;
+  }
+  .vcell .vspark svg{width:100%;height:100%;display:block;
+    stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .vcell .ddisc{
+    width:32px;height:32px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;position:relative;z-index:3;
+    background:linear-gradient(180deg,var(--t-business-1) 0%, var(--t-business-2) 100%);
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .vcell .ddisc svg{width:16px;height:16px;color:var(--glyph);stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .vcell-text{position:relative;z-index:3;display:flex;flex-direction:column;gap:2px;margin-top:auto;}
+  .vcell-title{
+    font-size:14.5px;font-weight:600;color:var(--ink);
+    letter-spacing:-0.026em;line-height:1.15;
+  }
+  .vcell-tag{
+    font-size:11px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.008em;line-height:1.2;
+  }
+
+  /* ───────── next action — quiet inset, single line ───────── */
+  .next{
+    position:relative;
+    background:var(--card);
+    border-radius:18px;
+    padding:13px 8px 13px 14px;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:var(--shadow-row);
+    margin-bottom:14px;
+  }
+  .next::before{
+    content:"";position:absolute;inset:0;border-radius:18px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05);
+    pointer-events:none;
+  }
+  .next .lbl{
+    font-size:9.5px;font-weight:700;color:var(--label);
+    letter-spacing:0.14em;text-transform:uppercase;
+    flex-shrink:0;
+  }
+  .next .vline{width:1px;height:13px;background:var(--hairline);flex-shrink:0;}
+  .next .text{
+    font-size:14px;font-weight:500;color:var(--ink-2);
+    letter-spacing:-0.018em;line-height:1.2;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    flex:1;min-width:0;
+  }
+  .next .add{
+    flex-shrink:0;
+    display:inline-flex;align-items:center;gap:5px;
+    padding:7px 11px 7px 9px;
+    border-radius:999px;
+    background:var(--ink);
+    color:#fff;
+    font-size:11.5px;font-weight:600;
+    letter-spacing:-0.005em;
+    box-shadow:0 1px 2px rgba(20,20,30,0.18);
+  }
+  .next .add svg{width:9px;height:9px;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  /* ───────── tab bar — DOMAINS active ───────── */
+  .tabbar{
+    position:absolute;left:0;right:0;bottom:0;
+    height:84px;
+    display:flex;align-items:flex-start;justify-content:space-around;
+    padding:12px 24px 0;
+    background:rgba(255,255,255,0.78);
+    backdrop-filter:saturate(200%) blur(28px);
+    -webkit-backdrop-filter:saturate(200%) blur(28px);
+    border-top:0.5px solid var(--hairline);
+    z-index:3;
+  }
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--label);}
+  .tab .pill{padding:9px 18px;border-radius:999px;background:transparent;transition:background .2s ease;}
+  .tab.active .pill{background:var(--inset-2);}
+  .tab .pill svg{width:22px;height:22px;display:block;}
+  .tab.active svg{stroke:var(--ink);}
+  .tab svg{stroke:#8E8E93;}
+
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="screen">
+
+    <!-- topbar: back + title + domain disc -->
+    <div class="topbar">
+      <div class="back" aria-label="Back">
+        <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+      </div>
+      <div class="title-wrap">
+        <div class="greet-day">Wed · 9:42</div>
+        <div class="greet-name">Business <span class="sub">· how it's moving</span></div>
+      </div>
+      <div class="head-disc" aria-label="Business">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+          <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+          <path d="M3 13h18"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- eyebrow -->
+    <div class="section-eyebrow">
+      <span class="lbl">Rhythm</span>
+      <span class="rule"></span>
+      <span class="meta">active today</span>
+    </div>
+
+    <div class="scroll">
+
+      <!-- HERO STRIP — the momentum word, calm + large -->
+      <div class="hero">
+        <div class="aura"></div>
+        <div class="hero-eyebrow">
+          <span class="dot"></span>
+          <span class="live">In motion</span>
+          <span class="lbl" style="margin-left:auto;">last 7 days</span>
+        </div>
+        <div class="hero-title">
+          <span class="word">Strong rhythm</span>
+          <span class="arrow" aria-label="improving">
+            <svg viewBox="0 0 24 24"><path d="M5 17L12 9l3 3 5-6"/><path d="M14 7h6v6"/></svg>
+          </span>
+        </div>
+        <div class="hero-meta">
+          <span class="strong">improving</span>
+          <span class="sep">·</span>
+          <span>active today</span>
+        </div>
+      </div>
+
+      <!-- minimal stat strip — one tiny sparkline -->
+      <div class="stat-strip">
+        <div class="stat-col">
+          <div class="stat-num">12 <span class="unit">blocks</span></div>
+          <div class="stat-lbl">this week</div>
+        </div>
+        <div class="stat-vline"></div>
+        <div class="stat-col">
+          <div class="stat-num">9<span class="unit">h</span> 20<span class="unit">m</span></div>
+          <div class="stat-lbl">focused</div>
+        </div>
+        <div class="spark" aria-hidden="true">
+          <svg viewBox="0 0 110 30" preserveAspectRatio="none" fill="none">
+            <defs>
+              <linearGradient id="sg" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#34C759" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#34C759" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 22 L14 20 L28 23 L42 17 L56 19 L70 14 L84 12 L98 8 L110 6"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M0 22 L14 20 L28 23 L42 17 L56 19 L70 14 L84 12 L98 8 L110 6 L110 30 L0 30 Z"
+              fill="url(#sg)"/>
+            <circle cx="110" cy="6" r="2" fill="#34C759"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- eyebrow: recent -->
+      <div class="section-eyebrow" style="margin-top:-4px;">
+        <span class="lbl">Recent</span>
+        <span class="rule"></span>
+        <span class="meta">4 blocks</span>
+      </div>
+
+      <!-- recent activity list -->
+      <div class="activity">
+        <div class="arow">
+          <div class="acheck"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-11"/></svg></div>
+          <div class="atext">
+            <div class="atitle">Q2 launch brief — first pass</div>
+            <div class="ameta"><span class="dur">60 min</span><span class="sep">·</span>this morning</div>
+          </div>
+        </div>
+        <div class="arow">
+          <div class="acheck"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-11"/></svg></div>
+          <div class="atext">
+            <div class="atitle">Dr. Lashin landing draft</div>
+            <div class="ameta"><span class="dur">45 min</span><span class="sep">·</span>yesterday</div>
+          </div>
+        </div>
+        <div class="arow">
+          <div class="acheck"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-11"/></svg></div>
+          <div class="atext">
+            <div class="atitle">Cold emails — batch send</div>
+            <div class="ameta"><span class="dur">30 min</span><span class="sep">·</span>yesterday</div>
+          </div>
+        </div>
+        <div class="arow">
+          <div class="acheck"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-11"/></svg></div>
+          <div class="atext">
+            <div class="atitle">Webuild — pricing rewrite</div>
+            <div class="ameta"><span class="dur">75 min</span><span class="sep">·</span>Mon</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- eyebrow: visions -->
+      <div class="section-eyebrow">
+        <span class="lbl">Visions in this domain</span>
+        <span class="rule"></span>
+        <span class="meta">3 threads</span>
+      </div>
+
+      <!-- horizontal vision rail (Business-tagged only) -->
+      <div class="rail">
+        <div class="vcell">
+          <div class="aura"></div>
+          <div class="vspark"><svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg></div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+              <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+              <path d="M3 13h18"/>
+            </svg>
+          </div>
+          <div class="vcell-text">
+            <div class="vcell-title">Webuild</div>
+            <div class="vcell-tag">Site shop that runs itself</div>
+          </div>
+        </div>
+
+        <div class="vcell">
+          <div class="aura"></div>
+          <div class="vspark"><svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg></div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+              <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+              <path d="M3 13h18"/>
+            </svg>
+          </div>
+          <div class="vcell-text">
+            <div class="vcell-title">Dr. Lashin</div>
+            <div class="vcell-tag">Where doctors land and pass</div>
+          </div>
+        </div>
+
+        <div class="vcell">
+          <div class="aura"></div>
+          <div class="vspark"><svg viewBox="0 0 24 24"><path d="M12 4l1.6 5.2L19 11l-5.4 1.8L12 18l-1.6-5.2L5 11l5.4-1.8z"/></svg></div>
+          <div class="ddisc">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+              <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+              <path d="M3 13h18"/>
+            </svg>
+          </div>
+          <div class="vcell-text">
+            <div class="vcell-title">Do It</div>
+            <div class="vcell-tag">The app you live inside</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- eyebrow: next -->
+      <div class="section-eyebrow">
+        <span class="lbl">Next</span>
+        <span class="rule"></span>
+        <span class="meta">suggested</span>
+      </div>
+
+      <!-- next action -->
+      <div class="next">
+        <span class="lbl">Do</span>
+        <span class="vline"></span>
+        <span class="text">Cold email Reiner</span>
+        <span class="add">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Add as block
+        </span>
+      </div>
+
+    </div>
+
+    <!-- tabbar — DOMAINS active -->
+    <div class="tabbar">
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <circle cx="12" cy="12" r="3" fill="#8E8E93" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="5.5" width="17" height="15" rx="3" stroke-width="1.7"/>
+            <path d="M3.5 10h17" stroke-width="1.7"/>
+            <path d="M8 3.5v3.5M16 3.5v3.5" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab active">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="13" y="3.5" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="3.5" y="13" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+            <rect x="13" y="13" width="7.5" height="7.5" rx="2" stroke-width="1.7"/>
+          </svg>
+        </div>
+      </div>
+      <div class="tab">
+        <div class="pill">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke-width="1.7"/>
+            <path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

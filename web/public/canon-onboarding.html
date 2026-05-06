@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Do It — Onboarding</title>
+<style>
+  :root{
+    /* surfaces */
+    --bg:#FFFFFF;
+    --stage:#F2F2F7;
+    --stage-2:#E9E9EE;
+    --inset:#F2F2F7;
+    --inset-2:#EAEAEF;
+    --card:#FFFFFF;
+
+    /* ink */
+    --ink:#000000;
+    --ink-2:#1C1C1E;
+    --ink-3:#3A3A3C;
+    --label:#8E8E93;
+    --label-2:#6E6E73;
+    --glyph:#0A0A0F;
+
+    /* hairlines */
+    --hairline:rgba(60,60,67,0.10);
+    --hairline-2:rgba(60,60,67,0.06);
+    --hairline-strong:rgba(60,60,67,0.18);
+
+    /* accents */
+    --blue:#007AFF;
+    --blue-deep:#0062CC;
+    --blue-soft:rgba(0,122,255,0.10);
+    --blue-glow:rgba(0,122,255,0.20);
+
+    --green:#34C759;
+    --green-deep:#248A3D;
+    --green-soft:rgba(52,199,89,0.14);
+
+    --prayer-bg-1:#EAF6EE;
+    --prayer-bg-2:#DCEFE3;
+    --prayer-ink:#2F5A3E;
+
+    /* domain tints */
+    --d-business-1:#E1ECFF; --d-business-2:#C9DBFF;
+    --d-religion-1:#E2F4E6; --d-religion-2:#C0E5C8;
+    --d-learning-1:#FFE3EB; --d-learning-2:#FFCFDC;
+    --d-fitness-1:#FFD0DA;  --d-fitness-2:#FFB6C5;
+    --d-home-1:#E5ECF0;     --d-home-2:#CFDCE3;
+
+    --shadow-card:
+      0 0 0 0.5px rgba(60,60,67,0.06),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 12px 28px -14px rgba(20,20,30,0.10),
+      0 26px 50px -28px rgba(20,20,30,0.14);
+    --shadow-press:
+      0 1px 0 rgba(255,255,255,0.08) inset,
+      0 0 0 0.5px rgba(0,0,0,0.5),
+      0 18px 38px -18px rgba(10,10,20,0.55),
+      0 6px 14px -6px rgba(10,10,20,0.30);
+    --shadow-stack:
+      0 0 0 0.5px rgba(60,60,67,0.05),
+      0 1px 1px rgba(20,20,30,0.02),
+      0 8px 22px -14px rgba(20,20,30,0.12);
+    --shadow-pill:
+      0 0 0 0.5px rgba(60,60,67,0.08),
+      0 1px 2px rgba(20,20,30,0.04),
+      0 1px 0 rgba(255,255,255,0.7) inset;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  html,body{
+    background:var(--stage);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+    color:var(--ink);
+    text-rendering:optimizeLegibility;
+  }
+  body{
+    min-height:100vh;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding:64px 40px 96px;gap:48px;flex-wrap:wrap;
+    background:radial-gradient(60% 40% at 50% 0%, #F7F7FB 0%, var(--stage) 60%);
+  }
+
+  .col{display:flex;flex-direction:column;align-items:center;gap:18px;}
+  .col-label{
+    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+    color:#8E8E93;font-weight:600;
+  }
+
+  /* phone shell */
+  .phone{
+    width:393px;height:852px;
+    background:var(--bg);
+    border-radius:52px;
+    position:relative;overflow:hidden;
+    box-shadow:
+      0 0 0 0.5px rgba(0,0,0,0.06),
+      0 1px 0 rgba(255,255,255,0.6) inset,
+      0 30px 60px -25px rgba(20,20,30,0.22),
+      0 12px 24px -10px rgba(20,20,30,0.10);
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    padding:54px 24px 0;
+  }
+
+  .halo{
+    position:absolute;
+    top:0;left:0;right:0;height:520px;
+    background:
+      radial-gradient(120% 80% at 50% -10%, rgba(0,122,255,0.07) 0%, rgba(0,122,255,0.018) 35%, transparent 65%),
+      radial-gradient(80% 60% at 85% 0%, rgba(180,210,255,0.18) 0%, transparent 55%);
+    pointer-events:none;
+  }
+
+  /* step chip in screen */
+  .step-eyebrow{
+    position:relative;z-index:2;
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .step-tag{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:10.5px;font-weight:700;color:var(--label-2);
+    letter-spacing:0.16em;text-transform:uppercase;
+  }
+  .step-tag .dotrow{display:inline-flex;gap:4px;}
+  .step-tag .d{width:5px;height:5px;border-radius:50%;background:var(--inset-2);}
+  .step-tag .d.on{background:var(--ink);}
+  .skip-link{
+    font-size:13px;font-weight:600;color:var(--label);
+    letter-spacing:-0.012em;
+  }
+
+  /* hero copy block */
+  .hero-copy{position:relative;z-index:2;margin-top:14px;}
+  .eyebrow{
+    font-size:11.5px;font-weight:600;color:var(--label);
+    letter-spacing:0.04em;
+  }
+  .h1{
+    font-size:38px;font-weight:800;color:var(--ink);
+    letter-spacing:-0.05em;line-height:0.99;
+    margin-top:6px;
+  }
+  .h1 .sub{color:var(--label);font-weight:500;letter-spacing:-0.03em;}
+  .h-lede{
+    margin-top:10px;
+    font-size:15.5px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.014em;line-height:1.42;
+    max-width:300px;
+  }
+
+  /* CTA */
+  .cta{
+    width:100%;
+    background:linear-gradient(180deg, #1A1A20 0%, #000000 100%);
+    color:#fff;border:none;
+    border-radius:999px;
+    padding:17px 22px;
+    font-size:16px;font-weight:600;letter-spacing:-0.014em;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    box-shadow:var(--shadow-press);
+    cursor:pointer;font-family:inherit;
+  }
+  .cta.blue{
+    background:linear-gradient(180deg, #1E8BFF 0%, var(--blue) 100%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.18) inset,
+      0 0 0 0.5px rgba(0,90,200,0.5),
+      0 18px 38px -18px rgba(0,90,200,0.55),
+      0 6px 14px -6px rgba(0,90,200,0.30);
+  }
+  .cta .arrow{
+    width:22px;height:22px;border-radius:50%;
+    background:rgba(255,255,255,0.16);
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .cta .arrow svg{width:10px;height:10px;}
+
+  .cta-quiet{
+    width:100%;
+    background:transparent;
+    color:var(--label-2);
+    border:none;
+    padding:14px 22px;
+    font-size:14.5px;font-weight:600;letter-spacing:-0.01em;
+    text-align:center;
+    cursor:pointer;font-family:inherit;
+    margin-top:6px;
+  }
+
+  /* footer (CTA at bottom of phone) */
+  .footer{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:18px 24px 28px;
+    background:linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.92) 30%, #fff 70%);
+    z-index:3;
+  }
+
+  /* ───────── STEP 1 — WELCOME ───────── */
+  .welcome-wrap{
+    flex:1;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    position:relative;z-index:2;
+    padding-bottom:120px;
+  }
+  .orb{
+    width:220px;height:220px;border-radius:50%;
+    position:relative;
+    background:
+      radial-gradient(circle at 35% 30%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.4) 22%, transparent 45%),
+      radial-gradient(circle at 50% 60%, #DCEAFC 0%, #C5DCF7 60%, #ABCAF0 100%);
+    box-shadow:
+      inset 0 -10px 30px rgba(60,90,140,0.18),
+      inset 0 2px 0 rgba(255,255,255,0.9),
+      0 30px 60px -20px rgba(60,90,140,0.30),
+      0 10px 30px -10px rgba(60,90,140,0.18);
+  }
+  .orb::before{
+    content:"";position:absolute;
+    top:14%;left:18%;width:38%;height:24%;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,255,255,0.85) 0%, transparent 70%);
+    filter:blur(2px);
+  }
+  .orb::after{
+    content:"";position:absolute;inset:-22px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(0,122,255,0.10) 0%, transparent 60%);
+    z-index:-1;
+  }
+  .welcome-title{
+    margin-top:46px;
+    font-size:48px;font-weight:800;color:var(--ink);
+    letter-spacing:-0.055em;line-height:0.95;
+    text-align:center;
+  }
+  .welcome-sub{
+    margin-top:14px;
+    font-size:17px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.02em;text-align:center;
+  }
+  .welcome-meta{
+    margin-top:26px;
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:12px;font-weight:600;color:var(--label);
+    letter-spacing:0.02em;
+    background:rgba(255,255,255,0.7);
+    padding:7px 13px;border-radius:999px;
+    box-shadow:
+      0 0 0 0.5px var(--hairline),
+      0 1px 1px rgba(20,20,30,0.03);
+    backdrop-filter:saturate(180%) blur(10px);
+  }
+  .welcome-meta .pip{
+    width:6px;height:6px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 0 3px var(--green-soft);
+  }
+
+  /* ───────── STEP 2 — CITY ───────── */
+  .field-card{
+    position:relative;z-index:2;
+    margin-top:24px;
+    background:var(--card);
+    border-radius:24px;
+    padding:18px 18px 18px 16px;
+    box-shadow:var(--shadow-card);
+    display:flex;align-items:center;gap:14px;
+  }
+  .field-card::before{
+    content:"";position:absolute;inset:0;border-radius:24px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.06);
+    pointer-events:none;
+  }
+  .pin-disc{
+    width:46px;height:46px;border-radius:50%;
+    background:linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .pin-disc svg{width:22px;height:22px;color:var(--glyph);stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .field-text{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;}
+  .field-label{font-size:11.5px;font-weight:700;color:var(--label);letter-spacing:0.06em;text-transform:uppercase;}
+  .field-value{font-size:18px;font-weight:700;color:var(--ink);letter-spacing:-0.025em;}
+  .field-edit{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--inset);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:inset 0 0 0 0.5px var(--hairline);
+    flex-shrink:0;
+  }
+  .field-edit svg{width:14px;height:14px;color:var(--ink-2);stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+
+  /* mini map preview */
+  .mapcard{
+    position:relative;z-index:2;
+    margin-top:14px;
+    height:170px;border-radius:24px;
+    overflow:hidden;
+    background:
+      linear-gradient(180deg, #EAF1FB 0%, #D9E5F4 100%);
+    box-shadow:var(--shadow-stack);
+  }
+  .mapcard svg.streets{position:absolute;inset:0;width:100%;height:100%;}
+  .mapcard .pin{
+    position:absolute;left:50%;top:48%;transform:translate(-50%,-100%);
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .mapcard .pin .head{
+    width:30px;height:30px;border-radius:50%;
+    background:var(--blue);
+    box-shadow:
+      0 0 0 4px #fff,
+      0 0 0 5px rgba(0,122,255,0.25),
+      0 6px 14px -4px rgba(0,122,255,0.45);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .mapcard .pin .head::before{
+    content:"";width:10px;height:10px;border-radius:50%;background:#fff;
+    box-shadow:0 0 0 1px rgba(0,90,200,0.3) inset;
+  }
+  .mapcard .ring{
+    position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);
+    width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(circle, rgba(0,122,255,0.18) 0%, rgba(0,122,255,0.04) 50%, transparent 70%);
+    pointer-events:none;
+  }
+
+  .city-meta-row{
+    position:relative;z-index:2;
+    margin-top:14px;
+    display:flex;gap:8px;
+  }
+  .meta-pill{
+    flex:1;
+    background:#fff;border-radius:14px;
+    padding:11px 12px;
+    display:flex;flex-direction:column;gap:2px;
+    box-shadow:
+      inset 0 0 0 0.5px var(--hairline),
+      0 1px 1px rgba(20,20,30,0.03);
+  }
+  .meta-pill .k{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.06em;text-transform:uppercase;}
+  .meta-pill .v{font-size:13px;font-weight:700;color:var(--ink-2);letter-spacing:-0.012em;font-variant-numeric:tabular-nums;}
+  .meta-pill .v .dim{color:var(--label);font-weight:500;}
+
+  /* ───────── STEP 3 — DOMAINS ───────── */
+  .dlist{
+    position:relative;z-index:2;
+    margin-top:18px;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .drow{
+    background:var(--card);
+    border-radius:20px;
+    padding:13px 14px 13px 12px;
+    display:flex;align-items:center;gap:12px;
+    box-shadow:var(--shadow-stack);
+    position:relative;
+  }
+  .drow.off{opacity:0.55;}
+  .ddisc{
+    width:42px;height:42px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;position:relative;
+    box-shadow:
+      inset 0 0 0 0.5px rgba(20,20,30,0.06),
+      inset 0 -2px 4px rgba(20,20,30,0.04),
+      0 1px 2px rgba(20,20,30,0.04);
+  }
+  .ddisc svg{width:20px;height:20px;color:var(--glyph);stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+  .ddisc.business{background:linear-gradient(180deg,var(--d-business-1) 0%, var(--d-business-2) 100%);}
+  .ddisc.religion{background:linear-gradient(180deg,var(--d-religion-1) 0%, var(--d-religion-2) 100%);}
+  .ddisc.learning{background:linear-gradient(180deg,var(--d-learning-1) 0%, var(--d-learning-2) 100%);}
+  .ddisc.fitness {background:linear-gradient(180deg,var(--d-fitness-1) 0%, var(--d-fitness-2) 100%);}
+  .ddisc.home    {background:linear-gradient(180deg,var(--d-home-1) 0%, var(--d-home-2) 100%);}
+
+  .drow .meta{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
+  .drow .name{font-size:15px;font-weight:700;color:var(--ink);letter-spacing:-0.022em;}
+  .drow .sub{font-size:12.5px;color:var(--label);font-weight:500;letter-spacing:-0.008em;}
+
+  /* iOS-ish toggle */
+  .tog{
+    width:46px;height:28px;border-radius:999px;
+    background:var(--green);
+    position:relative;flex-shrink:0;
+    box-shadow:inset 0 0 0 0.5px rgba(20,80,40,0.18), inset 0 1px 1px rgba(0,0,0,0.05);
+    transition:background .2s ease;
+  }
+  .tog::after{
+    content:"";position:absolute;top:2px;left:20px;
+    width:24px;height:24px;border-radius:50%;
+    background:#fff;
+    box-shadow:0 1px 1px rgba(0,0,0,0.04), 0 3px 8px rgba(20,20,30,0.18);
+    transition:left .2s ease;
+  }
+  .tog.off{background:var(--inset-2);}
+  .tog.off::after{left:2px;}
+
+  .add-row{
+    margin-top:4px;
+    background:transparent;
+    border:1.5px dashed var(--hairline-strong);
+    border-radius:20px;
+    padding:13px 14px;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    color:var(--label-2);font-size:13.5px;font-weight:600;letter-spacing:-0.012em;
+    cursor:pointer;font-family:inherit;
+  }
+  .add-row svg{width:14px;height:14px;color:var(--label-2);stroke:currentColor;stroke-width:2.4;stroke-linecap:round;}
+
+  /* ───────── STEP 4 — NOTION ───────── */
+  .notion-art{
+    position:relative;z-index:2;
+    margin:34px auto 0;
+    width:100%;height:230px;
+    border-radius:28px;
+    background:
+      radial-gradient(120% 100% at 50% 0%, #F4F1EB 0%, #EAE5DB 100%);
+    box-shadow:var(--shadow-card);
+    overflow:hidden;
+  }
+  .notion-art::before{
+    content:"";position:absolute;inset:0;border-radius:28px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.06);
+    pointer-events:none;
+  }
+  /* notion glyph */
+  .nlogo{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);
+    width:78px;height:78px;border-radius:18px;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:
+      0 0 0 0.5px rgba(60,60,67,0.10),
+      0 18px 30px -10px rgba(20,20,30,0.18),
+      0 6px 14px -6px rgba(20,20,30,0.10);
+  }
+  .nlogo svg{width:42px;height:42px;color:#1C1C1E;}
+  /* connector dots */
+  .npaper{
+    position:absolute;
+    width:62px;height:78px;border-radius:8px;
+    background:#fff;
+    box-shadow:
+      0 0 0 0.5px rgba(60,60,67,0.08),
+      0 8px 18px -8px rgba(20,20,30,0.14);
+  }
+  .npaper::before, .npaper::after{
+    content:"";position:absolute;left:8px;right:8px;height:2px;border-radius:1px;
+    background:rgba(60,60,67,0.18);
+  }
+  .npaper::before{top:14px;}
+  .npaper::after{top:22px;right:24px;}
+  .npaper i{
+    position:absolute;left:8px;right:14px;height:2px;border-radius:1px;
+    background:rgba(60,60,67,0.12);top:30px;
+  }
+  .npaper.l{left:30px;top:62px;transform:rotate(-8deg);}
+  .npaper.r{right:30px;top:74px;transform:rotate(7deg);}
+  .nspark{
+    position:absolute;width:6px;height:6px;border-radius:50%;
+    background:var(--blue);box-shadow:0 0 0 4px rgba(0,122,255,0.18);
+  }
+  .nspark.s1{top:38px;left:90px;}
+  .nspark.s2{top:160px;right:80px;background:var(--green);box-shadow:0 0 0 4px rgba(52,199,89,0.18);}
+  .nspark.s3{top:50px;right:64px;width:4px;height:4px;background:#FFB800;box-shadow:0 0 0 3px rgba(255,184,0,0.18);}
+
+  .notion-copy{
+    position:relative;z-index:2;
+    margin-top:26px;text-align:center;padding:0 8px;
+  }
+  .notion-h{
+    font-size:26px;font-weight:800;color:var(--ink);
+    letter-spacing:-0.04em;line-height:1.05;
+  }
+  .notion-h .sub{color:var(--label);font-weight:500;letter-spacing:-0.025em;}
+  .notion-l{
+    margin-top:10px;
+    font-size:14.5px;font-weight:500;color:var(--label-2);
+    letter-spacing:-0.012em;line-height:1.42;
+  }
+  .notion-l b{color:var(--ink-2);font-weight:700;}
+  .timepill{
+    margin:14px auto 0;
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:12px;font-weight:600;color:var(--prayer-ink);
+    background:linear-gradient(180deg, var(--prayer-bg-1) 0%, var(--prayer-bg-2) 100%);
+    padding:6px 12px;border-radius:999px;
+    letter-spacing:-0.008em;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.9),
+      inset 0 0 0 0.5px rgba(47,90,62,0.10);
+  }
+  .timepill svg{width:11px;height:11px;color:var(--prayer-ink);stroke:currentColor;stroke-width:2;stroke-linecap:round;fill:none;}
+
+  /* progress dots in footer (step 4 has stacked CTAs so footer is taller) */
+  .footer.tall{padding-top:26px;}
+  .footer.tall .ctas{display:flex;flex-direction:column;gap:0;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ STEP 1 — WELCOME ═══════════════ -->
+<div class="col">
+  <div class="col-label">Step 1 · Welcome</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="halo"></div>
+
+      <div class="step-eyebrow">
+        <div class="step-tag">
+          <span class="dotrow"><span class="d on"></span><span class="d"></span><span class="d"></span><span class="d"></span></span>
+          1 of 4
+        </div>
+      </div>
+
+      <div class="welcome-wrap">
+        <div class="orb"></div>
+        <div class="welcome-title">Do It.</div>
+        <div class="welcome-sub">One thing at a time.</div>
+        <div class="welcome-meta">
+          <span class="pip"></span>
+          A calmer rhythm for your day
+        </div>
+      </div>
+
+      <div class="footer">
+        <button class="cta">
+          Begin
+          <span class="arrow"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6h7M6 3l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ STEP 2 — CITY ═══════════════ -->
+<div class="col">
+  <div class="col-label">Step 2 · City</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="halo"></div>
+
+      <div class="step-eyebrow">
+        <div class="step-tag">
+          <span class="dotrow"><span class="d on"></span><span class="d on"></span><span class="d"></span><span class="d"></span></span>
+          2 of 4
+        </div>
+        <div class="skip-link">Back</div>
+      </div>
+
+      <div class="hero-copy">
+        <div class="eyebrow">A small thing</div>
+        <div class="h1">Where are you?<br/><span class="sub">For prayer times.</span></div>
+        <div class="h-lede">We use this once a day to align Dhuhr, Asr and the rest with your block.</div>
+      </div>
+
+      <div class="field-card">
+        <div class="pin-disc">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 21s-7-6.5-7-12a7 7 0 0114 0c0 5.5-7 12-7 12z"/>
+            <circle cx="12" cy="9" r="2.6"/>
+          </svg>
+        </div>
+        <div class="field-text">
+          <div class="field-label">Your city</div>
+          <div class="field-value">Kiel, Germany</div>
+        </div>
+        <div class="field-edit">
+          <svg viewBox="0 0 24 24">
+            <path d="M14 4l6 6-11 11H3v-6L14 4z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="mapcard">
+        <svg class="streets" viewBox="0 0 360 170" preserveAspectRatio="none">
+          <g stroke="rgba(70,100,150,0.18)" stroke-width="1.2" fill="none">
+            <path d="M0 40 L360 60"/>
+            <path d="M0 90 L360 80"/>
+            <path d="M0 130 L360 140"/>
+            <path d="M60 0 L80 170"/>
+            <path d="M180 0 L170 170"/>
+            <path d="M280 0 L300 170"/>
+          </g>
+          <g stroke="rgba(70,100,150,0.10)" stroke-width="0.8" fill="none">
+            <path d="M0 20 L360 30"/>
+            <path d="M0 60 L360 70"/>
+            <path d="M0 110 L360 115"/>
+            <path d="M30 0 L40 170"/>
+            <path d="M120 0 L125 170"/>
+            <path d="M230 0 L235 170"/>
+            <path d="M330 0 L340 170"/>
+          </g>
+          <g fill="rgba(120,160,200,0.10)">
+            <rect x="220" y="20" width="60" height="30" rx="3"/>
+            <rect x="40" y="100" width="50" height="22" rx="3"/>
+            <rect x="240" y="120" width="80" height="34" rx="3"/>
+          </g>
+          <path d="M-10 70 Q 90 50, 200 95 T 380 110" stroke="rgba(120,170,220,0.35)" stroke-width="6" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="ring"></div>
+        <div class="pin"><div class="head"></div></div>
+      </div>
+
+      <div class="city-meta-row">
+        <div class="meta-pill">
+          <div class="k">Next prayer</div>
+          <div class="v">Dhuhr <span class="dim">· 12:47</span></div>
+        </div>
+        <div class="meta-pill">
+          <div class="k">Timezone</div>
+          <div class="v">CET <span class="dim">· UTC+1</span></div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <button class="cta">
+          Continue
+          <span class="arrow"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6h7M6 3l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ STEP 3 — DOMAINS ═══════════════ -->
+<div class="col">
+  <div class="col-label">Step 3 · Domains</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="halo"></div>
+
+      <div class="step-eyebrow">
+        <div class="step-tag">
+          <span class="dotrow"><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d"></span></span>
+          3 of 4
+        </div>
+        <div class="skip-link">Back</div>
+      </div>
+
+      <div class="hero-copy">
+        <div class="eyebrow">Five areas</div>
+        <div class="h1">Pick your<br/>domains.</div>
+        <div class="h-lede">Each one carries a default rhythm. You can rename, reshape or add your own later.</div>
+      </div>
+
+      <div class="dlist">
+        <div class="drow">
+          <div class="ddisc business">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="7" width="18" height="13" rx="2.2"/>
+              <path d="M9 7V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5V7"/>
+              <path d="M3 13h18"/>
+            </svg>
+          </div>
+          <div class="meta">
+            <div class="name">Business</div>
+            <div class="sub">60 min · default</div>
+          </div>
+          <div class="tog"></div>
+        </div>
+
+        <div class="drow">
+          <div class="ddisc religion">
+            <svg viewBox="0 0 24 24">
+              <path d="M16.5 14.8a6.4 6.4 0 11-7.3-9.6 5.2 5.2 0 007.3 9.6z"/>
+              <path d="M17.5 5l.7 1.6 1.7.3-1.3 1.1.4 1.7L17.5 9l-1.5.7.4-1.7-1.3-1.1 1.7-.3z"/>
+            </svg>
+          </div>
+          <div class="meta">
+            <div class="name">Religion</div>
+            <div class="sub">15 min · default</div>
+          </div>
+          <div class="tog"></div>
+        </div>
+
+        <div class="drow">
+          <div class="ddisc learning">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 4L2 9l10 5 10-5-10-5z"/>
+              <path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/>
+            </svg>
+          </div>
+          <div class="meta">
+            <div class="name">Learning</div>
+            <div class="sub">45 min · default</div>
+          </div>
+          <div class="tog"></div>
+        </div>
+
+        <div class="drow">
+          <div class="ddisc fitness">
+            <svg viewBox="0 0 24 24">
+              <path d="M6.5 9.5l-2 2M17.5 14.5l2-2"/>
+              <rect x="7" y="8" width="3.5" height="8" rx="1"/>
+              <rect x="13.5" y="8" width="3.5" height="8" rx="1"/>
+              <path d="M10.5 12h3"/>
+            </svg>
+          </div>
+          <div class="meta">
+            <div class="name">Fitness</div>
+            <div class="sub">60 min · default</div>
+          </div>
+          <div class="tog"></div>
+        </div>
+
+        <div class="drow">
+          <div class="ddisc home">
+            <svg viewBox="0 0 24 24">
+              <path d="M3.5 11L12 4l8.5 7"/>
+              <path d="M5.5 10v9h13v-9"/>
+              <path d="M10 19v-5h4v5"/>
+            </svg>
+          </div>
+          <div class="meta">
+            <div class="name">Home</div>
+            <div class="sub">25 min · default</div>
+          </div>
+          <div class="tog"></div>
+        </div>
+
+        <button class="add-row">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14"/></svg>
+          Add a domain
+        </button>
+      </div>
+
+      <div class="footer">
+        <button class="cta">
+          Continue
+          <span class="arrow"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6h7M6 3l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ STEP 4 — NOTION ═══════════════ -->
+<div class="col">
+  <div class="col-label">Step 4 · Notion</div>
+  <div class="phone">
+    <div class="screen">
+      <div class="halo"></div>
+
+      <div class="step-eyebrow">
+        <div class="step-tag">
+          <span class="dotrow"><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d on"></span></span>
+          4 of 4
+        </div>
+        <div class="skip-link">Back</div>
+      </div>
+
+      <div class="notion-art">
+        <div class="npaper l"><i></i></div>
+        <div class="npaper r"><i></i></div>
+        <div class="nspark s1"></div>
+        <div class="nspark s2"></div>
+        <div class="nspark s3"></div>
+        <div class="nlogo">
+          <!-- minimalist Notion N -->
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="3.5" width="17" height="17" rx="3.4" stroke="#1C1C1E" stroke-width="1.4"/>
+            <path d="M8.5 8v8M8.5 8l7 8M15.5 8v8" stroke="#1C1C1E" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="notion-copy">
+        <div class="notion-h">Connect Notion <span class="sub">— optional.</span></div>
+        <div class="notion-l">Want Do It to read your <b>brain dumps</b> every morning at <b>4&thinsp;am</b> and shape them into a calm day?</div>
+        <div class="timepill">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Runs once a day · 4:00 am
+        </div>
+      </div>
+
+      <div class="footer tall">
+        <div class="ctas">
+          <button class="cta blue">
+            Connect Notion
+            <span class="arrow"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6h7M6 3l3 3-3 3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </button>
+          <button class="cta-quiet">Skip for now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
