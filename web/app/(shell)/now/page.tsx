@@ -12,7 +12,7 @@ import {
 } from "@/lib/engine";
 import { PrayerBanner } from "@/components/PrayerBanner";
 import { Topbar } from "@/components/Topbar";
-import { DomainGlyph, ClockSvg, CheckSvg, PlusSvg } from "@/components/icons";
+import { DomainGlyph, ClockSvg, CheckSvg } from "@/components/icons";
 import BrainDumpSheet from "@/components/BrainDumpSheet";
 import { fetchTodayPrayers, minsUntilHHMM } from "@/lib/prayers";
 import type { Anchor } from "@/lib/types";
@@ -959,10 +959,7 @@ export default function NowPage() {
                 <CheckSvg stroke="#248A3D" weight={2.6} size={13} />
                 Done early
               </button>
-              <button className="sec-btn" onClick={() => extend(focus.id, 15)}>
-                <PlusSvg size={13} />
-                +15 min
-              </button>
+              <TimeSlider onCommit={(min) => extend(focus.id, min)} />
             </div>
           </>
         ) : (
@@ -1081,6 +1078,84 @@ export default function NowPage() {
         <BrainDumpSheet onClose={() => setShowBrainDump(false)} />
       )}
     </>
+  );
+}
+
+function TimeSlider({ onCommit }: { onCommit: (min: number) => void }) {
+  const [draft, setDraft] = useState(0);
+  const [active, setActive] = useState(false);
+
+  const label = draft === 0 ? "±0m" : draft > 0 ? `+${draft}m` : `${draft}m`;
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDraft(Number(e.target.value));
+  };
+
+  const handleCommit = () => {
+    if (draft !== 0) {
+      onCommit(draft);
+      setDraft(0);
+    }
+    setActive(false);
+  };
+
+  return (
+    <div
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 4,
+        padding: "8px 10px",
+        borderRadius: 14,
+        background: active
+          ? "var(--inset,#EBEBF0)"
+          : "var(--surface,rgba(255,255,255,0.60))",
+        boxShadow:
+          "inset 0 0 0 0.5px var(--hairline,rgba(60,60,67,0.12)), 0 1px 2px rgba(20,20,30,0.04)",
+        cursor: "pointer",
+        transition: "background 0.15s",
+        minWidth: 0,
+      }}
+    >
+      <span
+        style={{
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: "-0.01em",
+          color:
+            draft === 0
+              ? "var(--label,#8E8E93)"
+              : draft > 0
+                ? "#248A3D"
+                : "#FF3B30",
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
+        {label}
+      </span>
+      <input
+        type="range"
+        min={-30}
+        max={60}
+        step={5}
+        value={draft}
+        onChange={handleChange}
+        onMouseDown={() => setActive(true)}
+        onTouchStart={() => setActive(true)}
+        onMouseUp={handleCommit}
+        onTouchEnd={handleCommit}
+        style={{
+          width: "100%",
+          accentColor: draft < 0 ? "#FF3B30" : "#248A3D",
+          cursor: "pointer",
+          margin: 0,
+        }}
+        aria-label="Adjust block time"
+      />
+    </div>
   );
 }
 
