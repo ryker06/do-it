@@ -91,18 +91,20 @@ export function VoiceCommandStrip() {
     skipCurrent,
     addToInbox,
   };
+  const [mounted, setMounted] = useState(false);
   const [listening, setListening] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [textInput, setTextInput] = useState("");
   const recogRef = useRef<SpeechRecognitionInstance | null>(null);
 
-  const SpeechAPI =
-    typeof window !== "undefined"
-      ? (window.SpeechRecognition ?? window.webkitSpeechRecognition)
-      : undefined;
+  // SpeechAPI must be resolved client-side only to avoid SSR/client hydration mismatch
+  const SpeechAPI = mounted
+    ? (window.SpeechRecognition ?? window.webkitSpeechRecognition)
+    : undefined;
   const hasVoice = !!SpeechAPI;
 
   useEffect(() => {
+    setMounted(true);
     return () => {
       recogRef.current?.stop();
     };
@@ -144,6 +146,51 @@ export function VoiceCommandStrip() {
     const result = parseCommand(textInput, actions);
     showFeedback(result ?? `Not recognised: "${textInput}"`);
     setTextInput("");
+  }
+
+  // Render a neutral placeholder until client is mounted.
+  // This guarantees server HTML === initial client HTML (no hydration mismatch).
+  if (!mounted) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "8px 0 4px",
+        }}
+      >
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            color: "var(--label,#8E8E93)",
+            letterSpacing: "0.10em",
+            textTransform: "uppercase",
+            flexShrink: 0,
+          }}
+        >
+          Voice
+        </span>
+        <button
+          disabled
+          style={{
+            padding: "7px 14px",
+            borderRadius: 12,
+            background: "var(--inset,#F2F2F7)",
+            color: "var(--ink-2,#1C1C1E)",
+            fontSize: 13,
+            fontWeight: 600,
+            letterSpacing: "-0.01em",
+            border: "none",
+            cursor: "default",
+            boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
+          }}
+        >
+          voice
+        </button>
+      </div>
+    );
   }
 
   return (

@@ -8,7 +8,6 @@ import type {
   Vision,
   Routine,
   Weekday,
-  InboxItem,
   DomainId,
   Subscription,
   Transaction,
@@ -39,7 +38,6 @@ type State = {
   visions: Vision[];
   routines: Routine[];
   weekAssignments: Record<Weekday, string | null>;
-  inbox: InboxItem[];
   hydrated: boolean;
   onboardingComplete: boolean;
   userCity: string;
@@ -85,7 +83,6 @@ type Actions = {
   unassignRoutine: (weekday: Weekday) => void;
   // inbox
   addToInbox: (text: string, domain?: DomainId) => void;
-  scheduleFromInbox: (id: string) => void;
   // domains
   updateDomain: (id: DomainId, patch: Partial<Omit<Domain, "id">>) => void;
   // visions
@@ -129,7 +126,6 @@ export const useDoIt = create<State & Actions>()(
       visions: SEED_VISIONS,
       routines: SEED_ROUTINES,
       weekAssignments: SEED_WEEK_ASSIGNMENTS,
-      inbox: [],
       hydrated: false,
       onboardingComplete: false,
       userCity: "Kiel",
@@ -350,35 +346,20 @@ export const useDoIt = create<State & Actions>()(
       },
 
       addToInbox: (text, domain) => {
-        const item: InboxItem = {
+        // Block is the one primitive. Inbox items are blocks with scheduledFor:'inbox'.
+        const s = get();
+        const maxOrder = s.blocks.reduce((m, b) => Math.max(m, b.order), -1);
+        const newBlock: Block = {
           id: `inbox-${Date.now()}`,
-          text,
-          domain,
-          createdAt: Date.now(),
+          title: text,
+          domain: domain ?? "business",
+          durationMin: 30,
+          status: "pending",
+          accumulatedMs: 0,
+          order: maxOrder + 1,
+          scheduledFor: "inbox",
         };
-        set((s) => ({ inbox: [...s.inbox, item] }));
-      },
-
-      scheduleFromInbox: (id) => {
-        set((s) => {
-          const item = s.inbox.find((x) => x.id === id);
-          if (!item) return s;
-          const maxOrder = s.blocks.reduce((m, b) => Math.max(m, b.order), -1);
-          const newBlock: Block = {
-            id: `b-${Date.now()}`,
-            title: item.text,
-            domain: item.domain ?? "home",
-            durationMin: 30,
-            status: "pending",
-            accumulatedMs: 0,
-            order: maxOrder + 1,
-            scheduledFor: "today",
-          };
-          return {
-            inbox: s.inbox.filter((x) => x.id !== id),
-            blocks: [...s.blocks, newBlock],
-          };
-        });
+        set((st) => ({ blocks: [...st.blocks, newBlock] }));
       },
 
       updateDomain: (id, patch) => {
@@ -690,12 +671,6 @@ export const useDoIt = create<State & Actions>()(
           weekAssignments:
             (s?.weekAssignments as Record<Weekday, string | null>) ??
             SEED_WEEK_ASSIGNMENTS,
-          inbox: Array.isArray(s?.inbox)
-            ? (s.inbox as Record<string, unknown>[]).map((item) => ({
-                ...item,
-                domain: item.domain ?? item.domainId,
-              }))
-            : [],
           onboardingComplete:
             (s?.onboardingComplete as boolean) ?? hadPriorState,
           userCity: (s?.userCity as string) ?? "Kiel",

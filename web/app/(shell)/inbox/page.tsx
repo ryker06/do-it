@@ -41,7 +41,7 @@ const DOMAIN_BG: Record<DomainId, string> = {
 };
 
 export default function InboxPage() {
-  const { blocks, addToInbox, moveBlockTo, createBlock } = useDoIt();
+  const { blocks, addToInbox, moveBlockTo, createBlock } = useDoIt(); // addToInbox now writes a Block with scheduledFor:'inbox'
   const [text, setText] = useState("");
   const searchParams = useSearchParams();
 
@@ -53,7 +53,7 @@ export default function InboxPage() {
     if (sharedTitle || sharedText || sharedUrl) {
       const parts = [sharedTitle, sharedText, sharedUrl].filter(Boolean);
       const combined = parts.join(" — ");
-      addToInbox(combined, "learning");
+      addToInbox(combined, inferDomain(combined));
       // Strip params from URL without navigation
       if (typeof window !== "undefined") {
         const clean = window.location.pathname;
