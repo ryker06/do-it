@@ -13,8 +13,7 @@ const MOMENTUM: Record<DomainMomentum, string> = {
 };
 
 export default function DomainsPage() {
-  const { domains, hydrated } = useDoIt();
-  void hydrated;
+  const { domains } = useDoIt();
 
   return (
     <>

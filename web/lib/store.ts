@@ -134,8 +134,26 @@ export const useDoIt = create<State & Actions>()(
       },
     }),
     {
-      name: "do-it-state-v2",
+      name: "do-it-state",
+      version: 3,
       skipHydration: true,
+      migrate: (persistedState, _fromVersion) => {
+        const s = persistedState as Partial<State> | null;
+        return {
+          ...s,
+          blocks: (s?.blocks ?? SEED_BLOCKS).map((b, i) => ({
+            ...b,
+            step: b.step ?? SEED_BLOCKS[i]?.step,
+            focusType: b.focusType ?? SEED_BLOCKS[i]?.focusType,
+          })),
+          domains: (s?.domains ?? DOMAINS).map((d) => ({
+            ...d,
+            streakLabel:
+              d.streakLabel ?? DOMAINS.find((x) => x.id === d.id)?.streakLabel,
+          })),
+          visions: s?.visions ?? SEED_VISIONS,
+        };
+      },
       onRehydrateStorage: () => (state) => {
         state?.setHydrated();
       },

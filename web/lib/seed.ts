@@ -10,6 +10,7 @@ export const DOMAINS: Domain[] = [
     direction: "improving",
     lastEngagement: "today",
     nextAction: "Cold email Reiner",
+    streakLabel: "4-day rhythm",
   },
   {
     id: "religion",
@@ -62,6 +63,8 @@ export const SEED_BLOCKS: Block[] = [
     status: "idle",
     accumulatedMs: 0,
     order: 0,
+    step: { current: 2, total: 4 },
+    focusType: "deep focus",
   },
   {
     id: "b2",

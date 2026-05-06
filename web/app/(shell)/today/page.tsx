@@ -1,13 +1,61 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
 import { DomainGlyph, CrescentSvg } from "@/components/icons";
+import type { Anchor } from "@/lib/types";
+
+const PRAYER_CACHE_KEY = "do-it-prayer-cache-v1";
+
+function readDhuhrFromCache(): { label: string; hhmm: string } | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(PRAYER_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { date: string; anchors: Anchor[] };
+    if (parsed.date !== new Date().toDateString()) return null;
+    const dhuhr = parsed.anchors.find((a) => a.label.toLowerCase() === "dhuhr");
+    return dhuhr ? { label: dhuhr.label, hhmm: dhuhr.hhmm } : null;
+  } catch {
+    return null;
+  }
+}
 
 export default function TodayPage() {
-  const { blocks, domains, hydrated, start, resume } = useDoIt();
-  void hydrated;
+  const { blocks, domains, start, resume } = useDoIt();
+  const [dhuhr, setDhuhr] = useState<{ label: string; hhmm: string } | null>(
+    null,
+  );
+
+  useEffect(() => {
+    // Read from the shared prayer cache (populated by PrayerBanner on /now).
+    // Avoids a duplicate network fetch — same cache key, same day-string check.
+    const cached = readDhuhrFromCache();
+    if (cached) {
+      setDhuhr(cached);
+      return;
+    }
+    // Cache miss (cold load or different day): fetch fresh and cache.
+    import("@/lib/prayers").then(({ fetchTodayPrayers }) => {
+      fetchTodayPrayers().then((anchors) => {
+        if (anchors.length > 0) {
+          // Write shared cache so PrayerBanner also benefits.
+          try {
+            localStorage.setItem(
+              PRAYER_CACHE_KEY,
+              JSON.stringify({ date: new Date().toDateString(), anchors }),
+            );
+          } catch {
+            // storage quota or private mode — silent
+          }
+          const d = anchors.find((a) => a.label.toLowerCase() === "dhuhr");
+          if (d) setDhuhr({ label: d.label, hhmm: d.hhmm });
+        }
+      });
+    });
+  }, []);
 
   const sorted = [...blocks].sort((a, b) => a.order - b.order);
   const totalMin = sorted.reduce(
@@ -93,7 +141,9 @@ export default function TodayPage() {
                       </div>
                       <div className="text">
                         <div className="title" style={{ color: "#1F3A2A" }}>
-                          Dhuhr · 12:47
+                          {dhuhr
+                            ? `${dhuhr.label} · ${dhuhr.hhmm}`
+                            : "Dhuhr · loading"}
                         </div>
                       </div>
                       <span className="pill anchor">Anchor</span>

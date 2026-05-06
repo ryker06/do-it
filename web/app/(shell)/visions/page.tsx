@@ -5,8 +5,7 @@ import { Topbar } from "@/components/Topbar";
 import { DomainGlyph, SparkSvg } from "@/components/icons";
 
 export default function VisionsPage() {
-  const { visions, domains, hydrated } = useDoIt();
-  void hydrated;
+  const { visions, domains } = useDoIt();
 
   const hero = visions.find((v) => v.id === "v7") ?? visions[0];
   const grid = visions.filter((v) => v.id !== hero.id);

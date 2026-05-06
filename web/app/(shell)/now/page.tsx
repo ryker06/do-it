@@ -14,16 +14,13 @@ import { Topbar } from "@/components/Topbar";
 import { DomainGlyph, ClockSvg, CheckSvg, PlusSvg } from "@/components/icons";
 
 export default function NowPage() {
-  const { blocks, domains, hydrated, start, pause, resume, finish, extend } =
-    useDoIt();
+  const { blocks, domains, start, pause, resume, finish, extend } = useDoIt();
   const [now, setNow] = useState<number>(() => Date.now());
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
-
-  void hydrated;
 
   const focus = pickFocus(blocks);
   const next = focus ? nextBlock(blocks, focus.id) : null;
@@ -66,15 +63,17 @@ export default function NowPage() {
   const blockMin = focus.durationMin + (focus.adjustedMin ?? 0);
   const anyMomentum = !!focus.adjustedMin;
 
+  // Topbar props — paused state uses compact single-line treatment
+  const topbarName = live ? "In flow" : paused ? "Paused" : "Morning, Adam";
+  const topbarSub = live
+    ? "stay with it"
+    : paused
+      ? "ready when you are"
+      : "let's start";
+
   return (
     <>
-      <Topbar
-        name={live ? "In flow" : paused ? "Paused" : "Morning, Adam"}
-        sub={
-          live ? "stay with it" : paused ? "pick up when ready" : "let's start"
-        }
-        live={live}
-      />
+      <Topbar name={topbarName} sub={topbarSub} live={live} />
       <PrayerBanner />
 
       <div className="hero">
@@ -101,14 +100,25 @@ export default function NowPage() {
           <div className="domain-meta">
             <div className="domain-name">
               {domain?.name}
-              {domain?.momentum === "strong" && (
-                <span className="streak">strong rhythm</span>
+              {domain?.streakLabel && (
+                <span className="streak">{domain.streakLabel}</span>
               )}
             </div>
             <div className="domain-sub">
-              {anyMomentum
-                ? `adjusted ${focus.adjustedMin! > 0 ? "+" : ""}${focus.adjustedMin} min`
-                : `${blockMin} min planned`}
+              {live || paused ? (
+                <>
+                  {focus.step
+                    ? `Step ${focus.step.current} of ${focus.step.total}`
+                    : domain?.name}
+                  {focus.focusType && ` · ${focus.focusType}`}
+                </>
+              ) : focus.step ? (
+                `Step ${focus.step.current} of ${focus.step.total} today`
+              ) : anyMomentum ? (
+                `adjusted ${(focus.adjustedMin ?? 0) > 0 ? "+" : ""}${focus.adjustedMin ?? 0} min`
+              ) : (
+                `${blockMin} min planned`
+              )}
             </div>
           </div>
           {live && (
@@ -182,10 +192,21 @@ export default function NowPage() {
                 <ClockSvg />
                 {blockMin} min
               </span>
-              {anyMomentum && (
+              {focus.step && (
+                <span className="chip step">
+                  <CheckSvg size={12} />
+                  Step {focus.step.current} of {focus.step.total}
+                </span>
+              )}
+              {focus.focusType && (
                 <span className="chip">
-                  adjusted {focus.adjustedMin! > 0 ? "+" : ""}
-                  {focus.adjustedMin}m
+                  <span className="focus-tag">{focus.focusType}</span>
+                </span>
+              )}
+              {anyMomentum && !focus.step && (
+                <span className="chip">
+                  adjusted {(focus.adjustedMin ?? 0) > 0 ? "+" : ""}
+                  {focus.adjustedMin ?? 0}m
                 </span>
               )}
             </div>

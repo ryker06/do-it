@@ -13,13 +13,20 @@ export function Topbar({
   sub?: string;
   live?: boolean;
 }) {
-  const [now, setNow] = useState<Date | null>(null);
+  // Use SSR-safe placeholder that gets replaced after mount.
+  // "Today" is shown immediately; replaced with real day+time once client fires.
+  const [dayLabel, setDayLabel] = useState<string>("Today");
+  const [imgError, setImgError] = useState(false);
+
   useEffect(() => {
-    setNow(new Date());
-    const t = setInterval(() => setNow(new Date()), 30_000);
+    function tick() {
+      setDayLabel(formatDay(new Date()));
+    }
+    tick();
+    const t = setInterval(tick, 30_000);
     return () => clearInterval(t);
   }, []);
-  const dayLabel = now ? formatDay(now) : "";
+
   return (
     <div
       className="topbar"
@@ -39,7 +46,27 @@ export function Topbar({
         </div>
       </div>
       <div className={`me-avatar${live ? " live" : ""}`}>
-        <img src={AVATAR} alt="Adam" />
+        {imgError ? (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              background: "var(--inset-2, #e9e9ee)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "50%",
+              fontSize: 14,
+              fontWeight: 700,
+              color: "var(--label, #8e8e93)",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            AL
+          </div>
+        ) : (
+          <img src={AVATAR} alt="Adam" onError={() => setImgError(true)} />
+        )}
       </div>
     </div>
   );

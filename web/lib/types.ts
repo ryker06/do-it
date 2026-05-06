@@ -17,6 +17,7 @@ export type Domain = {
   direction: DomainDirection;
   lastEngagement: string;
   nextAction: string;
+  streakLabel?: string;
 };
 
 export type BlockStatus = "idle" | "active" | "paused" | "done";
@@ -31,6 +32,8 @@ export type Block = {
   accumulatedMs: number;
   order: number;
   adjustedMin?: number;
+  step?: { current: number; total: number };
+  focusType?: string;
 };
 
 export type AnchorKind = "prayer" | "training";
