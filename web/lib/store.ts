@@ -79,7 +79,12 @@ export const useDoIt = create<State & Actions>()(
       onboardingComplete: false,
       userCity: "Kiel",
       setHydrated: () => set({ hydrated: true }),
-      completeOnboarding: () => set({ onboardingComplete: true }),
+      completeOnboarding: () => {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("do-it-onboarding-complete", "1");
+        }
+        set({ onboardingComplete: true });
+      },
       setUserCity: (city) => set({ userCity: city }),
 
       start: (id) => {

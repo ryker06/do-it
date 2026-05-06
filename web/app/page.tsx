@@ -1,44 +1,47 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useDoIt } from "@/lib/store";
 
 export default function RootPage() {
-  const router = useRouter();
-
   useEffect(() => {
-    // Read from store directly (post-hydration) to avoid flash
-    const state = useDoIt.getState();
-    if (state.onboardingComplete) {
-      router.replace("/now");
-    } else {
-      router.replace("/onboarding");
+    if (typeof window === "undefined") return;
+    let done = false;
+    try {
+      const raw = localStorage.getItem("do-it-state");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        done = parsed?.state?.onboardingComplete === true;
+      }
+      if (!done) {
+        done = localStorage.getItem("do-it-onboarding-complete") === "1";
+      }
+    } catch {
+      done = false;
     }
-  }, [router]);
+    window.location.replace(done ? "/now" : "/onboarding");
+  }, []);
 
-  // Calm splash during redirect — no flash of empty
   return (
     <div
       style={{
-        position: "fixed",
-        inset: 0,
+        minHeight: "100dvh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#fff",
+        background: "var(--stage, #f2f2f7)",
+        fontFamily:
+          "-apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif",
       }}
     >
       <div
         style={{
-          fontSize: 28,
-          fontWeight: 800,
-          color: "var(--ink,#000)",
-          letterSpacing: "-0.045em",
-          opacity: 0.12,
+          fontSize: 24,
+          fontWeight: 700,
+          letterSpacing: "-0.03em",
+          color: "var(--label, #8E8E93)",
         }}
       >
-        Do It.
+        Loading…
       </div>
     </div>
   );
