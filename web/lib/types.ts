@@ -178,3 +178,25 @@ export type Person = {
   nextMove?: string;
   note?: string;
 };
+
+export type WishlistPriority = "low" | "medium" | "high";
+export type WishlistStatus = "wanted" | "bought" | "passed";
+export type WishlistCategory =
+  | "gear"
+  | "books"
+  | "experiences"
+  | "tools"
+  | "other";
+export type WishlistItem = {
+  id: string;
+  name: string;
+  expectedAmountCents: number;
+  currency: string;
+  priority?: WishlistPriority;
+  category?: WishlistCategory;
+  url?: string;
+  note?: string;
+  status: WishlistStatus;
+  createdAt: number;
+  boughtAt?: number;
+};

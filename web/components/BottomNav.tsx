@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const TABS = [
   {
     href: "/now",
+    label: "Now",
     glyph: (
       <svg viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="9" />
@@ -15,6 +16,7 @@ const TABS = [
   },
   {
     href: "/today",
+    label: "Today",
     glyph: (
       <svg viewBox="0 0 24 24">
         <rect x="3.5" y="5.5" width="17" height="15" rx="3" />
@@ -25,6 +27,7 @@ const TABS = [
   },
   {
     href: "/domains",
+    label: "Domains",
     glyph: (
       <svg viewBox="0 0 24 24">
         <rect x="3.5" y="4.5" width="17" height="5" rx="2" />
@@ -34,11 +37,13 @@ const TABS = [
     ),
   },
   {
-    href: "/visions",
+    href: "/more",
+    label: "More",
     glyph: (
       <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 4.5l1.6 6 5.9 1.5-5.9 1.5L12 19.5l-1.6-6L4.5 12l5.9-1.5L12 4.5z" />
+        <circle cx="5" cy="12" r="1.5" />
+        <circle cx="12" cy="12" r="1.5" />
+        <circle cx="19" cy="12" r="1.5" />
       </svg>
     ),
   },

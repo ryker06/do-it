@@ -16,7 +16,6 @@ import { DomainGlyph, ClockSvg, CheckSvg } from "@/components/icons";
 import BrainDumpSheet from "@/components/BrainDumpSheet";
 import { fetchTodayPrayers, minsUntilHHMM } from "@/lib/prayers";
 import { StateLoggerInline } from "@/components/StateLoggerInline";
-import { VoiceCommandStrip } from "@/components/VoiceCommandStrip";
 import type { Anchor } from "@/lib/types";
 
 const PRAYER_CACHE_KEY = "do-it-prayer-cache-v1";
@@ -748,7 +747,6 @@ export default function NowPage() {
     <>
       <Topbar name={topbarName} sub={topbarSub} live={live} />
       <StateLoggerInline />
-      <VoiceCommandStrip />
 
       {/* Anchor-interrupt: 5-min warning banner above hero */}
       {prayerWarning && !prayerNow && (

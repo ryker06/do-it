@@ -17,6 +17,7 @@ import type {
   Insight,
   WeeklyReview,
   Person,
+  WishlistItem,
 } from "./types";
 import {
   DOMAINS,
@@ -30,6 +31,7 @@ import {
   SEED_STATE_LOG,
   SEED_INSIGHTS,
   SEED_PEOPLE,
+  SEED_WISHLIST,
 } from "./seed";
 
 type UserPrefs = {
@@ -57,6 +59,7 @@ type State = {
   insights: Insight[];
   weeklyReviews: WeeklyReview[];
   people: Person[];
+  wishlist: WishlistItem[];
   userPrefs: UserPrefs;
 };
 
@@ -113,6 +116,14 @@ type Actions = {
   updatePerson: (id: string, patch: Partial<Omit<Person, "id">>) => void;
   // weekly review
   addWeeklyReview: (wr: Omit<WeeklyReview, "id">) => void;
+  // wishlist
+  addWishlistItem: (item: Omit<WishlistItem, "id" | "createdAt">) => void;
+  updateWishlistItem: (
+    id: string,
+    patch: Partial<Omit<WishlistItem, "id">>,
+  ) => void;
+  removeWishlistItem: (id: string) => void;
+  markWishlistBought: (id: string) => void;
   // NOW mid-session commands
   extendCurrent: (min: number) => void;
   skipCurrent: () => void;
@@ -143,6 +154,7 @@ export const useDoIt = create<State & Actions>()(
       insights: SEED_INSIGHTS,
       weeklyReviews: [],
       people: SEED_PEOPLE,
+      wishlist: SEED_WISHLIST,
       userPrefs: {
         wakeHHMM: "06:00",
         sleepHHMM: "22:00",
@@ -460,6 +472,53 @@ export const useDoIt = create<State & Actions>()(
         });
       },
 
+      addWishlistItem: (item) => {
+        const newItem: WishlistItem = {
+          ...item,
+          id: `w-${Date.now()}`,
+          createdAt: Date.now(),
+        };
+        set((s) => ({ wishlist: [...s.wishlist, newItem] }));
+      },
+
+      updateWishlistItem: (id, patch) => {
+        set((s) => ({
+          wishlist: s.wishlist.map((w) =>
+            w.id === id ? { ...w, ...patch } : w,
+          ),
+        }));
+      },
+
+      removeWishlistItem: (id) => {
+        set((s) => ({ wishlist: s.wishlist.filter((w) => w.id !== id) }));
+      },
+
+      markWishlistBought: (id) => {
+        const s = get();
+        const item = s.wishlist.find((w) => w.id === id);
+        if (!item) return;
+        const now = Date.now();
+        const todayISO = new Date(now).toISOString().slice(0, 10);
+        set((st) => ({
+          wishlist: st.wishlist.map((w) =>
+            w.id === id ? { ...w, status: "bought", boughtAt: now } : w,
+          ),
+          transactions: [
+            ...st.transactions,
+            {
+              id: `tx-w-${Date.now()}`,
+              kind: "expense" as const,
+              amountCents: item.expectedAmountCents,
+              currency: item.currency,
+              dateISO: todayISO,
+              category: `wishlist:${item.category ?? "other"}`,
+              note: item.name,
+              source: "manual" as const,
+            },
+          ],
+        }));
+      },
+
       extendCurrent: (min) => {
         set((s) => {
           const active = s.blocks.find(
@@ -543,7 +602,7 @@ export const useDoIt = create<State & Actions>()(
     }),
     {
       name: "do-it-state",
-      version: 10,
+      version: 11,
       skipHydration: true,
       migrate: (persistedState, _fromVersion) => {
         const s = persistedState as Record<string, unknown> | null;
@@ -707,6 +766,9 @@ export const useDoIt = create<State & Actions>()(
           people: Array.isArray(s?.people)
             ? (s.people as Person[])
             : SEED_PEOPLE,
+          wishlist: Array.isArray(s?.wishlist)
+            ? (s.wishlist as WishlistItem[])
+            : SEED_WISHLIST,
           userPrefs: {
             wakeHHMM: "06:00",
             sleepHHMM: "22:00",

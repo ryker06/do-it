@@ -1,6 +1,5 @@
 import { BottomNav } from "@/components/BottomNav";
 import { StoreHydrator } from "@/components/StoreHydrator";
-import { VoiceCaptureButton } from "@/components/VoiceCaptureButton";
 import { SyncOnLoad } from "@/components/SyncOnLoad";
 
 export default function ShellLayout({
@@ -14,7 +13,6 @@ export default function ShellLayout({
       <SyncOnLoad />
       {children}
       <BottomNav />
-      <VoiceCaptureButton />
     </div>
   );
 }

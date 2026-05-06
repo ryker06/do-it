@@ -10,6 +10,7 @@ import type {
   StateLogEntry,
   Insight,
   Person,
+  WishlistItem,
 } from "./types";
 
 export const DOMAINS: Domain[] = [
@@ -616,6 +617,59 @@ export const SEED_INSIGHTS: Insight[] = [
     text: "The goal is not to be perfect at prayer — it is to return quickly when you drift.",
     domainId: "religion",
     capturedAt: Date.now() - 86400_000,
+  },
+];
+
+export const SEED_WISHLIST: WishlistItem[] = [
+  {
+    id: "w1",
+    name: "Atomic Habits",
+    expectedAmountCents: 2400,
+    currency: "USD",
+    priority: "low",
+    category: "books",
+    status: "wanted",
+    createdAt: Date.now() - 7 * 86400_000,
+  },
+  {
+    id: "w2",
+    name: "Resistance bands set",
+    expectedAmountCents: 8900,
+    currency: "USD",
+    priority: "medium",
+    category: "gear",
+    status: "wanted",
+    createdAt: Date.now() - 5 * 86400_000,
+  },
+  {
+    id: "w3",
+    name: "USB-C hub (Anker 9-in-1)",
+    expectedAmountCents: 14500,
+    currency: "USD",
+    priority: "high",
+    category: "tools",
+    status: "wanted",
+    createdAt: Date.now() - 3 * 86400_000,
+  },
+  {
+    id: "w4",
+    name: "Ali Abdaal productivity course",
+    expectedAmountCents: 39900,
+    currency: "USD",
+    priority: "medium",
+    category: "experiences",
+    status: "wanted",
+    createdAt: Date.now() - 2 * 86400_000,
+  },
+  {
+    id: "w5",
+    name: "Mechanical keyboard (Keychron K2)",
+    expectedAmountCents: 9900,
+    currency: "USD",
+    priority: "low",
+    category: "tools",
+    status: "wanted",
+    createdAt: Date.now() - 86400_000,
   },
 ];
 
