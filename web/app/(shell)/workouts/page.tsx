@@ -16,24 +16,16 @@ export default function WorkoutsPage() {
   const [exercise, setExercise] = useState("");
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
-  const [echo, setEcho] = useState<string | null>(null);
+  const [echoes, setEchoes] = useState<Record<string, string>>({});
 
   const today = todayISO();
   const todayWorkout = workouts.find((w) => w.dateISO === today);
-
-  function ensureTodayWorkout() {
-    if (!todayWorkout) {
-      addWorkout({ dateISO: today, exercises: [] });
-    }
-    return workouts.find((w) => w.dateISO === today) ?? todayWorkout;
-  }
 
   function handleLogSet() {
     if (!exercise.trim() || !reps || !weight) return;
     let wo = workouts.find((w) => w.dateISO === today);
     if (!wo) {
       addWorkout({ dateISO: today, exercises: [] });
-      // store is sync via zustand — re-read
       wo = useDoIt.getState().workouts.find((w) => w.dateISO === today);
     }
     if (!wo) return;
@@ -43,15 +35,18 @@ export default function WorkoutsPage() {
       (e) => e.name.toLowerCase() === exName.toLowerCase(),
     );
     if (!ex) {
-      // add new exercise inline via addWorkoutSet path — need exercise id
       const exId = `ex-${Date.now()}`;
-      // We'll use addWorkout to get a fresh workout with the exercise
       useDoIt.getState().addWorkout({
         dateISO: today,
         exercises: [...wo.exercises, { id: exId, name: exName, sets: [] }],
       });
-      ex = { id: exId, name: exName, sets: [] };
+      wo = useDoIt.getState().workouts.find((w) => w.dateISO === today);
+      if (!wo) return;
+      ex = wo.exercises.find(
+        (e) => e.name.toLowerCase() === exName.toLowerCase(),
+      );
     }
+    if (!ex) return;
 
     addWorkoutSet(wo.id, ex.id, {
       reps: parseInt(reps),
@@ -59,11 +54,15 @@ export default function WorkoutsPage() {
       loggedAt: Date.now(),
     });
 
-    const target = parseFloat(weight) * 1.1;
-    setEcho(`logged ${reps}×${weight}kg. → ${Math.round(target)}kg coming.`);
+    const target = Math.round(parseFloat(weight) * 1.1);
+    const key = `${wo.id}-${ex.id}`;
+    setEchoes((p) => ({
+      ...p,
+      [key]: `${reps}×${weight}kg logged. → ${target}kg coming.`,
+    }));
+    setTimeout(() => setEchoes((p) => ({ ...p, [key]: "" })), 3000);
     setReps("");
     setWeight("");
-    setTimeout(() => setEcho(null), 3000);
   }
 
   // PRs: best set per exercise across all workouts
@@ -86,20 +85,26 @@ export default function WorkoutsPage() {
     });
   });
 
-  return (
-    <div className="shell-content">
-      <Topbar name="workouts." sub="lift logged. → stronger coming." />
+  const sortedWorkouts = [...workouts].sort(
+    (a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime(),
+  );
 
-      {/* Tab toggle */}
+  return (
+    <>
+      <Topbar
+        name="the mountain doesn't care."
+        sub="lift logged. → stronger coming."
+      />
+
+      {/* Ink-underline tab toggle — NOT frosted pill */}
       <div
         style={{
           display: "flex",
-          gap: 8,
+          gap: 0,
+          padding: "0 0 0",
+          borderBottom: "0.5px solid rgba(60,60,67,0.10)",
           marginBottom: 18,
-          background: "var(--inset)",
-          padding: 4,
-          borderRadius: 14,
-          boxShadow: "inset 0 0 0 0.5px var(--hairline-2)",
+          position: "relative",
         }}
       >
         {(["today", "history"] as Tab[]).map((t) => (
@@ -108,215 +113,429 @@ export default function WorkoutsPage() {
             onClick={() => setTab(t)}
             style={{
               flex: 1,
-              padding: "9px 0",
-              borderRadius: 10,
-              border: "none",
-              fontFamily: "inherit",
-              fontSize: 13,
+              textAlign: "center",
+              padding: "10px 0 14px",
+              fontSize: 13.5,
               fontWeight: 700,
               letterSpacing: "-0.012em",
+              color: tab === t ? "#0B0B0F" : "#8E8E93",
               cursor: "pointer",
-              background: tab === t ? "var(--card)" : "transparent",
-              color: tab === t ? "var(--ink)" : "var(--label)",
-              boxShadow: tab === t ? "var(--shadow-stack)" : "none",
-              transition: "background 160ms cubic-bezier(.32,.72,0,1)",
+              position: "relative",
+              background: "none",
+              border: "none",
+              fontFamily: "inherit",
             }}
           >
             {t === "today" ? "today's lift" : "prs · history"}
+            {tab === t && (
+              <div
+                style={{
+                  position: "absolute",
+                  left: "20%",
+                  right: "20%",
+                  bottom: -0.5,
+                  height: 2,
+                  background: "#0B0B0F",
+                  borderRadius: 2,
+                }}
+              />
+            )}
           </button>
         ))}
       </div>
 
       {tab === "today" && (
         <div>
-          {/* Log set form */}
+          {/* Today hero card */}
           <div
             style={{
-              background: "var(--card)",
-              borderRadius: 20,
-              padding: "16px",
-              boxShadow: "var(--shadow-stack)",
-              marginBottom: 14,
+              position: "relative",
+              overflow: "hidden",
+              background: "linear-gradient(180deg,#E2F4E6 0%,#CDEBD3 100%)",
+              borderRadius: 24,
+              padding: "20px 20px 18px",
+              marginBottom: 18,
+              boxShadow:
+                "0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18)",
             }}
           >
+            {/* dot pattern */}
             <div
               style={{
-                fontSize: 10,
+                position: "absolute",
+                inset: 0,
+                backgroundImage:
+                  "radial-gradient(circle at 22% 28%,rgba(255,255,255,0.55) 1.5px,transparent 2px),radial-gradient(circle at 70% 64%,rgba(255,255,255,0.40) 1.5px,transparent 2px)",
+                backgroundSize: "18px 18px",
+                opacity: 0.4,
+                pointerEvents: "none",
+              }}
+            />
+            {/* dumbbell glyph top-right */}
+            <div
+              style={{
+                position: "absolute",
+                right: -10,
+                top: -6,
+                width: 110,
+                height: 110,
+                opacity: 0.25,
+                pointerEvents: "none",
+              }}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="100%"
+                height="100%"
+                stroke="#1F5C2C"
+                strokeWidth={1.4}
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M3 12h18" />
+                <path d="M6 8v8" />
+                <path d="M18 8v8" />
+                <path d="M2 10v4" />
+                <path d="M22 10v4" />
+              </svg>
+            </div>
+
+            <div
+              style={{
+                fontSize: 10.5,
+                color: "#1F5C2C",
                 fontWeight: 700,
                 letterSpacing: "0.14em",
                 textTransform: "uppercase",
-                color: "var(--label)",
-                marginBottom: 12,
+                position: "relative",
               }}
             >
-              log a set
+              today
             </div>
+            <div
+              style={{
+                fontSize: 28,
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                color: "#0B0B0F",
+                lineHeight: 1.05,
+                marginTop: 6,
+                position: "relative",
+              }}
+            >
+              {todayWorkout && todayWorkout.exercises.length > 0
+                ? `${todayWorkout.exercises.length} exercise${todayWorkout.exercises.length !== 1 ? "s" : ""}`
+                : "start lifting."}
+            </div>
+            <div
+              style={{
+                fontSize: 13,
+                color: "#1F5C2C",
+                fontWeight: 600,
+                marginTop: 8,
+                letterSpacing: "-0.005em",
+                position: "relative",
+              }}
+            >
+              {todayWorkout
+                ? `${todayWorkout.exercises.reduce((a, e) => a + e.sets.length, 0)} sets logged`
+                : "no sets yet · log below"}
+            </div>
+          </div>
+
+          {/* Exercise cards from today's workout */}
+          {todayWorkout && todayWorkout.exercises.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 12,
+                marginBottom: 14,
+              }}
+            >
+              {todayWorkout.exercises.map((ex) => {
+                const echoKey = `${todayWorkout.id}-${ex.id}`;
+                const echo = echoes[echoKey];
+                return (
+                  <div
+                    key={ex.id}
+                    style={{
+                      background: "#fff",
+                      borderRadius: 18,
+                      padding: "14px 16px",
+                      boxShadow:
+                        "0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12)",
+                    }}
+                  >
+                    {/* Exercise header */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                        marginBottom: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 36,
+                          height: 36,
+                          borderRadius: 12,
+                          background: "#FBFAF8",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 18,
+                          lineHeight: 1,
+                          boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+                          flexShrink: 0,
+                        }}
+                      >
+                        🏋️
+                      </div>
+                      <div>
+                        <div
+                          style={{
+                            fontSize: 15,
+                            fontWeight: 700,
+                            color: "#0B0B0F",
+                            letterSpacing: "-0.012em",
+                          }}
+                        >
+                          {ex.name}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 11,
+                            color: "#8E8E93",
+                            fontWeight: 600,
+                            letterSpacing: "-0.005em",
+                          }}
+                        >
+                          {ex.sets.length} sets
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Echo line */}
+                    {echo && (
+                      <div
+                        style={{
+                          fontSize: 11.5,
+                          color: "#6E6E73",
+                          fontWeight: 600,
+                          letterSpacing: "-0.005em",
+                          marginBottom: 10,
+                          lineHeight: 1.45,
+                        }}
+                      >
+                        {echo.split("→").map((part, i) =>
+                          i === 0 ? (
+                            <span key={i}>{part}→ </span>
+                          ) : (
+                            <strong
+                              key={i}
+                              style={{ color: "#1F5C2C", fontWeight: 700 }}
+                            >
+                              {part}
+                            </strong>
+                          ),
+                        )}
+                      </div>
+                    )}
+
+                    {/* Sets table */}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 0,
+                      }}
+                    >
+                      {ex.sets.map((s, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: "24px 1fr 1fr 28px",
+                            gap: 10,
+                            alignItems: "center",
+                            padding: "9px 4px",
+                            borderTop: "0.5px solid rgba(60,60,67,0.06)",
+                            fontVariantNumeric: "tabular-nums",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: 11,
+                              color: "#8E8E93",
+                              fontWeight: 700,
+                              letterSpacing: "0.06em",
+                            }}
+                          >
+                            {i + 1}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: 14.5,
+                              color: "#0B0B0F",
+                              fontWeight: 700,
+                              letterSpacing: "-0.01em",
+                            }}
+                          >
+                            {s.reps}
+                            <span
+                              style={{
+                                fontSize: 11,
+                                color: "#8E8E93",
+                                fontWeight: 600,
+                                marginLeft: 3,
+                              }}
+                            >
+                              reps
+                            </span>
+                          </span>
+                          <span
+                            style={{
+                              fontSize: 14.5,
+                              color: "#0B0B0F",
+                              fontWeight: 700,
+                              letterSpacing: "-0.01em",
+                            }}
+                          >
+                            {s.weightKg}
+                            <span
+                              style={{
+                                fontSize: 11,
+                                color: "#8E8E93",
+                                fontWeight: 600,
+                                marginLeft: 3,
+                              }}
+                            >
+                              kg
+                            </span>
+                          </span>
+                          <div
+                            style={{
+                              width: 22,
+                              height: 22,
+                              borderRadius: "50%",
+                              background: "#C7F0CF",
+                              color: "#1F5C2C",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: 11,
+                              fontWeight: 800,
+                              boxShadow:
+                                "inset 0 0 0 0.5px rgba(31,92,44,0.18)",
+                            }}
+                          >
+                            ✓
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Log set form */}
+          <div
+            style={{
+              background: "#FBFAF8",
+              borderRadius: 14,
+              padding: "14px 16px",
+              boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+              marginBottom: 14,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              flexWrap: "wrap",
+            }}
+          >
             <input
               value={exercise}
               onChange={(e) => setExercise(e.target.value)}
-              placeholder="exercise name"
+              placeholder="exercise"
               style={{
-                width: "100%",
-                background: "var(--inset)",
+                flex: "2 1 120px",
+                background: "#fff",
                 border: "none",
-                borderRadius: 12,
-                padding: "10px 12px",
-                fontSize: 14,
+                borderRadius: 10,
+                padding: "9px 11px",
+                fontSize: 13.5,
                 fontWeight: 600,
-                color: "var(--ink)",
+                color: "#0B0B0F",
                 fontFamily: "inherit",
                 outline: "none",
-                marginBottom: 8,
-                boxShadow: "inset 0 0 0 0.5px var(--hairline-2)",
+                boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
               }}
             />
-            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-              <input
-                type="number"
-                value={reps}
-                onChange={(e) => setReps(e.target.value)}
-                placeholder="reps"
-                style={{
-                  flex: 1,
-                  background: "var(--inset)",
-                  border: "none",
-                  borderRadius: 12,
-                  padding: "10px 12px",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "var(--ink)",
-                  fontFamily: "inherit",
-                  outline: "none",
-                  boxShadow: "inset 0 0 0 0.5px var(--hairline-2)",
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              />
-              <input
-                type="number"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                placeholder="kg"
-                style={{
-                  flex: 1,
-                  background: "var(--inset)",
-                  border: "none",
-                  borderRadius: 12,
-                  padding: "10px 12px",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "var(--ink)",
-                  fontFamily: "inherit",
-                  outline: "none",
-                  boxShadow: "inset 0 0 0 0.5px var(--hairline-2)",
-                  fontVariantNumeric: "tabular-nums",
-                }}
-              />
-            </div>
+            <input
+              type="number"
+              value={reps}
+              onChange={(e) => setReps(e.target.value)}
+              placeholder="reps"
+              style={{
+                flex: "1 1 60px",
+                background: "#fff",
+                border: "none",
+                borderRadius: 10,
+                padding: "9px 11px",
+                fontSize: 13.5,
+                fontWeight: 600,
+                color: "#0B0B0F",
+                fontFamily: "inherit",
+                outline: "none",
+                boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            />
+            <input
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleLogSet()}
+              placeholder="kg"
+              style={{
+                flex: "1 1 60px",
+                background: "#fff",
+                border: "none",
+                borderRadius: 10,
+                padding: "9px 11px",
+                fontSize: 13.5,
+                fontWeight: 600,
+                color: "#0B0B0F",
+                fontFamily: "inherit",
+                outline: "none",
+                boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            />
             <button
               onClick={handleLogSet}
               style={{
-                width: "100%",
+                flex: "0 0 auto",
                 background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
                 color: "#fff",
                 border: "none",
-                borderRadius: 14,
-                padding: "13px 0",
-                fontSize: 14,
-                fontWeight: 600,
+                borderRadius: 10,
+                padding: "10px 16px",
+                fontSize: 13,
+                fontWeight: 700,
                 fontFamily: "inherit",
                 cursor: "pointer",
                 boxShadow:
-                  "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 0.5px rgba(0,0,0,0.5), 0 12px 24px -14px rgba(10,10,20,0.45)",
+                  "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55)",
               }}
             >
-              log set
+              + set
             </button>
-            {echo && (
-              <div
-                style={{
-                  fontSize: 11,
-                  color: "var(--label)",
-                  fontWeight: 600,
-                  fontStyle: "italic",
-                  marginTop: 10,
-                }}
-              >
-                {echo}
-              </div>
-            )}
           </div>
-
-          {/* Today's sets */}
-          {todayWorkout && todayWorkout.exercises.length > 0 ? (
-            <div
-              style={{
-                background: "var(--card)",
-                borderRadius: 20,
-                padding: "16px",
-                boxShadow: "var(--shadow-stack)",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "var(--label)",
-                  marginBottom: 12,
-                }}
-              >
-                today
-              </div>
-              {todayWorkout.exercises.map((ex) => (
-                <div key={ex.id} style={{ marginBottom: 14 }}>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: "var(--ink)",
-                      letterSpacing: "-0.018em",
-                      marginBottom: 6,
-                    }}
-                  >
-                    {ex.name}
-                  </div>
-                  {ex.sets.map((s, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "6px 0",
-                        borderBottom: "0.5px solid var(--hairline-2)",
-                        fontSize: 13,
-                        color: "var(--ink-2)",
-                        fontWeight: 600,
-                        fontVariantNumeric: "tabular-nums",
-                      }}
-                    >
-                      <span>set {i + 1}</span>
-                      <span>
-                        {s.reps} × {s.weightKg}kg
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "32px 0",
-                color: "var(--label)",
-                fontSize: 14,
-                fontWeight: 500,
-              }}
-            >
-              nothing logged yet. · start above.
-            </div>
-          )}
         </div>
       )}
 
@@ -324,124 +543,198 @@ export default function WorkoutsPage() {
         <div>
           {/* PRs */}
           {Object.keys(prMap).length > 0 && (
-            <div
-              style={{
-                background: "var(--card)",
-                borderRadius: 20,
-                padding: "16px",
-                boxShadow: "var(--shadow-stack)",
-                marginBottom: 14,
-              }}
-            >
+            <div style={{ marginBottom: 18 }}>
               <div
                 style={{
-                  fontSize: 10,
+                  fontSize: 10.5,
                   fontWeight: 700,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "var(--label)",
-                  marginBottom: 12,
+                  color: "#8E8E93",
+                  marginBottom: 10,
+                  paddingLeft: 4,
                 }}
               >
                 best lifts
               </div>
-              {Object.entries(prMap).map(([name, pr]) => (
-                <div
-                  key={name}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "baseline",
-                    padding: "9px 0",
-                    borderBottom: "0.5px solid var(--hairline-2)",
-                  }}
-                >
-                  <span
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 10 }}
+              >
+                {Object.entries(prMap).map(([name, pr]) => (
+                  <div
+                    key={name}
                     style={{
-                      fontSize: 13.5,
-                      fontWeight: 700,
-                      color: "var(--ink)",
-                      letterSpacing: "-0.012em",
+                      background: "#fff",
+                      borderRadius: 18,
+                      padding: "16px 18px",
+                      boxShadow:
+                        "0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 14,
                     }}
                   >
-                    {name}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 15,
-                      fontWeight: 700,
-                      color: "var(--ink)",
-                      fontVariantNumeric: "tabular-nums",
-                    }}
-                  >
-                    {pr.reps} × {pr.weightKg}kg
-                  </span>
-                </div>
-              ))}
+                    <div
+                      style={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: 12,
+                        background:
+                          "linear-gradient(180deg,#FFD9E0 0%,#FFB6C5 100%)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        width={18}
+                        height={18}
+                        stroke="#7A2A3C"
+                        strokeWidth={2}
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M3 12h18" />
+                        <path d="M6 8v8" />
+                        <path d="M18 8v8" />
+                        <path d="M2 10v4" />
+                        <path d="M22 10v4" />
+                      </svg>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: "#0B0B0F",
+                          letterSpacing: "-0.012em",
+                        }}
+                      >
+                        {name}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11.5,
+                          color: "#6E6E73",
+                          fontWeight: 600,
+                          marginTop: 2,
+                          letterSpacing: "-0.005em",
+                        }}
+                      >
+                        {new Date(pr.date).toLocaleDateString("en", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 18,
+                        fontWeight: 800,
+                        color: "#0B0B0F",
+                        fontVariantNumeric: "tabular-nums",
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      {pr.reps}×{pr.weightKg}kg
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
           {/* Recent sessions */}
-          {[...workouts]
-            .sort(
-              (a, b) =>
-                new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime(),
-            )
-            .map((w) => (
+          {sortedWorkouts.length > 0 && (
+            <div>
               <div
-                key={w.id}
                 style={{
-                  background: "var(--card)",
-                  borderRadius: 18,
-                  padding: "14px 16px",
-                  boxShadow: "var(--shadow-stack)",
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "#8E8E93",
                   marginBottom: 10,
+                  paddingLeft: 4,
                 }}
               >
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color: "var(--label-2)",
-                    letterSpacing: "-0.005em",
-                    marginBottom: 6,
-                  }}
-                >
-                  {new Date(w.dateISO).toLocaleDateString("en", {
-                    weekday: "short",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </div>
-                {w.exercises.map((e) => (
+                recent sessions
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {sortedWorkouts.map((w) => (
                   <div
-                    key={e.id}
+                    key={w.id}
                     style={{
-                      fontSize: 13,
-                      color: "var(--ink-2)",
-                      fontWeight: 600,
-                      letterSpacing: "-0.012em",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "baseline",
+                      padding: "11px 4px",
+                      borderBottom: "0.5px solid rgba(60,60,67,0.10)",
                     }}
                   >
-                    {e.name} · {e.sets.length} sets
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 13.5,
+                          fontWeight: 700,
+                          color: "#0B0B0F",
+                          letterSpacing: "-0.012em",
+                        }}
+                      >
+                        {new Date(w.dateISO).toLocaleDateString("en", {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 11.5,
+                          color: "#6E6E73",
+                          fontWeight: 600,
+                          marginTop: 2,
+                          letterSpacing: "-0.005em",
+                        }}
+                      >
+                        {w.exercises.map((e) => e.name).join(", ") ||
+                          "no exercises"}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: "#8E8E93",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {w.exercises.reduce((a, e) => a + e.sets.length, 0)} sets
+                    </div>
                   </div>
                 ))}
-                {w.notes && (
-                  <div
-                    style={{
-                      fontSize: 11.5,
-                      color: "var(--label)",
-                      fontStyle: "italic",
-                      marginTop: 6,
-                    }}
-                  >
-                    {w.notes}
-                  </div>
-                )}
               </div>
-            ))}
+            </div>
+          )}
+
+          {workouts.length === 0 && (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "48px 0",
+                color: "#8E8E93",
+                fontSize: 14,
+                fontWeight: 500,
+              }}
+            >
+              no sessions yet. · start lifting.
+            </div>
+          )}
         </div>
       )}
-    </div>
+
+      <div style={{ height: 110 }} />
+    </>
   );
 }
