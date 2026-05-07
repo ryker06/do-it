@@ -8,23 +8,43 @@ import { DomainGlyph } from "@/components/icons";
 import type { DomainId } from "@/lib/types";
 
 const DOMAIN_BG: Record<DomainId, string> = {
-  business: "linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%)",
-  religion: "linear-gradient(180deg,#E2F4E6 0%, #C0E5C8 100%)",
-  learning: "linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%)",
-  fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
-  home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
-  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
+  business: "linear-gradient(135deg,#E2EEFF 0%,#C9DBFF 100%)",
+  religion: "linear-gradient(135deg,#E2F4E6 0%,#C0E5C8 100%)",
+  learning: "linear-gradient(135deg,#FFE0E8 0%,#FFC9D6 100%)",
+  fitness: "linear-gradient(135deg,#FFD0DA 0%,#FFB6C5 100%)",
+  home: "linear-gradient(135deg,#EAEFF3 0%,#D4DCE3 100%)",
+  food: "linear-gradient(135deg,#FFF0DD 0%,#FFDFB5 100%)",
 };
 
-function deadlineCountdown(deadline: string): string {
+const DOMAIN_INK: Record<DomainId, string> = {
+  business: "#1748A8",
+  religion: "#1F5C2C",
+  learning: "#7A2A3C",
+  fitness: "#7A2A3C",
+  home: "#36475A",
+  food: "#7A4A1A",
+};
+
+function deadlineCountdown(deadline: string): { label: string; tint: "green" | "warm" | "cool" } {
   const diff = new Date(deadline).getTime() - Date.now();
   const days = Math.round(diff / 86_400_000);
-  if (days < -1) return "moved";
-  if (days <= 0) return "today";
-  if (days < 7) return `${days}d left`;
+  if (days < -1) return { label: "moved", tint: "warm" };
+  if (days <= 0) return { label: "today", tint: "warm" };
+  if (days < 7) return { label: `${days}d left`, tint: "warm" };
   const weeks = Math.round(days / 7);
-  if (weeks < 52) return `${weeks} weeks out`;
-  return `${Math.round(weeks / 52)} yr out`;
+  if (weeks < 52) return { label: `${weeks}w out`, tint: "cool" };
+  return { label: `${Math.round(weeks / 52)} yr`, tint: "green" };
+}
+
+function resolveDeadlineNumerals(deadline: string): { num: string; unit: string } {
+  const diff = new Date(deadline).getTime() - Date.now();
+  const days = Math.round(diff / 86_400_000);
+  if (days <= 0) return { num: "0", unit: "days" };
+  if (days < 7) return { num: String(days), unit: days === 1 ? "day" : "days" };
+  const weeks = Math.round(days / 7);
+  if (weeks < 52) return { num: String(weeks), unit: weeks === 1 ? "week" : "weeks" };
+  const yrs = Math.round(weeks / 52);
+  return { num: String(yrs), unit: yrs === 1 ? "year" : "years" };
 }
 
 export function ClientView({ id }: { id: string }) {
@@ -47,24 +67,12 @@ export function ClientView({ id }: { id: string }) {
           gap: 12,
         }}
       >
-        <div
-          style={{
-            fontSize: 15,
-            fontWeight: 600,
-            color: "var(--label,#8E8E93)",
-          }}
-        >
+        <div style={{ fontSize: 15, fontWeight: 600, color: "var(--label,#8E8E93)" }}>
           vision not found.
         </div>
         <button
           onClick={() => router.back()}
-          style={{
-            fontSize: 14,
-            color: "var(--blue,#007AFF)",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-          }}
+          style={{ fontSize: 14, color: "#0A84FF", background: "none", border: "none", cursor: "pointer" }}
         >
           go back
         </button>
@@ -75,7 +83,15 @@ export function ClientView({ id }: { id: string }) {
   const domainId = vision.domainId;
   const visionId = vision.id;
   const vGoals = goals.filter((g) => g.visionId === visionId);
-  const deadline = vision.deadline ? deadlineCountdown(vision.deadline) : null;
+  const deadlineInfo = vision.deadline ? deadlineCountdown(vision.deadline) : null;
+  const deadlineNums = vision.deadline ? resolveDeadlineNumerals(vision.deadline) : null;
+
+  // Deadline chip tint styles
+  const CHIP_TINT: Record<"green" | "warm" | "cool", { bg: string; color: string }> = {
+    green: { bg: "#C7F0CF", color: "#1F5C2C" },
+    warm: { bg: "#FFE7EC", color: "#7A2A3C" },
+    cool: { bg: "#E2EEFF", color: "#0050C8" },
+  };
 
   function handleSaveNextMove() {
     if (nextMoveDraft.trim()) {
@@ -85,241 +101,138 @@ export function ClientView({ id }: { id: string }) {
   }
 
   return (
-    <div
-      style={{
-        position: "relative",
-        zIndex: 2,
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-      }}
-    >
-      {/* nav row */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          marginBottom: 8,
-          height: 36,
-        }}
-      >
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", background: "#FFFFFF" }}>
+      {/* back row */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 4px 6px", flexShrink: 0 }}>
         <button
           onClick={() => router.back()}
           style={{
-            width: 34,
-            height: 34,
-            borderRadius: "50%",
-            background: "var(--inset,#F2F2F7)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            width: 34, height: 34, borderRadius: "50%",
+            background: "#F4F5F7",
+            display: "flex", alignItems: "center", justifyContent: "center",
             flexShrink: 0,
             boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
-            border: "none",
-            cursor: "pointer",
+            border: "none", cursor: "pointer",
           }}
         >
-          <svg
-            viewBox="0 0 24 24"
-            width={11}
-            height={11}
-            fill="none"
-            stroke="var(--ink-2,#1C1C1E)"
-            strokeWidth={2.4}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
+          <svg viewBox="0 0 24 24" width={11} height={11} fill="none"
+            stroke="#1C1C1E" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 6l-6 6 6 6" />
           </svg>
         </button>
-
-        {/* domain tag */}
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "5px 10px 5px 7px",
-            background: "var(--inset,#F2F2F7)",
-            borderRadius: 999,
-            boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
-          }}
-        >
-          <div
-            className={`ddisc ${domainId}`}
-            style={{ width: 14, height: 14 }}
-          >
-            <DomainGlyph id={domainId} size={9} />
-          </div>
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              color: "var(--ink-2,#1C1C1E)",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-            }}
-          >
-            {domainId}
-          </span>
-        </div>
-
-        <div className="me-avatar" style={{ marginLeft: "auto" }}>
-          <img
-            src="https://www.tapback.co/api/avatar/jay.webp?color=7"
-            alt="Adam"
-          />
-        </div>
-
-        <button
-          onClick={() => router.push(`/visions/${id}/edit`)}
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: "50%",
-            background: "var(--inset,#F2F2F7)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          <svg
-            viewBox="0 0 24 24"
-            width={14}
-            height={14}
-            fill="none"
-            stroke="var(--label-2,#6E6E73)"
-            strokeWidth={2}
-            strokeLinecap="round"
-          >
-            <circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none" />
-            <circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none" />
-            <circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none" />
-          </svg>
-        </button>
+        <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8E8E93" }}>
+          {domainId}
+        </span>
       </div>
 
       {/* scroll body */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: "auto",
-          padding: "0 0 110px",
-          WebkitMaskImage:
-            "linear-gradient(180deg, #000 0%, #000 92%, transparent 100%)",
-          maskImage:
-            "linear-gradient(180deg, #000 0%, #000 92%, transparent 100%)",
-        }}
-      >
-        {/* Vision card — identity BIG at top per v2 canon */}
-        <div
-          style={{
-            position: "relative",
-            background: "var(--card,#fff)",
-            borderRadius: 24,
-            padding: "28px 28px 24px",
-            boxShadow: "var(--shadow-card)",
-            marginBottom: 18,
-          }}
-        >
-          {/* inset highlight */}
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              borderRadius: 24,
-              boxShadow:
-                "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.06)",
-              pointerEvents: "none",
-            }}
-          />
+      <div style={{ flex: 1, overflowY: "auto", paddingBottom: 110 }}>
 
-          {/* deadline pill top-right */}
-          {deadline && (
-            <div
-              style={{
-                position: "absolute",
-                top: 20,
-                right: 20,
-                fontSize: 10.5,
-                fontWeight: 700,
-                color: "var(--label-2,#6E6E73)",
-                background: "var(--inset,#F2F2F7)",
-                padding: "4px 10px",
-                borderRadius: 999,
-                boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
-                fontVariantNumeric: "tabular-nums",
-              }}
-            >
-              {deadline}
+        {/* Full-bleed cover */}
+        <div style={{
+          position: "relative", height: 220,
+          background: DOMAIN_BG[domainId],
+          overflow: "hidden",
+          marginBottom: 0,
+        }}>
+          {/* dot texture */}
+          <div style={{
+            position: "absolute", inset: 0,
+            backgroundImage: "radial-gradient(circle at 18% 22%,rgba(255,255,255,0.55) 1.5px,transparent 2px),radial-gradient(circle at 70% 70%,rgba(255,255,255,0.45) 1.5px,transparent 2px)",
+            backgroundSize: "18px 18px", opacity: 0.6, pointerEvents: "none",
+          }} />
+
+          {/* domain glyph center */}
+          <div style={{
+            position: "absolute", inset: 0,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <div style={{
+              width: 72, height: 72, borderRadius: "50%",
+              background: "rgba(255,255,255,0.55)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 0 0 0.5px rgba(20,20,30,0.06)",
+            }}>
+              <DomainGlyph id={domainId} size={32} />
+            </div>
+          </div>
+
+          {/* deadline chip — rotated -7deg, top-right */}
+          {deadlineInfo && (
+            <div style={{
+              position: "absolute", top: 14, right: 14,
+              display: "inline-flex", alignItems: "center", gap: 6,
+              background: CHIP_TINT[deadlineInfo.tint].bg,
+              color: CHIP_TINT[deadlineInfo.tint].color,
+              padding: "6px 12px", borderRadius: 999,
+              fontSize: 11, fontWeight: 700, letterSpacing: "-0.005em",
+              transform: "rotate(-7deg)",
+              boxShadow: "0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset",
+              fontVariantNumeric: "tabular-nums",
+            }}>
+              {deadlineInfo.label}
             </div>
           )}
+        </div>
 
-          {/* identity line — display weight, BIG */}
-          <div
-            style={{
-              fontSize: 34,
-              fontWeight: 800,
-              letterSpacing: "-0.04em",
-              lineHeight: 1.05,
-              color: "var(--ink,#000)",
-              marginBottom: 8,
-              paddingRight: deadline ? 120 : 0,
-            }}
-          >
+        {/* Detail body */}
+        <div style={{ padding: "22px 22px 28px" }}>
+          {/* eyebrow */}
+          <div style={{ fontSize: 10.5, fontWeight: 700, color: "#8E8E93", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+            {domainId}
+          </div>
+
+          {/* identity BIG */}
+          <div style={{
+            fontSize: 32, fontWeight: 800, letterSpacing: "-0.03em",
+            color: "#0B0B0F", lineHeight: 1.1, marginTop: 6,
+          }}>
             {vision.identity ?? vision.title}
           </div>
 
           {/* aim */}
-          <div
-            style={{
-              fontSize: 15,
-              color: "var(--label-2,#6E6E73)",
-              fontWeight: 500,
-              letterSpacing: "-0.012em",
-              lineHeight: 1.4,
-              marginBottom: 18,
-            }}
-          >
-            {vision.blurb}
-          </div>
+          {vision.blurb && (
+            <div style={{
+              fontSize: 14.5, color: "#3A3A3C", fontWeight: 500,
+              letterSpacing: "-0.005em", lineHeight: 1.5, marginTop: 10,
+            }}>
+              {vision.blurb}
+            </div>
+          )}
 
           {/* targetMetric */}
           {vision.targetMetric && (
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: "var(--label-2,#6E6E73)",
-                letterSpacing: "-0.005em",
-                marginBottom: 14,
-              }}
-            >
+            <div style={{
+              fontSize: 13, fontWeight: 600, color: "#6E6E73",
+              letterSpacing: "-0.005em", marginTop: 8,
+            }}>
               {vision.targetMetric}
             </div>
           )}
 
+          {/* deadline countdown big */}
+          {deadlineNums && (
+            <div style={{
+              display: "flex", alignItems: "baseline", justifyContent: "space-between",
+              marginTop: 18, padding: "14px 16px",
+              background: "#F4F5F7", borderRadius: 16,
+              boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+            }}>
+              <div style={{ fontSize: 10.5, fontWeight: 700, color: "#8E8E93", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+                deadline
+              </div>
+              <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.025em", color: "#0B0B0F", fontVariantNumeric: "tabular-nums" }}>
+                {deadlineNums.num}
+                <small style={{ fontSize: 11, fontWeight: 600, color: "#8E8E93", marginLeft: 4, letterSpacing: 0 }}>
+                  {deadlineNums.unit}
+                </small>
+              </div>
+            </div>
+          )}
+
           {/* next move — editable inline */}
-          <div
-            style={{
-              borderTop: "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
-              paddingTop: 14,
-            }}
-          >
-            <div
-              style={{
-                fontSize: 9.5,
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "var(--label,#8E8E93)",
-                marginBottom: 6,
-              }}
-            >
+          <div style={{ marginTop: 18 }}>
+            <div style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8E8E93", marginBottom: 8 }}>
               next move
             </div>
             {editingNextMove ? (
@@ -335,32 +248,20 @@ export function ClientView({ id }: { id: string }) {
                   }}
                   placeholder="one concrete next move..."
                   style={{
-                    flex: 1,
-                    background: "var(--inset,#F2F2F7)",
-                    border: "none",
-                    outline: "none",
-                    borderRadius: 10,
-                    padding: "9px 12px",
-                    fontSize: 13.5,
-                    fontWeight: 500,
-                    color: "var(--ink,#000)",
-                    fontFamily: "inherit",
-                    letterSpacing: "-0.01em",
-                    boxShadow: "inset 0 0 0 1.5px var(--blue,#007AFF)",
+                    flex: 1, background: "#F4F5F7", border: "none", outline: "none",
+                    borderRadius: 10, padding: "9px 12px",
+                    fontSize: 13.5, fontWeight: 500, color: "#0B0B0F",
+                    fontFamily: "inherit", letterSpacing: "-0.01em",
+                    boxShadow: "inset 0 0 0 1.5px #0A84FF",
                   }}
                 />
                 <button
                   onClick={handleSaveNextMove}
                   style={{
                     background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 10,
-                    padding: "9px 14px",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    fontFamily: "inherit",
-                    cursor: "pointer",
+                    color: "#fff", border: "none", borderRadius: 10,
+                    padding: "9px 14px", fontSize: 13, fontWeight: 600,
+                    fontFamily: "inherit", cursor: "pointer",
                   }}
                 >
                   set
@@ -368,216 +269,124 @@ export function ClientView({ id }: { id: string }) {
               </div>
             ) : (
               <button
-                onClick={() => {
-                  setNextMoveDraft(vision.nextMove ?? "");
-                  setEditingNextMove(true);
-                }}
+                onClick={() => { setNextMoveDraft(vision.nextMove ?? ""); setEditingNextMove(true); }}
                 style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "inherit",
-                  textAlign: "left",
-                  width: "100%",
-                  padding: 0,
+                  background: "#F4F5F7", border: "none", cursor: "pointer",
+                  fontFamily: "inherit", textAlign: "left", width: "100%",
+                  padding: "11px 14px", borderRadius: 14,
+                  boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
                 }}
               >
-                <div
-                  style={{
-                    fontSize: 13.5,
-                    fontWeight: 600,
-                    color: vision.nextMove
-                      ? "var(--ink-2,#1C1C1E)"
-                      : "var(--label,#8E8E93)",
-                    letterSpacing: "-0.01em",
-                    lineHeight: 1.4,
-                  }}
-                >
+                <div style={{
+                  fontSize: 13.5, fontWeight: 600,
+                  color: vision.nextMove ? "#1C1C1E" : "#8E8E93",
+                  letterSpacing: "-0.01em", lineHeight: 1.4,
+                }}>
                   {vision.nextMove ?? "tap to set next move →"}
                 </div>
               </button>
             )}
           </div>
-        </div>
 
-        {/* Goals nested under this vision */}
-        {vGoals.length > 0 && (
-          <>
-            <div
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: "0.16em",
-                textTransform: "uppercase",
-                color: "var(--label,#8E8E93)",
-                marginBottom: 10,
-                padding: "0 2px",
-              }}
-            >
-              goals nested under this vision
+          {/* Goals nested */}
+          <div style={{ marginTop: 22 }}>
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              fontSize: 10.5, fontWeight: 700, color: "#8E8E93",
+              letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 10,
+            }}>
+              <span>goals</span>
+              <Link
+                href={`/goals/new?visionId=${vision.id}`}
+                style={{ color: "#0A84FF", letterSpacing: "-0.005em", textTransform: "none", fontSize: 13, fontWeight: 600, textDecoration: "none" }}
+              >
+                + goal
+              </Link>
             </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 10,
-                marginBottom: 22,
-              }}
-            >
+
+            {vGoals.length === 0 && (
+              <div style={{
+                padding: "14px 16px",
+                background: "#FFFFFF",
+                borderRadius: 14,
+                boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+                fontSize: 13, fontWeight: 500, color: "#8E8E93",
+              }}>
+                no goals yet · add one above
+              </div>
+            )}
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {vGoals.map((g) => {
-                const pct = Math.min(
-                  1,
-                  g.targetValue > 0 ? g.currentValue / g.targetValue : 0,
-                );
                 const diff = new Date(g.deadlineISO).getTime() - Date.now();
                 const daysLeft = Math.max(0, Math.round(diff / 86_400_000));
                 const weeksLeft = Math.round(daysLeft / 7);
-                const deadlineStr =
-                  daysLeft <= 0
-                    ? "due"
-                    : daysLeft < 7
-                      ? `${daysLeft}d`
-                      : `${weeksLeft}w`;
+                const deadlineStr = daysLeft <= 0 ? "due" : daysLeft < 7 ? `${daysLeft}d` : `${weeksLeft}w`;
+                const pct = Math.min(1, g.targetValue > 0 ? g.currentValue / g.targetValue : 0);
 
                 return (
-                  <Link
-                    key={g.id}
-                    href={`/goals/detail?id=${g.id}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
-                        padding: "14px 16px",
-                        background: "var(--card,#fff)",
-                        borderRadius: 18,
-                        boxShadow: "var(--shadow-stack)",
-                        position: "relative",
-                      }}
-                    >
-                      <div
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          borderRadius: 18,
-                          boxShadow:
-                            "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.06)",
-                          pointerEvents: "none",
-                        }}
-                      />
+                  <Link key={g.id} href={`/goals/detail?id=${g.id}`} style={{ textDecoration: "none" }}>
+                    <div style={{
+                      display: "flex", alignItems: "center", gap: 12,
+                      padding: "12px 14px",
+                      background: "#FFFFFF", borderRadius: 14,
+                      boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+                      position: "relative",
+                    }}>
+                      {/* progress check */}
+                      <div style={{
+                        width: 18, height: 18, borderRadius: "50%",
+                        background: pct >= 1 ? "#C7F0CF" : "#F4F5F7",
+                        boxShadow: pct >= 1 ? "inset 0 0 0 0.5px rgba(31,92,44,0.28)" : "inset 0 0 0 1.5px rgba(60,60,67,0.10)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        flexShrink: 0,
+                        fontSize: 10, fontWeight: 800, color: "#1F5C2C",
+                      }}>
+                        {pct >= 1 && "✓"}
+                      </div>
+
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div
-                          style={{
-                            fontSize: 14,
-                            fontWeight: 700,
-                            color: "var(--ink,#000)",
-                            letterSpacing: "-0.012em",
-                            marginBottom: 2,
-                          }}
-                        >
+                        <div style={{ fontSize: 14, fontWeight: 700, color: "#1C1C1E", letterSpacing: "-0.005em" }}>
                           {g.identityLine ?? g.unit}
                         </div>
-                        <div
-                          style={{
-                            fontSize: 12,
-                            color: "var(--label-2,#6E6E73)",
-                            fontWeight: 600,
-                            fontVariantNumeric: "tabular-nums",
-                          }}
-                        >
-                          {g.currentValue} → {g.targetValue}
-                          {g.unit} · {deadlineStr}
+                        <div style={{ fontSize: 12, color: "#6E6E73", fontWeight: 600, fontVariantNumeric: "tabular-nums", marginTop: 2 }}>
+                          {g.currentValue} → {g.targetValue}{g.unit} · {deadlineStr}
                         </div>
                       </div>
+
                       {/* hairline track with dot */}
-                      <div
-                        style={{
-                          width: 120,
-                          height: 3,
-                          background: "var(--inset-2,#EAEAEF)",
-                          borderRadius: 999,
-                          position: "relative",
-                          flexShrink: 0,
-                          boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: 7,
-                            height: 7,
-                            borderRadius: "50%",
-                            background: "var(--ink,#000)",
-                            position: "absolute",
-                            top: -2,
-                            left: `calc(${pct * 100}% - 3.5px)`,
-                            boxShadow: "0 0 0 0.5px rgba(60,60,67,0.10)",
-                          }}
-                        />
+                      <div style={{
+                        width: 80, height: 2,
+                        background: "rgba(60,60,67,0.10)",
+                        borderRadius: 999, position: "relative", flexShrink: 0,
+                      }}>
+                        <div style={{
+                          width: 7, height: 7, borderRadius: "50%",
+                          background: "#0B0B0F",
+                          position: "absolute", top: -2.5,
+                          left: `calc(${pct * 100}% - 3.5px)`,
+                        }} />
                       </div>
                     </div>
                   </Link>
                 );
               })}
-
-              {/* + add goal */}
-              <Link
-                href={`/goals/new?visionId=${vision.id}`}
-                style={{ textDecoration: "none" }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "14px 16px",
-                    background: "var(--card,#fff)",
-                    borderRadius: 18,
-                    boxShadow:
-                      "inset 0 0 0 0.5px var(--hairline,rgba(60,60,67,0.10))",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "var(--label-2,#6E6E73)",
-                  }}
-                >
-                  + add goal
-                </div>
-              </Link>
             </div>
-          </>
-        )}
-
-        {/* description */}
-        {vision.description && (
-          <div
-            style={{
-              position: "relative",
-              background: "var(--card,#fff)",
-              borderRadius: 20,
-              padding: "16px 17px",
-              boxShadow: "var(--shadow-stack)",
-              fontSize: 14.5,
-              lineHeight: 1.5,
-              color: "var(--ink-2,#1C1C1E)",
-              letterSpacing: "-0.012em",
-              fontWeight: 450,
-              marginBottom: 22,
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: 20,
-                boxShadow:
-                  "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.05)",
-                pointerEvents: "none",
-              }}
-            />
-            {vision.description}
           </div>
-        )}
+
+          {/* description if any */}
+          {vision.description && (
+            <div style={{
+              marginTop: 18, padding: "16px 17px",
+              background: "#FBFAF8", borderRadius: 16,
+              boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+              fontSize: 14.5, lineHeight: 1.5, color: "#1C1C1E",
+              letterSpacing: "-0.012em", fontWeight: 450,
+            }}>
+              {vision.description}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
