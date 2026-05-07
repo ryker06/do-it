@@ -472,8 +472,79 @@ export default function NowPage() {
 
       {/* ── HERO focal card ── */}
       <div className="hero">
+        {/* dot-noise texture overlay */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            inset: 0,
+            borderRadius: "inherit",
+            backgroundImage:
+              "radial-gradient(rgba(0,0,0,0.045) 1px, transparent 1.2px)",
+            backgroundSize: "13px 13px",
+            pointerEvents: "none",
+            zIndex: 0,
+          }}
+        />
+
+        {/* embedded flame illustration — bottom-right */}
+        {!live && !paused && (
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              bottom: 18,
+              right: 18,
+              width: 110,
+              height: 110,
+              transform: "rotate(-8deg)",
+              filter: "drop-shadow(0 8px 18px rgba(255,80,60,0.18))",
+              pointerEvents: "none",
+              zIndex: 0,
+              opacity: 0.72,
+            }}
+          >
+            <svg
+              viewBox="0 0 110 110"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              width="110"
+              height="110"
+            >
+              <defs>
+                <linearGradient
+                  id="flameGrad"
+                  x1="55"
+                  y1="10"
+                  x2="55"
+                  y2="100"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop offset="0%" stopColor="#C7F0CF" />
+                  <stop offset="100%" stopColor="#FFD9E0" />
+                </linearGradient>
+              </defs>
+              {/* outer teardrop */}
+              <path
+                d="M55 10 C55 10 25 42 25 65 C25 82 38.5 97 55 97 C71.5 97 85 82 85 65 C85 42 55 10 55 10Z"
+                fill="url(#flameGrad)"
+                opacity="0.9"
+              />
+              {/* inner core */}
+              <path
+                d="M55 38 C55 38 40 56 40 68 C40 77 47 84 55 84 C63 84 70 77 70 68 C70 56 55 38 55 38Z"
+                fill="white"
+                opacity="0.55"
+              />
+            </svg>
+          </div>
+        )}
+
         {/* eyebrow */}
-        <div className={`card-eyebrow${live ? " live" : ""}`}>
+        <div
+          className={`card-eyebrow${live ? " live" : ""}`}
+          style={{ position: "relative", zIndex: 1 }}
+        >
           <span className="pip" />
           {live ? "now in flow" : paused ? "on hold" : "up next"}
           <span className="at">

@@ -4,7 +4,118 @@ import Link from "next/link";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
 import { DomainGlyph } from "@/components/icons";
-import type { DomainId } from "@/lib/types";
+import { CoverImagePickerTrigger } from "@/components/CoverImagePicker";
+import { svgById } from "@/lib/svgLibrary";
+import type { DomainId, CoverImage } from "@/lib/types";
+
+const DOMAIN_SVG_ID: Record<DomainId, string> = {
+  fitness: "dumbbell",
+  business: "bolt",
+  religion: "moon",
+  learning: "book",
+  home: "leaf",
+  food: "drop",
+};
+
+const DOMAIN_TINT: Record<DomainId, string> = {
+  fitness: "var(--d-fitness,#FFD0DA)",
+  business: "var(--d-business,#E2EEFF)",
+  religion: "var(--d-religion,#E2F4E6)",
+  learning: "var(--d-learning,#FFE0E8)",
+  home: "var(--d-home,#EAEFF3)",
+  food: "var(--d-food,#FFF0DD)",
+};
+
+function CoverDisplay({
+  cover,
+  domainId,
+}: {
+  cover: CoverImage | undefined;
+  domainId: DomainId;
+}) {
+  if (!cover) {
+    const svgStr = svgById(DOMAIN_SVG_ID[domainId]);
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: 110,
+          borderRadius: "16px 16px 0 0",
+          background: DOMAIN_TINT[domainId],
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--ink-3,#3A3A3C)",
+          opacity: 0.7,
+        }}
+      >
+        {svgStr && (
+          <span
+            dangerouslySetInnerHTML={{ __html: svgStr }}
+            style={{ width: 36, height: 36, display: "block", opacity: 0.6 }}
+          />
+        )}
+      </div>
+    );
+  }
+  if (cover.kind === "emoji") {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: 110,
+          borderRadius: "16px 16px 0 0",
+          background: DOMAIN_TINT[domainId],
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 48,
+        }}
+      >
+        {cover.value}
+      </div>
+    );
+  }
+  if (cover.kind === "svg-id") {
+    const svgStr = svgById(cover.value);
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: 110,
+          borderRadius: "16px 16px 0 0",
+          background: DOMAIN_TINT[domainId],
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--ink-3,#3A3A3C)",
+        }}
+      >
+        {svgStr && (
+          <span
+            dangerouslySetInnerHTML={{ __html: svgStr }}
+            style={{ width: 40, height: 40, display: "block" }}
+          />
+        )}
+      </div>
+    );
+  }
+  // url / data url
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={cover.value}
+      alt=""
+      style={{
+        width: "100%",
+        height: 110,
+        objectFit: "cover",
+        borderRadius: "16px 16px 0 0",
+        display: "block",
+      }}
+    />
+  );
+}
 
 const DOMAIN_BG: Record<DomainId, string> = {
   business: "linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%)",

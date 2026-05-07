@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   DndContext,
   closestCenter,
@@ -25,6 +25,15 @@ import { DomainGlyph, CrescentSvg } from "@/components/icons";
 import BlockSheet from "@/components/BlockSheet";
 import BlockCreateSheet from "@/components/BlockCreateSheet";
 import type { Anchor, Block } from "@/lib/types";
+
+function timeOfDayPhrase(): string {
+  const h = new Date().getHours();
+  if (h < 6) return "early hours.";
+  if (h < 12) return "morning.";
+  if (h < 17) return "afternoon.";
+  if (h < 21) return "evening.";
+  return "night.";
+}
 
 const PRAYER_CACHE_KEY = "do-it-prayer-cache-v1";
 const DAY_START_HHMM = "06:00";
@@ -93,6 +102,8 @@ interface SortableRowProps {
   isFirstIdle: boolean;
   onTap: (b: Block) => void;
   onResume: (id: string) => void;
+  onSetStartTime: (id: string, minutes: number | null) => void;
+  onUpdateTitle: (id: string, title: string) => void;
 }
 
 function SortableRow({
@@ -102,7 +113,14 @@ function SortableRow({
   isFirstIdle,
   onTap,
   onResume,
+  onSetStartTime,
+  onUpdateTitle,
 }: SortableRowProps) {
+  const [editingTime, setEditingTime] = useState(false);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [draftTitle, setDraftTitle] = useState(b.title);
+  const timeInputRef = useRef<HTMLInputElement>(null);
+  const titleInputRef = useRef<HTMLInputElement>(null);
   const {
     attributes,
     listeners,
@@ -133,23 +151,70 @@ function SortableRow({
   return (
     <div ref={setNodeRef} style={style} className={`tl-block ${cls}`}>
       <div style={{ display: "flex", alignItems: "center" }}>
-        {/* Projected time label */}
-        <div
-          style={{
-            width: 42,
-            flexShrink: 0,
-            fontSize: 10,
-            fontWeight: 600,
-            color: "var(--label,#8E8E93)",
-            letterSpacing: "0.01em",
-            textAlign: "right",
-            paddingRight: 7,
-            fontVariantNumeric: "tabular-nums",
-            lineHeight: 1,
-          }}
-        >
-          {timeLabel}
-        </div>
+        {/* Projected time label — tap to edit */}
+        {editingTime ? (
+          <input
+            ref={timeInputRef}
+            type="time"
+            defaultValue={
+              b.startTimeOverride !== undefined
+                ? minToHHMM(b.startTimeOverride)
+                : (timeLabel ?? "")
+            }
+            autoFocus
+            onBlur={(e) => {
+              setEditingTime(false);
+              const val = e.target.value;
+              if (val) {
+                const [h, m] = val.split(":").map(Number);
+                onSetStartTime(b.id, (h ?? 0) * 60 + (m ?? 0));
+              }
+            }}
+            style={{
+              width: 52,
+              flexShrink: 0,
+              fontSize: 11,
+              fontWeight: 600,
+              border: "none",
+              borderRadius: 6,
+              background: "var(--blue-tint,#E2EEFF)",
+              color: "var(--blue,#0A84FF)",
+              padding: "2px 3px",
+              fontFamily: "inherit",
+              fontVariantNumeric: "tabular-nums",
+              outline: "none",
+              textAlign: "center",
+            }}
+          />
+        ) : (
+          <button
+            onClick={() => setEditingTime(true)}
+            title="tap to set start time"
+            style={{
+              width: 42,
+              flexShrink: 0,
+              fontSize: 10,
+              fontWeight: 600,
+              color:
+                b.startTimeOverride !== undefined
+                  ? "var(--blue,#0A84FF)"
+                  : "var(--label,#8E8E93)",
+              letterSpacing: "0.01em",
+              textAlign: "right",
+              paddingRight: 7,
+              fontVariantNumeric: "tabular-nums",
+              lineHeight: 1,
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "inherit",
+            }}
+          >
+            {b.startTimeOverride !== undefined
+              ? minToHHMM(b.startTimeOverride)
+              : timeLabel}
+          </button>
+        )}
 
         {/* Drag handle */}
         <button
@@ -188,24 +253,78 @@ function SortableRow({
 
         {/* Block content — tap area */}
         {status === "pending" ? (
-          <button
-            onClick={() => onTap(b)}
+          <div
             className={`row ${cls}`}
             style={{
               flex: 1,
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontFamily: "inherit",
-              textAlign: "left",
+              display: "flex",
+              alignItems: "center",
               padding: 0,
             }}
           >
-            <div className={`ddisc ${b.domain} row`}>
-              <DomainGlyph id={b.domain} />
-            </div>
-            <div className="text">
-              <div className="title">{b.title}</div>
+            <button
+              onClick={() => onTap(b)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+                flexShrink: 0,
+              }}
+            >
+              <div className={`ddisc ${b.domain} row`}>
+                <DomainGlyph id={b.domain} />
+              </div>
+            </button>
+            <div className="text" style={{ flex: 1, minWidth: 0 }}>
+              {editingTitle ? (
+                <input
+                  ref={titleInputRef}
+                  type="text"
+                  value={draftTitle}
+                  autoFocus
+                  onChange={(e) => setDraftTitle(e.target.value)}
+                  onBlur={() => {
+                    setEditingTitle(false);
+                    if (draftTitle.trim())
+                      onUpdateTitle(b.id, draftTitle.trim());
+                    else setDraftTitle(b.title);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setEditingTitle(false);
+                      if (draftTitle.trim())
+                        onUpdateTitle(b.id, draftTitle.trim());
+                      else setDraftTitle(b.title);
+                    }
+                    if (e.key === "Escape") {
+                      setEditingTitle(false);
+                      setDraftTitle(b.title);
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "var(--ink,#0B0B0F)",
+                    border: "none",
+                    borderBottom: "1.5px solid var(--blue,#0A84FF)",
+                    background: "transparent",
+                    fontFamily: "inherit",
+                    outline: "none",
+                    letterSpacing: "-0.012em",
+                    padding: "1px 0",
+                  }}
+                />
+              ) : (
+                <div
+                  className="title"
+                  onClick={() => setEditingTitle(true)}
+                  style={{ cursor: "text" }}
+                >
+                  {b.title}
+                </div>
+              )}
               <div className="meta">
                 {domainName}
                 <span className="sep">·</span>
@@ -221,7 +340,7 @@ function SortableRow({
             {!b.adjustedMin && !isFirstIdle && (
               <span className="pill later">Later</span>
             )}
-          </button>
+          </div>
         ) : (
           <Link
             href="/now"
@@ -491,7 +610,15 @@ function MorningBriefOverlay({ onDone }: { onDone: () => void }) {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function TodayPage() {
-  const { blocks, domains, resume, reorderBlocks, morningBriefs } = useDoIt();
+  const {
+    blocks,
+    domains,
+    resume,
+    reorderBlocks,
+    morningBriefs,
+    setBlockStartTime,
+    updateBlock,
+  } = useDoIt();
   const [anchors, setAnchors] = useState<Anchor[]>(() =>
     readAllAnchorsFromCache(),
   );
@@ -725,6 +852,43 @@ export default function TodayPage() {
         <MorningBriefOverlay onDone={() => setBriefDismissed(true)} />
       )}
 
+      {/* Day strip */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 18px 6px",
+          background: "var(--pink-3,#FFF1F4)",
+          borderBottom: "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
+        }}
+      >
+        <span
+          style={{
+            fontSize: 13,
+            fontWeight: 700,
+            color: "var(--pink-ink,#7A2A3C)",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          {timeOfDayPhrase()}
+        </span>
+        <span
+          style={{
+            fontSize: 11.5,
+            fontWeight: 600,
+            color: "var(--pink-ink,#7A2A3C)",
+            background: "var(--pink,#FFD9E0)",
+            padding: "4px 10px",
+            borderRadius: 999,
+            letterSpacing: "-0.005em",
+          }}
+        >
+          {sorted.filter((b) => b.status === "done").length} / {sorted.length}{" "}
+          done
+        </span>
+      </div>
+
       <div className="summary">
         <div className="sum-stat">
           <div className="sum-num">
@@ -844,6 +1008,8 @@ export default function TodayPage() {
                       isFirstIdle={idx === firstIdleIdx}
                       onTap={setSelectedBlock}
                       onResume={resume}
+                      onSetStartTime={setBlockStartTime}
+                      onUpdateTitle={(id, title) => updateBlock(id, { title })}
                     />
                   </div>
                 );
