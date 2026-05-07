@@ -79,3 +79,21 @@ If a function does `if (!goal) return <JSX/>` and later uses `goal` inside a nes
 
 ## moveBlockTo target
 `moveBlockTo(id, target)` accepts `"today" | "inbox"` — NOT "tomorrow". Old "tomorrow" callers must be updated to "inbox".
+
+## ReturnType<typeof useDoIt>[key] — don't use for prop types
+TypeScript can't narrow `ReturnType<typeof useDoIt>["transactions"]` correctly (resolves to `unknown`). Instead import the explicit type from `@/lib/types` and use it directly. Pattern: `import type { Transaction } from "@/lib/types"` → `txs: Transaction[]`.
+
+## WishlistStatus type narrowing
+`WishlistStatus = "wanted" | "bought" | "passed"`. When a boolean flag like `showWanted = statusFilter !== "bought"` guards a block, don't repeat `statusFilter !== "bought"` inside — TypeScript narrows it to never and errors. Remove the redundant check.
+
+## Routines 8×7 dot grid
+Canon specifies 56 dots (8 cols × 7 rows) per routine card — not 32. `gridAutoRows: 11` with `gap: 3` and `gridTemplateColumns: "repeat(8,1fr)"`. Today cell uses `box-shadow: "0 0 0 1.5px #0B0B0F,0 0 0 3px rgba(11,11,15,0.10)"`.
+
+## Reflect page — WHITE background only
+v3 canon explicitly dropped the dark surface. Page bg must be `#FFFFFF`. Zero dark bg wrappers. The "calm evening" feel comes from spacing + white paper cards, not a dark canvas.
+
+## State page chip grid
+2+2+1 grid: `gridTemplateColumns: "1fr 1fr"`, heavy chip uses `gridColumn: "1 / -1"`. Each chip: `minHeight: 104px`, `display: flex`, `flexDirection: column`, `justifyContent: flex-end`. Glyph absolute top-right at `opacity: 0.6`. Stagger via `transform: translateY(Npx)` per chip.
+
+## CmdK verb tags
+Commands are tagged with `verb: "go" | "log" | "add" | "open"`. Verb pill: 9.5px/800, uppercase, 6px letter-spacing, colored bg per verb. Recent commands stored in session-local array (not store). Show when query is empty and recents exist.

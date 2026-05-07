@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
-import type { DomainId } from "@/lib/types";
+import RightDrawer from "@/components/RightDrawer";
+import type { DomainId, GoalMetricKind } from "@/lib/types";
 
 const COVER_BG: Record<DomainId, string> = {
   fitness: "linear-gradient(180deg,#FFD0DA 0%,#FFB6C5 100%)",
@@ -155,9 +157,38 @@ function WeekGrid({
 }
 
 export default function GoalsPage() {
-  const { goals, visions, logGoalValue } = useDoIt();
+  const { goals, visions, logGoalValue, addGoal } = useDoIt();
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [echoes, setEchoes] = useState<Record<string, string>>({});
+  const [createOpen, setCreateOpen] = useState(false);
+  // Create form state
+  const [cName, setCName] = useState("");
+  const [cIdentity, setCIdentity] = useState("");
+  const [cKind, setCKind] = useState<GoalMetricKind>("count");
+  const [cTarget, setCTarget] = useState("");
+  const [cUnit, setCUnit] = useState("");
+  const [cDeadline, setCDeadline] = useState("");
+  const [cVisionId, setCVisionId] = useState(visions[0]?.id ?? "");
+
+  function handleCreate() {
+    if (!cName.trim() || !cDeadline) return;
+    addGoal({
+      visionId: cVisionId,
+      identityLine: cIdentity.trim() || cName.trim(),
+      metricKind: cKind,
+      targetValue: parseFloat(cTarget) || 1,
+      currentValue: 0,
+      unit: cUnit.trim(),
+      deadlineISO: cDeadline,
+    });
+    setCName("");
+    setCIdentity("");
+    setCKind("count");
+    setCTarget("");
+    setCUnit("");
+    setCDeadline("");
+    setCreateOpen(false);
+  }
 
   function handleLog(goalId: string) {
     const raw = inputs[goalId] ?? "";
@@ -288,6 +319,7 @@ export default function GoalsPage() {
         }}
       >
         <button
+          onClick={() => setCreateOpen(true)}
           style={{
             background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
             color: "#fff",
@@ -309,6 +341,192 @@ export default function GoalsPage() {
           + goal
         </button>
       </div>
+
+      {/* Create goal drawer */}
+      <RightDrawer
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        title="new goal"
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <input
+            autoFocus
+            value={cName}
+            onChange={(e) => setCName(e.target.value)}
+            placeholder="goal name"
+            style={{
+              width: "100%",
+              fontSize: 15,
+              fontWeight: 600,
+              color: "#0B0B0F",
+              background: "#FBFAF8",
+              border: "none",
+              outline: "none",
+              borderRadius: 12,
+              padding: "10px 14px",
+              fontFamily: "inherit",
+              letterSpacing: "-0.012em",
+              boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+              boxSizing: "border-box",
+            }}
+          />
+          <input
+            value={cIdentity}
+            onChange={(e) => setCIdentity(e.target.value)}
+            placeholder="identity line (e.g. I am a 100kg deadlifter)"
+            style={{
+              width: "100%",
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#0B0B0F",
+              background: "#FBFAF8",
+              border: "none",
+              outline: "none",
+              borderRadius: 12,
+              padding: "10px 14px",
+              fontFamily: "inherit",
+              letterSpacing: "-0.008em",
+              boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+              boxSizing: "border-box",
+            }}
+          />
+          {visions.length > 0 && (
+            <select
+              value={cVisionId}
+              onChange={(e) => setCVisionId(e.target.value)}
+              style={{
+                width: "100%",
+                fontSize: 14,
+                fontWeight: 500,
+                color: "#0B0B0F",
+                background: "#FBFAF8",
+                border: "none",
+                outline: "none",
+                borderRadius: 12,
+                padding: "10px 14px",
+                fontFamily: "inherit",
+                boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+                boxSizing: "border-box",
+              }}
+            >
+              {visions.map((v) => (
+                <option key={v.id} value={v.id}>
+                  {v.title}
+                </option>
+              ))}
+            </select>
+          )}
+          <div style={{ display: "flex", gap: 8 }}>
+            {(["weight", "money", "count", "boolean"] as GoalMetricKind[]).map(
+              (k) => (
+                <button
+                  key={k}
+                  onClick={() => setCKind(k)}
+                  style={{
+                    flex: 1,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase",
+                    padding: "7px 4px",
+                    borderRadius: 8,
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    background: cKind === k ? "#0B0B0F" : "rgba(60,60,67,0.06)",
+                    color: cKind === k ? "#fff" : "#8E8E93",
+                  }}
+                >
+                  {k}
+                </button>
+              ),
+            )}
+          </div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <input
+              type="number"
+              value={cTarget}
+              onChange={(e) => setCTarget(e.target.value)}
+              placeholder="target"
+              style={{
+                flex: 1,
+                fontSize: 14,
+                fontWeight: 600,
+                color: "#0B0B0F",
+                background: "#FBFAF8",
+                border: "none",
+                outline: "none",
+                borderRadius: 12,
+                padding: "10px 14px",
+                fontFamily: "inherit",
+                boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+              }}
+            />
+            <input
+              value={cUnit}
+              onChange={(e) => setCUnit(e.target.value)}
+              placeholder="unit (kg, €…)"
+              style={{
+                flex: 1,
+                fontSize: 14,
+                fontWeight: 600,
+                color: "#0B0B0F",
+                background: "#FBFAF8",
+                border: "none",
+                outline: "none",
+                borderRadius: 12,
+                padding: "10px 14px",
+                fontFamily: "inherit",
+                boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+              }}
+            />
+          </div>
+          <input
+            type="date"
+            value={cDeadline}
+            onChange={(e) => setCDeadline(e.target.value)}
+            style={{
+              width: "100%",
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#0B0B0F",
+              background: "#FBFAF8",
+              border: "none",
+              outline: "none",
+              borderRadius: 12,
+              padding: "10px 14px",
+              fontFamily: "inherit",
+              boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+              boxSizing: "border-box",
+            }}
+          />
+          <button
+            onClick={handleCreate}
+            disabled={!cName.trim() || !cDeadline}
+            style={{
+              background:
+                cName.trim() && cDeadline
+                  ? "linear-gradient(180deg,#1A1A20,#000)"
+                  : "#F4F5F7",
+              color: cName.trim() && cDeadline ? "#fff" : "#8E8E93",
+              border: "none",
+              borderRadius: 14,
+              padding: "13px",
+              fontSize: 14,
+              fontWeight: 700,
+              fontFamily: "inherit",
+              cursor: cName.trim() && cDeadline ? "pointer" : "default",
+              letterSpacing: "-0.005em",
+              boxShadow:
+                cName.trim() && cDeadline
+                  ? "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55)"
+                  : "none",
+            }}
+          >
+            save goal
+          </button>
+        </div>
+      </RightDrawer>
 
       <div
         style={{
@@ -367,222 +585,234 @@ export default function GoalsPage() {
                     overflow: "hidden",
                   }}
                 >
-                  {/* Cover band */}
-                  <div
+                  {/* Tappable top portion → detail */}
+                  <Link
+                    href={`/goals/detail?id=${g.id}`}
                     style={{
-                      height: 80,
-                      background: COVER_BG[domainId],
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      position: "relative",
-                      overflow: "hidden",
+                      textDecoration: "none",
+                      display: "block",
+                      cursor: "pointer",
                     }}
                   >
-                    {/* dot pattern */}
+                    {/* Cover band */}
                     <div
                       style={{
-                        position: "absolute",
-                        inset: 0,
-                        backgroundImage:
-                          "radial-gradient(circle at 22% 30%,rgba(255,255,255,0.5) 1.2px,transparent 1.6px),radial-gradient(circle at 75% 65%,rgba(255,255,255,0.4) 1.2px,transparent 1.6px)",
-                        backgroundSize: "18px 18px",
-                        opacity: 0.6,
-                        pointerEvents: "none",
-                      }}
-                    />
-                    <MetricGlyph kind={g.metricKind} />
-                  </div>
-
-                  {/* Body */}
-                  <div style={{ padding: "18px 18px 16px" }}>
-                    {/* Identity line */}
-                    {g.identityLine && (
-                      <div
-                        style={{
-                          fontSize: 21,
-                          fontWeight: 700,
-                          letterSpacing: "-0.025em",
-                          color: "#0B0B0F",
-                          lineHeight: 1.18,
-                          marginBottom: 4,
-                        }}
-                      >
-                        {g.identityLine}
-                      </div>
-                    )}
-
-                    {/* Metric phrase */}
-                    <div
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 600,
-                        color: "#1C1C1E",
-                        letterSpacing: "-0.012em",
-                        marginTop: 4,
-                        fontVariantNumeric: "tabular-nums",
+                        height: 80,
+                        background: COVER_BG[domainId],
                         display: "flex",
-                        alignItems: "baseline",
-                        gap: 0,
-                        flexWrap: "wrap",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        position: "relative",
+                        overflow: "hidden",
                       }}
                     >
-                      <strong style={{ fontWeight: 800, color: "#0B0B0F" }}>
-                        {g.currentValue}
-                        {g.unit}
-                      </strong>
-                      <span
-                        style={{
-                          color: "#8E8E93",
-                          fontWeight: 500,
-                          margin: "0 4px",
-                        }}
-                      >
-                        →
-                      </span>
-                      <strong style={{ fontWeight: 800, color: "#0B0B0F" }}>
-                        {g.targetValue}
-                        {g.unit}
-                      </strong>
-                      <span
-                        style={{
-                          color: "#6E6E73",
-                          fontWeight: 500,
-                          marginLeft: 6,
-                          fontSize: 13,
-                        }}
-                      >
-                        · {wLeft}w left
-                      </span>
-                    </div>
-
-                    {/* Hairline track + dot */}
-                    <div style={{ marginTop: 14 }}>
+                      {/* dot pattern */}
                       <div
                         style={{
-                          position: "relative",
-                          height: 1,
-                          background: "rgba(60,60,67,0.10)",
-                          margin: "14px 4px 0",
+                          position: "absolute",
+                          inset: 0,
+                          backgroundImage:
+                            "radial-gradient(circle at 22% 30%,rgba(255,255,255,0.5) 1.2px,transparent 1.6px),radial-gradient(circle at 75% 65%,rgba(255,255,255,0.4) 1.2px,transparent 1.6px)",
+                          backgroundSize: "18px 18px",
+                          opacity: 0.6,
+                          pointerEvents: "none",
                         }}
-                      >
+                      />
+                      <MetricGlyph kind={g.metricKind} />
+                    </div>
+
+                    {/* Body */}
+                    <div style={{ padding: "18px 18px 16px" }}>
+                      {/* Identity line */}
+                      {g.identityLine && (
                         <div
                           style={{
-                            position: "absolute",
-                            top: "50%",
-                            left: `${pct * 100}%`,
-                            width: 10,
-                            height: 10,
-                            borderRadius: "50%",
-                            background: "#0B0B0F",
-                            transform: "translate(-50%, -50%)",
-                            boxShadow:
-                              "0 0 0 3px #fff,0 0 0 3.5px rgba(60,60,67,0.10)",
+                            fontSize: 21,
+                            fontWeight: 700,
+                            letterSpacing: "-0.025em",
+                            color: "#0B0B0F",
+                            lineHeight: 1.18,
+                            marginBottom: 4,
                           }}
+                        >
+                          {g.identityLine}
+                        </div>
+                      )}
+
+                      {/* Metric phrase */}
+                      <div
+                        style={{
+                          fontSize: 15,
+                          fontWeight: 600,
+                          color: "#1C1C1E",
+                          letterSpacing: "-0.012em",
+                          marginTop: 4,
+                          fontVariantNumeric: "tabular-nums",
+                          display: "flex",
+                          alignItems: "baseline",
+                          gap: 0,
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <strong style={{ fontWeight: 800, color: "#0B0B0F" }}>
+                          {g.currentValue}
+                          {g.unit}
+                        </strong>
+                        <span
+                          style={{
+                            color: "#8E8E93",
+                            fontWeight: 500,
+                            margin: "0 4px",
+                          }}
+                        >
+                          →
+                        </span>
+                        <strong style={{ fontWeight: 800, color: "#0B0B0F" }}>
+                          {g.targetValue}
+                          {g.unit}
+                        </strong>
+                        <span
+                          style={{
+                            color: "#6E6E73",
+                            fontWeight: 500,
+                            marginLeft: 6,
+                            fontSize: 13,
+                          }}
+                        >
+                          · {wLeft}w left
+                        </span>
+                      </div>
+
+                      {/* Hairline track + dot */}
+                      <div style={{ marginTop: 14 }}>
+                        <div
+                          style={{
+                            position: "relative",
+                            height: 1,
+                            background: "rgba(60,60,67,0.10)",
+                            margin: "14px 4px 0",
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: "absolute",
+                              top: "50%",
+                              left: `${pct * 100}%`,
+                              width: 10,
+                              height: 10,
+                              borderRadius: "50%",
+                              background: "#0B0B0F",
+                              transform: "translate(-50%, -50%)",
+                              boxShadow:
+                                "0 0 0 3px #fff,0 0 0 3.5px rgba(60,60,67,0.10)",
+                            }}
+                          />
+                        </div>
+
+                        {/* 12-week mini grid */}
+                        <WeekGrid
+                          currentValue={g.currentValue}
+                          targetValue={g.targetValue}
+                          deadlineISO={g.deadlineISO}
                         />
                       </div>
 
-                      {/* 12-week mini grid */}
-                      <WeekGrid
-                        currentValue={g.currentValue}
-                        targetValue={g.targetValue}
-                        deadlineISO={g.deadlineISO}
-                      />
-                    </div>
-
-                    {/* Echo line */}
-                    {echo && (
-                      <div
-                        style={{
-                          fontSize: 12.5,
-                          color: "#6E6E73",
-                          fontWeight: 500,
-                          lineHeight: 1.5,
-                          marginTop: 14,
-                        }}
-                      >
-                        {echo.split("→").map((part, i) =>
-                          i === 0 ? (
-                            <span key={i}>{part}→ </span>
-                          ) : (
-                            <strong
-                              key={i}
-                              style={{ color: "#1C1C1E", fontWeight: 600 }}
-                            >
-                              {part}
-                            </strong>
-                          ),
-                        )}
-                      </div>
-                    )}
-
-                    {/* Inline log row */}
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: 8,
-                        alignItems: "center",
-                        marginTop: 14,
-                        paddingTop: 14,
-                        borderTop: "0.5px solid rgba(60,60,67,0.10)",
-                      }}
-                    >
-                      <input
-                        type="number"
-                        value={inputs[g.id] ?? ""}
-                        onChange={(e) =>
-                          setInputs((p) => ({ ...p, [g.id]: e.target.value }))
-                        }
-                        onKeyDown={(e) => e.key === "Enter" && handleLog(g.id)}
-                        placeholder={`log ${g.unit || "value"}`}
-                        style={{
-                          flex: 1,
-                          background: "#FBFAF8",
-                          border: "none",
-                          borderRadius: 14,
-                          padding: "11px 14px",
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#0B0B0F",
-                          fontFamily: "inherit",
-                          boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
-                          fontVariantNumeric: "tabular-nums",
-                          letterSpacing: "-0.005em",
-                          outline: "none",
-                        }}
-                      />
-                      {g.unit && (
-                        <span
+                      {/* Echo line */}
+                      {echo && (
+                        <div
                           style={{
                             fontSize: 12.5,
-                            color: "#8E8E93",
-                            fontWeight: 600,
-                            padding: "0 6px",
+                            color: "#6E6E73",
+                            fontWeight: 500,
+                            lineHeight: 1.5,
+                            marginTop: 14,
                           }}
                         >
-                          {g.unit}
-                        </span>
+                          {echo.split("→").map((part, i) =>
+                            i === 0 ? (
+                              <span key={i}>{part}→ </span>
+                            ) : (
+                              <strong
+                                key={i}
+                                style={{ color: "#1C1C1E", fontWeight: 600 }}
+                              >
+                                {part}
+                              </strong>
+                            ),
+                          )}
+                        </div>
                       )}
-                      <button
-                        onClick={() => handleLog(g.id)}
+                    </div>
+                    {/* end Body */}
+                  </Link>
+
+                  {/* Inline log row — outside Link so tap doesn't navigate */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      alignItems: "center",
+                      margin: "0 18px",
+                      paddingTop: 14,
+                      paddingBottom: 16,
+                      borderTop: "0.5px solid rgba(60,60,67,0.10)",
+                    }}
+                  >
+                    <input
+                      type="number"
+                      value={inputs[g.id] ?? ""}
+                      onChange={(e) =>
+                        setInputs((p) => ({ ...p, [g.id]: e.target.value }))
+                      }
+                      onKeyDown={(e) => e.key === "Enter" && handleLog(g.id)}
+                      placeholder={`log ${g.unit || "value"}`}
+                      style={{
+                        flex: 1,
+                        background: "#FBFAF8",
+                        border: "none",
+                        borderRadius: 14,
+                        padding: "11px 14px",
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#0B0B0F",
+                        fontFamily: "inherit",
+                        boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+                        fontVariantNumeric: "tabular-nums",
+                        letterSpacing: "-0.005em",
+                        outline: "none",
+                      }}
+                    />
+                    {g.unit && (
+                      <span
                         style={{
-                          background:
-                            "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
-                          color: "#fff",
-                          border: "none",
-                          borderRadius: 999,
-                          padding: "11px 18px",
-                          fontSize: 13,
-                          fontWeight: 700,
-                          fontFamily: "inherit",
-                          cursor: "pointer",
-                          boxShadow:
-                            "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55)",
+                          fontSize: 12.5,
+                          color: "#8E8E93",
+                          fontWeight: 600,
+                          padding: "0 6px",
                         }}
                       >
-                        log
-                      </button>
-                    </div>
+                        {g.unit}
+                      </span>
+                    )}
+                    <button
+                      onClick={() => handleLog(g.id)}
+                      style={{
+                        background:
+                          "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 999,
+                        padding: "11px 18px",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        fontFamily: "inherit",
+                        cursor: "pointer",
+                        boxShadow:
+                          "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55)",
+                      }}
+                    >
+                      log
+                    </button>
                   </div>
                 </div>
               );

@@ -1,12 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
 import { DomainGlyph } from "@/components/icons";
 import { CoverImagePickerTrigger } from "@/components/CoverImagePicker";
+import RightDrawer from "@/components/RightDrawer";
 import { svgById } from "@/lib/svgLibrary";
 import type { DomainId, CoverImage } from "@/lib/types";
+
+const DOMAIN_ORDER: DomainId[] = [
+  "fitness",
+  "business",
+  "religion",
+  "learning",
+  "home",
+  "food",
+];
 
 const DOMAIN_SVG_ID: Record<DomainId, string> = {
   fitness: "dumbbell",
@@ -138,12 +149,195 @@ function deadlineCountdown(deadline: string | undefined): string | null {
 }
 
 export default function VisionsPage() {
-  const { visions, goals, setCoverImage } = useDoIt();
+  const { visions, goals, setCoverImage, createVision } = useDoIt();
+  const [createOpen, setCreateOpen] = useState(false);
+  const [cTitle, setCTitle] = useState("");
+  const [cIdentity, setCIdentity] = useState("");
+  const [cBlurb, setCBlurb] = useState("");
+  const [cDomain, setCDomain] = useState<DomainId>("business");
+  const [cDeadline, setCDeadline] = useState("");
+
+  function handleCreate() {
+    if (!cTitle.trim()) return;
+    createVision({
+      title: cTitle.trim(),
+      identity: cIdentity.trim() || cTitle.trim(),
+      blurb: cBlurb.trim(),
+      domainId: cDomain,
+      tint: "#E2EEFF",
+      deadline: cDeadline || undefined,
+    });
+    setCTitle("");
+    setCIdentity("");
+    setCBlurb("");
+    setCDomain("business");
+    setCDeadline("");
+    setCreateOpen(false);
+  }
+
+  const CreateDrawer = (
+    <RightDrawer
+      open={createOpen}
+      onClose={() => setCreateOpen(false)}
+      title="new vision"
+    >
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <input
+          autoFocus
+          value={cTitle}
+          onChange={(e) => setCTitle(e.target.value)}
+          placeholder="vision title"
+          style={{
+            width: "100%",
+            fontSize: 15,
+            fontWeight: 600,
+            color: "#0B0B0F",
+            background: "#FBFAF8",
+            border: "none",
+            outline: "none",
+            borderRadius: 12,
+            padding: "10px 14px",
+            fontFamily: "inherit",
+            boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+            boxSizing: "border-box",
+          }}
+        />
+        <input
+          value={cIdentity}
+          onChange={(e) => setCIdentity(e.target.value)}
+          placeholder="identity line (I am a…)"
+          style={{
+            width: "100%",
+            fontSize: 14,
+            fontWeight: 500,
+            color: "#0B0B0F",
+            background: "#FBFAF8",
+            border: "none",
+            outline: "none",
+            borderRadius: 12,
+            padding: "10px 14px",
+            fontFamily: "inherit",
+            boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+            boxSizing: "border-box",
+          }}
+        />
+        <textarea
+          value={cBlurb}
+          onChange={(e) => setCBlurb(e.target.value)}
+          placeholder="one sentence on why this matters"
+          rows={2}
+          style={{
+            width: "100%",
+            fontSize: 14,
+            fontWeight: 500,
+            color: "#0B0B0F",
+            background: "#FBFAF8",
+            border: "none",
+            outline: "none",
+            borderRadius: 12,
+            padding: "10px 14px",
+            fontFamily: "inherit",
+            boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+            resize: "none",
+            boxSizing: "border-box",
+          }}
+        />
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {DOMAIN_ORDER.map((d) => (
+            <button
+              key={d}
+              onClick={() => setCDomain(d)}
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                padding: "6px 10px",
+                borderRadius: 8,
+                border: "none",
+                cursor: "pointer",
+                fontFamily: "inherit",
+                background: cDomain === d ? "#0B0B0F" : "rgba(60,60,67,0.06)",
+                color: cDomain === d ? "#fff" : "#8E8E93",
+              }}
+            >
+              {d}
+            </button>
+          ))}
+        </div>
+        <input
+          type="date"
+          value={cDeadline}
+          onChange={(e) => setCDeadline(e.target.value)}
+          style={{
+            width: "100%",
+            fontSize: 14,
+            fontWeight: 500,
+            color: "#0B0B0F",
+            background: "#FBFAF8",
+            border: "none",
+            outline: "none",
+            borderRadius: 12,
+            padding: "10px 14px",
+            fontFamily: "inherit",
+            boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+            boxSizing: "border-box",
+          }}
+        />
+        <button
+          onClick={handleCreate}
+          disabled={!cTitle.trim()}
+          style={{
+            background: cTitle.trim()
+              ? "linear-gradient(180deg,#1A1A20,#000)"
+              : "#F4F5F7",
+            color: cTitle.trim() ? "#fff" : "#8E8E93",
+            border: "none",
+            borderRadius: 14,
+            padding: "13px",
+            fontSize: 14,
+            fontWeight: 700,
+            fontFamily: "inherit",
+            cursor: cTitle.trim() ? "pointer" : "default",
+          }}
+        >
+          save vision
+        </button>
+      </div>
+    </RightDrawer>
+  );
 
   if (visions.length === 0) {
     return (
       <>
         <Topbar name="visions." sub="what you're becoming." />
+        {CreateDrawer}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginBottom: 12,
+          }}
+        >
+          <button
+            onClick={() => setCreateOpen(true)}
+            style={{
+              background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
+              color: "#fff",
+              border: "none",
+              borderRadius: 999,
+              padding: "9px 16px",
+              fontSize: 13,
+              fontWeight: 700,
+              fontFamily: "inherit",
+              cursor: "pointer",
+              boxShadow:
+                "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55)",
+            }}
+          >
+            + vision
+          </button>
+        </div>
         <div
           style={{
             flex: 1,
@@ -203,6 +397,35 @@ export default function VisionsPage() {
   return (
     <>
       <Topbar name="visions." sub="what you're becoming." />
+      {CreateDrawer}
+
+      {/* + vision pill */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: 12,
+        }}
+      >
+        <button
+          onClick={() => setCreateOpen(true)}
+          style={{
+            background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
+            color: "#fff",
+            border: "none",
+            borderRadius: 999,
+            padding: "9px 16px",
+            fontSize: 13,
+            fontWeight: 700,
+            fontFamily: "inherit",
+            cursor: "pointer",
+            boxShadow:
+              "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55)",
+          }}
+        >
+          + vision
+        </button>
+      </div>
 
       <div
         style={{

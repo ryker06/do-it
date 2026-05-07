@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Link from "next/link";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
 import type { PersonRole } from "@/lib/types";
@@ -433,8 +434,9 @@ export default function PeoplePage() {
           const roleTint = p.role ? ROLE_TINT[p.role] : null;
 
           return (
-            <div
+            <Link
               key={p.id}
+              href={`/people/${p.id}`}
               id={`person-${p.id}`}
               style={{
                 background: isPast ? "#FBFAF8" : "#FFFFFF",
@@ -448,6 +450,8 @@ export default function PeoplePage() {
                   ? "0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12),inset 0 0 0 1px rgba(255,217,224,0.5)"
                   : "0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12)",
                 position: "relative",
+                textDecoration: "none",
+                cursor: "pointer",
               }}
             >
               {/* avatar */}
@@ -557,7 +561,7 @@ export default function PeoplePage() {
                   ›
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

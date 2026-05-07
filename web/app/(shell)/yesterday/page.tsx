@@ -44,8 +44,18 @@ export default function YesterdayPage() {
   const router = useRouter();
   const { blocks, domains } = useDoIt();
 
-  // "Yesterday" — show done blocks as yesterday's record
-  const doneBlocks = blocks.filter((b) => b.status === "done");
+  // "Yesterday" — only blocks completed yesterday
+  const yesterdayISO = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().slice(0, 10);
+  })();
+  const doneBlocks = blocks.filter(
+    (b) =>
+      b.status === "done" &&
+      b.startedAt !== undefined &&
+      new Date(b.startedAt).toISOString().slice(0, 10) === yesterdayISO,
+  );
   const timelineItems = [...doneBlocks].sort((a, b) => a.order - b.order);
 
   const totalBlocks = doneBlocks.length;

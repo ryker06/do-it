@@ -63,6 +63,7 @@ type TileData = {
   tint?: "blue" | "pink" | "green" | "amber";
   badge?: boolean;
   disabled?: boolean;
+  onClick?: () => void;
   glyph: React.ReactNode;
 };
 
@@ -75,6 +76,13 @@ type GroupData = {
 
 const sz = 20;
 const sw = 1.7;
+
+// cmd+k tile opens the palette via synthetic keydown
+function openCmdK() {
+  window.dispatchEvent(
+    new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }),
+  );
+}
 
 const GROUPS: GroupData[] = [
   {
@@ -102,9 +110,9 @@ const GROUPS: GroupData[] = [
         ),
       },
       {
-        href: "/routines",
-        label: "templates",
-        disabled: true,
+        href: "/notes",
+        label: "notes",
+        tint: "blue",
         glyph: (
           <svg
             viewBox="0 0 24 24"
@@ -116,14 +124,17 @@ const GROUPS: GroupData[] = [
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <rect x="4" y="4" width="16" height="16" rx="3" />
-            <path d="M8 9h8M8 13h6" />
+            <path d="M4 5h16v14H4z" />
+            <path d="M4 9h16" />
+            <path d="M8 13h8" />
+            <path d="M8 16h6" />
           </svg>
         ),
       },
       {
         href: "#",
         label: "cmd+k",
+        onClick: openCmdK,
         glyph: (
           <svg
             viewBox="0 0 24 24"
@@ -298,8 +309,8 @@ const GROUPS: GroupData[] = [
         ),
       },
       {
-        href: "/knowledge",
-        label: "heatmap",
+        href: "/visions",
+        label: "visions",
         tint: "green",
         glyph: (
           <svg
@@ -312,10 +323,8 @@ const GROUPS: GroupData[] = [
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <rect x="3" y="3" width="6" height="6" rx="1" />
-            <rect x="11" y="3" width="6" height="6" rx="1" />
-            <rect x="3" y="11" width="6" height="6" rx="1" />
-            <rect x="11" y="11" width="6" height="6" rx="1" />
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
           </svg>
         ),
       },
@@ -412,7 +421,7 @@ const GROUPS: GroupData[] = [
   {
     id: "tend",
     name: "tend",
-    cols: 4,
+    cols: 5,
     tiles: [
       {
         href: "/domains",
@@ -496,16 +505,10 @@ const GROUPS: GroupData[] = [
           </svg>
         ),
       },
-    ],
-  },
-  {
-    id: "home",
-    name: "home",
-    cols: 2,
-    tiles: [
       {
-        href: "/yesterday",
-        label: "yesterday",
+        href: "/prayer",
+        label: "prayer",
+        tint: "green",
         glyph: (
           <svg
             viewBox="0 0 24 24"
@@ -517,26 +520,7 @@ const GROUPS: GroupData[] = [
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path d="M3 12h4l3-7 4 14 3-7h4" />
-          </svg>
-        ),
-      },
-      {
-        href: "/settings",
-        label: "settings",
-        glyph: (
-          <svg
-            viewBox="0 0 24 24"
-            width={sz}
-            height={sz}
-            stroke="currentColor"
-            strokeWidth={sw}
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="12" cy="12" r="3" />
-            <path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.5-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.5 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.5-2-1.5c.1-.4.1-.8.1-1.2z" />
+            <path d="M12 2v20M5 9h14" />
           </svg>
         ),
       },
@@ -636,7 +620,15 @@ function Tile({ tile }: { tile: TileData }) {
     </>
   );
 
-  if (tile.disabled || tile.href === "#") {
+  if (tile.onClick) {
+    return (
+      <button style={{ ...tileStyle, border: "none" }} onClick={tile.onClick}>
+        {inner}
+      </button>
+    );
+  }
+
+  if (tile.disabled) {
     return <div style={tileStyle}>{inner}</div>;
   }
 
@@ -650,7 +642,7 @@ function Tile({ tile }: { tile: TileData }) {
 export default function MorePage() {
   return (
     <>
-      <Topbar name="more." sub="22 surfaces · all here" />
+      <Topbar name="more." sub="everything · one tap away" />
 
       {/* Tip card */}
       <div

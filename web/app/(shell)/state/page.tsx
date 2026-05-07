@@ -103,24 +103,53 @@ const SEG_BG: Record<StateMark, string> = {
   heavy: "#0B0B0F",
 };
 
-// pattern phrases (static — would be computed from actual log in production)
-const PATTERNS = [
-  {
-    phrase: "you run clearer when you eat earlier.",
-    marker: "green",
-    meta: "8 of 12 clear days · trained before noon",
-  },
-  {
-    phrase: "wired always follows heavy the next morning.",
-    marker: "pink",
-    meta: "6 of 7 occurrences · high caffeine days",
-  },
-  {
-    phrase: "focused streaks last 3 days on average.",
-    marker: "blue",
-    meta: "avg 3.1 days · breaks on sat/sun",
-  },
-];
+// Compute real patterns from stateLog.
+// A pattern = a state that appears ≥3 times in the last 14 logs.
+// Returns calm phrases per observed tendency.
+type PatternEntry = {
+  phrase: string;
+  marker: "green" | "blue" | "pink";
+  meta: string;
+};
+
+function computePatterns(
+  log: import("@/lib/types").StateLogEntry[],
+): PatternEntry[] | null {
+  if (log.length < 14) return null;
+  const recent = [...log].sort((a, b) => b.ts - a.ts).slice(0, 30);
+  const counts: Record<string, number> = {};
+  for (const e of recent) counts[e.mark] = (counts[e.mark] ?? 0) + 1;
+  const patterns: PatternEntry[] = [];
+  if ((counts["clear"] ?? 0) >= 3) {
+    patterns.push({
+      phrase: `clear shows up ${counts["clear"]} times recently.`,
+      marker: "green",
+      meta: `${counts["clear"]} of last ${recent.length} logs`,
+    });
+  }
+  if ((counts["focused"] ?? 0) >= 3) {
+    patterns.push({
+      phrase: `focused runs steady — ${counts["focused"]} logs.`,
+      marker: "blue",
+      meta: `${counts["focused"]} of last ${recent.length} logs`,
+    });
+  }
+  if ((counts["wired"] ?? 0) >= 3) {
+    patterns.push({
+      phrase: `wired appears ${counts["wired"]} times — check what precedes it.`,
+      marker: "pink",
+      meta: `${counts["wired"]} of last ${recent.length} logs`,
+    });
+  }
+  if ((counts["heavy"] ?? 0) >= 3) {
+    patterns.push({
+      phrase: `heavy logged ${counts["heavy"]} times. note the pattern.`,
+      marker: "pink",
+      meta: `${counts["heavy"]} of last ${recent.length} logs`,
+    });
+  }
+  return patterns.length > 0 ? patterns : null;
+}
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 function fmtTime(ts: number): string {
@@ -149,6 +178,7 @@ function weekDays(): { ts: number; label: string }[] {
 // ── main page ─────────────────────────────────────────────────────────────────
 export default function StatePage() {
   const { stateLog, addStateMark } = useDoIt();
+  const patterns = computePatterns(stateLog);
   const [flash, setFlash] = useState<StateMark | null>(null);
   const [selected, setSelected] = useState<StateMark | null>(null);
 
@@ -611,7 +641,7 @@ export default function StatePage() {
         </div>
       </div>
 
-      {/* pattern phrases */}
+      {/* pattern phrases — computed or gathering message */}
       <div style={{ padding: "0 4px", marginBottom: 14 }}>
         <div
           style={{
@@ -625,65 +655,80 @@ export default function StatePage() {
         >
           patterns
         </div>
-        {PATTERNS.map((p, i) => {
-          const markerBg =
-            p.marker === "green"
-              ? "#C7F0CF"
-              : p.marker === "blue"
-                ? "#D7E6FF"
-                : "#FFD9E0";
-
-          return (
-            <div
-              key={i}
-              style={{
-                background: "#FFFFFF",
-                borderRadius: 18,
-                padding: "16px 18px",
-                boxShadow: `inset 0 0 0 0.5px rgba(60,60,67,0.10)`,
-                marginBottom: 10,
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                cursor: "pointer",
-              }}
-            >
+        {patterns === null ? (
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 18,
+              padding: "16px 18px",
+              boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+              fontSize: 13.5,
+              fontWeight: 500,
+              color: "#8E8E93",
+              letterSpacing: "-0.012em",
+              lineHeight: 1.4,
+            }}
+          >
+            still gathering. → log a few more states.
+          </div>
+        ) : (
+          patterns.map((p, i) => {
+            const markerBg =
+              p.marker === "green"
+                ? "#C7F0CF"
+                : p.marker === "blue"
+                  ? "#D7E6FF"
+                  : "#FFD9E0";
+            return (
               <div
+                key={i}
                 style={{
-                  width: 6,
-                  height: 36,
-                  borderRadius: 3,
-                  background: markerBg,
-                  flexShrink: 0,
+                  background: "#FFFFFF",
+                  borderRadius: 18,
+                  padding: "16px 18px",
+                  boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+                  marginBottom: 10,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
                 }}
-              />
-              <div style={{ flex: 1 }}>
+              >
                 <div
                   style={{
-                    fontSize: 14.5,
-                    fontWeight: 600,
-                    color: "#0B0B0F",
-                    letterSpacing: "-0.012em",
-                    lineHeight: 1.35,
+                    width: 6,
+                    height: 36,
+                    borderRadius: 3,
+                    background: markerBg,
+                    flexShrink: 0,
                   }}
-                >
-                  {p.phrase}
-                </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    color: "#8E8E93",
-                    fontWeight: 500,
-                    marginTop: 3,
-                  }}
-                >
-                  {p.meta}
+                />
+                <div style={{ flex: 1 }}>
+                  <div
+                    style={{
+                      fontSize: 14.5,
+                      fontWeight: 600,
+                      color: "#0B0B0F",
+                      letterSpacing: "-0.012em",
+                      lineHeight: 1.35,
+                    }}
+                  >
+                    {p.phrase}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#8E8E93",
+                      fontWeight: 500,
+                      marginTop: 3,
+                    }}
+                  >
+                    {p.meta}
+                  </div>
                 </div>
               </div>
-              <span style={{ color: "#8E8E93", fontSize: 14 }}>›</span>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
 
       <div style={{ height: 110 }} />
