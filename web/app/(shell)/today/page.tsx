@@ -629,14 +629,16 @@ export default function TodayPage() {
 
   // Mounted guard — prevents SSR/client hydration mismatch on date/localStorage reads
   const [mounted, setMounted] = useState(false);
-  // briefSeenToday: true if localStorage already has today's date — brief stays closed
-  const [briefSeenToday, setBriefSeenToday] = useState(true); // start closed; open after mount check
+  // briefSeenToday: null = unknown (pre-mount), true = seen today, false = not seen
+  // Start null so brief never flashes on SSR. useEffect sets the real value.
+  const [briefSeenToday, setBriefSeenToday] = useState<boolean | null>(null);
   const [briefChipExpanded, setBriefChipExpanded] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     const todayISO = new Date().toISOString().slice(0, 10);
     const seen = localStorage.getItem(BRIEF_SEEN_KEY);
+    // true only if localStorage explicitly holds today's date
     setBriefSeenToday(seen === todayISO);
   }, []);
 
@@ -648,8 +650,9 @@ export default function TodayPage() {
     ? morningBriefs.find((b) => b.dateISO === todayISO)
     : undefined;
 
-  // Show brief: only after mount, only if not already seen today, only if no saved brief
-  const showBrief = mounted && !briefSeenToday && !hasBriefToday;
+  // Show brief: only after mount, only if explicitly NOT seen today (null = unknown = don't show),
+  // and only if no saved brief already exists for today
+  const showBrief = mounted && briefSeenToday === false && !hasBriefToday;
 
   function dismissBrief() {
     const iso = new Date().toISOString().slice(0, 10);

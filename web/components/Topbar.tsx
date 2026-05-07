@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { quoteForToday } from "@/lib/quotes";
 
 const AVATAR = "https://www.tapback.co/api/avatar/jay.webp?color=7";
@@ -12,7 +13,13 @@ export function Topbar({
   name?: string;
   live?: boolean;
 }) {
-  const quote = quoteForToday();
+  // Gate quote behind mount to prevent hydration mismatch:
+  // quoteForToday() calls new Date() which differs between SSR and client
+  const [quote, setQuote] = useState("");
+
+  useEffect(() => {
+    setQuote(quoteForToday());
+  }, []);
 
   return (
     <div
@@ -29,7 +36,10 @@ export function Topbar({
     >
       {/* quote — left */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div className="topbar-quote">{quote}</div>
+        {/* suppressHydrationWarning as belt-and-suspenders: SSR renders "" client renders quote */}
+        <div className="topbar-quote" suppressHydrationWarning>
+          {quote}
+        </div>
         {sub && <div className="topbar-sub">{sub}</div>}
       </div>
 

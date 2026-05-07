@@ -1523,7 +1523,8 @@ button {
   }
 
   /* ── Shell: offset for 240px sidebar only ── */
-  .shell {
+  /* body .shell raises specificity above Tailwind-hoisted @media rules */
+  body .shell {
     max-width: none;
     padding: 0;
     margin-left: 240px;
@@ -1532,7 +1533,7 @@ button {
     position: relative;
   }
 
-  .shell-content {
+  body .shell-content {
     padding: 0 0 40px;
     min-height: 100dvh;
   }
