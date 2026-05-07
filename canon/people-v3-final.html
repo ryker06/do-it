@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — PEOPLE v3-final · calibrated from Element 2.jpg + Layouts 7.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-3:#EEF8EF;--green-ink:#1F5C2C;--green-ink-2:#2F7A40;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-ink:#0050C8;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+
+  /* role pill tints */
+  --r-family:#FFE7EC;--r-family-ink:#7A2A3C;
+  --r-mentor:#E2EEFF;--r-mentor-ink:#1748A8;
+  --r-training:#FFD9E0;--r-training-ink:#7A2A3C;
+  --r-team:#E2F4E6;--r-team-ink:#1F5C2C;
+  --r-friend:#FFF0DD;--r-friend-ink:#7A4A1A;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1440px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:780px;margin-bottom:18px}
+h2.section{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 24px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+.row3{display:grid;grid-template-columns:repeat(3,390px);gap:32px;align-items:start;margin-bottom:48px;justify-content:start}
+.cap{position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+
+.frame-m{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column}
+
+/* topbar */
+.topbar{background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);flex-shrink:0}
+.topbar .hi{font-size:20px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.1;font-family:"SF Pro Display",-apple-system,sans-serif}
+.topbar .sub{font-size:12px;color:var(--label);font-weight:500;margin-top:2px}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+.scroll{flex:1;overflow:auto;padding:0 0 96px}
+
+/* heading row */
+.head-row{padding:18px 22px 6px;display:flex;align-items:baseline;justify-content:space-between}
+.head-row .title{font-size:32px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);line-height:1}
+.head-row .count{font-size:12px;color:var(--label);font-weight:600;letter-spacing:-0.005em}
+.add-strip{margin:0 22px 4px;display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:999px;padding:10px 14px 10px 12px;font-size:13.5px;font-weight:700;letter-spacing:-0.012em;width:fit-content;box-shadow:var(--shadow-press-ink)}
+.add-strip .p{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+
+/* AVATAR PILL ROW — Element 2.jpg pattern */
+.pill-strip{
+  margin:14px 22px 6px;
+  display:flex;align-items:center;gap:14px;
+  overflow-x:auto;padding:14px 4px 16px;
+  scroll-snap-type:x mandatory;
+}
+.pill-strip::-webkit-scrollbar{display:none}
+.pill{display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0;scroll-snap-align:start;cursor:pointer;position:relative}
+.pill .av{width:46px;height:46px;border-radius:50%;overflow:hidden;background:var(--pink-2);box-shadow:inset 0 0 0 0.5px var(--hairline),0 2px 4px rgba(20,20,30,0.08);position:relative}
+.pill .av img{width:100%;height:100%;display:block}
+.pill.warm .av{box-shadow:inset 0 0 0 2px var(--green),0 2px 4px rgba(20,20,30,0.08)}
+.pill.quiet .av::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,0.45)}
+.pill .nm{font-size:11.5px;color:var(--ink-2);font-weight:600;letter-spacing:-0.005em;max-width:60px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill.quiet .nm{color:var(--label)}
+.pill .dot{position:absolute;top:-2px;right:-2px;width:14px;height:14px;border-radius:50%;background:var(--pink);box-shadow:0 0 0 1.5px var(--paper);font-size:8px;color:var(--pink-ink);display:flex;align-items:center;justify-content:center;font-weight:800}
+.strip-axis{padding:0 22px;display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin:-2px 0 10px}
+
+/* one rotated chip */
+.chip-rotated{display:inline-flex;align-items:center;gap:6px;background:var(--pink);color:var(--pink-ink);padding:6px 12px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:-0.005em;transform:rotate(-7deg);box-shadow:var(--shadow-chip)}
+.chip-rotated .a{opacity:0.7;font-size:10px}
+
+/* PERSON ROW — vertical scroll list */
+.list-pad{padding:6px 22px 0}
+.person{
+  background:var(--paper);
+  border-radius:20px;
+  padding:14px 14px 14px 14px;
+  margin-bottom:10px;
+  display:grid;grid-template-columns:54px 1fr auto;gap:14px;align-items:start;
+  box-shadow:var(--shadow-soft);
+  position:relative;
+}
+.person .av{width:54px;height:54px;border-radius:50%;overflow:hidden;background:var(--blue-tint);box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);position:relative;flex-shrink:0}
+.person .av img{width:100%;height:100%;display:block}
+.person .av .cam{position:absolute;bottom:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:var(--ink);color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1.5px var(--paper);font-weight:600}
+.person .body{min-width:0}
+.person .row1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.person .nm{font-size:16px;font-weight:800;letter-spacing:-0.022em;color:var(--ink);line-height:1.1;font-family:"SF Pro Display",-apple-system,sans-serif}
+.person .role{font-size:10.5px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;padding:3px 8px;border-radius:6px}
+.person .role.family{background:var(--r-family);color:var(--r-family-ink)}
+.person .role.mentor{background:var(--r-mentor);color:var(--r-mentor-ink)}
+.person .role.training{background:var(--r-training);color:var(--r-training-ink)}
+.person .role.team{background:var(--r-team);color:var(--r-team-ink)}
+.person .role.friend{background:var(--r-friend);color:var(--r-friend-ink)}
+.person .quiet{font-size:11.5px;color:var(--label);font-weight:600;margin-top:4px;letter-spacing:-0.005em}
+.person .quiet b{color:var(--ink-2);font-weight:700}
+.person .move{font-size:13px;color:var(--ink-2);font-weight:600;line-height:1.4;letter-spacing:-0.005em;margin-top:8px}
+.person .move b{color:var(--green-ink);font-weight:800}
+.person .voice{margin-top:8px;display:inline-flex;align-items:center;gap:6px;background:var(--paper-warm);border-radius:999px;padding:5px 10px;font-size:11px;color:var(--label-2);font-weight:600;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.person .voice .mic{width:12px;height:12px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:8px}
+.person .right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.person .chev{color:var(--label);font-size:14px}
+
+.person.warm{background:var(--paper-warm)}
+.person.warm .quiet b{color:var(--green-ink)}
+
+.person.past{box-shadow:var(--shadow-soft),inset 0 0 0 1px rgba(255,217,224,0.5)}
+
+/* DRAWER overlay (mockup B) */
+.drawer{position:absolute;inset:0;background:rgba(20,20,30,0.32);display:flex;align-items:flex-start;justify-content:center;padding-top:56px}
+.drawer .sheet{
+  width:calc(100% - 16px);max-width:374px;
+  background:var(--paper);border-radius:28px;
+  box-shadow:var(--shadow-card-lifted);
+  padding:22px 22px 18px;
+  max-height:calc(100% - 80px);overflow:auto;
+}
+.drawer .grab{width:36px;height:4px;border-radius:2px;background:var(--hairline-strong);margin:0 auto 14px}
+.drawer-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.drawer-head .av{width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--pink-2);box-shadow:inset 0 0 0 0.5px var(--hairline),0 2px 4px rgba(20,20,30,0.08);position:relative}
+.drawer-head .av img{width:100%;height:100%;display:block}
+.drawer-head .av .cam{position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--paper);font-weight:600}
+.drawer-head .nm{font-size:22px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);line-height:1.1}
+.drawer-head .meta{font-size:12px;color:var(--label);font-weight:600;margin-top:2px}
+.field{margin-top:12px}
+.field .lbl{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px}
+.field .val{background:var(--paper-warm);border-radius:14px;padding:11px 14px;font-size:14px;color:var(--ink);font-weight:600;box-shadow:inset 0 0 0 0.5px var(--hairline);letter-spacing:-0.005em;line-height:1.4}
+.field .val.muted{color:var(--ink-2);font-weight:500}
+.recorder{margin-top:14px;background:var(--ink);color:#fff;border-radius:18px;padding:18px;display:flex;align-items:center;gap:14px}
+.recorder .blob{width:42px;height:42px;border-radius:50%;background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 0 0 5px rgba(255,255,255,0.10)}
+.recorder .t{font-size:13.5px;font-weight:700;letter-spacing:-0.012em;line-height:1.3}
+.recorder .t span{display:block;font-size:11px;font-weight:500;color:rgba(255,255,255,0.65);margin-top:2px}
+.recorder .dur{margin-left:auto;font-size:13px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+.btn-row{display:flex;gap:8px;margin-top:14px}
+.btn-row .b{flex:1;text-align:center;padding:12px 0;border-radius:14px;font-size:13.5px;font-weight:700;letter-spacing:-0.012em}
+.btn-row .b.ink{background:var(--ink);color:#fff;box-shadow:var(--shadow-press-ink)}
+.btn-row .b.paper{background:var(--paper-warm);color:var(--ink);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.btn-row .b.green{background:var(--green);color:var(--green-ink);box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.18)}
+
+/* AVATAR EDIT (mockup C) */
+.tabs-pill{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--paper-warm);border-radius:14px;padding:4px;box-shadow:inset 0 0 0 0.5px var(--hairline);margin-bottom:14px}
+.tabs-pill .t{text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--label);letter-spacing:-0.005em;border-radius:10px}
+.tabs-pill .t.active{background:var(--paper);color:var(--ink);box-shadow:var(--shadow-chip)}
+.seed-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.seed{aspect-ratio:1;border-radius:50%;overflow:hidden;background:var(--pink-2);box-shadow:inset 0 0 0 0.5px var(--hairline);position:relative}
+.seed img{width:100%;height:100%;display:block}
+.seed.sel{box-shadow:inset 0 0 0 3px var(--ink),0 2px 4px rgba(20,20,30,0.10)}
+.seed-row{margin-top:14px;display:flex;align-items:center;gap:8px}
+.seed-row .lbl{font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;flex-shrink:0}
+.seed-row .swatches{display:flex;gap:6px}
+.swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.swatch.sel{box-shadow:inset 0 0 0 2px var(--ink),0 2px 3px rgba(20,20,30,0.10)}
+
+/* DESKTOP frame D */
+.frame-d{
+  width:1320px;height:880px;background:var(--bg);border-radius:28px;overflow:hidden;
+  box-shadow:var(--shadow-paper);display:grid;grid-template-rows:auto 1fr;
+}
+.frame-d .topbar{padding:18px 28px 14px}
+.d-body{display:grid;grid-template-columns:480px 1fr;overflow:hidden}
+.d-body .left{padding:22px 22px;overflow:auto;border-right:0.5px solid var(--hairline-soft)}
+.d-body .right{padding:32px 36px;overflow:auto;background:var(--paper-warm)}
+.d-body .left h3{font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin:6px 0 12px}
+.d-pill-strip{display:flex;gap:14px;overflow-x:auto;margin-bottom:14px;padding:10px 2px 12px}
+.d-pill-strip::-webkit-scrollbar{display:none}
+.d-detail-card{background:var(--paper);border-radius:24px;padding:28px;box-shadow:var(--shadow-paper);max-width:680px}
+.d-detail-head{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+.d-detail-head .av{width:84px;height:84px;border-radius:50%;overflow:hidden;background:var(--pink-2);box-shadow:inset 0 0 0 0.5px var(--hairline),0 4px 10px rgba(20,20,30,0.08);position:relative}
+.d-detail-head .av img{width:100%;height:100%;display:block}
+.d-detail-head .av .cam{position:absolute;bottom:-2px;right:-2px;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--paper);font-weight:600}
+.d-detail-head .nm{font-size:32px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);line-height:1}
+.d-detail-head .meta{font-size:13px;color:var(--label);font-weight:600;margin-top:4px}
+.d-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* selected highlight in left list */
+.person.sel{background:linear-gradient(180deg,#fff 0%,var(--paper-warm) 100%);box-shadow:0 0 0 1.5px var(--ink),var(--shadow-soft)}
+
+</style></head><body>
+
+<div class="h">Do It · people v3-final</div>
+<p class="lead">calibrated from <code style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px">board/Element 2.jpg</code> (avatar pill row · soft tinted card with avatar overlap) + <code style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px">board/Layouts 7.jpg</code> (compact list rows · big avatars · clear next-move).</p>
+
+<div class="preamble">
+  <p><strong>anatomy distinct from existing 14.</strong> Two-zone: a horizontal scrolling AVATAR PILL ROW (warm → quiet axis) at top, then vertical PERSON ROWS with editable avatar + role pill + next-move sentence. No other v3-final canon uses a horizontal pill-strip + vertical-row pattern. Domain-disc row from Domains, sets-table from Workouts, dot-grids from Habits — all avoided.</p>
+  <p><strong>topbar quote</strong> = "the work is the relationship." (new — not heavily repeated).</p>
+  <p><strong>memoji law.</strong> Topbar memoji = jay color 7 only (Adam). All other avatars on this surface use varied tapback seeds (mom/marcus/seb/jess/eli/rae/...) — that is the legitimate use of memojis-as-avatars-for-contacts.</p>
+  <p><strong>quiet thresholds</strong> · family >7d · mentor >30d · training >3d · team >7d · friend >14d. Past-threshold rows show a -7deg pink "reach out" chip.</p>
+</div>
+
+<h2 class="section">A · canonical · pill row + person list</h2>
+<div class="row3">
+  <div style="position:relative">
+    <span class="cap">A · mobile · canonical</span>
+    <div class="frame-m">
+      <div class="topbar">
+        <div>
+          <div class="hi">the work is the relationship.</div>
+          <div class="sub">12 people · 3 quiet past threshold</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">people.</div>
+          <div class="count">12</div>
+        </div>
+        <div class="add-strip"><div class="p">+</div>person</div>
+
+        <!-- Element 2 pill row -->
+        <div class="pill-strip">
+          <div class="pill warm"><div class="av"><img src="https://www.tapback.co/api/avatar/marcus.webp?color=3" alt=""/></div><div class="nm">marcus</div></div>
+          <div class="pill warm"><div class="av"><img src="https://www.tapback.co/api/avatar/mom.webp?color=2" alt=""/></div><div class="nm">mom</div></div>
+          <div class="pill warm"><div class="av"><img src="https://www.tapback.co/api/avatar/seb.webp?color=5" alt=""/></div><div class="nm">seb</div></div>
+          <div class="pill"><div class="av"><img src="https://www.tapback.co/api/avatar/rae.webp?color=4" alt=""/></div><div class="nm">rae</div></div>
+          <div class="pill"><div class="av"><img src="https://www.tapback.co/api/avatar/jess.webp?color=1" alt=""/></div><div class="nm">jess</div></div>
+          <div class="pill"><div class="av"><img src="https://www.tapback.co/api/avatar/eli.webp?color=6" alt=""/></div><div class="nm">eli</div></div>
+          <div class="pill"><div class="av"><img src="https://www.tapback.co/api/avatar/dad.webp?color=2" alt=""/></div><div class="nm">dad</div></div>
+          <div class="pill quiet"><div class="dot">!</div><div class="av"><img src="https://www.tapback.co/api/avatar/coach.webp?color=3" alt=""/></div><div class="nm">tariq</div></div>
+          <div class="pill quiet"><div class="dot">!</div><div class="av"><img src="https://www.tapback.co/api/avatar/imran.webp?color=5" alt=""/></div><div class="nm">imran</div></div>
+          <div class="pill quiet"><div class="av"><img src="https://www.tapback.co/api/avatar/leo.webp?color=4" alt=""/></div><div class="nm">leo</div></div>
+          <div class="pill quiet"><div class="av"><img src="https://www.tapback.co/api/avatar/maya.webp?color=1" alt=""/></div><div class="nm">maya</div></div>
+          <div class="pill quiet"><div class="av"><img src="https://www.tapback.co/api/avatar/dr.webp?color=6" alt=""/></div><div class="nm">dr. kemp</div></div>
+        </div>
+        <div class="strip-axis"><span>warm</span><span>quiet</span></div>
+
+        <!-- person rows -->
+        <div class="list-pad">
+          <!-- mom · family · warm -->
+          <div class="person warm">
+            <div class="av"><img src="https://www.tapback.co/api/avatar/mom.webp?color=2" alt=""/><div class="cam">✎</div></div>
+            <div class="body">
+              <div class="row1">
+                <div class="nm">mom</div>
+                <span class="role family">family</span>
+              </div>
+              <div class="quiet"><b>2 days warm</b> · last call sun</div>
+              <div class="move">call mom · ask about her hip <b>→</b> she likes wednesdays.</div>
+            </div>
+            <div class="right"><div class="chev">›</div></div>
+          </div>
+
+          <!-- tariq · mentor · past threshold -->
+          <div class="person past">
+            <div class="av"><img src="https://www.tapback.co/api/avatar/coach.webp?color=3" alt=""/><div class="cam">✎</div></div>
+            <div class="body">
+              <div class="row1">
+                <div class="nm">tariq</div>
+                <span class="role mentor">mentor</span>
+                <span class="chip-rotated">reach out <span class="a">→</span></span>
+              </div>
+              <div class="quiet"><b>34 days quiet</b> · threshold 30d</div>
+              <div class="move">send the q4 plan · ask his read on the second hire.</div>
+              <div class="voice"><span class="mic">●</span>hold to record voice note</div>
+            </div>
+            <div class="right"><div class="chev">›</div></div>
+          </div>
+
+          <!-- marcus · training · warm -->
+          <div class="person warm">
+            <div class="av"><img src="https://www.tapback.co/api/avatar/marcus.webp?color=3" alt=""/><div class="cam">✎</div></div>
+            <div class="body">
+              <div class="row1">
+                <div class="nm">marcus</div>
+                <span class="role training">training</span>
+              </div>
+              <div class="quiet"><b>1 day warm</b> · pull session yesterday</div>
+              <div class="move">confirm sat lift · he's pushing 200kg deadlift too.</div>
+            </div>
+            <div class="right"><div class="chev">›</div></div>
+          </div>
+
+          <!-- seb · team · warm -->
+          <div class="person">
+            <div class="av"><img src="https://www.tapback.co/api/avatar/seb.webp?color=5" alt=""/><div class="cam">✎</div></div>
+            <div class="body">
+              <div class="row1">
+                <div class="nm">seb</div>
+                <span class="role team">team</span>
+              </div>
+              <div class="quiet"><b>5 days quiet</b> · threshold 7d</div>
+              <div class="move">review his draft of the onboarding flow.</div>
+            </div>
+            <div class="right"><div class="chev">›</div></div>
+          </div>
+
+          <!-- imran · friend · past threshold -->
+          <div class="person past">
+            <div class="av"><img src="https://www.tapback.co/api/avatar/imran.webp?color=5" alt=""/><div class="cam">✎</div></div>
+            <div class="body">
+              <div class="row1">
+                <div class="nm">imran</div>
+                <span class="role friend">friend</span>
+              </div>
+              <div class="quiet"><b>21 days quiet</b> · threshold 14d</div>
+              <div class="move">grab coffee · ask how the move went.</div>
+            </div>
+            <div class="right"><div class="chev">›</div></div>
+          </div>
+
+          <!-- jess · friend -->
+          <div class="person">
+            <div class="av"><img src="https://www.tapback.co/api/avatar/jess.webp?color=1" alt=""/><div class="cam">✎</div></div>
+            <div class="body">
+              <div class="row1">
+                <div class="nm">jess</div>
+                <span class="role friend">friend</span>
+              </div>
+              <div class="quiet"><b>10 days quiet</b></div>
+              <div class="move">send the book she asked for · "discipline is destiny."</div>
+            </div>
+            <div class="right"><div class="chev">›</div></div>
+          </div>
+
+          <!-- dad -->
+          <div class="person">
+            <div class="av"><img src="https://www.tapback.co/api/avatar/dad.webp?color=2" alt=""/><div class="cam">✎</div></div>
+            <div class="body">
+              <div class="row1">
+                <div class="nm">dad</div>
+                <span class="role family">family</span>
+              </div>
+              <div class="quiet"><b>4 days warm</b></div>
+              <div class="move">tell him the bench numbers · he'll laugh.</div>
+            </div>
+            <div class="right"><div class="chev">›</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B · person detail drawer -->
+  <div style="position:relative">
+    <span class="cap">B · mobile · person detail · voice memo</span>
+    <div class="frame-m">
+      <div class="topbar">
+        <div>
+          <div class="hi">the work is the relationship.</div>
+          <div class="sub">tariq · 34 days quiet</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+
+      <!-- background list dimmed -->
+      <div class="scroll" style="filter:brightness(0.96)">
+        <div class="head-row">
+          <div class="title" style="opacity:0.4">people.</div>
+        </div>
+        <div style="opacity:0.3;padding:0 22px">
+          <div class="pill-strip" style="margin:0">
+            <div class="pill"><div class="av"><img src="https://www.tapback.co/api/avatar/mom.webp?color=2" alt=""/></div><div class="nm">mom</div></div>
+            <div class="pill"><div class="av"><img src="https://www.tapback.co/api/avatar/marcus.webp?color=3" alt=""/></div><div class="nm">marcus</div></div>
+            <div class="pill"><div class="av"><img src="https://www.tapback.co/api/avatar/coach.webp?color=3" alt=""/></div><div class="nm">tariq</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- drawer overlay -->
+      <div class="drawer">
+        <div class="sheet">
+          <div class="grab"></div>
+          <div class="drawer-head">
+            <div class="av"><img src="https://www.tapback.co/api/avatar/coach.webp?color=3" alt=""/><div class="cam">✎</div></div>
+            <div>
+              <div class="nm">tariq</div>
+              <div class="meta">mentor · 34 days quiet</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">next move</div>
+            <div class="val">send the q4 plan · ask his read on the second hire.</div>
+          </div>
+
+          <div class="recorder">
+            <div class="blob">●</div>
+            <div class="t">hold to record<span>auto-transcribed · stays private</span></div>
+            <div class="dur">0:00</div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">last memo · sep 02</div>
+            <div class="val muted">he said be patient with the second hire — let them fail two cycles before judging.</div>
+          </div>
+
+          <div class="btn-row">
+            <div class="b green">→ touched today</div>
+            <div class="b paper">edit</div>
+          </div>
+          <div style="height:8px"></div>
+          <div class="btn-row">
+            <div class="b ink">message</div>
+            <div class="b paper">call</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C · avatar edit drawer -->
+  <div style="position:relative">
+    <span class="cap">C · mobile · avatar edit · seed picker</span>
+    <div class="frame-m">
+      <div class="topbar">
+        <div>
+          <div class="hi">the work is the relationship.</div>
+          <div class="sub">change avatar · marcus</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+
+      <div class="scroll" style="filter:brightness(0.96)">
+        <div class="head-row"><div class="title" style="opacity:0.4">people.</div></div>
+      </div>
+
+      <div class="drawer">
+        <div class="sheet">
+          <div class="grab"></div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+            <div style="width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--pink-2);box-shadow:inset 0 0 0 0.5px var(--hairline),0 2px 4px rgba(20,20,30,0.08)"><img src="https://www.tapback.co/api/avatar/marcus.webp?color=3" alt="" style="width:100%;height:100%;display:block"/></div>
+            <div>
+              <div style="font-size:20px;font-weight:800;letter-spacing:-0.025em;color:var(--ink)">marcus</div>
+              <div style="font-size:12px;color:var(--label);font-weight:600;margin-top:2px">choose a memoji or upload a photo</div>
+            </div>
+          </div>
+
+          <div class="tabs-pill">
+            <div class="t active">memoji</div>
+            <div class="t">emoji</div>
+            <div class="t">url</div>
+            <div class="t">upload</div>
+          </div>
+
+          <div class="seed-grid">
+            <div class="seed sel"><img src="https://www.tapback.co/api/avatar/marcus.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/seb.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/eli.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/leo.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/coach.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/imran.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/sam.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/raj.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/dad.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/luca.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/dre.webp?color=3" alt=""/></div>
+            <div class="seed"><img src="https://www.tapback.co/api/avatar/will.webp?color=3" alt=""/></div>
+          </div>
+
+          <div class="seed-row">
+            <div class="lbl">tint</div>
+            <div class="swatches">
+              <div class="swatch" style="background:#FFE7EC"></div>
+              <div class="swatch sel" style="background:#FFD9E0"></div>
+              <div class="swatch" style="background:#E2EEFF"></div>
+              <div class="swatch" style="background:#E2F4E6"></div>
+              <div class="swatch" style="background:#FFF0DD"></div>
+              <div class="swatch" style="background:#EAEFF3"></div>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:18px">
+            <div class="b ink">→ save · marcus</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">D · desktop · master · detail</h2>
+<div class="frame-d">
+  <div class="topbar">
+    <div>
+      <div class="hi">the work is the relationship.</div>
+      <div class="sub">12 people · 3 quiet past threshold · selected · tariq</div>
+    </div>
+    <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+  </div>
+  <div class="d-body">
+    <!-- LEFT · list -->
+    <div class="left">
+      <h3>people · 12</h3>
+      <div class="d-pill-strip">
+        <div class="pill warm"><div class="av"><img src="https://www.tapback.co/api/avatar/marcus.webp?color=3" alt=""/></div><div class="nm">marcus</div></div>
+        <div class="pill warm"><div class="av"><img src="https://www.tapback.co/api/avatar/mom.webp?color=2" alt=""/></div><div class="nm">mom</div></div>
+        <div class="pill warm"><div class="av"><img src="https://www.tapback.co/api/avatar/seb.webp?color=5" alt=""/></div><div class="nm">seb</div></div>
+        <div class="pill"><div class="av"><img src="https://www.tapback.co/api/avatar/jess.webp?color=1" alt=""/></div><div class="nm">jess</div></div>
+        <div class="pill quiet"><div class="dot">!</div><div class="av"><img src="https://www.tapback.co/api/avatar/coach.webp?color=3" alt=""/></div><div class="nm">tariq</div></div>
+        <div class="pill quiet"><div class="dot">!</div><div class="av"><img src="https://www.tapback.co/api/avatar/imran.webp?color=5" alt=""/></div><div class="nm">imran</div></div>
+        <div class="pill quiet"><div class="av"><img src="https://www.tapback.co/api/avatar/leo.webp?color=4" alt=""/></div><div class="nm">leo</div></div>
+      </div>
+
+      <div class="person warm">
+        <div class="av"><img src="https://www.tapback.co/api/avatar/mom.webp?color=2" alt=""/></div>
+        <div class="body">
+          <div class="row1"><div class="nm">mom</div><span class="role family">family</span></div>
+          <div class="quiet"><b>2 days warm</b></div>
+          <div class="move">call · ask about her hip.</div>
+        </div>
+        <div class="right"><div class="chev">›</div></div>
+      </div>
+
+      <div class="person sel past">
+        <div class="av"><img src="https://www.tapback.co/api/avatar/coach.webp?color=3" alt=""/></div>
+        <div class="body">
+          <div class="row1"><div class="nm">tariq</div><span class="role mentor">mentor</span><span class="chip-rotated">reach out <span class="a">→</span></span></div>
+          <div class="quiet"><b>34 days quiet</b></div>
+          <div class="move">send the q4 plan.</div>
+        </div>
+        <div class="right"><div class="chev">›</div></div>
+      </div>
+
+      <div class="person warm">
+        <div class="av"><img src="https://www.tapback.co/api/avatar/marcus.webp?color=3" alt=""/></div>
+        <div class="body">
+          <div class="row1"><div class="nm">marcus</div><span class="role training">training</span></div>
+          <div class="quiet"><b>1 day warm</b></div>
+          <div class="move">confirm sat lift.</div>
+        </div>
+        <div class="right"><div class="chev">›</div></div>
+      </div>
+
+      <div class="person past">
+        <div class="av"><img src="https://www.tapback.co/api/avatar/imran.webp?color=5" alt=""/></div>
+        <div class="body">
+          <div class="row1"><div class="nm">imran</div><span class="role friend">friend</span></div>
+          <div class="quiet"><b>21 days quiet</b></div>
+          <div class="move">grab coffee.</div>
+        </div>
+        <div class="right"><div class="chev">›</div></div>
+      </div>
+    </div>
+
+    <!-- RIGHT · detail -->
+    <div class="right">
+      <div class="d-detail-card">
+        <div class="d-detail-head">
+          <div class="av"><img src="https://www.tapback.co/api/avatar/coach.webp?color=3" alt=""/><div class="cam">✎</div></div>
+          <div>
+            <div class="nm">tariq</div>
+            <div class="meta">mentor · 34 days quiet · threshold 30d</div>
+          </div>
+        </div>
+
+        <div class="d-grid">
+          <div class="field" style="margin-top:0">
+            <div class="lbl">next move</div>
+            <div class="val">send the q4 plan · ask his read on the second hire.</div>
+          </div>
+          <div class="field" style="margin-top:0">
+            <div class="lbl">last touch</div>
+            <div class="val">call · sep 02 · 38 min</div>
+          </div>
+          <div class="field" style="margin-top:0">
+            <div class="lbl">role</div>
+            <div class="val">mentor · cadence 30d</div>
+          </div>
+          <div class="field" style="margin-top:0">
+            <div class="lbl">domain</div>
+            <div class="val">business · learning</div>
+          </div>
+        </div>
+
+        <div class="recorder" style="margin-top:18px">
+          <div class="blob">●</div>
+          <div class="t">hold to record voice memo<span>auto-transcribed · stays private</span></div>
+          <div class="dur">0:00</div>
+        </div>
+
+        <div class="field">
+          <div class="lbl">recent memos</div>
+          <div class="val muted">sep 02 · be patient with the second hire — let them fail two cycles before judging.</div>
+        </div>
+        <div class="field">
+          <div class="val muted">aug 11 · he warned me about over-indexing on q3 · proven right.</div>
+        </div>
+
+        <div class="btn-row" style="margin-top:18px">
+          <div class="b green">→ touched today</div>
+          <div class="b ink">message</div>
+          <div class="b paper">call</div>
+          <div class="b paper">edit</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

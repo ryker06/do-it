@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — System v3-final · playful premium Apple, calibrated from board/</title>
+<style>
+:root{
+  /* --- palette · calibrated from board/ --- */
+  /* whites & paper — from Layout 1, Layout 4, Element 3 (the soft Apple paper) */
+  --bg:#FFFFFF;            /* page bg — pure white. clean, premium. (HARD RULE in TONE.md) */
+  --bg-cool:#FFFFFF;       /* alt page bg — also white. tints belong on cards, not the page. */
+  --paper:#FFFFFF;         /* card paper — Element 1 / Element 3 */
+  --paper-warm:#FBFAF8;    /* near-white card · the only allowed off-white, max one notch */
+
+  /* ink — from Amie Welcome / Deel headlines (pure rich black) */
+  --ink:#0B0B0F;
+  --ink-2:#1C1C1E;
+  --ink-3:#3A3A3C;
+  --label:#8E8E93;
+  --label-2:#6E6E73;
+
+  /* hairlines */
+  --hairline:rgba(60,60,67,0.10);
+  --hairline-soft:rgba(60,60,67,0.06);
+  --hairline-strong:rgba(60,60,67,0.18);
+
+  /* pinks — calibrated from Element 3 (multiple accounts pink card) + Element 1 (pink memoji disc) */
+  --pink:#FFD9E0;          /* Element 3 hero pink card */
+  --pink-2:#FFE7EC;        /* Element 1 pink memoji bg */
+  --pink-3:#FFF1F4;        /* softest pink wash */
+  --pink-ink:#7A2A3C;      /* readable on pink */
+
+  /* greens — from Amie Welcome rotated chip (green pill with green bold text) + Layout 1 jake bg */
+  --green:#C7F0CF;         /* Amie chip green */
+  --green-2:#E2F4E6;       /* soft green tint */
+  --green-ink:#1F5C2C;     /* the green "drop #1" text */
+  --green-ink-2:#2F7A40;
+
+  /* blues — from Layout 1 settings link + Layout 4 location pin + the calm Apple blue */
+  --blue:#0A84FF;
+  --blue-soft:rgba(10,132,255,0.10);
+  --blue-tint:#E2EEFF;     /* like Layout 1 jesse green ↔ matched pastel blue */
+  --blue-ink:#0050C8;
+
+  /* ---- domain pastel discs (palette-locked) — derived from Layout 1 family memoji ring tints ---- */
+  --d-business:#E2EEFF;     --d-business-2:#C9DBFF;     --d-business-ink:#1748A8;
+  --d-religion:#E2F4E6;     --d-religion-2:#C0E5C8;     --d-religion-ink:#1F5C2C;
+  --d-learning:#FFE0E8;     --d-learning-2:#FFC9D6;     --d-learning-ink:#7A2A3C;
+  --d-fitness:#FFD0DA;      --d-fitness-2:#FFB6C5;      --d-fitness-ink:#7A2A3C;
+  --d-home:#EAEFF3;         --d-home-2:#D4DCE3;         --d-home-ink:#36475A;
+  --d-food:#FFF0DD;         --d-food-2:#FFDFB5;         --d-food-ink:#7A4A1A;
+
+  /* ---- soft Apple shadows (NOT heavy frost) — calibrated from Element 1, Lisa Jones element ---- */
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06), 0 1px 1px rgba(20,20,30,0.02), 0 12px 28px -16px rgba(20,20,30,0.10), 0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06), 0 2px 3px rgba(20,20,30,0.04), 0 18px 38px -18px rgba(20,20,30,0.18), 0 36px 64px -32px rgba(20,20,30,0.18);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06), 0 1px 2px rgba(20,20,30,0.04), 0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 0.5px rgba(0,0,0,0.5), 0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05), 0 1px 1px rgba(20,20,30,0.02), 0 8px 22px -14px rgba(20,20,30,0.12);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{
+  background:var(--bg);
+  color:var(--ink);
+  /* HARD RULE: SF Pro Display + SF Pro Text only. Never serif. Never italic. */
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;
+  font-feature-settings:"ss01","cv11";
+}
+body{padding:56px 64px 120px;max-width:1280px;margin:0 auto}
+
+/* ---- typography ramp · SF Pro Display + SF Pro Text only ---- */
+h1.title{font-size:48px;font-weight:800;letter-spacing:-0.04em;line-height:1.02;margin-bottom:8px;color:var(--ink)}
+.lead{font-size:16px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:680px;margin-bottom:8px}
+.note{font-size:13px;color:var(--label);max-width:680px;letter-spacing:-0.005em;line-height:1.5}
+
+h2{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:56px 0 18px}
+
+.preamble{background:var(--paper);border-radius:24px;padding:24px 28px;box-shadow:var(--shadow-paper);max-width:820px;margin:18px 0 8px}
+.preamble p{font-size:14px;color:var(--ink-2);line-height:1.6;letter-spacing:-0.005em}
+.preamble p+p{margin-top:10px}
+.preamble strong{color:var(--ink);font-weight:700}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12.5px;background:var(--bg-cool);padding:2px 6px;border-radius:6px;color:var(--ink-2)}
+
+/* ---- swatches ---- */
+.swatch-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.sw{background:var(--paper);border-radius:18px;padding:14px;box-shadow:var(--shadow-soft)}
+.sw .chip{height:64px;border-radius:14px;margin-bottom:10px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.sw .name{font-size:13px;font-weight:700;color:var(--ink-2);letter-spacing:-0.012em}
+.sw .hex{font-size:11px;color:var(--label);font-variant-numeric:tabular-nums;margin-top:2px;font-family:ui-monospace,SFMono-Regular,monospace}
+.sw .src{font-size:10.5px;color:var(--label);margin-top:4px;letter-spacing:0.01em}
+
+/* ---- type ramp ---- */
+.type-row{background:var(--paper);border-radius:18px;padding:18px 22px;box-shadow:var(--shadow-soft);display:flex;align-items:baseline;gap:24px;margin-bottom:10px}
+.type-row .lbl{font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;width:140px;flex-shrink:0}
+.type-row .ex{flex:1;color:var(--ink)}
+.type-row .meta{font-size:11px;color:var(--label);font-variant-numeric:tabular-nums;font-family:ui-monospace,SFMono-Regular,monospace}
+
+/* ---- surface tiers ---- */
+.tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.tier{padding:24px;border-radius:24px;min-height:130px;display:flex;flex-direction:column;justify-content:flex-end}
+.tier.bg{background:var(--bg);box-shadow:inset 0 0 0 1px var(--hairline)}
+.tier.paper{background:var(--paper);box-shadow:var(--shadow-paper)}
+.tier.raised{background:var(--paper);box-shadow:var(--shadow-card-lifted)}
+.tier.hairline{background:var(--paper);box-shadow:inset 0 0 0 1px var(--hairline)}
+.tier-label{font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label)}
+.tier-name{font-size:18px;font-weight:700;letter-spacing:-0.022em;color:var(--ink);margin-top:4px}
+.tier-desc{font-size:12.5px;color:var(--label-2);margin-top:4px;line-height:1.45}
+
+/* ---- card recipes ---- */
+.recipe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.recipe{position:relative;display:flex;flex-direction:column}
+.recipe .source{font-size:10.5px;color:var(--label);font-weight:600;letter-spacing:0.04em;margin-bottom:8px}
+.recipe .source b{color:var(--ink-2);font-weight:700}
+
+/* paper card — from Element 1 ($30 Credits) */
+.card-paper{background:var(--paper);border-radius:22px;padding:20px 22px;box-shadow:var(--shadow-paper)}
+.card-paper .eyebrow{font-size:13px;color:var(--label);font-weight:600;letter-spacing:-0.005em}
+.card-paper .figure{font-size:32px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);margin-top:4px}
+.card-paper .row{display:flex;align-items:center;gap:10px;margin-top:14px}
+.card-paper .pill{flex:1;background:var(--bg);border-radius:14px;padding:10px 14px;font-size:14px;font-weight:600;color:var(--ink-2);text-align:center;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+
+/* tinted card — from Element 3 (Multiple Accounts pink) */
+.card-tinted{background:linear-gradient(180deg,var(--pink-2) 0%,var(--pink) 100%);border-radius:22px;padding:22px;box-shadow:var(--shadow-paper);position:relative;overflow:hidden}
+.card-tinted .pattern{position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(255,255,255,0.6) 1.5px,transparent 2px),radial-gradient(circle at 70% 70%,rgba(255,255,255,0.5) 1.5px,transparent 2px);background-size:18px 18px;opacity:0.35;pointer-events:none}
+.card-tinted .eyebrow{font-size:13px;color:var(--pink-ink);font-weight:600;position:relative}
+.card-tinted .title{font-size:22px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);margin-top:6px;position:relative}
+
+/* hero card — from Layout 4 (Evening Ritual) */
+.card-hero{background:linear-gradient(180deg,var(--paper-warm) 0%,var(--paper) 60%);border-radius:26px;padding:24px;box-shadow:var(--shadow-card-lifted);position:relative}
+.card-hero .eyebrow{font-size:12px;font-weight:700;color:var(--label);letter-spacing:0.10em;text-transform:uppercase}
+.card-hero h3{font-size:30px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);margin:6px 0 12px;line-height:1.05}
+.card-hero .chips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.card-hero .ch{background:var(--bg);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:8px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.card-hero .ch .ck{font-size:10px;color:var(--label);font-weight:600;letter-spacing:0.06em;text-transform:uppercase}
+.card-hero .ch .cv{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-0.01em}
+.card-hero .ch .ico{width:22px;height:22px;border-radius:50%;background:var(--blue-tint);display:flex;align-items:center;justify-content:center;font-size:12px}
+
+/* ---- accent moves (single per screen) ---- */
+.accent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.accent-card{background:var(--paper);border-radius:22px;padding:24px;box-shadow:var(--shadow-paper);position:relative;min-height:160px;overflow:hidden}
+.accent-card .nm{font-size:12.5px;font-weight:700;color:var(--ink);letter-spacing:-0.005em}
+.accent-card .ds{font-size:12px;color:var(--label-2);margin-top:4px;line-height:1.5}
+/* rotated chip — from Amie Welcome */
+.chip-rotated{display:inline-flex;align-items:center;gap:6px;background:var(--green);color:var(--green-ink);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:-0.01em;transform:rotate(-7deg);box-shadow:var(--shadow-chip);margin:14px 0 6px}
+.chip-rotated .arrow{font-size:11px;opacity:0.7}
+/* dot pattern bg accent — from Element 3 */
+.dotbg{background:var(--pink-2) radial-gradient(circle at 18% 22%,rgba(255,255,255,0.6) 1.5px,transparent 2px) 0/16px 16px;height:64px;border-radius:14px;margin:14px 0 6px}
+/* dimensional layered card stack — from Element 3 */
+.stack{position:relative;height:88px;margin:14px 0 6px}
+.stack .l{position:absolute;left:0;right:0;background:var(--paper);border-radius:14px;box-shadow:var(--shadow-paper);height:54px}
+.stack .l1{top:0;left:8px;right:8px;background:var(--pink-3);height:46px;opacity:0.85}
+.stack .l2{top:14px;left:4px;right:4px;background:var(--pink-2);height:50px;opacity:0.95}
+.stack .l3{top:30px;background:var(--pink);height:54px;display:flex;align-items:center;padding:0 14px}
+.stack .l3 .av{width:28px;height:28px;border-radius:50%;background:var(--paper);margin-right:10px;box-shadow:var(--shadow-chip);overflow:hidden}
+.stack .l3 .av img{width:100%;height:100%;object-fit:cover}
+.stack .l3 .nm{font-size:13px;font-weight:700;color:var(--ink)}
+
+/* ---- buttons ---- */
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.btn-ink{background:linear-gradient(180deg,#1A1A20 0%,#000 100%);color:#fff;border:none;border-radius:999px;padding:14px 26px;font-size:15px;font-weight:600;letter-spacing:-0.012em;box-shadow:var(--shadow-press-ink);font-family:inherit;cursor:pointer}
+.btn-paper{background:var(--paper);color:var(--ink);border:none;border-radius:999px;padding:13px 22px;font-size:14.5px;font-weight:600;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 1px rgba(20,20,30,0.03);font-family:inherit;cursor:pointer}
+.btn-blue{background:var(--blue-soft);color:var(--blue);border:none;border-radius:999px;padding:13px 22px;font-size:14.5px;font-weight:700;box-shadow:inset 0 0 0 0.5px rgba(10,132,255,0.20);font-family:inherit;cursor:pointer}
+.btn-green{background:var(--green);color:var(--green-ink);border:none;border-radius:999px;padding:13px 22px;font-size:14.5px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.18)}
+
+/* ---- memoji block (mandatory part of system) ---- */
+.memoji-row{display:flex;gap:18px;align-items:center;background:var(--paper);border-radius:18px;padding:16px 22px;box-shadow:var(--shadow-soft)}
+.memoji-row .demo{width:32px;height:32px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.06)}
+.memoji-row .demo img{width:100%;height:100%;display:block}
+.memoji-row .lbl{font-size:13px;color:var(--ink-2);font-weight:600}
+.memoji-row .lbl b{display:block;font-weight:700;color:var(--ink);font-size:14px}
+.memoji-row .meta{font-size:11px;color:var(--label);margin-left:auto;font-family:ui-monospace,SFMono-Regular,monospace}
+
+/* ---- domain discs (mini, like Layout 1 family row) ---- */
+.disc-row{display:flex;gap:18px;align-items:flex-start;background:var(--paper);border-radius:22px;padding:22px;box-shadow:var(--shadow-paper)}
+.dgroup{display:flex;flex-direction:column;align-items:center;gap:8px}
+.disc{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06),0 2px 4px rgba(20,20,30,0.05)}
+.disc svg{width:26px;height:26px;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.disc.business{background:linear-gradient(180deg,var(--d-business) 0%,var(--d-business-2) 100%);color:var(--d-business-ink)}
+.disc.religion{background:linear-gradient(180deg,var(--d-religion) 0%,var(--d-religion-2) 100%);color:var(--d-religion-ink)}
+.disc.learning{background:linear-gradient(180deg,var(--d-learning) 0%,var(--d-learning-2) 100%);color:var(--d-learning-ink)}
+.disc.fitness{background:linear-gradient(180deg,var(--d-fitness) 0%,var(--d-fitness-2) 100%);color:var(--d-fitness-ink)}
+.disc.home{background:linear-gradient(180deg,var(--d-home) 0%,var(--d-home-2) 100%);color:var(--d-home-ink)}
+.disc.food{background:linear-gradient(180deg,var(--d-food) 0%,var(--d-food-2) 100%);color:var(--d-food-ink)}
+.dlabel{font-size:11px;color:var(--label-2);font-weight:600;letter-spacing:-0.005em}
+
+/* ---- forbidden list ---- */
+.forbidden{background:var(--paper);border-radius:18px;padding:18px 22px;box-shadow:var(--shadow-soft)}
+.forbidden ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px 24px}
+.forbidden li{font-size:13px;color:var(--ink-2);padding-left:18px;position:relative;line-height:1.5}
+.forbidden li::before{content:"×";position:absolute;left:0;top:0;color:#C44;font-weight:700;font-size:14px}
+
+</style></head><body>
+
+<h1 class="title">Do It · system v3-final</h1>
+<p class="lead">playful premium Apple. calibrated from <code>board/</code>. no glass-liquid. no serif. SF Pro Display + SF Pro Text only.</p>
+<p class="note">tokens are inlined. every recipe below references the board image it was derived from. layouts vary per screen — system gives the vocabulary, not the composition.</p>
+
+<div class="preamble">
+  <p><strong>palette law.</strong> white page bg (always). accents: pink · green · black · blue. nothing else. red, orange, yellow, purple are forbidden — even in tints. <strong>no beige, no cream, no sand as page bg.</strong></p>
+  <p><strong>shadow law.</strong> soft Apple drop shadow, multi-stop, never heavy. <code>--shadow-paper</code> is the default. <code>--shadow-press-ink</code> only on the primary ink button. NO backdrop-filter blur as a defining surface.</p>
+  <p><strong>type law.</strong> SF Pro Display for hero/title (700-800 weight). SF Pro Text for body/eyebrow/label (500-700 weight). Tabular numerics on counts/durations. <strong>never serif. never italic. never cursive.</strong></p>
+  <p><strong>memoji law (LOCKED).</strong> 30px circle, top-right of every Topbar. Source = <code>https://www.tapback.co/api/avatar/jay.webp?color=7</code> EXACTLY (Adam: black hair + black beard + glasses). NEVER substitute a different seed or color. Tap → /settings/. Never stripped.</p>
+  <p><strong>topbar law.</strong> Quote line LEFT = rotating motivational quote (lowercase, period at end, SF Pro Display Semibold). Curated set of ~30. Examples: "discipline equals freedom." / "you become what you repeat." / "today is the lift." / "the mountain doesn't care." / "show up. that's the move." / "quiet work, loud results." / "every rep is a vote." NEVER a personal greeting — "adam. ready when you are." pattern is dead.</p>
+</div>
+
+<h2>palette · calibrated hex</h2>
+<div class="swatch-grid">
+  <div class="sw"><div class="chip" style="background:#FFFFFF"></div><div class="name">bg</div><div class="hex">#FFFFFF</div><div class="src">page · pure white</div></div>
+  <div class="sw"><div class="chip" style="background:#FFFFFF"></div><div class="name">paper</div><div class="hex">#FFFFFF</div><div class="src">card · same as bg</div></div>
+  <div class="sw"><div class="chip" style="background:#FBFAF8"></div><div class="name">paper-warm</div><div class="hex">#FBFAF8</div><div class="src">max off-white · accent only</div></div>
+  <div class="sw"><div class="chip" style="background:#0B0B0F"></div><div class="name" style="color:#fff">ink</div><div class="hex" style="color:#bbb">#0B0B0F</div><div class="src" style="color:#888">Amie/Deel headline</div></div>
+  <div class="sw"><div class="chip" style="background:#8E8E93"></div><div class="name">label</div><div class="hex">#8E8E93</div><div class="src">Apple HIG iOS17</div></div>
+  <div class="sw"><div class="chip" style="background:rgba(60,60,67,0.10)"></div><div class="name">hairline</div><div class="hex">rgba(60,60,67,.10)</div><div class="src">Layout 1 row divider</div></div>
+
+  <div class="sw"><div class="chip" style="background:#FFD9E0"></div><div class="name">pink</div><div class="hex">#FFD9E0</div><div class="src">Element 3 hero</div></div>
+  <div class="sw"><div class="chip" style="background:#FFE7EC"></div><div class="name">pink-2</div><div class="hex">#FFE7EC</div><div class="src">Element 1 memoji bg</div></div>
+  <div class="sw"><div class="chip" style="background:#C7F0CF"></div><div class="name">green</div><div class="hex">#C7F0CF</div><div class="src">Amie rotated chip</div></div>
+  <div class="sw"><div class="chip" style="background:#1F5C2C;"></div><div class="name" style="color:#fff">green-ink</div><div class="hex" style="color:#bbb">#1F5C2C</div><div class="src" style="color:#888">Amie chip text</div></div>
+  <div class="sw"><div class="chip" style="background:#0A84FF"></div><div class="name" style="color:#fff">blue</div><div class="hex" style="color:#bbb">#0A84FF</div><div class="src" style="color:#888">Layout 1 settings link</div></div>
+  <div class="sw"><div class="chip" style="background:#E2EEFF"></div><div class="name">blue-tint</div><div class="hex">#E2EEFF</div><div class="src">Layout 1 jake bg</div></div>
+</div>
+
+<h2>type ramp · SF Pro only</h2>
+<div class="type-row"><div class="lbl">display 48 / 800</div><div class="ex" style="font-size:48px;font-weight:800;letter-spacing:-0.04em;line-height:1.02">220kg deadlifter</div><div class="meta">hero · NOW title</div></div>
+<div class="type-row"><div class="lbl">display 32 / 800</div><div class="ex" style="font-size:32px;font-weight:800;letter-spacing:-0.03em">deadlift block</div><div class="meta">card title</div></div>
+<div class="type-row"><div class="lbl">display 22 / 700</div><div class="ex" style="font-size:22px;font-weight:700;letter-spacing:-0.025em">discipline equals freedom.</div><div class="meta">topbar quote (rotating)</div></div>
+<div class="type-row"><div class="lbl">text 16 / 600</div><div class="ex" style="font-size:16px;font-weight:600;letter-spacing:-0.012em">resume in 8 minutes</div><div class="meta">body lead</div></div>
+<div class="type-row"><div class="lbl">text 14 / 500</div><div class="ex" style="font-size:14px;font-weight:500;color:var(--label-2)">clear · focused · steady this week</div><div class="meta">body</div></div>
+<div class="type-row"><div class="lbl">eyebrow 11 / 700</div><div class="ex" style="font-size:11px;font-weight:700;color:var(--label);letter-spacing:0.16em;text-transform:uppercase">today · 4 blocks left</div><div class="meta">label</div></div>
+
+<h2>surface tiers</h2>
+<div class="tier-grid">
+  <div class="tier bg"><div class="tier-label">bg</div><div class="tier-name">bg</div><div class="tier-desc">page · #FFFFFF, pure white</div></div>
+  <div class="tier paper"><div class="tier-label">paper</div><div class="tier-name">paper</div><div class="tier-desc">default card · soft Apple drop</div></div>
+  <div class="tier raised"><div class="tier-label">raised</div><div class="tier-name">raised</div><div class="tier-desc">hero card · stronger lift</div></div>
+  <div class="tier hairline"><div class="tier-label">hairline</div><div class="tier-name">hairline</div><div class="tier-desc">flat list rows · Layout 1 family</div></div>
+</div>
+
+<h2>card recipes · each from a board image</h2>
+<div class="recipe-grid">
+  <div class="recipe">
+    <div class="source">from <b>Element 1.jpg</b> · paper card with figure + inline pills</div>
+    <div class="card-paper">
+      <div class="eyebrow">credits</div>
+      <div class="figure">$30.00</div>
+      <div class="row"><div class="pill">−</div><div class="pill" style="font-weight:700">2k</div><div class="pill">+</div></div>
+    </div>
+  </div>
+  <div class="recipe">
+    <div class="source">from <b>Element 3.jpg</b> · tinted card with dot-pattern texture</div>
+    <div class="card-tinted">
+      <div class="pattern"></div>
+      <div class="eyebrow">multiple aims</div>
+      <div class="title">3 visions in flight</div>
+    </div>
+  </div>
+  <div class="recipe">
+    <div class="source">from <b>Layout 4.jpg</b> · hero card with eyebrow + title + 2x2 chip cluster</div>
+    <div class="card-hero">
+      <div class="eyebrow">block · 20 min</div>
+      <h3>Evening read</h3>
+      <div class="chips">
+        <div class="ch"><div class="ico">⊙</div><div><div class="ck">domain</div><div class="cv">learning</div></div></div>
+        <div class="ch"><div class="ico">▷</div><div><div class="ck">duration</div><div class="cv">20 min</div></div></div>
+        <div class="ch"><div class="ico">↪</div><div><div class="ck">vision</div><div class="cv">read 24/yr</div></div></div>
+        <div class="ch"><div class="ico">★</div><div><div class="ck">step</div><div class="cv">2 of 5</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>accent moves · use one per screen, never more</h2>
+<div class="accent-grid">
+  <div class="accent-card">
+    <span class="chip-rotated">show up · <span class="arrow">→</span> that's the move</span>
+    <div class="nm">rotated chip</div>
+    <div class="ds">from Amie Welcome — green pill, -7deg rotation, future-self pull. one per screen max.</div>
+  </div>
+  <div class="accent-card">
+    <div class="dotbg"></div>
+    <div class="nm">dot-pattern wash</div>
+    <div class="ds">from Element 3 — soft pastel + tiny dots. used as a texture on hero strips, never full bg.</div>
+  </div>
+  <div class="accent-card">
+    <div class="stack">
+      <div class="l l1"></div>
+      <div class="l l2"></div>
+      <div class="l l3"><div class="av"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div><div class="nm">layered stack</div></div>
+    </div>
+    <div class="nm">dimensional layered cards</div>
+    <div class="ds">from Element 3 — three soft offset cards with a memoji-led top card. used for "stacked aims" or vision-list teaser.</div>
+  </div>
+</div>
+
+<h2>memoji · system primitive</h2>
+<div class="memoji-row">
+  <div class="demo"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+  <div class="lbl"><b>adam (LOCKED)</b>topbar memoji · 30px circle · top-right always · NEVER substitute</div>
+  <div class="meta">tapback.co/api/avatar/jay.webp?color=7</div>
+</div>
+<div style="height:10px"></div>
+<div class="memoji-row">
+  <div class="demo" style="background:var(--blue-tint)"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+  <div class="lbl"><b>seb</b>people surface · 36-44px · per-person tinted bg</div>
+  <div class="meta">tapback.co/api/avatar/seb.webp</div>
+</div>
+<div style="height:10px"></div>
+<div class="memoji-row">
+  <div class="demo" style="width:54px;height:54px;background:var(--green-2)"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+  <div class="lbl"><b>family / circle row</b>54px discs in a row · Layout 1 family pattern</div>
+  <div class="meta">disc bg follows person color</div>
+</div>
+
+<h2>domain discs · Layout 1 family-row treatment</h2>
+<div class="disc-row">
+  <div class="dgroup"><div class="disc business"><svg viewBox="0 0 24 24"><path d="M3 7h18v12H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div><div class="dlabel">business</div></div>
+  <div class="dgroup"><div class="disc religion"><svg viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M5 9h14"/></svg></div><div class="dlabel">religion</div></div>
+  <div class="dgroup"><div class="disc learning"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h16"/></svg></div><div class="dlabel">learning</div></div>
+  <div class="dgroup"><div class="disc fitness"><svg viewBox="0 0 24 24"><path d="M6 9v6"/><path d="M18 9v6"/><path d="M3 12h18"/></svg></div><div class="dlabel">fitness</div></div>
+  <div class="dgroup"><div class="disc home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg></div><div class="dlabel">home</div></div>
+  <div class="dgroup"><div class="disc food"><svg viewBox="0 0 24 24"><path d="M5 6v6a3 3 0 0 0 6 0V6"/><path d="M8 6V3"/><path d="M16 3v18"/><path d="M16 14a4 4 0 0 0 4-4V4"/></svg></div><div class="dlabel">food</div></div>
+</div>
+
+<h2>buttons</h2>
+<div class="btn-row">
+  <button class="btn-ink">start block</button>
+  <button class="btn-paper">skip</button>
+  <button class="btn-blue">resume</button>
+  <button class="btn-green">→ logged · next</button>
+</div>
+
+<h2>forbidden — do not use</h2>
+<div class="forbidden">
+  <ul>
+    <li>backdrop-filter blur as a defining surface</li>
+    <li>frosted-glass hero / liquid-glass aesthetic</li>
+    <li>serif fonts (Georgia, Caslon, etc.)</li>
+    <li>italic / cursive type anywhere</li>
+    <li>purple, orange, yellow, red — even in tints</li>
+    <li>bottom-up sheets / drawers</li>
+    <li>red urgent bars or flashing alerts</li>
+    <li>journal-app-style "what's been quietly asking…" prompts</li>
+    <li>removing the topbar memoji</li>
+    <li>heavy gradient bgs (Deel-blue, Superpower-purple)</li>
+    <li>neumorphism / inset bevel surfaces</li>
+    <li>pomodoro timers / dopamine confetti</li>
+  </ul>
+</div>
+
+</body></html>

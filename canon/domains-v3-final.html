@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — DOMAINS v3-final · calibrated from Layout 1.jpg + Element 2.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--bg-cool:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);
+  --pink-2:#FFE7EC;--pink-3:#FFF1F4;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-ink:#1F5C2C;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-ink:#0050C8;
+  --d-business:#E2EEFF;--d-business-2:#C9DBFF;--d-business-ink:#1748A8;
+  --d-religion:#E2F4E6;--d-religion-2:#C0E5C8;--d-religion-ink:#1F5C2C;
+  --d-learning:#FFE0E8;--d-learning-2:#FFC9D6;--d-learning-ink:#7A2A3C;
+  --d-fitness:#FFD0DA;--d-fitness-2:#FFB6C5;--d-fitness-ink:#7A2A3C;
+  --d-home:#EAEFF3;--d-home-2:#D4DCE3;--d-home-ink:#36475A;
+  --d-food:#FFF0DD;--d-food-2:#FFDFB5;--d-food-ink:#7A4A1A;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-disc:inset 0 0 0 0.5px rgba(20,20,30,0.06),0 2px 5px rgba(20,20,30,0.06),0 6px 14px -8px rgba(20,20,30,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif}
+body{padding:48px 56px 96px;max-width:1280px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:680px;margin-bottom:18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:820px;margin:0 0 32px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+.split{display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:start}
+
+/* mobile */
+.frame-m{width:390px;height:852px;background:var(--bg-cool);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column}
+.topbar{background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);flex-shrink:0}
+.topbar .hi{font-size:20px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.1}
+.topbar .sub{font-size:12px;color:var(--label);font-weight:500;margin-top:2px}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+.scroll{flex:1;overflow:auto;padding-bottom:96px}
+
+/* HERO — Layout 1 family discs row */
+.disc-hero{
+  padding:28px 18px 18px;
+  text-align:center;
+  background:var(--bg-cool);
+}
+.disc-hero .row{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:14px;padding:0 6px}
+.disc-hero .disc{
+  width:54px;height:54px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-disc);
+  border:2.5px solid var(--paper);
+  margin-left:-6px;
+  position:relative;
+}
+.disc-hero .disc:first-child{margin-left:0}
+.disc-hero .disc svg{width:24px;height:24px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.disc-hero .disc.business{background:linear-gradient(180deg,var(--d-business),var(--d-business-2));color:var(--d-business-ink)}
+.disc-hero .disc.religion{background:linear-gradient(180deg,var(--d-religion),var(--d-religion-2));color:var(--d-religion-ink)}
+.disc-hero .disc.learning{background:linear-gradient(180deg,var(--d-learning),var(--d-learning-2));color:var(--d-learning-ink)}
+.disc-hero .disc.fitness{background:linear-gradient(180deg,var(--d-fitness),var(--d-fitness-2));color:var(--d-fitness-ink)}
+.disc-hero .disc.home{background:linear-gradient(180deg,var(--d-home),var(--d-home-2));color:var(--d-home-ink)}
+.disc-hero .disc.food{background:linear-gradient(180deg,var(--d-food),var(--d-food-2));color:var(--d-food-ink)}
+.disc-hero h1{font-size:26px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);line-height:1.1}
+.disc-hero .subtitle{font-size:13px;color:var(--label-2);font-weight:500;margin-top:4px;letter-spacing:-0.005em}
+
+/* TREND STRIP — Element 2 inspired (avatars row + soft pill) */
+.trend{
+  margin:8px 16px 14px;
+  background:var(--paper);
+  border-radius:18px;padding:14px 16px;
+  box-shadow:var(--shadow-soft);
+  display:flex;align-items:center;gap:12px;
+}
+.trend .stack{display:flex;flex-shrink:0}
+.trend .stack .d{
+  width:30px;height:30px;border-radius:50%;
+  border:2px solid var(--paper);
+  margin-left:-8px;
+  box-shadow:var(--shadow-chip);
+  display:flex;align-items:center;justify-content:center;
+}
+.trend .stack .d:first-child{margin-left:0}
+.trend .stack .d svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.2;fill:none}
+.trend .text{font-size:13px;color:var(--ink-2);font-weight:600;line-height:1.35;letter-spacing:-0.005em;flex:1}
+.trend .text b{color:var(--ink);font-weight:700}
+.trend .pill{
+  background:var(--blue-tint);color:var(--blue-ink);
+  padding:5px 11px;border-radius:999px;
+  font-size:11.5px;font-weight:700;flex-shrink:0;
+}
+
+/* DOMAIN ROWS — Layout 1 family list */
+.list{margin:0 16px;background:var(--paper);border-radius:20px;box-shadow:var(--shadow-paper);overflow:hidden}
+.row-d{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;position:relative}
+.row-d+.row-d{border-top:0.5px solid var(--hairline-soft)}
+.row-d .ddisc{
+  width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-disc);
+  flex-shrink:0;
+}
+.row-d .ddisc svg{width:20px;height:20px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.row-d .ddisc.business{background:linear-gradient(180deg,var(--d-business),var(--d-business-2));color:var(--d-business-ink)}
+.row-d .ddisc.religion{background:linear-gradient(180deg,var(--d-religion),var(--d-religion-2));color:var(--d-religion-ink)}
+.row-d .ddisc.learning{background:linear-gradient(180deg,var(--d-learning),var(--d-learning-2));color:var(--d-learning-ink)}
+.row-d .ddisc.fitness{background:linear-gradient(180deg,var(--d-fitness),var(--d-fitness-2));color:var(--d-fitness-ink)}
+.row-d .ddisc.home{background:linear-gradient(180deg,var(--d-home),var(--d-home-2));color:var(--d-home-ink)}
+.row-d .ddisc.food{background:linear-gradient(180deg,var(--d-food),var(--d-food-2));color:var(--d-food-ink)}
+.row-d .body{flex:1;min-width:0}
+.row-d .nm{font-size:16px;font-weight:700;color:var(--ink);letter-spacing:-0.012em;line-height:1.2}
+.row-d .mom{font-size:12.5px;color:var(--label-2);font-weight:500;margin-top:2px;letter-spacing:-0.005em}
+.row-d .mom b{font-weight:700}
+.row-d .mom b.warm{color:var(--green-ink)}
+.row-d .mom b.steady{color:var(--blue-ink)}
+.row-d .mom b.humming{color:#7A2A3C}
+.row-d .mom b.drifting{color:var(--label-2)}
+.row-d .mom b.quiet{color:var(--label)}
+.row-d .ch{font-size:14px;color:var(--label);flex-shrink:0;margin-left:6px}
+
+/* CARD ATTACHMENTS — secondary info: Family Checklist + Subscriptions style cards from Layout 1 */
+.subcard{margin:14px 16px 0;background:var(--paper);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-soft);display:flex;align-items:center;gap:12px;cursor:pointer}
+.subcard .ico{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.subcard .ico.theory{background:linear-gradient(180deg,var(--d-learning),var(--d-learning-2));color:var(--d-learning-ink)}
+.subcard .ico.compounder{background:linear-gradient(180deg,var(--d-religion),var(--d-religion-2));color:var(--d-religion-ink)}
+.subcard .ico svg{width:18px;height:18px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.subcard .body{flex:1;min-width:0}
+.subcard .nm{font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:-0.005em}
+.subcard .meta{font-size:12px;color:var(--label-2);margin-top:1px}
+.subcard .ch{font-size:14px;color:var(--label);flex-shrink:0}
+
+.section-lbl{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin:24px 22px 8px}
+
+/* bnav */
+.bnav{position:absolute;left:0;right:0;bottom:0;height:78px;background:var(--paper);border-top:0.5px solid var(--hairline);display:flex;align-items:center;justify-content:space-around;padding:14px 24px 22px}
+.bnav .it{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;color:var(--label)}
+.bnav .it.active{color:var(--ink);background:var(--chip-surface);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.bnav .it svg{width:22px;height:22px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* ============= DESKTOP ============= */
+.frame-d{width:1100px;background:var(--bg-cool);border-radius:24px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column;margin-top:48px}
+.topbar-d{background:var(--paper);padding:20px 36px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline)}
+.topbar-d .hi{font-size:24px;font-weight:700;letter-spacing:-0.025em}
+.topbar-d .sub{font-size:13px;color:var(--label);font-weight:500;margin-top:2px}
+.topbar-d .memoji{width:32px;height:32px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08)}
+.topbar-d .memoji img{width:100%;height:100%}
+
+.stage-d{padding:48px 80px 72px;max-width:980px;margin:0 auto;width:100%}
+.disc-hero-d{text-align:center;margin-bottom:32px}
+.disc-hero-d .row{display:flex;justify-content:center;margin-bottom:18px}
+.disc-hero-d .disc{
+  width:64px;height:64px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-disc);
+  border:3px solid var(--paper);
+  margin-left:-8px;
+}
+.disc-hero-d .disc:first-child{margin-left:0}
+.disc-hero-d .disc svg{width:28px;height:28px;stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.disc-hero-d .disc.business{background:linear-gradient(180deg,var(--d-business),var(--d-business-2));color:var(--d-business-ink)}
+.disc-hero-d .disc.religion{background:linear-gradient(180deg,var(--d-religion),var(--d-religion-2));color:var(--d-religion-ink)}
+.disc-hero-d .disc.learning{background:linear-gradient(180deg,var(--d-learning),var(--d-learning-2));color:var(--d-learning-ink)}
+.disc-hero-d .disc.fitness{background:linear-gradient(180deg,var(--d-fitness),var(--d-fitness-2));color:var(--d-fitness-ink)}
+.disc-hero-d .disc.home{background:linear-gradient(180deg,var(--d-home),var(--d-home-2));color:var(--d-home-ink)}
+.disc-hero-d .disc.food{background:linear-gradient(180deg,var(--d-food),var(--d-food-2));color:var(--d-food-ink)}
+.disc-hero-d h1{font-size:38px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);line-height:1.05}
+.disc-hero-d .subtitle{font-size:15px;color:var(--label-2);font-weight:500;margin-top:6px;letter-spacing:-0.005em}
+
+.list-d{background:var(--paper);border-radius:22px;box-shadow:var(--shadow-paper);overflow:hidden;max-width:760px;margin:0 auto}
+.list-d .row-d{padding:18px 24px}
+.list-d .row-d .ddisc{width:48px;height:48px}
+.list-d .row-d .ddisc svg{width:22px;height:22px}
+.list-d .row-d .nm{font-size:18px}
+.list-d .row-d .mom{font-size:13.5px}
+
+.attach-d{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px;margin:18px auto 0}
+.attach-d .subcard{margin:0}
+</style></head><body>
+
+<div class="h">DOMAINS · v3-final · mobile + desktop</div>
+<p class="lead">six tinted discs at the top — one per life area. calm momentum word per row. tap a disc → that domain. zero numbers, words only.</p>
+
+<div class="preamble">
+  <p><strong>calibrated from</strong> <code>board/Layout 1.jpg</code> (Apple Family Settings — six memoji discs in a row at top, then Name + role list rows below) <strong>+</strong> <code>board/Element 2.jpg</code> (avatars-row + tinted pill summary card).</p>
+  <p><strong>copied:</strong> the row of overlapping circular discs at top, the page subtitle treatment, the clean white list with hairline dividers, the Family Checklist / Subscriptions sub-card pattern below the list.</p>
+  <p><strong>adapted:</strong> family memojis become tinted domain discs (each domain has its color from system-v3-final + a glyph). "Jake / Age 7" rows become "fitness / warm · 6 weeks steady" rows. Family Checklist sub-card becomes Theory↔Application balance card. Subscriptions sub-card becomes the Compounder phrase strip.</p>
+</div>
+
+<div class="split">
+
+  <!-- MOBILE -->
+  <div class="frame-m">
+    <div class="topbar">
+      <div>
+        <div class="hi">quiet work, loud results.</div>
+        <div class="sub">six areas · all warm or steady</div>
+      </div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+
+    <div class="scroll">
+
+      <!-- DISC HERO -->
+      <div class="disc-hero">
+        <div class="row">
+          <div class="disc business"><svg viewBox="0 0 24 24"><path d="M3 7h18v12H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+          <div class="disc religion"><svg viewBox="0 0 24 24"><path d="M12 2v20M5 9h14"/></svg></div>
+          <div class="disc learning"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h16"/></svg></div>
+          <div class="disc fitness"><svg viewBox="0 0 24 24"><path d="M6 9v6"/><path d="M18 9v6"/><path d="M3 12h18"/></svg></div>
+          <div class="disc home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg></div>
+          <div class="disc food"><svg viewBox="0 0 24 24"><path d="M5 6v6a3 3 0 0 0 6 0V6"/><path d="M16 3v18"/></svg></div>
+        </div>
+        <h1>six lives, one man.</h1>
+        <div class="subtitle">tap a domain to see what's moving</div>
+      </div>
+
+      <!-- TREND STRIP — Element 2 -->
+      <div class="trend">
+        <div class="stack">
+          <div class="d" style="background:linear-gradient(180deg,var(--d-fitness),var(--d-fitness-2));color:var(--d-fitness-ink)"><svg viewBox="0 0 24 24"><path d="M6 9v6"/><path d="M18 9v6"/><path d="M3 12h18"/></svg></div>
+          <div class="d" style="background:linear-gradient(180deg,var(--d-religion),var(--d-religion-2));color:var(--d-religion-ink)"><svg viewBox="0 0 24 24"><path d="M12 2v20M5 9h14"/></svg></div>
+          <div class="d" style="background:linear-gradient(180deg,var(--d-business),var(--d-business-2));color:var(--d-business-ink)"><svg viewBox="0 0 24 24"><path d="M3 7h18v12H3z"/></svg></div>
+        </div>
+        <div class="text"><b>fitness, religion, business</b> all humming this week.</div>
+        <div class="pill">6 wks</div>
+      </div>
+
+      <!-- DOMAIN LIST -->
+      <div class="list">
+        <div class="row-d">
+          <div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6 9v6"/><path d="M18 9v6"/><path d="M3 12h18"/></svg></div>
+          <div class="body">
+            <div class="nm">fitness</div>
+            <div class="mom"><b class="humming">humming</b> · 6 weeks steady</div>
+          </div>
+          <div class="ch">›</div>
+        </div>
+        <div class="row-d">
+          <div class="ddisc religion"><svg viewBox="0 0 24 24"><path d="M12 2v20M5 9h14"/></svg></div>
+          <div class="body">
+            <div class="nm">religion</div>
+            <div class="mom"><b class="warm">warm</b> · fajr kept · dhuhr ahead</div>
+          </div>
+          <div class="ch">›</div>
+        </div>
+        <div class="row-d">
+          <div class="ddisc business"><svg viewBox="0 0 24 24"><path d="M3 7h18v12H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+          <div class="body">
+            <div class="nm">business</div>
+            <div class="mom"><b class="warm">warm</b> · pricing in flight</div>
+          </div>
+          <div class="ch">›</div>
+        </div>
+        <div class="row-d">
+          <div class="ddisc learning"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h16"/></svg></div>
+          <div class="body">
+            <div class="nm">learning</div>
+            <div class="mom"><b class="steady">steady</b> · 11 of 24 books</div>
+          </div>
+          <div class="ch">›</div>
+        </div>
+        <div class="row-d">
+          <div class="ddisc home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg></div>
+          <div class="body">
+            <div class="nm">home</div>
+            <div class="mom"><b class="steady">steady</b> · routines kept</div>
+          </div>
+          <div class="ch">›</div>
+        </div>
+        <div class="row-d">
+          <div class="ddisc food"><svg viewBox="0 0 24 24"><path d="M5 6v6a3 3 0 0 0 6 0V6"/><path d="M16 3v18"/></svg></div>
+          <div class="body">
+            <div class="nm">food</div>
+            <div class="mom"><b class="quiet">quiet</b> · log a meal</div>
+          </div>
+          <div class="ch">›</div>
+        </div>
+      </div>
+
+      <div class="section-lbl">balance</div>
+
+      <div class="subcard">
+        <div class="ico theory"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h16"/></svg></div>
+        <div class="body">
+          <div class="nm">theory · application balance</div>
+          <div class="meta">heavy on theory this week · queue a doing block</div>
+        </div>
+        <div class="ch">›</div>
+      </div>
+
+      <div class="subcard">
+        <div class="ico compounder"><svg viewBox="0 0 24 24"><path d="M4 19l4-4 4 4 8-8"/><path d="M16 7h4v4"/></svg></div>
+        <div class="body">
+          <div class="nm">compounder · trend phrase</div>
+          <div class="meta">religion: warm → warm → humming</div>
+        </div>
+        <div class="ch">›</div>
+      </div>
+
+      <div class="section-lbl">knowledge heatmap</div>
+
+      <div class="subcard">
+        <div class="ico" style="background:linear-gradient(180deg,var(--d-learning),var(--d-learning-2));color:var(--d-learning-ink)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <div class="body">
+          <div class="nm">8-week heatmap</div>
+          <div class="meta">42 insights captured · 18 theory blocks</div>
+        </div>
+        <div class="ch">›</div>
+      </div>
+
+      <div style="height:30px"></div>
+    </div>
+
+    <div class="bnav">
+      <div class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg></div>
+      <div class="it"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+      <div class="it"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg></div>
+      <div class="it active"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg></div>
+    </div>
+  </div>
+
+  <div>
+    <h2 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:0 0 14px">layout notes</h2>
+    <div class="preamble" style="margin:0">
+      <p><strong>hero = six discs in a row.</strong> Direct lift from Layout 1 family memoji ring. Each disc has the domain glyph. Tap a disc → filtered domain detail (separate canon).</p>
+      <p><strong>list = Layout 1 row pattern.</strong> Disc on left · name big · momentum word small. Color-coded momentum text (humming = pink-ink, warm = green-ink, steady = blue-ink, quiet = label gray). NEVER red.</p>
+      <p><strong>sub-cards = Layout 1 Family Checklist + Subscriptions.</strong> Two cards under the list mapping to Theory/Application balance + Compounder phrase. Plus an 8-week heatmap card.</p>
+      <p><strong>tone strings:</strong> topbar = rotating quote ("quiet work, loud results."). body = "six lives, one man." / "humming · 6 weeks steady" / "quiet · log a meal" / "religion: warm → warm → humming". no numbers in primary surfaces — words only.</p>
+    </div>
+  </div>
+</div>
+
+<!-- DESKTOP -->
+<div class="frame-d">
+  <div class="topbar-d">
+    <div>
+      <div class="hi">quiet work, loud results.</div>
+      <div class="sub">six areas · five warm or steady · one quiet</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:18px">
+      <button style="background:var(--chip-surface);border:none;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:700;color:var(--ink-2);box-shadow:inset 0 0 0 0.5px var(--hairline);font-family:inherit;cursor:pointer">⌘ K</button>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+  </div>
+
+  <div class="stage-d">
+    <div class="disc-hero-d">
+      <div class="row">
+        <div class="disc business"><svg viewBox="0 0 24 24"><path d="M3 7h18v12H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+        <div class="disc religion"><svg viewBox="0 0 24 24"><path d="M12 2v20M5 9h14"/></svg></div>
+        <div class="disc learning"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h16"/></svg></div>
+        <div class="disc fitness"><svg viewBox="0 0 24 24"><path d="M6 9v6"/><path d="M18 9v6"/><path d="M3 12h18"/></svg></div>
+        <div class="disc home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg></div>
+        <div class="disc food"><svg viewBox="0 0 24 24"><path d="M5 6v6a3 3 0 0 0 6 0V6"/><path d="M16 3v18"/></svg></div>
+      </div>
+      <h1>six lives, one man.</h1>
+      <div class="subtitle">tap a domain to see what's moving</div>
+    </div>
+
+    <div class="list-d list">
+      <div class="row-d">
+        <div class="ddisc fitness"><svg viewBox="0 0 24 24"><path d="M6 9v6"/><path d="M18 9v6"/><path d="M3 12h18"/></svg></div>
+        <div class="body"><div class="nm">fitness</div><div class="mom"><b class="humming">humming</b> · 6 weeks steady · 220kg deadlifter in training</div></div>
+        <div class="ch">›</div>
+      </div>
+      <div class="row-d">
+        <div class="ddisc religion"><svg viewBox="0 0 24 24"><path d="M12 2v20M5 9h14"/></svg></div>
+        <div class="body"><div class="nm">religion</div><div class="mom"><b class="warm">warm</b> · fajr kept · dhuhr ahead · 5 anchors today</div></div>
+        <div class="ch">›</div>
+      </div>
+      <div class="row-d">
+        <div class="ddisc business"><svg viewBox="0 0 24 24"><path d="M3 7h18v12H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+        <div class="body"><div class="nm">business</div><div class="mom"><b class="warm">warm</b> · pricing in flight · 4-day workweek man in training</div></div>
+        <div class="ch">›</div>
+      </div>
+      <div class="row-d">
+        <div class="ddisc learning"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h16"/></svg></div>
+        <div class="body"><div class="nm">learning</div><div class="mom"><b class="steady">steady</b> · 11 of 24 books · heavy on theory this week</div></div>
+        <div class="ch">›</div>
+      </div>
+      <div class="row-d">
+        <div class="ddisc home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg></div>
+        <div class="body"><div class="nm">home</div><div class="mom"><b class="steady">steady</b> · routines kept · cold shower 8 days running</div></div>
+        <div class="ch">›</div>
+      </div>
+      <div class="row-d">
+        <div class="ddisc food"><svg viewBox="0 0 24 24"><path d="M5 6v6a3 3 0 0 0 6 0V6"/><path d="M16 3v18"/></svg></div>
+        <div class="body"><div class="nm">food</div><div class="mom"><b class="quiet">quiet</b> · log a meal · last logged tuesday</div></div>
+        <div class="ch">›</div>
+      </div>
+    </div>
+
+    <div class="attach-d">
+      <div class="subcard">
+        <div class="ico theory"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h16"/></svg></div>
+        <div class="body"><div class="nm">theory · application balance</div><div class="meta">heavy on theory · queue a doing block</div></div>
+        <div class="ch">›</div>
+      </div>
+      <div class="subcard">
+        <div class="ico compounder"><svg viewBox="0 0 24 24"><path d="M4 19l4-4 4 4 8-8"/><path d="M16 7h4v4"/></svg></div>
+        <div class="body"><div class="nm">compounder phrase</div><div class="meta">religion: warm → warm → humming</div></div>
+        <div class="ch">›</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

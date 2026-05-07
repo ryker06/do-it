@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — Goals v3-final · identity goals with hairline progress dots</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);
+  --hairline-soft:rgba(60,60,67,0.06);
+  --hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-ink:#1F5C2C;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-ink:#0050C8;
+  --d-business:#E2EEFF;--d-business-2:#C9DBFF;--d-business-ink:#1748A8;
+  --d-religion:#E2F4E6;--d-religion-2:#C0E5C8;--d-religion-ink:#1F5C2C;
+  --d-learning:#FFE0E8;--d-learning-2:#FFC9D6;--d-learning-ink:#7A2A3C;
+  --d-fitness:#FFD0DA;--d-fitness-2:#FFB6C5;--d-fitness-ink:#7A2A3C;
+  --d-home:#EAEFF3;--d-home-2:#D4DCE3;--d-home-ink:#36475A;
+  --d-food:#FFF0DD;--d-food-2:#FFDFB5;--d-food-ink:#7A4A1A;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1280px;margin:0 auto}
+.h{font-size:42px;font-weight:800;letter-spacing:-0.04em;margin-bottom:6px}
+.lead{font-size:15px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;margin-bottom:8px;max-width:680px;line-height:1.5}
+.preamble{background:var(--paper);border-radius:24px;padding:24px 28px;box-shadow:var(--shadow-paper);max-width:820px;margin:18px 0 32px}
+.preamble p{font-size:14px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{color:var(--ink);font-weight:700}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12.5px;background:#F5F5F7;padding:2px 6px;border-radius:6px}
+h2{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 18px}
+
+/* ---- canvas grid ---- */
+.split{display:grid;grid-template-columns:auto auto auto;gap:36px;justify-content:start;align-items:start;margin-bottom:36px}
+
+/* ---- mobile frame ---- */
+.frame-m{
+  width:393px;height:852px;
+  background:var(--bg);
+  border-radius:46px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:var(--shadow-card-lifted),0 0 0 8px #1A1A20,0 0 0 9px #2A2A30;
+  display:flex;flex-direction:column;
+}
+.frame-m .lbl{position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;z-index:5}
+
+/* topbar */
+.topbar{flex-shrink:0;padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);background:var(--paper)}
+.topbar .hi{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.1}
+.topbar .sub{font-size:12px;color:var(--label);font-weight:500;letter-spacing:-0.005em;margin-top:2px}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+/* scroll */
+.scroll{flex:1;overflow:hidden;padding:18px 18px 96px;background:var(--bg)}
+
+/* h section heading */
+.section-h{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:34px;font-weight:800;letter-spacing:-0.035em;color:var(--ink);line-height:1;margin:6px 4px 14px}
+.section-meta{font-size:12.5px;color:var(--label-2);font-weight:500;margin:-8px 4px 14px}
+
+/* affordance row · + goal pill + filter chips */
+.aff{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.aff .add{background:linear-gradient(180deg,#1A1A20 0%,#000 100%);color:#fff;border:none;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:700;letter-spacing:-0.005em;font-family:inherit;box-shadow:var(--shadow-press-ink);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.aff .chip{background:var(--paper);color:var(--ink-2);border:none;border-radius:999px;padding:8px 13px;font-size:12.5px;font-weight:600;font-family:inherit;box-shadow:inset 0 0 0 0.5px var(--hairline);cursor:pointer}
+.aff .chip.on{background:var(--ink);color:#fff;box-shadow:inset 0 0 0 0.5px rgba(0,0,0,0.6)}
+
+/* vision header */
+.vision-h{font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--label);margin:14px 4px 8px;display:flex;align-items:center;gap:10px}
+.vision-h::after{content:"";flex:1;height:0.5px;background:var(--hairline)}
+
+/* goal card */
+.gcard{background:var(--paper);border-radius:22px;padding:0;box-shadow:var(--shadow-paper);margin-bottom:14px;overflow:hidden}
+.gcover{height:80px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.gcover.fitness{background:linear-gradient(180deg,var(--d-fitness) 0%,var(--d-fitness-2) 100%)}
+.gcover.business{background:linear-gradient(180deg,var(--d-business) 0%,var(--d-business-2) 100%)}
+.gcover.learning{background:linear-gradient(180deg,var(--d-learning) 0%,var(--d-learning-2) 100%)}
+.gcover.religion{background:linear-gradient(180deg,var(--d-religion) 0%,var(--d-religion-2) 100%)}
+.gcover svg{width:42px;height:42px;stroke:rgba(20,20,30,0.45);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.gcover .pat{position:absolute;inset:0;background-image:radial-gradient(circle at 22% 30%,rgba(255,255,255,0.5) 1.2px,transparent 1.6px),radial-gradient(circle at 75% 65%,rgba(255,255,255,0.4) 1.2px,transparent 1.6px);background-size:18px 18px;opacity:0.6;pointer-events:none}
+.gbody{padding:18px 18px 16px}
+.identity{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:21px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.18}
+.metric{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:15px;font-weight:600;color:var(--ink-2);letter-spacing:-0.012em;margin-top:4px;font-variant-numeric:tabular-nums}
+.metric .arrow{color:var(--label);font-weight:500;margin:0 4px}
+.metric .left{color:var(--label-2);font-weight:500;margin-left:6px}
+.metric b{font-weight:800;color:var(--ink)}
+
+/* hairline progress with dot + week mini-grid */
+.prog{margin-top:14px}
+.track{position:relative;height:1px;background:var(--hairline);margin:14px 4px 0}
+.track .dot{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--ink);transform:translate(-50%,-50%);box-shadow:0 0 0 3px var(--paper),0 0 0 3.5px var(--hairline)}
+.weeks{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:14px;padding:0 4px}
+.weeks .w{height:14px;border-radius:3px;background:var(--hairline-soft)}
+.weeks .w.on{background:var(--ink-2)}
+.weeks .w.cur{background:var(--ink);box-shadow:0 0 0 1.5px var(--paper),0 0 0 2px var(--ink)}
+
+/* echo line */
+.echo{font-size:12.5px;color:var(--label-2);font-weight:500;line-height:1.5;margin-top:14px;font-style:normal}
+.echo b{color:var(--ink-2);font-weight:600}
+
+/* inline log row */
+.logrow{display:flex;gap:8px;align-items:center;margin-top:14px;padding-top:14px;border-top:0.5px solid var(--hairline)}
+.logrow .input{flex:1;background:var(--paper-warm);border:none;border-radius:14px;padding:11px 14px;font-size:14px;font-weight:600;color:var(--ink);font-family:inherit;box-shadow:inset 0 0 0 0.5px var(--hairline);font-variant-numeric:tabular-nums;letter-spacing:-0.005em}
+.logrow .unit{font-size:12.5px;color:var(--label);font-weight:600;padding:0 6px}
+.logrow .logbtn{background:linear-gradient(180deg,#1A1A20 0%,#000 100%);color:#fff;border:none;border-radius:999px;padding:11px 18px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:var(--shadow-press-ink)}
+
+/* small chip rotated */
+.chip-rot{position:absolute;top:14px;right:14px;background:var(--green);color:var(--green-ink);padding:5px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:-0.005em;transform:rotate(-7deg);box-shadow:var(--shadow-chip);font-family:inherit}
+
+/* ---- empty state ---- */
+.empty-card{background:var(--paper);border-radius:24px;padding:32px 22px;box-shadow:var(--shadow-paper);text-align:center;margin-top:8px}
+.empty-card .ill{width:80px;height:80px;border-radius:50%;background:linear-gradient(180deg,var(--pink-2) 0%,var(--pink) 100%);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-soft)}
+.empty-card .ill svg{width:36px;height:36px;stroke:var(--pink-ink);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.empty-card .ttl{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);margin-bottom:8px}
+.empty-card .desc{font-size:13.5px;color:var(--label-2);font-weight:500;line-height:1.5;max-width:280px;margin:0 auto 18px}
+.empty-card .ebtn{background:linear-gradient(180deg,#1A1A20 0%,#000 100%);color:#fff;border:none;border-radius:999px;padding:13px 24px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:var(--shadow-press-ink)}
+
+/* ---- B · detail with full-bleed cover ---- */
+.detail-cover{height:200px;position:relative;overflow:hidden;background:linear-gradient(180deg,var(--d-fitness) 0%,var(--d-fitness-2) 100%)}
+.detail-cover .pat{position:absolute;inset:0;background-image:radial-gradient(circle at 18% 22%,rgba(255,255,255,0.5) 1.4px,transparent 2px),radial-gradient(circle at 70% 70%,rgba(255,255,255,0.4) 1.4px,transparent 2px);background-size:22px 22px;opacity:0.6}
+.detail-cover .glyph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.detail-cover .glyph svg{width:80px;height:80px;stroke:rgba(20,20,30,0.42);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.detail-cover .back{position:absolute;top:14px;left:14px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-chip)}
+.detail-cover .back svg{width:16px;height:16px;stroke:var(--ink);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.detail-cover .chip-rot{top:auto;bottom:14px;right:14px}
+.detail-body{padding:22px 22px 100px;background:var(--bg)}
+.detail-body .vlbl{font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--label);margin-bottom:6px}
+.detail-body .dttl{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:28px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);line-height:1.05;margin-bottom:10px}
+.detail-body .dmetric{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:17px;font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums;letter-spacing:-0.012em;margin-bottom:18px}
+.detail-body .dmetric b{font-weight:800;color:var(--ink)}
+.detail-body .dmetric .arrow{color:var(--label);margin:0 4px}
+
+.history-h{font-size:10.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--label);margin:24px 0 10px}
+.histrow{display:flex;align-items:center;justify-content:space-between;padding:11px 4px;border-bottom:0.5px solid var(--hairline)}
+.histrow .when{font-size:12px;color:var(--label);font-weight:500;font-variant-numeric:tabular-nums}
+.histrow .what{font-size:14px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-0.005em}
+.histrow .delta{font-size:12px;font-weight:700;color:var(--green-ink)}
+.histrow .delta.neg{color:var(--label-2)}
+
+/* ---- desktop variant ---- */
+.frame-d{
+  width:1100px;
+  background:var(--paper);
+  border-radius:18px;
+  box-shadow:var(--shadow-card-lifted);
+  overflow:hidden;
+  margin-top:48px;
+  display:grid;grid-template-columns:240px 1fr;
+}
+.frame-d .lbl{position:absolute;top:-26px;left:8px}
+.rail{background:var(--paper-warm);padding:22px 16px;border-right:0.5px solid var(--hairline);display:flex;flex-direction:column;gap:4px;min-height:760px}
+.rail .rl{font-size:10.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:14px 8px 6px}
+.rail .ri{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:13.5px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.rail .ri svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.rail .ri.active{background:var(--paper);box-shadow:inset 0 0 0 0.5px var(--hairline);color:var(--ink)}
+.dmain{padding:28px 32px;display:grid;grid-template-columns:1fr 380px;gap:28px}
+.dleft .topbar-d{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.dleft .topbar-d .hi{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.025em}
+.dleft .topbar-d .sub{font-size:13px;color:var(--label);margin-top:2px}
+.dleft .topbar-d .right{display:flex;align-items:center;gap:12px}
+.dleft .topbar-d .memoji{width:32px;height:32px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.dleft .topbar-d .memoji img{width:100%;height:100%}
+.dleft .section-h{font-size:38px;margin:14px 0 8px}
+.dleft .gcard{margin-bottom:14px}
+.dright{padding:6px 0 0}
+.dright .dlbl{font-size:10.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin-bottom:10px}
+.dright .gcard{margin-bottom:0}
+</style></head><body>
+
+<div class="h">goals · v3-final</div>
+<p class="lead">identity goals → measurable metrics → hairline progress dots, not bars. four mockups. tone strings: "I am a 100kg deadlifter" / "logged 96kg. → 100kg coming."</p>
+
+<div class="preamble">
+  <p><strong>calibrated from</strong> <code>board/Layout 5.jpg</code> (status/progress card grouping with subtle pastel covers) <strong>+</strong> <code>board/Element 1.jpg</code> (clean paper card with figure + inline ± controls).</p>
+  <p><strong>copied:</strong> the soft pastel cover band at the top of each card with a quiet glyph centered, the calm paper body below it with a single dominant figure, the inline pill row at the foot for direct manipulation.</p>
+  <p><strong>adapted:</strong> Element 1's ± buttons become a number input + black "log" pill (we record values, not increment counts). Layout 5's metric phrase becomes "current → target · weeks left". Progress is NOT a fill bar — it's a hairline track with a single ink dot, paired with a 12-week mini grid below (a quiet receipts pattern). One -7deg green chip per detail screen max.</p>
+  <p><strong>tone:</strong> identity-line first, metric phrase second, log echo on save. no exclamation. no streak count. no guilt language.</p>
+</div>
+
+<h2>three mobile mockups</h2>
+<div class="split">
+
+  <!-- ============ A · CANONICAL LIST ============ -->
+  <div class="frame-m">
+    <span class="lbl">A · canonical list</span>
+    <div class="topbar">
+      <div>
+        <div class="hi">today is the lift.</div>
+        <div class="sub">5 goals · 3 visions in flight</div>
+      </div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+
+    <div class="scroll">
+      <div class="section-h">goals.</div>
+      <div class="section-meta">measure what you're becoming.</div>
+
+      <div class="aff">
+        <button class="add">+ goal</button>
+        <button class="chip on">all</button>
+        <button class="chip">fitness</button>
+        <button class="chip">business</button>
+        <button class="chip">learning</button>
+      </div>
+
+      <!-- FITNESS vision -->
+      <div class="vision-h">vision · 220kg deadlifter</div>
+
+      <div class="gcard">
+        <div class="gcover fitness">
+          <div class="pat"></div>
+          <svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M6 8v8"/><path d="M18 8v8"/><path d="M2 10v4"/><path d="M22 10v4"/></svg>
+        </div>
+        <div class="gbody">
+          <div class="identity">I am a 100kg deadlifter.</div>
+          <div class="metric"><b>96kg</b><span class="arrow">→</span><b>100kg</b><span class="left">· 2w left</span></div>
+          <div class="prog">
+            <div class="track"><div class="dot" style="left:78%"></div></div>
+            <div class="weeks">
+              <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w on"></div>
+              <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w on"></div>
+              <div class="w on"></div><div class="w cur"></div><div class="w"></div><div class="w"></div>
+            </div>
+          </div>
+          <div class="echo">logged <b>96kg</b>. → 100kg coming.</div>
+          <div class="logrow">
+            <input class="input" value="100"/>
+            <span class="unit">kg</span>
+            <button class="logbtn">log</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUSINESS vision -->
+      <div class="vision-h">vision · 4-day workweek</div>
+
+      <div class="gcard">
+        <div class="gcover business">
+          <div class="pat"></div>
+          <svg viewBox="0 0 24 24"><path d="M4 9l4-4 4 4"/><path d="M8 5v10"/><path d="M16 19l-4-4-4 4"/><circle cx="18" cy="9" r="2"/></svg>
+        </div>
+        <div class="gbody">
+          <div class="identity">I run a $30k MRR studio.</div>
+          <div class="metric"><b>$22.4k</b><span class="arrow">→</span><b>$30k</b><span class="left">· 14w left</span></div>
+          <div class="prog">
+            <div class="track"><div class="dot" style="left:62%"></div></div>
+            <div class="weeks">
+              <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w on"></div>
+              <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w cur"></div>
+              <div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div>
+            </div>
+          </div>
+          <div class="echo">logged <b>$22,400</b>. → 4-day workweek coming.</div>
+          <div class="logrow">
+            <input class="input" value="22400"/>
+            <span class="unit">$</span>
+            <button class="logbtn">log</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="gcard">
+        <div class="gcover business">
+          <div class="pat"></div>
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+        </div>
+        <div class="gbody">
+          <div class="identity">I ship one offer a quarter.</div>
+          <div class="metric"><b>2</b><span class="arrow">→</span><b>4</b><span class="left">· this year</span></div>
+          <div class="prog">
+            <div class="track"><div class="dot" style="left:50%"></div></div>
+            <div class="weeks">
+              <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w on"></div>
+              <div class="w on"></div><div class="w cur"></div><div class="w"></div><div class="w"></div>
+              <div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div>
+            </div>
+          </div>
+          <div class="echo">2 of 4 shipped. → q3 next.</div>
+          <div class="logrow">
+            <input class="input" value="3"/>
+            <span class="unit">offers</span>
+            <button class="logbtn">log</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEARNING vision -->
+      <div class="vision-h">vision · read 24 / yr</div>
+
+      <div class="gcard">
+        <div class="gcover learning">
+          <div class="pat"></div>
+          <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h16"/><path d="M8 13h8"/><path d="M8 16h6"/></svg>
+        </div>
+        <div class="gbody">
+          <div class="identity">I read 24 books a year.</div>
+          <div class="metric"><b>9</b><span class="arrow">→</span><b>24</b><span class="left">· 7 mo left</span></div>
+          <div class="prog">
+            <div class="track"><div class="dot" style="left:38%"></div></div>
+            <div class="weeks">
+              <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w on"></div>
+              <div class="w cur"></div><div class="w"></div><div class="w"></div><div class="w"></div>
+              <div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div>
+            </div>
+          </div>
+          <div class="echo">9 finished. → next: deep work.</div>
+          <div class="logrow">
+            <input class="input" value="10"/>
+            <span class="unit">books</span>
+            <button class="logbtn">log</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ B · DETAIL ============ -->
+  <div class="frame-m">
+    <span class="lbl">B · goal detail</span>
+    <div class="topbar">
+      <div>
+        <div class="hi">today is the lift.</div>
+        <div class="sub">deadlift goal · 2w to target</div>
+      </div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+
+    <div class="detail-cover">
+      <div class="pat"></div>
+      <div class="back"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></div>
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M6 7v10"/><path d="M18 7v10"/><path d="M2 9v6"/><path d="M22 9v6"/></svg></div>
+      <span class="chip-rot">→ 220kg coming</span>
+    </div>
+
+    <div class="detail-body">
+      <div class="vlbl">vision · 220kg deadlifter</div>
+      <div class="dttl">I am a 100kg deadlifter.</div>
+      <div class="dmetric"><b>96kg</b><span class="arrow">→</span><b>100kg</b> · 2 weeks left</div>
+
+      <div class="prog">
+        <div class="track"><div class="dot" style="left:78%"></div></div>
+        <div class="weeks">
+          <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w on"></div>
+          <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w on"></div>
+          <div class="w on"></div><div class="w cur"></div><div class="w"></div><div class="w"></div>
+        </div>
+      </div>
+
+      <div class="logrow" style="border-top:none;padding-top:0;margin-top:16px">
+        <input class="input" value="100"/>
+        <span class="unit">kg</span>
+        <button class="logbtn">log lift</button>
+      </div>
+
+      <div class="history-h">log · last 8</div>
+      <div class="histrow"><div class="what">96kg × 5</div><div class="when">today · 09:42</div><div class="delta">+1kg</div></div>
+      <div class="histrow"><div class="what">95kg × 5</div><div class="when">sat · may 3</div><div class="delta">+2kg</div></div>
+      <div class="histrow"><div class="what">93kg × 5</div><div class="when">wed · apr 30</div><div class="delta">+1kg</div></div>
+      <div class="histrow"><div class="what">92kg × 5</div><div class="when">sun · apr 27</div><div class="delta">+2kg</div></div>
+      <div class="histrow"><div class="what">90kg × 5</div><div class="when">thu · apr 24</div><div class="delta">+0</div></div>
+      <div class="histrow"><div class="what">90kg × 5</div><div class="when">mon · apr 21</div><div class="delta neg">held</div></div>
+      <div class="histrow"><div class="what">90kg × 4</div><div class="when">fri · apr 18</div><div class="delta neg">−1 rep</div></div>
+      <div class="histrow"><div class="what">88kg × 5</div><div class="when">tue · apr 15</div><div class="delta">+2kg</div></div>
+    </div>
+  </div>
+
+  <!-- ============ C · EMPTY ============ -->
+  <div class="frame-m">
+    <span class="lbl">C · empty state</span>
+    <div class="topbar">
+      <div>
+        <div class="hi">ready when you are.</div>
+        <div class="sub">no goals yet</div>
+      </div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+
+    <div class="scroll">
+      <div class="section-h">goals.</div>
+      <div class="section-meta">measure what you're becoming.</div>
+
+      <div class="aff">
+        <button class="add">+ goal</button>
+        <button class="chip on">all</button>
+        <button class="chip">fitness</button>
+        <button class="chip">business</button>
+      </div>
+
+      <div class="empty-card">
+        <div class="ill"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 4v2"/><path d="M12 18v2"/><path d="M4 12h2"/><path d="M18 12h2"/></svg></div>
+        <div class="ttl">no goals yet.</div>
+        <div class="desc">a goal is a measurable phrase pointed at the man you're becoming. start with one — fitness, business, learning. not everything at once.</div>
+        <button class="ebtn">+ add first goal</button>
+      </div>
+
+      <div style="margin-top:18px;padding:18px;background:var(--paper-warm);border-radius:18px;box-shadow:inset 0 0 0 0.5px var(--hairline)">
+        <div style="font-size:10.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin-bottom:8px">examples</div>
+        <div style="font-size:13px;color:var(--ink-2);font-weight:600;line-height:1.7">
+          I am a 100kg deadlifter.<br>
+          I run a $30k MRR studio.<br>
+          I read 24 books a year.<br>
+          I pray 5 times daily, every day.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============ D · DESKTOP MASTER/DETAIL ============ -->
+<h2>desktop · master / detail</h2>
+<div style="position:relative;display:inline-block">
+  <span class="lbl" style="position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase">D · desktop 1100</span>
+<div class="frame-d">
+  <div class="rail">
+    <div class="rl">primary</div>
+    <div class="ri"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg> now</div>
+    <div class="ri"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg> today</div>
+    <div class="ri"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg> domains</div>
+    <div class="ri"><svg viewBox="0 0 24 24"><path d="M4 4h16v6H4z"/><path d="M4 14h7v6H4z"/><path d="M14 14h6v6h-6z"/></svg> visions</div>
+    <div class="ri active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg> goals</div>
+
+    <div class="rl">capture</div>
+    <div class="ri"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/></svg> voice</div>
+    <div class="ri"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg> add</div>
+  </div>
+
+  <div class="dmain">
+    <div class="dleft">
+      <div class="topbar-d">
+        <div>
+          <div class="hi">today is the lift.</div>
+          <div class="sub">5 goals · 3 visions in flight · tuesday may 6</div>
+        </div>
+        <div class="right">
+          <button style="background:#F5F5F7;border:none;border-radius:999px;padding:8px 14px;font-size:12.5px;font-weight:700;color:var(--ink-2);box-shadow:inset 0 0 0 0.5px var(--hairline);font-family:inherit;cursor:pointer">⌘ K</button>
+          <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+        </div>
+      </div>
+
+      <div class="section-h">goals.</div>
+      <div class="aff">
+        <button class="add">+ goal</button>
+        <button class="chip on">all</button>
+        <button class="chip">fitness</button>
+        <button class="chip">business</button>
+        <button class="chip">learning</button>
+        <button class="chip">religion</button>
+      </div>
+
+      <div class="vision-h">vision · 220kg deadlifter</div>
+      <div class="gcard">
+        <div class="gbody">
+          <div class="identity">I am a 100kg deadlifter.</div>
+          <div class="metric"><b>96kg</b><span class="arrow">→</span><b>100kg</b><span class="left">· 2w left</span></div>
+          <div class="prog">
+            <div class="track"><div class="dot" style="left:78%"></div></div>
+            <div class="weeks">
+              <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w on"></div>
+              <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w on"></div>
+              <div class="w on"></div><div class="w cur"></div><div class="w"></div><div class="w"></div>
+            </div>
+          </div>
+          <div class="echo">logged <b>96kg</b>. → 100kg coming.</div>
+        </div>
+      </div>
+
+      <div class="vision-h">vision · 4-day workweek</div>
+      <div class="gcard">
+        <div class="gbody">
+          <div class="identity">I run a $30k MRR studio.</div>
+          <div class="metric"><b>$22.4k</b><span class="arrow">→</span><b>$30k</b><span class="left">· 14w left</span></div>
+          <div class="prog">
+            <div class="track"><div class="dot" style="left:62%"></div></div>
+            <div class="weeks">
+              <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w on"></div>
+              <div class="w on"></div><div class="w on"></div><div class="w on"></div><div class="w cur"></div>
+              <div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div>
+            </div>
+          </div>
+          <div class="echo">logged <b>$22,400</b>. → 4-day workweek coming.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dright">
+      <div class="dlbl">selected · deadlift</div>
+      <div class="gcard">
+        <div class="gcover fitness" style="height:120px">
+          <div class="pat"></div>
+          <svg viewBox="0 0 24 24" style="width:50px;height:50px"><path d="M3 12h18"/><path d="M6 8v8"/><path d="M18 8v8"/><path d="M2 10v4"/><path d="M22 10v4"/></svg>
+          <span class="chip-rot">→ 220kg coming</span>
+        </div>
+        <div class="gbody">
+          <div class="identity" style="font-size:18px">I am a 100kg deadlifter.</div>
+          <div class="metric" style="font-size:13.5px"><b>96kg</b><span class="arrow">→</span><b>100kg</b><span class="left">· 2w left</span></div>
+
+          <div class="logrow">
+            <input class="input" value="100"/>
+            <span class="unit">kg</span>
+            <button class="logbtn">log</button>
+          </div>
+
+          <div class="history-h" style="margin-top:18px">log · last 4</div>
+          <div class="histrow"><div class="what">96 × 5</div><div class="when">today</div><div class="delta">+1kg</div></div>
+          <div class="histrow"><div class="what">95 × 5</div><div class="when">sat</div><div class="delta">+2kg</div></div>
+          <div class="histrow"><div class="what">93 × 5</div><div class="when">wed</div><div class="delta">+1kg</div></div>
+          <div class="histrow" style="border-bottom:none"><div class="what">92 × 5</div><div class="when">sun</div><div class="delta">+2kg</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<h2>layout notes</h2>
+<div class="preamble" style="margin-top:0">
+  <p><strong>card anatomy:</strong> pastel cover band (80px) with quiet glyph + optional rotated chip → identity line (SF Pro Display 21/700) → metric phrase ("96kg → 100kg · 2w left", tabular nums) → hairline track with single ink dot AT current position → 12-week mini-grid receipts below → echo line ("logged 96kg. → 100kg coming.") → inline log row at foot.</p>
+  <p><strong>progress is NOT a fill bar.</strong> It's a hairline + a single 10px ink dot. The 12-week mini-grid below adds the "I see weeks of evidence" feel. This is the entire signature of the screen — one position dot, not a percent.</p>
+  <p><strong>vision grouping:</strong> small uppercase header ("vision · 220kg deadlifter") with hairline rule. multiple goals can roll up to one vision.</p>
+  <p><strong>tone strings:</strong> "I am a 100kg deadlifter." (identity) / "96kg → 100kg · 2w left" (metric) / "logged 96kg. → 100kg coming." (save echo) / "+ goal" (CTA). lowercase. period at end. fact → future-self.</p>
+  <p><strong>memoji (LOCKED):</strong> jay.webp?color=7 only. <strong>topbar:</strong> rotating motivational quote — "today is the lift." / "ready when you are." — never a personal greeting.</p>
+</div>
+
+</body></html>

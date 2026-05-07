@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It · TODAY v3</title>
+<style>
+:root{
+  --bg:#FFFFFF; --stage:#F4F4F8; --inset:#F2F2F7; --inset-2:#EAEAEF;
+  --paper:#FBFAF7; --paper-warm:#F8F4EB; --card:#FFFFFF;
+  --ink:#0A0A0F; --ink-2:#1C1C1E; --ink-3:#3A3A3C;
+  --label:#8E8E93; --label-2:#6E6E73;
+  --hr:rgba(60,60,67,0.10); --hr-2:rgba(60,60,67,0.06); --hr-strong:rgba(60,60,67,0.18);
+  --blue:#007AFF; --blue-deep:#0062CC; --blue-soft:rgba(0,122,255,0.10); --blue-tint:#E6F0FF; --blue-tint-2:#D2E3FF;
+  --green:#34C759; --green-deep:#248A3D; --green-soft:rgba(52,199,89,0.14);
+  --mint:#E2F4E6; --mint-2:#CFEAD7; --mint-3:#B2DDBE; --mint-ink:#2F5A3E;
+  --pink:#FFD0DA; --pink-2:#FFE3EB; --pink-3:#FFF1F5; --pink-ink:#7A2A3C; --pink-strong:#FFB6C5;
+  --shadow-card:0 1px 0 rgba(255,255,255,0.7) inset, 0 0 0 0.5px rgba(60,60,67,0.06), 0 12px 28px -14px rgba(20,20,30,0.10), 0 26px 50px -28px rgba(20,20,30,0.14);
+  --shadow-stack:0 0 0 0.5px rgba(60,60,67,0.05), 0 1px 1px rgba(20,20,30,0.02), 0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-pill:0 1px 0 rgba(255,255,255,0.7) inset, 0 0 0 0.5px rgba(60,60,67,0.04), 0 16px 34px -14px rgba(20,20,30,0.16);
+  --ease:cubic-bezier(.32,.72,0,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+html,body{background:#E9E6E0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;color:var(--ink)}
+body{padding:48px 40px 80px;min-height:100vh}
+.serif-italic{font-family:Georgia,"Times New Roman",serif;font-style:italic;letter-spacing:.005em}
+
+.page-head{max-width:1280px;margin:0 auto 32px}
+.page-head h1{font-size:38px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.page-head p{font-size:14px;color:var(--label-2);margin-top:8px;max-width:720px;line-height:1.5}
+
+.deck{display:grid;grid-template-columns:repeat(4,393px);gap:28px;justify-content:center;margin-bottom:36px}
+@media(max-width:1750px){.deck{grid-template-columns:repeat(2,393px)}}
+.frame{width:393px;height:852px;border-radius:46px;background:var(--paper);overflow:hidden;position:relative;
+  box-shadow:0 0 0 1px rgba(0,0,0,.08), 0 40px 80px -30px rgba(20,20,30,.30), 0 12px 28px -14px rgba(20,20,30,.18)}
+.cap{margin-top:14px;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--label);text-align:center}
+.cap b{color:var(--ink-2);font-weight:800}
+
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--paper)}
+
+/* ─── topbar (shared) ─── */
+.topbar{padding:18px 22px 6px;display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.greet{display:flex;flex-direction:column;gap:2px;padding-top:2px}
+.greet .eb{font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--label)}
+.greet .name{font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1.05;color:var(--ink)}
+.greet .sub{font-size:13px;color:var(--label-2);margin-top:2px;letter-spacing:-.005em}
+.memo{width:38px;height:38px;border-radius:50%;background:linear-gradient(150deg,#FFE3EB,#FFD0DA 60%,#FFB6C5);display:grid;place-items:center;box-shadow:var(--shadow-stack);flex-shrink:0;position:relative;overflow:hidden}
+.memo::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.7),transparent 50%)}
+.memo svg{width:24px;height:24px;position:relative;z-index:1}
+
+/* ─── HERO STRIP (TODAY-distinct: thin band, NOT a hero card) ─── */
+.strip-wrap{padding:8px 18px 0;flex-shrink:0}
+.strip{position:relative;border-radius:18px;height:74px;overflow:hidden;padding:10px 14px;display:flex;flex-direction:column;justify-content:space-between;
+  background:
+    radial-gradient(120% 200% at 0% 50%, var(--pink-3) 0%, transparent 60%),
+    radial-gradient(80% 200% at 100% 50%, var(--mint) 0%, transparent 70%),
+    var(--paper);
+  box-shadow:0 1px 0 rgba(255,255,255,.55) inset, 0 8px 18px -10px rgba(120,80,90,.16);
+}
+.strip::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(10,10,15,.055) 1px, transparent 1.2px);background-size:13px 13px;opacity:.5;pointer-events:none}
+.strip-row{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.strip-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,253,250,.78);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);padding:5px 10px;border-radius:999px;font-size:10.5px;font-weight:700;color:var(--ink-2);letter-spacing:-.005em;box-shadow:0 1px 0 rgba(255,255,255,.6) inset, 0 0 0 .5px rgba(60,60,67,.06), 0 4px 10px -4px rgba(20,20,30,.1);font-variant-numeric:tabular-nums;white-space:nowrap}
+.strip-pill .eb{font-size:9.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--label)}
+.strip-pill b{color:var(--ink);font-weight:800}
+.strip-pill .pulse{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(52,199,89,.18)}
+/* scrubber rail under strip pills */
+.scrub{position:relative;z-index:1;height:4px;border-radius:999px;background:rgba(10,10,15,.07);overflow:visible}
+.scrub .fill{position:absolute;top:0;bottom:0;left:0;width:32%;border-radius:999px;background:linear-gradient(90deg,var(--mint-3),var(--pink-strong))}
+.scrub .head{position:absolute;top:50%;left:32%;width:10px;height:10px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);box-shadow:0 0 0 2px var(--ink), 0 4px 8px -2px rgba(10,10,15,.3)}
+.scrub .tick{position:absolute;top:50%;width:1px;height:8px;background:rgba(10,10,15,.18);transform:translate(-50%,-50%)}
+
+/* eyebrow line under strip (morning brief recap or prompt) */
+.brief-line{padding:10px 22px 0;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.brief-line .eb{font-size:9.5px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:var(--mint-ink);opacity:.78}
+.brief-line .si{font-family:Georgia,serif;font-style:italic;font-size:13.5px;color:var(--ink-2);letter-spacing:.005em;line-height:1.35;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.brief-prompt{margin:10px 18px 0;background:rgba(255,253,250,.85);border:1px dashed var(--hr-strong);border-radius:14px;padding:10px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.brief-prompt .plus{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;flex-shrink:0;font-size:14px;font-weight:700;line-height:1}
+.brief-prompt .si{font-family:Georgia,serif;font-style:italic;font-size:13.5px;color:var(--ink-2);letter-spacing:.005em;flex:1;line-height:1.35}
+.brief-prompt .si b{font-style:normal;font-family:-apple-system,sans-serif;font-weight:700;color:var(--ink)}
+
+/* ─── TIMELINE CONTAINER ─── */
+.timeline-wrap{flex:1;overflow:hidden;padding:14px 18px 0;position:relative}
+.timeline-scroll{height:100%;overflow:hidden;position:relative;padding-bottom:80px}
+.timeline{position:relative;display:flex;flex-direction:column;gap:8px}
+
+/* prayer band — full width, sits BEHIND blocks via z-layering */
+.prayer-band{
+  position:relative;border-radius:14px;padding:8px 14px 8px 14px;
+  display:flex;align-items:center;gap:8px;
+  overflow:hidden;
+}
+.prayer-band::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(10,10,15,.06) 1px, transparent 1.2px);background-size:11px 11px;opacity:.6;pointer-events:none}
+.prayer-band.fajr{
+  background:
+    radial-gradient(120% 100% at 0% 0%, #F0E9FB 0%, transparent 70%),
+    linear-gradient(165deg, #F5EFFF 0%, #E9E1F8 100%);
+  box-shadow:inset 0 0 0 .5px rgba(90,74,138,.18), 0 1px 2px rgba(90,74,138,.08);
+}
+.prayer-band.dhuhr{
+  background:
+    radial-gradient(120% 100% at 100% 100%, var(--mint-2) 0%, transparent 65%),
+    linear-gradient(165deg, var(--mint) 0%, var(--mint-2) 100%);
+  box-shadow:inset 0 0 0 .5px rgba(47,90,62,.16), 0 1px 2px rgba(47,90,62,.08);
+}
+.prayer-band.asr{
+  background:
+    radial-gradient(120% 100% at 100% 100%, var(--pink) 0%, transparent 65%),
+    linear-gradient(165deg, var(--pink-3) 0%, var(--pink-2) 100%);
+  box-shadow:inset 0 0 0 .5px rgba(122,42,60,.14), 0 1px 2px rgba(122,42,60,.08);
+}
+.prayer-band .glyph{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;background:rgba(255,253,250,.85);box-shadow:0 0 0 .5px rgba(60,60,67,.08)}
+.prayer-band .glyph svg{width:11px;height:11px}
+.prayer-band .nm{font-size:10px;font-weight:800;letter-spacing:.20em;text-transform:uppercase;color:var(--ink-2);opacity:.78}
+.prayer-band .tm{font-size:10.5px;font-weight:700;color:var(--ink-3);letter-spacing:-.005em;font-variant-numeric:tabular-nums;margin-left:auto}
+.prayer-band .win{font-size:10px;font-weight:600;color:var(--label-2);letter-spacing:-.005em}
+.prayer-band.fajr .nm,.prayer-band.fajr .glyph svg path{color:#5A4A8A}
+.prayer-band.fajr .glyph svg path{fill:#5A4A8A;opacity:.78}
+.prayer-band.dhuhr .nm{color:var(--mint-ink)}
+.prayer-band.dhuhr .glyph svg path{fill:var(--mint-ink);opacity:.78}
+.prayer-band.asr .nm{color:var(--pink-ink)}
+.prayer-band.asr .glyph svg path{fill:var(--pink-ink);opacity:.78}
+
+/* ─── BLOCK CARD (everything stays inside) ─── */
+.block{
+  background:var(--paper);
+  border-radius:16px;
+  padding:12px 12px 12px 10px;
+  display:grid;
+  grid-template-columns:48px 14px 1fr auto;
+  gap:10px;
+  align-items:center;
+  box-shadow:0 0 0 .5px var(--hr), 0 1px 2px rgba(20,20,30,.04), 0 4px 14px -8px rgba(20,20,30,.10);
+  position:relative;
+  overflow:hidden;
+}
+/* domain glyph stripe (leftmost edge) */
+.block::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--mint-3)}
+.block.dom-work::before{background:var(--blue)}
+.block.dom-body::before{background:var(--mint-3)}
+.block.dom-mind::before{background:var(--pink-strong)}
+.block.dom-faith::before{background:#9B8DD2}
+.block.dom-life::before{background:var(--ink-3)}
+
+/* time chip — editable */
+.time-chip{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  width:48px;height:42px;
+  background:#fff;
+  border-radius:10px;
+  box-shadow:inset 0 0 0 .5px var(--hr-strong);
+  cursor:text;
+  font-variant-numeric:tabular-nums;
+  position:relative;
+  transition:box-shadow 150ms var(--ease);
+}
+.time-chip .hh{font-size:13.5px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1}
+.time-chip .dur{font-size:8.5px;font-weight:700;color:var(--label);letter-spacing:.05em;text-transform:uppercase}
+.time-chip .pen{position:absolute;top:-3px;right:-3px;width:11px;height:11px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;opacity:0;transition:opacity 150ms}
+.block:hover .time-chip{box-shadow:inset 0 0 0 1px var(--ink)}
+.block:hover .time-chip .pen{opacity:1}
+.time-chip .pen svg{width:6px;height:6px;stroke:#fff;stroke-width:2.4;fill:none}
+
+/* ACTIVE state of time chip — input is open */
+.time-chip.editing{
+  background:#fff;
+  box-shadow:inset 0 0 0 1.5px var(--blue), 0 0 0 4px rgba(0,122,255,.12);
+}
+.time-chip.editing .hh{color:var(--blue-deep)}
+.time-chip.editing .caret{position:absolute;right:6px;top:8px;width:1.2px;height:14px;background:var(--blue);animation:caret-blink 1s steps(2) infinite}
+@keyframes caret-blink{50%{opacity:0}}
+
+/* drag grip */
+.grip{display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;height:24px;cursor:grab;opacity:.55}
+.grip span{width:3px;height:3px;border-radius:50%;background:var(--ink-3)}
+
+/* main block content */
+.b-main{min-width:0;display:flex;flex-direction:column;gap:1px}
+.b-row{display:flex;align-items:center;gap:6px;min-width:0}
+.b-icon{width:14px;height:14px;flex-shrink:0;color:var(--ink-3);display:grid;place-items:center}
+.b-icon svg{width:12px;height:12px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.b-title{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-.012em;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1}
+.b-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--label);margin-top:1px}
+.b-intent{font-family:Georgia,serif;font-style:italic;font-size:12px;color:var(--label-2);letter-spacing:.005em;line-height:1.3;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* right-side status (active ring sits on whole block, not here) */
+.b-status{flex-shrink:0;display:flex;align-items:center;justify-content:center;width:24px;height:24px}
+
+/* ── ACTIVE block variant ── */
+.block.active{
+  background:linear-gradient(165deg, #F4F9FF 0%, var(--blue-tint) 100%);
+  box-shadow:inset 0 0 0 1.5px var(--blue), 0 1px 2px rgba(0,80,180,.06), 0 6px 16px -8px rgba(0,80,180,.18);
+}
+.block.active::before{background:var(--blue)}
+.block.active .time-chip{background:#fff;box-shadow:inset 0 0 0 .5px var(--blue),0 1px 0 rgba(255,255,255,.6) inset}
+.block.active .time-chip .hh{color:var(--blue-deep)}
+.block.active .b-title{color:var(--ink)}
+.live-pulse{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--blue-deep);margin-top:2px}
+.live-pulse .d{width:5px;height:5px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 3px rgba(0,122,255,.20)}
+
+/* ── COMPLETED block variant ── */
+.block.done{opacity:.55}
+.block.done .b-title{text-decoration:line-through;text-decoration-color:var(--hr-strong);text-decoration-thickness:1px}
+.tick-pill{
+  flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--green-soft);box-shadow:inset 0 0 0 .5px rgba(52,199,89,.4);
+}
+.tick-pill svg{width:11px;height:11px;stroke:var(--green-deep);stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── ACTION ZONE (frosted floating pill) ── */
+.actions{position:absolute;left:50%;transform:translateX(-50%);bottom:78px;display:flex;align-items:center;gap:6px;
+  background:rgba(255,253,250,.82);
+  backdrop-filter:blur(22px) saturate(140%);
+  -webkit-backdrop-filter:blur(22px) saturate(140%);
+  border-radius:999px;
+  padding:5px 6px;
+  box-shadow:var(--shadow-pill);
+  z-index:5;
+}
+.act{padding:9px 14px;border-radius:999px;font-size:12.5px;font-weight:700;letter-spacing:-.012em;display:inline-flex;align-items:center;gap:6px;color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.act.pri{background:var(--ink);color:#fff;box-shadow:0 7px 16px -7px rgba(10,10,15,.45);padding:9px 14px 9px 12px}
+.act.pri .pl{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;font-weight:800}
+.act svg{width:12px;height:12px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* bottom nav — same as NOW */
+.nav{margin:0 18px 16px;background:rgba(255,253,250,.82);backdrop-filter:blur(22px) saturate(140%);border-radius:999px;padding:6px;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;box-shadow:var(--shadow-pill);flex-shrink:0;position:relative;z-index:6}
+.nav .t{height:42px;border-radius:999px;display:grid;place-items:center;color:var(--label);transition:background 200ms,color 200ms}
+.nav .t.on{background:var(--ink);color:#fff;box-shadow:0 5px 12px -5px rgba(10,10,15,.4)}
+.nav .t svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* fade above action pill so timeline scrolls under */
+.timeline-fade{position:absolute;left:0;right:0;bottom:62px;height:90px;background:linear-gradient(to top, var(--paper) 30%, rgba(251,250,247,0));pointer-events:none;z-index:4}
+
+/* ── EMPTY state (D) ── */
+.empty-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 36px;text-align:center;gap:14px}
+.empty-stage .si{font-family:Georgia,serif;font-style:italic;font-size:24px;color:var(--ink-2);line-height:1.3;letter-spacing:.005em}
+.empty-stage .hint{font-size:13px;color:var(--label-2);letter-spacing:-.005em;max-width:24ch}
+.empty-stage .first-pill{margin-top:6px;display:inline-flex;align-items:center;gap:8px;padding:11px 18px 11px 14px;background:var(--ink);color:#fff;border-radius:999px;font-size:13.5px;font-weight:700;letter-spacing:-.012em;box-shadow:0 7px 16px -7px rgba(10,10,15,.45)}
+.empty-stage .first-pill .pl{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;font-weight:800}
+.empty-decoration{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 30%, var(--mint) 0%, transparent 60%),radial-gradient(circle at 70% 70%, var(--pink-3) 0%, transparent 65%), var(--paper-warm);box-shadow:inset 0 0 0 .5px var(--hr), 0 12px 28px -14px rgba(40,80,60,.18);position:relative}
+.empty-decoration::before{content:"";position:absolute;inset:0;border-radius:50%;background-image:radial-gradient(rgba(10,10,15,.05) 1px, transparent 1.2px);background-size:11px 11px;opacity:.5}
+
+/* ── MORNING BRIEF MODAL (C) ── */
+.modal-scrim{position:absolute;inset:0;background:rgba(20,20,30,.32);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:10;display:flex;align-items:center;justify-content:center;padding:24px}
+.modal{width:100%;max-width:330px;background:var(--paper);border-radius:24px;padding:22px 22px 18px;box-shadow:0 30px 60px -20px rgba(20,20,30,.4), 0 0 0 .5px rgba(60,60,67,.08), 0 1px 0 rgba(255,255,255,.7) inset;position:relative;overflow:hidden}
+.modal::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(80% 60% at 0% 0%, var(--mint) 0%, transparent 55%),
+  radial-gradient(80% 60% at 100% 100%, var(--pink-3) 0%, transparent 60%);
+  opacity:.55;pointer-events:none}
+.modal::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(10,10,15,.05) 1px, transparent 1.2px);background-size:13px 13px;opacity:.4;pointer-events:none}
+.modal-eb{position:relative;z-index:1;font-size:9.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--mint-ink)}
+.modal-h{position:relative;z-index:1;margin-top:6px;font-size:22px;font-weight:800;letter-spacing:-.03em;line-height:1.1;color:var(--ink)}
+.modal-h .si{font-family:Georgia,serif;font-style:italic;font-weight:400;letter-spacing:.005em}
+.field{position:relative;z-index:1;margin-top:14px;background:rgba(255,255,255,.7);border-radius:14px;padding:12px 14px;box-shadow:inset 0 0 0 .5px var(--hr)}
+.field .lbl{font-size:9px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:var(--label);margin-bottom:4px}
+.field .si{font-family:Georgia,serif;font-style:italic;font-size:14.5px;color:var(--ink-2);line-height:1.35;letter-spacing:.005em}
+.field .si.placeholder{color:var(--label-2);opacity:.7}
+.field.focused{box-shadow:inset 0 0 0 1.5px var(--blue), 0 0 0 4px rgba(0,122,255,.10)}
+.modal-cta{position:relative;z-index:1;margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.modal-cta .skip{font-size:12.5px;font-weight:600;color:var(--label-2);letter-spacing:-.005em}
+.modal-cta .start{flex:1;text-align:center;padding:12px 18px;background:var(--ink);color:#fff;border-radius:999px;font-size:13.5px;font-weight:700;letter-spacing:-.012em;box-shadow:0 7px 16px -7px rgba(10,10,15,.45)}
+
+/* ─── DESKTOP frame ─── */
+.desk-wrap{display:flex;justify-content:center;margin-top:8px}
+.desk{width:1280px;height:800px;border-radius:18px;background:var(--stage);box-shadow:0 0 0 1px rgba(0,0,0,.08), 0 40px 80px -30px rgba(20,20,30,.30);overflow:hidden;display:grid;grid-template-columns:230px 1fr}
+.desk .rail{background:var(--paper);border-right:1px solid var(--hr);padding:24px 18px;display:flex;flex-direction:column;gap:6px}
+.desk .rail .brand{font-size:18px;font-weight:800;letter-spacing:-.03em;margin-bottom:18px}
+.desk .rail .ri{display:flex;align-items:center;gap:11px;padding:8px 12px;border-radius:12px;font-size:13px;color:var(--ink-3);font-weight:600;letter-spacing:-.012em}
+.desk .rail .ri.on{background:var(--ink);color:#fff}
+.desk .rail .ri svg{width:15px;height:15px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.desk .rail .group-lbl{margin:14px 0 4px 12px;font-size:9.5px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:var(--label)}
+.desk .body{padding:28px 48px 28px;overflow:hidden;display:flex;flex-direction:column}
+.desk .titlebar{display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:1px solid var(--hr)}
+.desk .titlebar h2{font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--label)}
+.desk .titlebar .right{display:flex;gap:10px;align-items:center;color:var(--label-2);font-size:12px;font-weight:600}
+.desk .titlebar .right .memo{width:30px;height:30px}
+
+.desk-grid{flex:1;display:grid;grid-template-columns:1fr 280px;gap:28px;padding-top:22px;overflow:hidden}
+.desk-col-main{display:flex;flex-direction:column;gap:10px;overflow:hidden;max-width:720px;width:100%;margin:0 auto}
+.desk-col-main .strip{height:84px;border-radius:20px;padding:12px 18px}
+.desk-col-main .timeline{margin-top:6px}
+.desk-col-main .block{padding:14px 14px 14px 12px;grid-template-columns:54px 14px 1fr auto;gap:14px}
+.desk-col-main .block .b-title{font-size:15px}
+.desk-col-main .block .b-intent{font-size:13px;white-space:normal}
+.desk-col-main .time-chip{width:54px;height:46px}
+.desk-col-main .time-chip .hh{font-size:14.5px}
+
+/* desktop right sidebar */
+.side{background:var(--paper);border-radius:20px;padding:20px 18px;box-shadow:0 0 0 .5px var(--hr), 0 12px 28px -16px rgba(20,20,30,.10);display:flex;flex-direction:column;gap:18px;align-self:flex-start;position:sticky;top:0}
+.side .sec{display:flex;flex-direction:column;gap:6px}
+.side .eb{font-size:9.5px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:var(--label)}
+.side .stat{display:flex;align-items:baseline;gap:6px}
+.side .stat .num{font-size:24px;font-weight:800;letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1}
+.side .stat .un{font-size:11px;font-weight:600;color:var(--label-2);letter-spacing:-.005em}
+.side .stat .meta{margin-left:auto;font-size:10.5px;font-weight:600;color:var(--label-2);letter-spacing:-.005em}
+.side .bar{height:5px;border-radius:999px;background:rgba(10,10,15,.07);overflow:hidden;position:relative}
+.side .bar .f{position:absolute;inset:0;width:42%;background:linear-gradient(90deg,var(--mint-3),var(--pink-strong));border-radius:999px}
+.side .next-prayer{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;
+  background:radial-gradient(80% 60% at 100% 100%, var(--mint-2) 0%, transparent 65%), linear-gradient(165deg,var(--mint) 0%,var(--mint-2) 100%);
+  position:relative;overflow:hidden}
+.side .next-prayer::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(10,10,15,.05) 1px, transparent 1.2px);background-size:11px 11px;opacity:.5}
+.side .next-prayer .glyph{width:22px;height:22px;border-radius:50%;background:rgba(255,253,250,.85);display:grid;place-items:center;flex-shrink:0;position:relative;z-index:1}
+.side .next-prayer .glyph svg{width:12px;height:12px}
+.side .next-prayer .nm{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--mint-ink);position:relative;z-index:1}
+.side .next-prayer .tm{font-size:11px;font-weight:700;color:var(--ink-2);font-variant-numeric:tabular-nums;margin-left:auto;position:relative;z-index:1}
+.side .brief-recap{font-family:Georgia,serif;font-style:italic;font-size:13.5px;color:var(--ink-2);line-height:1.4;letter-spacing:.005em;padding-left:10px;border-left:2px solid var(--mint-3)}
+.side .quick{display:flex;flex-wrap:wrap;gap:6px}
+.side .quick .qb{font-size:11px;font-weight:600;color:var(--ink-2);background:rgba(10,10,15,.05);padding:5px 10px;border-radius:999px;letter-spacing:-.005em}
+.side hr{border:0;border-top:1px solid var(--hr);margin:0}
+
+</style></head><body>
+
+<div class="page-head">
+  <h1>TODAY · v3</h1>
+  <p>Distinct anatomy from NOW: a thin pink-3 hero strip (not a hero monolith), an editable time-chip per block, prayer windows as soft tinted bands BEHIND the cards, and a frosted action pill floating above the bottom nav. Every element stays inside its card edge — Adam's specific complaint, fixed at the layout level.</p>
+</div>
+
+<!-- ════════════════ MOCKUP DECK ════════════════ -->
+<div class="deck">
+
+<!-- ─── A · CANONICAL DAY ─── -->
+<div>
+<div class="frame">
+  <div class="screen">
+
+    <div class="topbar">
+      <div class="greet">
+        <div class="eb">tuesday · 9:41</div>
+        <div class="name">today.</div>
+        <div class="sub serif-italic">9 blocks. the day is yours.</div>
+      </div>
+      <div class="memo">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" fill="#7A2A3C" opacity=".2"/><path d="M12 14c-3.5 0-6 2-6 4v2h12v-2c0-2-2.5-4-6-4z" fill="#7A2A3C" opacity=".18"/></svg>
+      </div>
+    </div>
+
+    <!-- HERO STRIP (thin band, not card) -->
+    <div class="strip-wrap">
+      <div class="strip">
+        <div class="strip-row">
+          <span class="strip-pill"><span class="eb">morning</span><b>9:41</b></span>
+          <span class="strip-pill"><span class="pulse"></span>fajr · in 1h 15m</span>
+        </div>
+        <div class="scrub">
+          <span class="tick" style="left:18%"></span>
+          <span class="tick" style="left:50%"></span>
+          <span class="tick" style="left:82%"></span>
+          <div class="fill"></div>
+          <div class="head"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- morning brief recap line -->
+    <div class="brief-line">
+      <span class="eb">brief</span>
+      <span class="si">today's friction: the 10am call.</span>
+    </div>
+
+    <!-- TIMELINE -->
+    <div class="timeline-wrap">
+      <div class="timeline-scroll">
+        <div class="timeline">
+
+          <!-- prayer band: fajr -->
+          <div class="prayer-band fajr">
+            <div class="glyph"><svg viewBox="0 0 16 16" fill="none"><path d="M11 2.5a6 6 0 100 11 5 5 0 010-11z"/></svg></div>
+            <div class="nm">fajr</div>
+            <div class="win">window 5:14 – 6:30</div>
+            <div class="tm">5:14</div>
+          </div>
+
+          <!-- block: done -->
+          <div class="block done dom-body">
+            <div class="time-chip"><div class="hh">6:30</div><div class="dur">25m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row">
+                <div class="b-icon"><svg viewBox="0 0 14 14"><path d="M3 11l4-4 4 4M7 7V3"/></svg></div>
+                <div class="b-title">walk · no podcast</div>
+              </div>
+              <div class="b-eyebrow">body</div>
+            </div>
+            <div class="b-status"><div class="tick-pill"><svg viewBox="0 0 12 12"><path d="M2 6.5l3 3 5-7"/></svg></div></div>
+          </div>
+
+          <!-- block: done -->
+          <div class="block done dom-mind">
+            <div class="time-chip"><div class="hh">7:15</div><div class="dur">20m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row">
+                <div class="b-icon"><svg viewBox="0 0 14 14"><path d="M3 4h8M3 7h8M3 10h5"/></svg></div>
+                <div class="b-title">read · 20 pages</div>
+              </div>
+              <div class="b-eyebrow">mind</div>
+            </div>
+            <div class="b-status"><div class="tick-pill"><svg viewBox="0 0 12 12"><path d="M2 6.5l3 3 5-7"/></svg></div></div>
+          </div>
+
+          <!-- block: ACTIVE (in flight) -->
+          <div class="block active dom-work">
+            <div class="time-chip"><div class="hh">9:00</div><div class="dur">60m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row">
+                <div class="b-icon" style="color:var(--blue-deep)"><svg viewBox="0 0 14 14"><path d="M2 3h10v8H2z"/><path d="M5 6h4M5 8h3"/></svg></div>
+                <div class="b-title">write the Q2 brief</div>
+              </div>
+              <div class="b-intent">"the only block today that matters."</div>
+              <div class="live-pulse"><span class="d"></span> in flight · 14m elapsed</div>
+            </div>
+          </div>
+
+          <!-- block: upcoming -->
+          <div class="block dom-life">
+            <div class="time-chip"><div class="hh">10:00</div><div class="dur">30m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row">
+                <div class="b-icon"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M5 7l1.5 1.5L9 6"/></svg></div>
+                <div class="b-title">10am call · founder check</div>
+              </div>
+              <div class="b-eyebrow">life</div>
+            </div>
+            <div class="b-status"></div>
+          </div>
+
+          <!-- prayer band: dhuhr -->
+          <div class="prayer-band dhuhr">
+            <div class="glyph"><svg viewBox="0 0 16 16" fill="none"><path d="M11 2.5a6 6 0 100 11 5 5 0 010-11z"/></svg></div>
+            <div class="nm">dhuhr</div>
+            <div class="win">window 12:38 – 15:52</div>
+            <div class="tm">12:38</div>
+          </div>
+
+          <!-- block: upcoming -->
+          <div class="block dom-life">
+            <div class="time-chip"><div class="hh">13:00</div><div class="dur">40m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row">
+                <div class="b-icon"><svg viewBox="0 0 14 14"><path d="M3 5h8v6H3z"/><path d="M5 5V3h4v2"/></svg></div>
+                <div class="b-title">lunch + reset</div>
+              </div>
+              <div class="b-eyebrow">life</div>
+            </div>
+            <div class="b-status"></div>
+          </div>
+
+          <!-- block: upcoming -->
+          <div class="block dom-body">
+            <div class="time-chip"><div class="hh">14:00</div><div class="dur">75m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row">
+                <div class="b-icon" style="color:var(--mint-ink)"><svg viewBox="0 0 14 14"><rect x="2" y="5" width="10" height="4" rx="1"/><path d="M3 5V3M11 11V9"/></svg></div>
+                <div class="b-title">push day · gym</div>
+              </div>
+              <div class="b-intent">"220kg deadlift coming."</div>
+            </div>
+            <div class="b-status"></div>
+          </div>
+
+        </div>
+      </div>
+      <div class="timeline-fade"></div>
+    </div>
+
+    <!-- floating action pill -->
+    <div class="actions">
+      <div class="act pri"><span class="pl">+</span> block</div>
+      <div class="act">templates</div>
+      <div class="act">brief</div>
+    </div>
+
+    <div class="nav">
+      <div class="t"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="3.5"/><circle cx="9" cy="9" r="6.8" opacity=".5"/></svg></div>
+      <div class="t on"><svg viewBox="0 0 18 18"><rect x="3" y="3.5" width="12" height="11" rx="2"/><path d="M3 7.5h12M7 3.5v3M11 3.5v3"/></svg></div>
+      <div class="t"><svg viewBox="0 0 18 18"><path d="M3 14V4M7 14V8M11 14V6M15 14V10"/></svg></div>
+      <div class="t"><svg viewBox="0 0 18 18"><circle cx="4.5" cy="9" r="1"/><circle cx="9" cy="9" r="1"/><circle cx="13.5" cy="9" r="1"/></svg></div>
+    </div>
+  </div>
+</div>
+<div class="cap"><b>A · canonical day</b> &nbsp;·&nbsp; timeline + prayer bands + active block</div>
+</div>
+
+<!-- ─── B · TIME-EDIT ACTIVE ─── -->
+<div>
+<div class="frame">
+  <div class="screen">
+
+    <div class="topbar">
+      <div class="greet">
+        <div class="eb">tuesday · 9:41</div>
+        <div class="name">today.</div>
+        <div class="sub serif-italic">moving the brief — pick a new time.</div>
+      </div>
+      <div class="memo">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" fill="#7A2A3C" opacity=".2"/><path d="M12 14c-3.5 0-6 2-6 4v2h12v-2c0-2-2.5-4-6-4z" fill="#7A2A3C" opacity=".18"/></svg>
+      </div>
+    </div>
+
+    <div class="strip-wrap">
+      <div class="strip">
+        <div class="strip-row">
+          <span class="strip-pill"><span class="eb">editing</span><b>shift the brief</b></span>
+          <span class="strip-pill">tap a slot · drag to nudge</span>
+        </div>
+        <div class="scrub">
+          <span class="tick" style="left:18%"></span>
+          <span class="tick" style="left:50%"></span>
+          <span class="tick" style="left:82%"></span>
+          <div class="fill"></div>
+          <div class="head"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="brief-line">
+      <span class="eb">brief</span>
+      <span class="si">today's friction: the 10am call.</span>
+    </div>
+
+    <div class="timeline-wrap">
+      <div class="timeline-scroll">
+        <div class="timeline">
+
+          <div class="prayer-band fajr">
+            <div class="glyph"><svg viewBox="0 0 16 16" fill="none"><path d="M11 2.5a6 6 0 100 11 5 5 0 010-11z"/></svg></div>
+            <div class="nm">fajr</div>
+            <div class="win">prayed</div>
+            <div class="tm">5:14</div>
+          </div>
+
+          <div class="block done dom-body">
+            <div class="time-chip"><div class="hh">6:30</div><div class="dur">25m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row">
+                <div class="b-icon"><svg viewBox="0 0 14 14"><path d="M3 11l4-4 4 4M7 7V3"/></svg></div>
+                <div class="b-title">walk · no podcast</div>
+              </div>
+              <div class="b-eyebrow">body</div>
+            </div>
+            <div class="b-status"><div class="tick-pill"><svg viewBox="0 0 12 12"><path d="M2 6.5l3 3 5-7"/></svg></div></div>
+          </div>
+
+          <!-- THIS block: time chip in EDITING state -->
+          <div class="block dom-work" style="box-shadow:inset 0 0 0 1px var(--blue), 0 1px 2px rgba(0,80,180,.06), 0 8px 22px -10px rgba(0,80,180,.22);background:linear-gradient(165deg, #FAFCFF 0%, #F4F8FF 100%)">
+            <div class="time-chip editing">
+              <div class="hh">9:30</div>
+              <div class="dur">60m</div>
+              <div class="caret"></div>
+            </div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row">
+                <div class="b-icon" style="color:var(--blue-deep)"><svg viewBox="0 0 14 14"><path d="M2 3h10v8H2z"/><path d="M5 6h4M5 8h3"/></svg></div>
+                <div class="b-title">write the Q2 brief</div>
+              </div>
+              <div class="b-eyebrow" style="color:var(--blue-deep)">tap to confirm · drag for ±5m</div>
+            </div>
+            <div class="b-status">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <div style="width:22px;height:18px;background:#fff;border-radius:6px;display:grid;place-items:center;box-shadow:0 0 0 .5px var(--hr);font-size:10px;font-weight:800;color:var(--blue-deep)">▲</div>
+                <div style="width:22px;height:18px;background:#fff;border-radius:6px;display:grid;place-items:center;box-shadow:0 0 0 .5px var(--hr);font-size:10px;font-weight:800;color:var(--blue-deep)">▼</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- mini time-picker hint row inline -->
+          <div style="margin:0 4px;background:#fff;border-radius:14px;padding:10px 14px;box-shadow:0 0 0 .5px var(--hr), 0 6px 16px -8px rgba(0,80,180,.18);display:flex;align-items:center;gap:8px;font-size:11px;color:var(--label-2);font-weight:600">
+            <div style="display:flex;gap:4px;flex:1;flex-wrap:wrap">
+              <span style="background:var(--ink);color:#fff;padding:5px 10px;border-radius:999px;font-size:10.5px;font-weight:700">9:30</span>
+              <span style="background:var(--inset);padding:5px 10px;border-radius:999px;font-size:10.5px;font-weight:700;color:var(--ink-2)">10:00</span>
+              <span style="background:var(--inset);padding:5px 10px;border-radius:999px;font-size:10.5px;font-weight:700;color:var(--ink-2)">10:30</span>
+              <span style="background:var(--inset);padding:5px 10px;border-radius:999px;font-size:10.5px;font-weight:700;color:var(--ink-2)">11:00</span>
+              <span style="background:var(--inset);padding:5px 10px;border-radius:999px;font-size:10.5px;font-weight:700;color:var(--ink-2)">later</span>
+            </div>
+          </div>
+
+          <div class="block dom-life">
+            <div class="time-chip"><div class="hh">10:30</div><div class="dur">30m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row">
+                <div class="b-icon"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M5 7l1.5 1.5L9 6"/></svg></div>
+                <div class="b-title">10am call · shifted +30</div>
+              </div>
+              <div class="b-eyebrow">life · auto-nudged</div>
+            </div>
+            <div class="b-status"></div>
+          </div>
+
+          <div class="prayer-band dhuhr">
+            <div class="glyph"><svg viewBox="0 0 16 16" fill="none"><path d="M11 2.5a6 6 0 100 11 5 5 0 010-11z"/></svg></div>
+            <div class="nm">dhuhr</div>
+            <div class="win">window 12:38 – 15:52</div>
+            <div class="tm">12:38</div>
+          </div>
+
+        </div>
+      </div>
+      <div class="timeline-fade"></div>
+    </div>
+
+    <div class="actions">
+      <div class="act pri"><span class="pl">✓</span> save</div>
+      <div class="act">undo</div>
+      <div class="act">cancel</div>
+    </div>
+
+    <div class="nav">
+      <div class="t"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="3.5"/><circle cx="9" cy="9" r="6.8" opacity=".5"/></svg></div>
+      <div class="t on"><svg viewBox="0 0 18 18"><rect x="3" y="3.5" width="12" height="11" rx="2"/><path d="M3 7.5h12M7 3.5v3M11 3.5v3"/></svg></div>
+      <div class="t"><svg viewBox="0 0 18 18"><path d="M3 14V4M7 14V8M11 14V6M15 14V10"/></svg></div>
+      <div class="t"><svg viewBox="0 0 18 18"><circle cx="4.5" cy="9" r="1"/><circle cx="9" cy="9" r="1"/><circle cx="13.5" cy="9" r="1"/></svg></div>
+    </div>
+  </div>
+</div>
+<div class="cap"><b>B · time-edit</b> &nbsp;·&nbsp; chip open · focus ring · picker</div>
+</div>
+
+<!-- ─── C · MORNING BRIEF MODAL ─── -->
+<div>
+<div class="frame">
+  <div class="screen">
+
+    <!-- background underneath modal -->
+    <div class="topbar">
+      <div class="greet">
+        <div class="eb">tuesday · 9:41</div>
+        <div class="name">today.</div>
+        <div class="sub serif-italic">set the day's friction first.</div>
+      </div>
+      <div class="memo">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" fill="#7A2A3C" opacity=".2"/><path d="M12 14c-3.5 0-6 2-6 4v2h12v-2c0-2-2.5-4-6-4z" fill="#7A2A3C" opacity=".18"/></svg>
+      </div>
+    </div>
+    <div class="strip-wrap">
+      <div class="strip">
+        <div class="strip-row">
+          <span class="strip-pill"><span class="eb">morning</span><b>9:41</b></span>
+          <span class="strip-pill"><span class="pulse"></span>fajr · prayed</span>
+        </div>
+        <div class="scrub"><span class="tick" style="left:18%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:82%"></span><div class="fill" style="width:12%"></div><div class="head" style="left:12%"></div></div>
+      </div>
+    </div>
+    <div class="timeline-wrap">
+      <div class="timeline-scroll">
+        <div class="timeline" style="filter:blur(2px);opacity:.65">
+          <div class="prayer-band fajr"><div class="glyph"><svg viewBox="0 0 16 16" fill="none"><path d="M11 2.5a6 6 0 100 11 5 5 0 010-11z"/></svg></div><div class="nm">fajr</div><div class="tm">5:14</div></div>
+          <div class="block dom-body"><div class="time-chip"><div class="hh">6:30</div><div class="dur">25m</div></div><div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="b-main"><div class="b-row"><div class="b-title">walk</div></div><div class="b-eyebrow">body</div></div><div class="b-status"></div></div>
+          <div class="block dom-work"><div class="time-chip"><div class="hh">9:00</div><div class="dur">60m</div></div><div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="b-main"><div class="b-row"><div class="b-title">Q2 brief</div></div><div class="b-eyebrow">work</div></div><div class="b-status"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal-scrim">
+      <div class="modal">
+        <div class="modal-eb">morning brief</div>
+        <div class="modal-h">name <span class="si">the friction</span> before it names you.</div>
+        <div class="field focused">
+          <div class="lbl">prompt 01</div>
+          <div class="si">what's likely to push back today?</div>
+        </div>
+        <div class="field" style="margin-top:10px">
+          <div class="lbl">prompt 02</div>
+          <div class="si placeholder">if it breaks down, I resume by ___</div>
+        </div>
+        <div class="modal-cta">
+          <span class="skip">skip</span>
+          <div class="start">good. start today.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <div class="t"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="3.5"/><circle cx="9" cy="9" r="6.8" opacity=".5"/></svg></div>
+      <div class="t on"><svg viewBox="0 0 18 18"><rect x="3" y="3.5" width="12" height="11" rx="2"/><path d="M3 7.5h12M7 3.5v3M11 3.5v3"/></svg></div>
+      <div class="t"><svg viewBox="0 0 18 18"><path d="M3 14V4M7 14V8M11 14V6M15 14V10"/></svg></div>
+      <div class="t"><svg viewBox="0 0 18 18"><circle cx="4.5" cy="9" r="1"/><circle cx="9" cy="9" r="1"/><circle cx="13.5" cy="9" r="1"/></svg></div>
+    </div>
+  </div>
+</div>
+<div class="cap"><b>C · morning brief</b> &nbsp;·&nbsp; centered modal · two italic prompts</div>
+</div>
+
+<!-- ─── D · EMPTY ─── -->
+<div>
+<div class="frame">
+  <div class="screen">
+
+    <div class="topbar">
+      <div class="greet">
+        <div class="eb">tuesday · 9:41</div>
+        <div class="name">today.</div>
+        <div class="sub serif-italic">a clean slate.</div>
+      </div>
+      <div class="memo">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" fill="#7A2A3C" opacity=".2"/><path d="M12 14c-3.5 0-6 2-6 4v2h12v-2c0-2-2.5-4-6-4z" fill="#7A2A3C" opacity=".18"/></svg>
+      </div>
+    </div>
+
+    <div class="strip-wrap">
+      <div class="strip">
+        <div class="strip-row">
+          <span class="strip-pill"><span class="eb">morning</span><b>9:41</b></span>
+          <span class="strip-pill">0 blocks · the day is open</span>
+        </div>
+        <div class="scrub"><span class="tick" style="left:18%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:82%"></span><div class="fill" style="width:0"></div><div class="head" style="left:0"></div></div>
+      </div>
+    </div>
+
+    <div class="brief-prompt">
+      <div class="plus">+</div>
+      <div class="si"><b>morning brief.</b> name today's friction before it names you.</div>
+    </div>
+
+    <div class="empty-stage">
+      <div class="empty-decoration"></div>
+      <div class="si">your day is open.</div>
+      <div class="hint">drop the first block. the rest will arrange itself around it.</div>
+      <div class="first-pill"><span class="pl">+</span> first block</div>
+    </div>
+
+    <div class="actions">
+      <div class="act pri"><span class="pl">+</span> block</div>
+      <div class="act">templates</div>
+      <div class="act">brief</div>
+    </div>
+
+    <div class="nav">
+      <div class="t"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="3.5"/><circle cx="9" cy="9" r="6.8" opacity=".5"/></svg></div>
+      <div class="t on"><svg viewBox="0 0 18 18"><rect x="3" y="3.5" width="12" height="11" rx="2"/><path d="M3 7.5h12M7 3.5v3M11 3.5v3"/></svg></div>
+      <div class="t"><svg viewBox="0 0 18 18"><path d="M3 14V4M7 14V8M11 14V6M15 14V10"/></svg></div>
+      <div class="t"><svg viewBox="0 0 18 18"><circle cx="4.5" cy="9" r="1"/><circle cx="9" cy="9" r="1"/><circle cx="13.5" cy="9" r="1"/></svg></div>
+    </div>
+  </div>
+</div>
+<div class="cap"><b>D · empty</b> &nbsp;·&nbsp; calm slate · brief prompt-strip</div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- ════════════════ E · DESKTOP ════════════════ -->
+<div class="page-head" style="margin-top:24px"><h1 style="font-size:24px">E · desktop · 1280×800</h1><p>Center timeline column (max 720px) + floating right "today's stats" sidebar (280px) showing scheduled / used / next prayer / morning brief recap. Same primitives — strip, bands, blocks — at desktop scale.</p></div>
+
+<div class="desk-wrap">
+<div class="desk">
+  <div class="rail">
+    <div class="brand">do it.</div>
+    <div class="ri"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="3.5"/><circle cx="9" cy="9" r="6.8" opacity=".5"/></svg> now</div>
+    <div class="ri on"><svg viewBox="0 0 18 18"><rect x="3" y="3.5" width="12" height="11" rx="2"/><path d="M3 7.5h12M7 3.5v3M11 3.5v3"/></svg> today</div>
+    <div class="ri"><svg viewBox="0 0 18 18"><path d="M3 14V4M7 14V8M11 14V6M15 14V10"/></svg> week</div>
+
+    <div class="group-lbl">aim</div>
+    <div class="ri"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="6"/><circle cx="9" cy="9" r="2.5"/></svg> visions</div>
+    <div class="ri"><svg viewBox="0 0 18 18"><path d="M9 3v6l3 3"/><circle cx="9" cy="9" r="6.5"/></svg> goals</div>
+
+    <div class="group-lbl">track</div>
+    <div class="ri"><svg viewBox="0 0 18 18"><circle cx="4.5" cy="4.5" r="1.5"/><circle cx="9" cy="4.5" r="1.5"/><circle cx="13.5" cy="4.5" r="1.5"/><circle cx="4.5" cy="9" r="1.5"/><circle cx="9" cy="9" r="1.5"/></svg> habits</div>
+    <div class="ri"><svg viewBox="0 0 18 18"><rect x="2" y="6" width="14" height="6" rx="1"/><path d="M5 6V4M13 14v-2"/></svg> workouts</div>
+
+    <div class="group-lbl">know</div>
+    <div class="ri"><svg viewBox="0 0 18 18"><path d="M3 4h12v10H3z"/><circle cx="9" cy="9" r="2"/></svg> cookie jar</div>
+    <div class="ri"><svg viewBox="0 0 18 18"><circle cx="4.5" cy="9" r="1"/><circle cx="9" cy="9" r="1"/><circle cx="13.5" cy="9" r="1"/></svg> more</div>
+  </div>
+
+  <div class="body">
+    <div class="titlebar">
+      <h2>TODAY · tuesday · 9 blocks</h2>
+      <div class="right">
+        <span style="font-variant-numeric:tabular-nums;font-weight:600">tuesday · 9:41</span>
+        <span style="opacity:.4">·</span>
+        <span style="font-weight:700;color:var(--ink-2)">adam.</span>
+        <div class="memo"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" fill="#7A2A3C" opacity=".2"/><path d="M12 14c-3.5 0-6 2-6 4v2h12v-2c0-2-2.5-4-6-4z" fill="#7A2A3C" opacity=".18"/></svg></div>
+      </div>
+    </div>
+
+    <div class="desk-grid">
+      <div class="desk-col-main">
+        <div class="strip">
+          <div class="strip-row">
+            <span class="strip-pill"><span class="eb">morning</span><b>9:41 · the day's still ahead</b></span>
+            <span class="strip-pill"><b>9 blocks</b> · 6h 40m · next: fajr in 1h 15m</span>
+          </div>
+          <div class="scrub" style="margin-top:8px"><span class="tick" style="left:18%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:82%"></span><div class="fill"></div><div class="head"></div></div>
+        </div>
+
+        <div class="brief-line" style="padding:10px 4px 0"><span class="eb">brief</span><span class="si">today's friction: the 10am call. if it breaks down, I resume with the brief draft.</span></div>
+
+        <div class="timeline" style="margin-top:6px">
+          <div class="prayer-band fajr"><div class="glyph"><svg viewBox="0 0 16 16" fill="none"><path d="M11 2.5a6 6 0 100 11 5 5 0 010-11z"/></svg></div><div class="nm">fajr</div><div class="win">window 5:14 – 6:30</div><div class="tm">5:14</div></div>
+
+          <div class="block done dom-body">
+            <div class="time-chip"><div class="hh">6:30</div><div class="dur">25m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main"><div class="b-row"><div class="b-icon"><svg viewBox="0 0 14 14"><path d="M3 11l4-4 4 4M7 7V3"/></svg></div><div class="b-title">walk · no podcast</div></div><div class="b-eyebrow">body · 25 min</div></div>
+            <div class="b-status"><div class="tick-pill"><svg viewBox="0 0 12 12"><path d="M2 6.5l3 3 5-7"/></svg></div></div>
+          </div>
+
+          <div class="block done dom-mind">
+            <div class="time-chip"><div class="hh">7:15</div><div class="dur">20m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main"><div class="b-row"><div class="b-icon"><svg viewBox="0 0 14 14"><path d="M3 4h8M3 7h8M3 10h5"/></svg></div><div class="b-title">read · 20 pages</div></div><div class="b-eyebrow">mind · 20 min</div></div>
+            <div class="b-status"><div class="tick-pill"><svg viewBox="0 0 12 12"><path d="M2 6.5l3 3 5-7"/></svg></div></div>
+          </div>
+
+          <div class="block active dom-work">
+            <div class="time-chip"><div class="hh">9:00</div><div class="dur">60m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row"><div class="b-icon" style="color:var(--blue-deep)"><svg viewBox="0 0 14 14"><path d="M2 3h10v8H2z"/><path d="M5 6h4M5 8h3"/></svg></div><div class="b-title">write the Q2 brief</div></div>
+              <div class="b-intent">"the only block today that actually matters."</div>
+              <div class="live-pulse"><span class="d"></span> in flight · 14m elapsed · 46m left</div>
+            </div>
+          </div>
+
+          <div class="block dom-life">
+            <div class="time-chip"><div class="hh">10:00</div><div class="dur">30m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main"><div class="b-row"><div class="b-icon"><svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/><path d="M5 7l1.5 1.5L9 6"/></svg></div><div class="b-title">10am call · founder check</div></div><div class="b-eyebrow">life · 30 min</div></div>
+            <div class="b-status"></div>
+          </div>
+
+          <div class="prayer-band dhuhr"><div class="glyph"><svg viewBox="0 0 16 16" fill="none"><path d="M11 2.5a6 6 0 100 11 5 5 0 010-11z"/></svg></div><div class="nm">dhuhr</div><div class="win">window 12:38 – 15:52</div><div class="tm">12:38</div></div>
+
+          <div class="block dom-life">
+            <div class="time-chip"><div class="hh">13:00</div><div class="dur">40m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main"><div class="b-row"><div class="b-icon"><svg viewBox="0 0 14 14"><path d="M3 5h8v6H3z"/><path d="M5 5V3h4v2"/></svg></div><div class="b-title">lunch + reset</div></div><div class="b-eyebrow">life · 40 min</div></div>
+            <div class="b-status"></div>
+          </div>
+
+          <div class="block dom-body">
+            <div class="time-chip"><div class="hh">14:00</div><div class="dur">75m</div></div>
+            <div class="grip"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="b-main">
+              <div class="b-row"><div class="b-icon" style="color:var(--mint-ink)"><svg viewBox="0 0 14 14"><rect x="2" y="5" width="10" height="4" rx="1"/><path d="M3 5V3M11 11V9"/></svg></div><div class="b-title">push day · gym</div></div>
+              <div class="b-intent">"220kg deadlift coming."</div>
+            </div>
+            <div class="b-status"></div>
+          </div>
+
+          <div class="prayer-band asr"><div class="glyph"><svg viewBox="0 0 16 16" fill="none"><path d="M11 2.5a6 6 0 100 11 5 5 0 010-11z"/></svg></div><div class="nm">asr</div><div class="win">window 15:52 – 18:41</div><div class="tm">15:52</div></div>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="sec">
+          <div class="eb">today · scheduled</div>
+          <div class="stat"><span class="num">6h 40m</span><span class="un">across 9 blocks</span></div>
+          <div class="bar"><span class="f"></span></div>
+          <div class="eb" style="margin-top:2px;letter-spacing:.10em;text-transform:none;color:var(--label-2);font-weight:600;font-size:11px">42% used · 3h 50m left</div>
+        </div>
+        <hr/>
+        <div class="sec">
+          <div class="eb">next prayer</div>
+          <div class="next-prayer">
+            <div class="glyph"><svg viewBox="0 0 16 16" fill="none"><path d="M11 2.5a6 6 0 100 11 5 5 0 010-11z" fill="#2F5A3E" opacity=".78"/></svg></div>
+            <div class="nm">dhuhr</div>
+            <div class="tm">in 2h 57m</div>
+          </div>
+        </div>
+        <hr/>
+        <div class="sec">
+          <div class="eb">morning brief</div>
+          <div class="brief-recap">today's friction: the 10am call. if it breaks down, I resume with the brief draft.</div>
+        </div>
+        <hr/>
+        <div class="sec">
+          <div class="eb">quick add</div>
+          <div class="quick">
+            <div class="qb">+ block</div>
+            <div class="qb">+ template</div>
+            <div class="qb">+ note</div>
+            <div class="qb">shift forward</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="cap" style="margin-top:14px;text-align:center"><b>E · desktop</b> &nbsp;·&nbsp; centered timeline · floating right stats sidebar</div>
+
+</body></html>

@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — Cmd-K v3-final · calibrated from Element 1.jpg + Layouts 7.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-ink:#1F5C2C;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-ink:#0050C8;
+  --d-business:#E2EEFF;--d-business-ink:#1748A8;
+  --d-religion:#E2F4E6;--d-religion-ink:#1F5C2C;
+  --d-learning:#FFE0E8;--d-learning-ink:#7A2A3C;
+  --d-fitness:#FFD0DA;--d-fitness-ink:#7A2A3C;
+  --d-home:#EAEFF3;--d-home-ink:#36475A;
+  --d-food:#FFF0DD;--d-food-ink:#7A4A1A;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-modal:0 0 0 0.5px rgba(60,60,67,0.10),0 8px 24px -12px rgba(20,20,30,0.18),0 60px 120px -40px rgba(20,20,30,0.45);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1280px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:760px;margin-bottom:18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 32px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+h2{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 16px}
+
+.grid-mobile{display:grid;grid-template-columns:repeat(3,auto);gap:36px;justify-content:start}
+.cap{font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-top:14px;text-align:center}
+
+/* Mobile frame — shows the underlying app dimmed + the centered modal */
+.frame-m{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative}
+/* topbar (visible behind dim — referenced as "memoji visible behind scrim") */
+.topbar{position:absolute;inset:0 0 auto 0;background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);z-index:1}
+.topbar .quote{font-size:18px;font-weight:600;letter-spacing:-0.022em;color:var(--ink-2);line-height:1.1}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08)}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+/* underlying app blurred content — hint of the TODAY screen behind */
+.appbg{position:absolute;inset:64px 0 0 0;padding:18px;display:flex;flex-direction:column;gap:10px;z-index:1;opacity:.55}
+.appbg .ghost-card{background:var(--paper);border-radius:18px;height:74px;box-shadow:var(--shadow-soft);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.appbg .ghost-card .gt{flex:1;height:14px;border-radius:4px;background:var(--chip-surface)}
+.appbg .ghost-card .gd{width:48px;height:14px;border-radius:4px;background:var(--chip-surface)}
+
+/* scrim — the ONLY place light frosted blur is allowed (per spec) */
+.scrim{position:absolute;inset:0;background:rgba(8,8,12,0.32);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:2}
+
+/* MODAL — paper, NOT frosted */
+.modal-m{position:absolute;left:50%;top:80px;transform:translateX(-50%);width:360px;background:var(--paper);border-radius:18px;box-shadow:var(--shadow-modal);overflow:hidden;z-index:3}
+.modal-input{display:flex;align-items:center;gap:10px;padding:14px 14px 12px;border-bottom:0.5px solid var(--hairline)}
+.kcap{display:inline-flex;align-items:center;justify-content:center;background:var(--chip-surface);color:var(--ink-2);font-size:11px;font-weight:700;font-family:ui-monospace,SFMono-Regular,monospace;padding:4px 7px;border-radius:7px;letter-spacing:0.02em;box-shadow:inset 0 -1px 0 rgba(60,60,67,0.10),0 0 0 0.5px var(--hairline);font-variant-numeric:tabular-nums}
+.modal-input input{flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:16px;font-weight:500;color:var(--ink);letter-spacing:-0.012em}
+.modal-input input::placeholder{color:var(--label)}
+.modal-input .esc{margin-left:auto}
+
+.section-eyebrow{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.14em;text-transform:uppercase;padding:12px 16px 6px}
+
+.row{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;border-radius:0}
+.row:hover, .row.hl{background:var(--chip-surface)}
+.row .ico{width:28px;height:28px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 0 0 0.5px var(--hairline);color:var(--ink-2)}
+.row .ico svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.row .ico.pinkbg{background:var(--pink-2);color:var(--pink-ink);box-shadow:none}
+.row .ico.greenbg{background:var(--green-2);color:var(--green-ink);box-shadow:none}
+.row .ico.bluebg{background:var(--blue-tint);color:var(--blue-ink);box-shadow:none}
+.row .ico.foodbg{background:var(--d-food);color:var(--d-food-ink);box-shadow:none}
+.row .label{flex:1;font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-0.01em}
+.row .label .arg{color:var(--label-2);font-weight:500}
+.row .verb{font-size:10.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-2);background:var(--chip-surface);padding:3px 8px;border-radius:999px;flex-shrink:0;font-family:inherit}
+.row .verb.act{background:#0B0B0F;color:#fff}
+.row .verb.log{background:var(--green);color:var(--green-ink)}
+.row .verb.add{background:var(--pink-2);color:var(--pink-ink)}
+.row .verb.nav{background:var(--blue-tint);color:var(--blue-ink)}
+.row .return{font-size:11px;color:var(--label);font-family:ui-monospace,SFMono-Regular,monospace;flex-shrink:0}
+
+.recents{padding:8px 14px 12px;display:flex;flex-wrap:wrap;gap:6px}
+.recent-chip{font-size:12px;font-weight:600;color:var(--ink-2);background:var(--chip-surface);padding:6px 10px;border-radius:999px;letter-spacing:-0.005em;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.recent-chip .clock{color:var(--label);font-size:10px}
+
+.foot{display:flex;align-items:center;gap:14px;padding:10px 14px;border-top:0.5px solid var(--hairline);background:var(--paper-warm);font-size:10.5px;color:var(--label);font-family:ui-monospace,SFMono-Regular,monospace;letter-spacing:0.02em}
+.foot .sep{opacity:.4}
+
+/* Tab-complete hint */
+.tab-hint{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--blue-ink);font-weight:700;background:var(--blue-tint);padding:3px 8px;border-radius:999px;flex-shrink:0;letter-spacing:-0.005em}
+.tab-hint .arr{font-size:10px}
+
+/* DESKTOP variant (D) */
+.frame-d{width:1080px;height:660px;background:#F2F3F5;border-radius:24px;overflow:hidden;position:relative;box-shadow:var(--shadow-paper)}
+.frame-d .topbar-d{position:absolute;inset:0 0 auto 0;background:var(--paper);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);z-index:1}
+.frame-d .topbar-d .quote{font-size:16px;font-weight:600;letter-spacing:-0.022em;color:var(--ink-2)}
+.frame-d .topbar-d .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.frame-d .topbar-d .memoji img{width:100%;height:100%;display:block}
+.frame-d .appbg-d{position:absolute;inset:56px 0 0 0;padding:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;z-index:1;opacity:.5}
+.frame-d .appbg-d .ghost-card{background:var(--paper);border-radius:18px;height:120px;box-shadow:var(--shadow-soft)}
+.frame-d .scrim-d{position:absolute;inset:56px 0 0 0;background:rgba(8,8,12,0.32);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:2}
+.modal-d{position:absolute;left:50%;top:120px;transform:translateX(-50%);width:600px;background:var(--paper);border-radius:18px;box-shadow:var(--shadow-modal);overflow:hidden;z-index:3}
+.modal-d .modal-input input{font-size:18px}
+
+</style></head><body>
+
+<h1 class="h">cmd-k · v3-final</h1>
+<p class="lead">centered modal overlay calibrated from <code>Element 1.jpg</code> (the clean centered paper-card-on-dimmed-bg pattern) + <code>Layouts 7.jpg</code> (list-row + people-bar pattern inside). NOT a bottom sheet. NOT a slide-from-right drawer.</p>
+<div class="preamble">
+  <p><strong>anatomy.</strong> centered modal sitting ~80px from top of viewport. backdrop = subtle dim + light frosted blur (the ONE place blur is allowed in this app, per system spec). modal surface = solid white paper, soft drop shadow, hairline border, 18px corners — NOT frosted itself.</p>
+  <p><strong>verb-prefix grammar.</strong> every command starts with a verb: <code>start · log · add · open</code>. typing the verb + <code>Tab</code> cycles through completions. hitting <code>↩</code> runs. <code>esc</code> closes. <code>↑↓</code> navigate.</p>
+  <p><strong>topbar visible behind dim.</strong> the underlying TODAY screen with motivational quote + memoji is rendered behind the scrim — confirms the cmd-k modal is an overlay, not a navigation away.</p>
+</div>
+
+<h2>mockups · A / B / C (mobile 390×852) + D (desktop 1080×660)</h2>
+<div class="grid-mobile">
+
+<!-- ============ A · canonical empty state with recent commands ============ -->
+<div>
+  <div class="frame-m">
+    <div class="topbar">
+      <div class="quote">discipline equals freedom.</div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="appbg">
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+    </div>
+    <div class="scrim"></div>
+    <div class="modal-m">
+      <div class="modal-input">
+        <span class="kcap">⌘K</span>
+        <input value="" placeholder="do anything." />
+        <span class="kcap esc">esc</span>
+      </div>
+      <div class="section-eyebrow">recent</div>
+      <div class="recents">
+        <span class="recent-chip"><span class="clock">↻</span>log state focused</span>
+        <span class="recent-chip"><span class="clock">↻</span>start now</span>
+        <span class="recent-chip"><span class="clock">↻</span>log weight 96</span>
+        <span class="recent-chip"><span class="clock">↻</span>add jar cold shower</span>
+        <span class="recent-chip"><span class="clock">↻</span>open habits</span>
+      </div>
+      <div class="section-eyebrow">suggested</div>
+      <div class="row">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M5 4l14 8-14 8z"/></svg></div>
+        <div class="label">start now</div>
+        <span class="verb act">run</span>
+      </div>
+      <div class="row">
+        <div class="ico greenbg"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M4 6h16"/><path d="M4 18h10"/></svg></div>
+        <div class="label">log state <span class="arg">_</span></div>
+        <span class="verb log">log</span>
+      </div>
+      <div class="row">
+        <div class="ico pinkbg"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg></div>
+        <div class="label">add jar <span class="arg">_</span></div>
+        <span class="verb add">add</span>
+      </div>
+      <div class="row">
+        <div class="ico bluebg"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
+        <div class="label">open habits</div>
+        <span class="verb nav">go</span>
+      </div>
+      <div class="foot">
+        <span>↑↓ navigate</span><span class="sep">·</span>
+        <span>⏎ run</span><span class="sep">·</span>
+        <span>esc close</span>
+      </div>
+    </div>
+  </div>
+  <div class="cap">A · empty state · recent + suggested</div>
+</div>
+
+<!-- ============ B · typed query "log w" — 3 matching candidates ============ -->
+<div>
+  <div class="frame-m">
+    <div class="topbar">
+      <div class="quote">you become what you repeat.</div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="appbg">
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+    </div>
+    <div class="scrim"></div>
+    <div class="modal-m">
+      <div class="modal-input">
+        <span class="kcap">⌘K</span>
+        <input value="log w" />
+        <span class="kcap esc">esc</span>
+      </div>
+      <div class="section-eyebrow">3 matches</div>
+      <div class="row hl">
+        <div class="ico greenbg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></div>
+        <div class="label">log <b>w</b>eight <span class="arg">96</span></div>
+        <span class="verb log">log</span>
+        <span class="return">⏎</span>
+      </div>
+      <div class="row">
+        <div class="ico greenbg"><svg viewBox="0 0 24 24"><path d="M3 12c3-6 6 0 9-3s6 3 9 0"/></svg></div>
+        <div class="label">log <b>w</b>orkout <span class="arg">deadlift 5×5</span></div>
+        <span class="verb log">log</span>
+      </div>
+      <div class="row">
+        <div class="ico greenbg"><svg viewBox="0 0 24 24"><path d="M12 3l3 6 6 1-4.5 4 1 6L12 17l-5.5 3 1-6L3 10l6-1z"/></svg></div>
+        <div class="label">log <b>w</b>in <span class="arg">_</span></div>
+        <span class="verb log">log</span>
+      </div>
+      <div class="foot">
+        <span>↑↓ navigate</span><span class="sep">·</span>
+        <span>⏎ run</span><span class="sep">·</span>
+        <span>esc close</span>
+      </div>
+    </div>
+  </div>
+  <div class="cap">B · typed "log w" · 3 matches</div>
+</div>
+
+<!-- ============ C · verb-prefix tab-completion ============ -->
+<div>
+  <div class="frame-m">
+    <div class="topbar">
+      <div class="quote">today is the lift.</div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="appbg">
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+    </div>
+    <div class="scrim"></div>
+    <div class="modal-m">
+      <div class="modal-input">
+        <span class="kcap">⌘K</span>
+        <input value="log" />
+        <span class="kcap esc">esc</span>
+      </div>
+      <div class="section-eyebrow">cycle with tab</div>
+      <div class="row hl">
+        <div class="ico greenbg"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M4 6h16"/><path d="M4 18h10"/></svg></div>
+        <div class="label">log state <span class="arg">_</span></div>
+        <span class="tab-hint">tab <span class="arr">→</span></span>
+      </div>
+      <div class="row">
+        <div class="ico greenbg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></div>
+        <div class="label">log weight <span class="arg">_</span></div>
+        <span class="verb log">log</span>
+      </div>
+      <div class="row">
+        <div class="ico greenbg"><svg viewBox="0 0 24 24"><path d="M3 18l6-6 4 4 8-8"/></svg></div>
+        <div class="label">log sleep <span class="arg">_</span></div>
+        <span class="verb log">log</span>
+      </div>
+      <div class="row">
+        <div class="ico greenbg"><svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/><path d="M6 12h12"/><path d="M12 6v12"/></svg></div>
+        <div class="label">log set <span class="arg">_</span></div>
+        <span class="verb log">log</span>
+      </div>
+      <div class="foot">
+        <span>tab cycles · ⏎ run · esc close</span>
+      </div>
+    </div>
+  </div>
+  <div class="cap">C · verb-prefix · tab to complete</div>
+</div>
+
+</div>
+
+<h2>mockup D · desktop 1080 · 600px modal centered</h2>
+<div class="frame-d">
+  <div class="topbar-d">
+    <div class="quote">show up. that's the move.</div>
+    <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+  </div>
+  <div class="appbg-d">
+    <div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div>
+    <div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div>
+    <div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div>
+  </div>
+  <div class="scrim-d"></div>
+  <div class="modal-d">
+    <div class="modal-input">
+      <span class="kcap">⌘K</span>
+      <input value="" placeholder="do anything." />
+      <span class="kcap esc">esc</span>
+    </div>
+    <div class="section-eyebrow">recent</div>
+    <div class="recents">
+      <span class="recent-chip"><span class="clock">↻</span>log state focused</span>
+      <span class="recent-chip"><span class="clock">↻</span>start now</span>
+      <span class="recent-chip"><span class="clock">↻</span>log weight 96</span>
+      <span class="recent-chip"><span class="clock">↻</span>add jar finished cold shower today</span>
+      <span class="recent-chip"><span class="clock">↻</span>open habits</span>
+    </div>
+    <div class="section-eyebrow">suggested</div>
+    <div class="row">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M5 4l14 8-14 8z"/></svg></div>
+      <div class="label">start now</div>
+      <span class="verb act">run</span>
+    </div>
+    <div class="row">
+      <div class="ico greenbg"><svg viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M4 6h16"/><path d="M4 18h10"/></svg></div>
+      <div class="label">log state <span class="arg">focused / drained / scattered</span></div>
+      <span class="verb log">log</span>
+    </div>
+    <div class="row">
+      <div class="ico pinkbg"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg></div>
+      <div class="label">add jar <span class="arg">finished cold shower today</span></div>
+      <span class="verb add">add</span>
+    </div>
+    <div class="row">
+      <div class="ico pinkbg"><svg viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></svg></div>
+      <div class="label">add wishlist <span class="arg">eight sleep cover</span></div>
+      <span class="verb add">add</span>
+    </div>
+    <div class="row">
+      <div class="ico greenbg"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></div>
+      <div class="label">log weight <span class="arg">96</span></div>
+      <span class="verb log">log</span>
+    </div>
+    <div class="row">
+      <div class="ico bluebg"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
+      <div class="label">open habits</div>
+      <span class="verb nav">go</span>
+    </div>
+    <div class="foot">
+      <span>↑↓ navigate</span><span class="sep">·</span>
+      <span>⏎ run</span><span class="sep">·</span>
+      <span>tab complete verb</span><span class="sep">·</span>
+      <span>esc close</span>
+    </div>
+  </div>
+</div>
+
+</body></html>

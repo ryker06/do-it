@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — Morning Brief v3-final · calibrated from Layout 4.jpg + Element 1.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-ink:#1F5C2C;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-ink:#0050C8;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-modal:0 0 0 0.5px rgba(60,60,67,0.10),0 8px 24px -12px rgba(20,20,30,0.18),0 60px 120px -40px rgba(20,20,30,0.45);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1280px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:760px;margin-bottom:18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 32px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+h2{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 16px}
+
+.grid-mobile{display:grid;grid-template-columns:repeat(3,auto);gap:36px;justify-content:start}
+.cap{font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-top:14px;text-align:center}
+
+/* Mobile frame */
+.frame-m{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative}
+.topbar{position:absolute;inset:0 0 auto 0;background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);z-index:1}
+.topbar .quote{font-size:18px;font-weight:600;letter-spacing:-0.022em;color:var(--ink-2);line-height:1.1}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08)}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+/* Underlying TODAY hint */
+.appbg{position:absolute;inset:64px 0 0 0;padding:18px;display:flex;flex-direction:column;gap:10px;z-index:1;opacity:.45}
+.appbg .day{font-size:24px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);padding:6px 4px}
+.appbg .ghost-card{background:var(--paper);border-radius:18px;height:62px;box-shadow:var(--shadow-soft)}
+
+/* Scrim — modal allows light frosted blur per spec only on cmd-k; here the morning-brief is also a centered modal — we use the SAME treatment, light scrim, dim only */
+.scrim{position:absolute;inset:0;background:rgba(8,8,12,0.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:2}
+
+/* MODAL — paper, NOT frosted */
+.modal-m{position:absolute;left:50%;top:120px;transform:translateX(-50%);width:340px;background:var(--paper);border-radius:22px;box-shadow:var(--shadow-modal);overflow:hidden;z-index:3}
+.modal-m .head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 8px}
+.modal-m .head .eyebrow{font-size:10.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);font-variant-numeric:tabular-nums}
+.modal-m .head .skip{font-size:11.5px;font-weight:600;color:var(--label-2);letter-spacing:-0.005em;cursor:pointer}
+.modal-m .body{padding:0 18px 16px}
+.modal-m h3{font-size:26px;font-weight:800;letter-spacing:-0.032em;color:var(--ink);line-height:1.05;margin-bottom:4px}
+.modal-m .sub{font-size:14px;font-weight:500;color:var(--label-2);letter-spacing:-0.01em;line-height:1.4}
+.modal-m .sub b{color:var(--ink-2);font-weight:600}
+
+.prompt{margin-top:16px}
+.prompt .q{font-size:12.5px;font-weight:700;color:var(--ink-2);letter-spacing:-0.005em;margin-bottom:6px}
+.prompt .q .acc{color:var(--pink-ink)}
+.prompt textarea{width:100%;height:72px;border:0.5px solid var(--hairline-strong);border-radius:14px;padding:10px 12px;font-family:inherit;font-size:13.5px;font-weight:500;color:var(--ink);letter-spacing:-0.005em;line-height:1.5;background:var(--paper-warm);resize:none;outline:none}
+.prompt textarea:focus{border-color:var(--ink-2);background:var(--paper)}
+.prompt textarea::placeholder{color:var(--label)}
+
+.cta-row{padding:14px 18px 14px;border-top:0.5px solid var(--hairline-soft);background:var(--paper)}
+.cta{display:block;width:100%;background:linear-gradient(180deg,#1A1A20 0%,#000 100%);color:#fff;border:none;border-radius:999px;padding:14px 22px;font-size:15px;font-weight:600;letter-spacing:-0.012em;box-shadow:var(--shadow-press-ink);font-family:inherit;cursor:pointer;text-align:center}
+.skip-line{font-size:11.5px;font-weight:500;color:var(--label);text-align:center;margin-top:10px;letter-spacing:-0.005em;cursor:pointer}
+
+/* Saved recap chip — variation C */
+.recap-frame{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative}
+.recap-frame .scroll{position:absolute;inset:64px 0 0 0;padding:18px;display:flex;flex-direction:column;gap:10px}
+.recap-frame .day{font-size:28px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);padding:4px 4px 8px}
+.recap-chip{background:linear-gradient(180deg,var(--green-2) 0%,#D8EEDD 100%);border-radius:16px;padding:10px 14px;display:flex;flex-direction:column;gap:4px;box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.10);margin-bottom:6px}
+.recap-chip .rh{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--green-ink)}
+.recap-chip .rh .dot{width:6px;height:6px;border-radius:50%;background:var(--green-ink);opacity:.7}
+.recap-chip .rh .when{margin-left:auto;font-size:10.5px;font-weight:600;letter-spacing:0.06em;text-transform:none;opacity:.7}
+.recap-chip .rb{font-size:13px;font-weight:600;color:var(--ink);letter-spacing:-0.005em;line-height:1.45}
+.recap-chip .rb b{color:var(--green-ink);font-weight:700}
+.recap-chip .open{font-size:11.5px;font-weight:600;color:var(--green-ink);opacity:.75;letter-spacing:-0.005em;display:flex;align-items:center;gap:4px;margin-top:2px}
+.recap-frame .ghost-card{background:var(--paper);border-radius:18px;height:74px;box-shadow:var(--shadow-soft);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.recap-frame .ghost-card .gt{flex:1;height:14px;border-radius:4px;background:var(--chip-surface)}
+.recap-frame .ghost-card .gd{width:48px;height:14px;border-radius:4px;background:var(--chip-surface)}
+
+/* DESKTOP */
+.frame-d{width:1080px;height:660px;background:#F2F3F5;border-radius:24px;overflow:hidden;position:relative;box-shadow:var(--shadow-paper)}
+.frame-d .topbar-d{position:absolute;inset:0 0 auto 0;background:var(--paper);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);z-index:1}
+.frame-d .topbar-d .quote{font-size:16px;font-weight:600;letter-spacing:-0.022em;color:var(--ink-2)}
+.frame-d .topbar-d .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.frame-d .topbar-d .memoji img{width:100%;height:100%;display:block}
+.frame-d .appbg-d{position:absolute;inset:56px 0 0 0;padding:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;z-index:1;opacity:.5}
+.frame-d .appbg-d .ghost-card{background:var(--paper);border-radius:18px;height:120px;box-shadow:var(--shadow-soft)}
+.frame-d .scrim-d{position:absolute;inset:56px 0 0 0;background:rgba(8,8,12,0.28);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:2}
+.modal-d{position:absolute;left:50%;top:80px;transform:translateX(-50%);width:480px;background:var(--paper);border-radius:24px;box-shadow:var(--shadow-modal);overflow:hidden;z-index:3}
+.modal-d h3{font-size:32px}
+.modal-d .head{padding:20px 24px 8px}
+.modal-d .body{padding:0 24px 18px}
+.modal-d .cta-row{padding:18px 24px 18px}
+.modal-d .prompt textarea{height:72px;font-size:14px}
+
+/* dot accent on top — micro flourish (one per screen rule honored: this is the singular flourish) */
+.dot-strip{height:3px;background:radial-gradient(circle at 6px 1.5px,var(--pink-ink) 1px,transparent 1.4px) 0/12px 100% repeat-x;opacity:.5;margin:-2px 18px 8px;border-radius:2px}
+
+</style></head><body>
+
+<h1 class="h">morning brief · v3-final</h1>
+<p class="lead">centered modal at top of TODAY screen, appearing each new day before the timeline. calibrated from <code>Layout 4.jpg</code> (the hero status composition — eyebrow + big display headline + chip cluster + bottom CTA pill) and <code>Element 1.jpg</code> (clean centered paper modal feel). NOT a bottom sheet.</p>
+<div class="preamble">
+  <p><strong>anatomy.</strong> centered modal sitting ~120px from top. backdrop = subtle dim with very light blur. modal = solid white paper, 22px corners, soft drop shadow. eyebrow row → SF Pro Display headline (count-aware) + softer subtitle → two short-textarea prompts → ink-pill CTA → tiny skip link.</p>
+  <p><strong>two prompts.</strong> 1) <em>what's likely to push back today?</em> 2) <em>if it breaks down, i resume by ___</em>. friction + resume plan. nothing else asked.</p>
+  <p><strong>after save.</strong> dismisses. a small calm chip appears above today's timeline summarizing the friction + resume — collapsed, tappable to expand.</p>
+</div>
+
+<h2>mockups · A / B / C (mobile 390×852) + D (desktop 1080×660)</h2>
+<div class="grid-mobile">
+
+<!-- ============ A · empty modal ============ -->
+<div>
+  <div class="frame-m">
+    <div class="topbar">
+      <div class="quote">the mountain doesn't care.</div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="appbg">
+      <div class="day">tuesday.</div>
+      <div class="ghost-card"></div>
+      <div class="ghost-card"></div>
+      <div class="ghost-card"></div>
+      <div class="ghost-card"></div>
+    </div>
+    <div class="scrim"></div>
+    <div class="modal-m">
+      <div class="head">
+        <div class="eyebrow">morning brief</div>
+        <div class="skip">skip this morning</div>
+      </div>
+      <div class="dot-strip"></div>
+      <div class="body">
+        <h3>9 blocks today.</h3>
+        <div class="sub">where could it bend?</div>
+        <div class="prompt">
+          <div class="q">what's likely to push back today?</div>
+          <textarea placeholder="the 10am call · gym window tight · email pile"></textarea>
+        </div>
+        <div class="prompt">
+          <div class="q">if it breaks down, i resume by <span class="acc">___</span></div>
+          <textarea placeholder="walk + one block · don't restart the day"></textarea>
+        </div>
+      </div>
+      <div class="cta-row">
+        <button class="cta">good. start today.</button>
+        <div class="skip-line">or skip · brief asks again tomorrow</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">A · empty · both prompts blank</div>
+</div>
+
+<!-- ============ B · filled ============ -->
+<div>
+  <div class="frame-m">
+    <div class="topbar">
+      <div class="quote">quiet work, loud results.</div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="appbg">
+      <div class="day">tuesday.</div>
+      <div class="ghost-card"></div>
+      <div class="ghost-card"></div>
+      <div class="ghost-card"></div>
+      <div class="ghost-card"></div>
+    </div>
+    <div class="scrim"></div>
+    <div class="modal-m">
+      <div class="head">
+        <div class="eyebrow">morning brief</div>
+        <div class="skip">skip this morning</div>
+      </div>
+      <div class="dot-strip"></div>
+      <div class="body">
+        <h3>9 blocks today.</h3>
+        <div class="sub">where could it bend?</div>
+        <div class="prompt">
+          <div class="q">what's likely to push back today?</div>
+          <textarea>the 10am call always overruns. and seb wants to pair on the deal review.</textarea>
+        </div>
+        <div class="prompt">
+          <div class="q">if it breaks down, i resume by <span class="acc">___</span></div>
+          <textarea>10:45 walk · then deadlift block · don't fold the day.</textarea>
+        </div>
+      </div>
+      <div class="cta-row">
+        <button class="cta">good. start today.</button>
+        <div class="skip-line">brief saves · today plays out</div>
+      </div>
+    </div>
+  </div>
+  <div class="cap">B · filled · friction + resume plan</div>
+</div>
+
+<!-- ============ C · saved recap chip ============ -->
+<div>
+  <div class="recap-frame">
+    <div class="topbar">
+      <div class="quote">every rep is a vote.</div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="scroll">
+      <div class="day">tuesday.</div>
+      <div class="recap-chip">
+        <div class="rh">
+          <span class="dot"></span>
+          <span>today's brief saved</span>
+          <span class="when">7:42 am</span>
+        </div>
+        <div class="rb">friction: <b>the 10am call</b> · resume by <b>10:45 walk</b></div>
+        <div class="open">tap to revisit · evening reflect uses this <span>↗</span></div>
+      </div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+      <div class="ghost-card"><div class="gt"></div><div class="gd"></div></div>
+    </div>
+  </div>
+  <div class="cap">C · saved recap above timeline</div>
+</div>
+
+</div>
+
+<h2>mockup D · desktop 1080 · 480px modal centered</h2>
+<div class="frame-d">
+  <div class="topbar-d">
+    <div class="quote">the mountain doesn't care.</div>
+    <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+  </div>
+  <div class="appbg-d">
+    <div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div>
+    <div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div>
+    <div class="ghost-card"></div><div class="ghost-card"></div><div class="ghost-card"></div>
+  </div>
+  <div class="scrim-d"></div>
+  <div class="modal-d">
+    <div class="head">
+      <div class="eyebrow">morning brief · tuesday</div>
+      <div class="skip">skip this morning</div>
+    </div>
+    <div class="dot-strip"></div>
+    <div class="body">
+      <h3>9 blocks today.</h3>
+      <div class="sub">where could it bend?</div>
+      <div class="prompt">
+        <div class="q">what's likely to push back today?</div>
+        <textarea placeholder="the 10am call · gym window tight · email pile"></textarea>
+      </div>
+      <div class="prompt">
+        <div class="q">if it breaks down, i resume by <span class="acc">___</span></div>
+        <textarea placeholder="walk + one block · don't restart the day"></textarea>
+      </div>
+    </div>
+    <div class="cta-row">
+      <button class="cta">good. start today.</button>
+      <div class="skip-line">or skip · brief asks again tomorrow</div>
+    </div>
+  </div>
+</div>
+
+</body></html>

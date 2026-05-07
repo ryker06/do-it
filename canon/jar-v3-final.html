@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — JAR v3-final · calibrated from Layout 4.jpg + Element 3.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;--ink-soft:#5A5A5E;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-4:#FFF6F8;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-ink:#1F5C2C;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-ink:#0050C8;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+  --shadow-hero-pink:0 0 0 0.5px rgba(122,42,60,0.10),0 2px 3px rgba(122,42,60,0.05),0 24px 44px -20px rgba(122,42,60,0.30),0 40px 70px -36px rgba(122,42,60,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1480px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:680px;margin-bottom:18px}
+h2.section{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 24px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+.row3{display:grid;grid-template-columns:repeat(3,390px);gap:32px;align-items:start;margin-bottom:56px;justify-content:start}
+.cap{position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+
+.frame-m{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column}
+
+.topbar{background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);flex-shrink:0}
+.topbar .quote{font-size:16px;font-weight:600;letter-spacing:-0.022em;color:var(--ink);line-height:1.2;font-family:"SF Pro Display",-apple-system,sans-serif}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+.scroll{flex:1;overflow:auto;padding:18px 16px 96px}
+
+.head-row{display:flex;align-items:baseline;justify-content:space-between;padding:2px 6px 14px}
+.head-row .title{font-size:30px;font-weight:800;letter-spacing:-0.03em;color:var(--ink)}
+.head-row .meta{font-size:11.5px;color:var(--label);font-weight:600}
+.head-row .meta b{color:var(--ink-2);font-weight:700}
+
+/* HERO — pink dimensional card with jar SVG corner. Layout 4 hero composition + Element 3 dimensional layered move (we use the jar shape as the layered geometry). */
+.hero{
+  position:relative;
+  background:linear-gradient(165deg,var(--pink-2) 0%,var(--pink) 60%,#FFCED9 100%);
+  border-radius:26px;
+  padding:24px 22px 22px;
+  margin:0 4px 18px;
+  box-shadow:var(--shadow-hero-pink);
+  overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle at 12% 22%,rgba(255,255,255,0.55) 1.5px,transparent 2px),radial-gradient(circle at 82% 70%,rgba(255,255,255,0.40) 1.5px,transparent 2px);
+  background-size:18px 18px;opacity:0.45;pointer-events:none;
+}
+.hero .eyebrow{font-size:10.5px;color:var(--pink-ink);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;position:relative;opacity:0.85}
+.hero h2{font-size:30px;font-weight:800;letter-spacing:-0.032em;color:var(--ink);line-height:1.04;margin-top:6px;max-width:230px;position:relative;font-family:"SF Pro Display",-apple-system,sans-serif}
+.hero .count{font-size:13px;color:var(--ink-2);font-weight:600;letter-spacing:-0.012em;margin-top:14px;position:relative;line-height:1.45}
+.hero .count b{font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.hero .count .arrow{color:var(--pink-ink);font-weight:700;margin:0 4px}
+.hero .jar{position:absolute;right:-10px;top:18px;width:120px;height:140px;pointer-events:none}
+
+/* jar entry row — quiet, NOT a card */
+.jar-list{padding:0 6px}
+.entry{display:flex;align-items:flex-start;gap:14px;padding:14px 4px;border-bottom:0.5px solid var(--hairline)}
+.entry:last-child{border-bottom:none}
+.entry .glyph{width:28px;height:28px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--paper-warm);box-shadow:inset 0 0 0 0.5px var(--hairline);margin-top:1px}
+.entry .glyph svg{width:16px;height:16px;stroke:var(--ink-2);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.entry .glyph.fire{background:linear-gradient(180deg,#FFE7EC 0%,#FFD9E0 100%)}
+.entry .glyph.fire svg{stroke:var(--pink-ink)}
+.entry .glyph.stone{background:var(--chip-surface)}
+.entry .glyph.seed{background:var(--green-2)}
+.entry .glyph.seed svg{stroke:var(--green-ink)}
+.entry .glyph.peak{background:var(--blue-tint)}
+.entry .glyph.peak svg{stroke:var(--blue-ink)}
+.entry .glyph.hammer{background:#F0E8DC}
+.entry .glyph.hammer svg{stroke:#7A4A1A}
+.entry .text{flex:1;min-width:0}
+.entry .line{font-size:14.5px;color:var(--ink);font-weight:500;letter-spacing:-0.01em;line-height:1.4}
+.entry .line b{font-weight:700;color:var(--ink)}
+.entry .when{font-size:10px;color:var(--label);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-top:5px}
+
+/* auto-capture prompt */
+.auto{position:relative;background:var(--paper);border-radius:18px;padding:14px 16px;margin:14px 4px;box-shadow:var(--shadow-paper);border-left:3px solid var(--pink)}
+.auto .eyebrow{font-size:10px;color:var(--pink-ink);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:6px}
+.auto .body{font-size:13.5px;color:var(--ink-2);font-weight:500;line-height:1.45;letter-spacing:-0.005em}
+.auto .body b{color:var(--ink);font-weight:700}
+.auto .body .arr{color:var(--pink-ink);font-weight:700;margin:0 4px}
+.auto .row{display:flex;gap:8px;margin-top:12px}
+.auto .btn-add{flex:1;background:var(--ink);color:#fff;border:none;border-radius:12px;padding:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.005em;box-shadow:var(--shadow-press-ink)}
+.auto .btn-skip{flex:1;background:var(--paper);color:var(--ink-2);border:none;border-radius:12px;padding:10px;font-size:13px;font-weight:700;box-shadow:inset 0 0 0 0.5px var(--hairline-strong);font-family:inherit;cursor:pointer;letter-spacing:-0.005em}
+
+/* "add to jar" inline at bottom */
+.add-bar{display:flex;align-items:center;gap:10px;background:var(--paper-warm);border-radius:14px;padding:8px 8px 8px 14px;margin:14px 4px 0;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.add-bar .ph{flex:1;font-size:13.5px;color:var(--label);font-weight:500;letter-spacing:-0.005em}
+.add-bar button{background:var(--ink);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:700;letter-spacing:-0.005em;font-family:inherit;cursor:pointer;box-shadow:var(--shadow-press-ink)}
+
+/* drawer detail (mockup C) */
+.drawer{background:var(--paper);border-radius:22px;padding:22px;box-shadow:var(--shadow-card-lifted);margin:0 4px 16px;position:relative}
+.drawer .deyebrow{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:10px}
+.drawer .dline{font-size:22px;line-height:1.25;letter-spacing:-0.025em;color:var(--ink);font-weight:700;margin-bottom:14px;font-family:"SF Pro Display",-apple-system,sans-serif}
+.drawer .dline b{font-weight:800}
+.drawer .ctx-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--paper-warm);border-radius:12px;margin-bottom:8px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.drawer .ctx-row .lbl{font-size:10px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;width:88px;flex-shrink:0}
+.drawer .ctx-row .val{font-size:13px;color:var(--ink);font-weight:600;letter-spacing:-0.005em}
+.drawer .edit-area{background:var(--paper-warm);border-radius:12px;padding:12px;margin-top:14px;box-shadow:inset 0 0 0 0.5px var(--hairline);font-size:13px;color:var(--ink-soft);line-height:1.5;letter-spacing:-0.005em;min-height:64px}
+.drawer .edit-area .ph{color:var(--label)}
+.drawer .dactions{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:14px}
+.drawer .dactions .save{background:linear-gradient(180deg,#1A1A20,#000);color:#fff;border:none;border-radius:12px;padding:11px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.005em;box-shadow:var(--shadow-press-ink)}
+.drawer .dactions .delete{background:var(--paper);color:var(--label-2);border:none;border-radius:12px;padding:11px 14px;font-size:13px;font-weight:600;box-shadow:inset 0 0 0 0.5px var(--hairline-strong);font-family:inherit;cursor:pointer;letter-spacing:-0.005em}
+
+/* desktop frame (D) */
+.frame-d{width:1180px;height:820px;background:var(--bg);border-radius:32px;box-shadow:var(--shadow-paper);overflow:hidden;display:grid;grid-template-columns:1fr 360px;border:0.5px solid var(--hairline);margin-top:12px}
+.dleft{padding:32px 40px;overflow:auto;background:var(--paper)}
+.dleft .topbar{background:transparent;border-bottom:none;padding:0 0 18px}
+.dleft .head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px}
+.dleft .head .title{font-size:32px;font-weight:800;letter-spacing:-0.032em;color:var(--ink)}
+.dleft .head .meta{font-size:12px;color:var(--label);font-weight:600}
+.dleft .head .meta b{color:var(--ink-2);font-weight:700}
+.dleft .hero{margin:0 0 22px;padding:32px 30px}
+.dleft .hero h2{font-size:38px;max-width:340px;letter-spacing:-0.034em}
+.dleft .hero .jar{right:30px;top:32px;width:160px;height:180px}
+.dleft .hero .count{font-size:14.5px}
+.dleft .jar-list{padding:0;max-width:760px}
+.dleft .entry{padding:16px 4px}
+.dleft .entry .line{font-size:15.5px}
+
+.dright{background:var(--paper-warm);border-left:0.5px solid var(--hairline);padding:24px 22px;overflow:auto}
+.dright .seyebrow{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:12px}
+.dright .recent .item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--hairline)}
+.dright .recent .item:last-child{border-bottom:none}
+.dright .recent .item .when{font-size:10px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase;width:60px;flex-shrink:0;margin-top:3px}
+.dright .recent .item .what{font-size:12.5px;color:var(--ink-2);font-weight:500;line-height:1.4;letter-spacing:-0.005em}
+.dright .recent .item .what b{color:var(--ink);font-weight:700}
+.dright .summary{background:var(--paper);border-radius:16px;padding:16px;margin-top:18px;box-shadow:var(--shadow-soft)}
+.dright .summary .lbl{font-size:10px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+.dright .summary .v{font-size:24px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);margin-top:4px;font-variant-numeric:tabular-nums}
+.dright .summary .s{font-size:12px;color:var(--label-2);font-weight:500;margin-top:2px}
+
+</style></head><body>
+
+<h1 class="h">Do It · COOKIE JAR v3-final</h1>
+<p class="lead">scroll-past-of-wins · pink hero with dimensional jar SVG · entries are quiet rows, not heavy cards. Layout 4 hero + Element 3 dimensional surface vocabulary.</p>
+
+<div class="preamble">
+<p><strong>calibration.</strong> Layout 4.jpg gives the hero composition — one large tinted card with display title + soft motion phrase + corner illustration. Element 3.jpg gives the dimensional pink surface (gradient + dot pattern + soft outer glow). The jar SVG occupies the right corner the way the credit card peeks in Layout 4 Premium.</p>
+<p><strong>distinct from existing 11.</strong> This is the only canon with a true HERO surface (others use ink-button heroes or hairline lists). Entries are inline rows (not paper cards) — calmer than habits/visions which use full cards. Glyphs replace counts/numbers; words own the screen.</p>
+<p><strong>rules honored.</strong> White bg. SF Pro only. Memoji <code>jay.webp?color=7</code> top-right. Motivational quote in topbar. Zero serif. Zero italic. No bottom-up sheets. No glass-liquid blur. Auto-capture prompt is an inline mini-card, not a banner.</p>
+</div>
+
+<h2 class="section">A · canonical · hero + 8 entries</h2>
+<div class="row3">
+  <div style="position:relative">
+    <div class="cap">A · canonical</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">the mountain doesn't care.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">jar.</div>
+          <div class="meta"><b>47</b> entries</div>
+        </div>
+
+        <div class="hero">
+          <div class="eyebrow">cookie jar</div>
+          <h2>scroll. you've already done harder.</h2>
+          <div class="count"><b>47</b> entries. <span class="arrow">→</span> keep stacking.</div>
+          <svg class="jar" viewBox="0 0 120 140">
+            <defs>
+              <linearGradient id="jarBody" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.45"/>
+              </linearGradient>
+              <linearGradient id="lid" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0B0B0F"/>
+                <stop offset="100%" stop-color="#3A3A3C"/>
+              </linearGradient>
+            </defs>
+            <!-- lid -->
+            <rect x="22" y="10" width="76" height="14" rx="4" fill="url(#lid)"/>
+            <rect x="22" y="22" width="76" height="6" rx="2" fill="rgba(11,11,15,0.55)"/>
+            <!-- body -->
+            <path d="M18 30 Q18 28 22 28 L98 28 Q102 28 102 30 L100 124 Q100 132 92 132 L28 132 Q20 132 20 124 Z" fill="url(#jarBody)" stroke="rgba(122,42,60,0.30)" stroke-width="1"/>
+            <!-- contents (cookies as soft circles) -->
+            <circle cx="38" cy="66" r="7" fill="#7A2A3C" opacity="0.32"/>
+            <circle cx="58" cy="58" r="8" fill="#7A2A3C" opacity="0.42"/>
+            <circle cx="78" cy="64" r="7" fill="#7A2A3C" opacity="0.36"/>
+            <circle cx="46" cy="84" r="8" fill="#7A2A3C" opacity="0.40"/>
+            <circle cx="68" cy="82" r="9" fill="#7A2A3C" opacity="0.48"/>
+            <circle cx="86" cy="92" r="7" fill="#7A2A3C" opacity="0.34"/>
+            <circle cx="36" cy="104" r="8" fill="#7A2A3C" opacity="0.36"/>
+            <circle cx="58" cy="108" r="9" fill="#7A2A3C" opacity="0.46"/>
+            <circle cx="80" cy="114" r="7" fill="#7A2A3C" opacity="0.32"/>
+            <!-- highlight -->
+            <path d="M28 36 L28 110" stroke="rgba(255,255,255,0.65)" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div class="jar-list">
+          <div class="entry">
+            <div class="glyph fire"><svg viewBox="0 0 24 24"><path d="M12 3 C 9 8 6 9 6 14 a6 6 0 0 0 12 0 c0-3-2-5-3-7-1.5-2-3-3-3-4z"/><path d="M12 12 c-1 2-2 3-2 5a2 2 0 0 0 4 0"/></svg></div>
+            <div class="text"><div class="line">finished the <b>90-min Zone 2</b> after pausing twice. didn't quit.</div><div class="when">2 days ago</div></div>
+          </div>
+          <div class="entry">
+            <div class="glyph peak"><svg viewBox="0 0 24 24"><path d="M3 19 L9 9 L13 14 L17 7 L21 19 Z"/></svg></div>
+            <div class="text"><div class="line">closed the <b>$8K invoice</b> after 4 weeks of follow-up.</div><div class="when">5 days ago</div></div>
+          </div>
+          <div class="entry">
+            <div class="glyph stone"><svg viewBox="0 0 24 24"><path d="M5 13 C 4 10 7 6 11 6 C 16 6 20 9 20 13 C 20 17 16 19 12 19 C 8 19 6 17 5 13 Z"/></svg></div>
+            <div class="text"><div class="line">prayed all 5 prayers · <b>14 days straight</b>.</div><div class="when">1 week ago</div></div>
+          </div>
+          <div class="entry">
+            <div class="glyph hammer"><svg viewBox="0 0 24 24"><path d="M14 4 L20 10 L17 13 L11 7 Z"/><path d="M11 7 L4 14 L7 17 L14 10"/></svg></div>
+            <div class="text"><div class="line"><b>220kg deadlift</b> single. came back from the 8-week plateau.</div><div class="when">2 weeks ago</div></div>
+          </div>
+          <div class="entry">
+            <div class="glyph seed"><svg viewBox="0 0 24 24"><path d="M12 4 C 8 8 6 12 8 16 C 10 19 14 19 16 16 C 18 12 16 8 12 4 Z"/><path d="M12 12 v8"/></svg></div>
+            <div class="text"><div class="line">read <b>Atomic Habits cover-to-cover</b> in 2 weeks · book 3 of 24.</div><div class="when">3 weeks ago</div></div>
+          </div>
+          <div class="entry">
+            <div class="glyph fire"><svg viewBox="0 0 24 24"><path d="M12 3 C 9 8 6 9 6 14 a6 6 0 0 0 12 0 c0-3-2-5-3-7z"/></svg></div>
+            <div class="text"><div class="line">cold call · <b>17 dials, 1 yes</b>. the yes paid for the month.</div><div class="when">4 weeks ago</div></div>
+          </div>
+          <div class="entry">
+            <div class="glyph peak"><svg viewBox="0 0 24 24"><path d="M3 19 L9 9 L13 14 L17 7 L21 19 Z"/></svg></div>
+            <div class="text"><div class="line">shipped the new pricing page <b>same day</b> the idea hit.</div><div class="when">5 weeks ago</div></div>
+          </div>
+          <div class="entry">
+            <div class="glyph stone"><svg viewBox="0 0 24 24"><path d="M5 13 C 4 10 7 6 11 6 C 16 6 20 9 20 13 C 20 17 16 19 12 19 C 8 19 6 17 5 13 Z"/></svg></div>
+            <div class="text"><div class="line">said no to a <b>10-day project</b> that wasn't aligned. held the line.</div><div class="when">6 weeks ago</div></div>
+          </div>
+        </div>
+
+        <div class="add-bar">
+          <span class="ph">add a one-liner…</span>
+          <button>+ add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B · auto-capture prompt -->
+  <div style="position:relative">
+    <div class="cap">B · auto-capture prompt active</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">every rep is a vote.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">jar.</div>
+          <div class="meta">block done · <b>add this?</b></div>
+        </div>
+
+        <div class="auto">
+          <div class="eyebrow">auto-capture</div>
+          <div class="body">you finished the <b>90-min Zone 2</b> after pausing twice. <span class="arr">→</span> add to jar?</div>
+          <div class="row">
+            <button class="btn-add">+ add</button>
+            <button class="btn-skip">skip</button>
+          </div>
+        </div>
+
+        <div class="hero" style="padding:18px 18px 16px">
+          <div class="eyebrow">cookie jar</div>
+          <h2 style="font-size:24px;max-width:200px">scroll. you've already done harder.</h2>
+          <div class="count"><b>47</b> entries. <span class="arrow">→</span> keep stacking.</div>
+          <svg class="jar" viewBox="0 0 120 140" style="width:90px;height:108px;top:14px">
+            <rect x="22" y="10" width="76" height="14" rx="4" fill="#0B0B0F"/>
+            <path d="M18 30 Q18 28 22 28 L98 28 Q102 28 102 30 L100 124 Q100 132 92 132 L28 132 Q20 132 20 124 Z" fill="rgba(255,255,255,0.7)" stroke="rgba(122,42,60,0.30)"/>
+            <circle cx="48" cy="78" r="8" fill="#7A2A3C" opacity="0.42"/>
+            <circle cx="68" cy="84" r="9" fill="#7A2A3C" opacity="0.46"/>
+            <circle cx="56" cy="100" r="9" fill="#7A2A3C" opacity="0.40"/>
+            <circle cx="78" cy="106" r="7" fill="#7A2A3C" opacity="0.36"/>
+          </svg>
+        </div>
+
+        <div class="jar-list">
+          <div class="entry">
+            <div class="glyph peak"><svg viewBox="0 0 24 24"><path d="M3 19 L9 9 L13 14 L17 7 L21 19 Z"/></svg></div>
+            <div class="text"><div class="line">closed the <b>$8K invoice</b> after 4 weeks of follow-up.</div><div class="when">5 days ago</div></div>
+          </div>
+          <div class="entry">
+            <div class="glyph stone"><svg viewBox="0 0 24 24"><path d="M5 13 C 4 10 7 6 11 6 C 16 6 20 9 20 13 C 20 17 16 19 12 19 C 8 19 6 17 5 13 Z"/></svg></div>
+            <div class="text"><div class="line">prayed all 5 prayers · <b>14 days straight</b>.</div><div class="when">1 week ago</div></div>
+          </div>
+          <div class="entry">
+            <div class="glyph hammer"><svg viewBox="0 0 24 24"><path d="M14 4 L20 10 L17 13 L11 7 Z"/><path d="M11 7 L4 14 L7 17 L14 10"/></svg></div>
+            <div class="text"><div class="line"><b>220kg deadlift</b> single after 8-week plateau.</div><div class="when">2 weeks ago</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C · entry detail drawer -->
+  <div style="position:relative">
+    <div class="cap">C · tap entry → inline detail / edit</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">today is the lift.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">entry.</div>
+          <div class="meta"><b>2 weeks ago</b></div>
+        </div>
+
+        <div class="drawer">
+          <div class="deyebrow">jar entry · #34</div>
+          <div class="dline"><b>220kg deadlift</b> single. came back from the 8-week plateau.</div>
+
+          <div class="ctx-row"><span class="lbl">captured</span><span class="val">apr 22 · 18:47</span></div>
+          <div class="ctx-row"><span class="lbl">block</span><span class="val">deadlift block · 60 min</span></div>
+          <div class="ctx-row"><span class="lbl">domain</span><span class="val">fitness</span></div>
+          <div class="ctx-row"><span class="lbl">trigger</span><span class="val">auto · ran 1.6× duration</span></div>
+
+          <div style="font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin:14px 0 6px">edit one-liner</div>
+          <div class="edit-area">220kg deadlift single. came back from the 8-week plateau.<br/><span class="ph">add detail (optional)…</span></div>
+
+          <div class="dactions">
+            <button class="save">save</button>
+            <button class="delete">delete</button>
+          </div>
+        </div>
+
+        <div style="font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin:4px 8px 8px">around this one</div>
+        <div class="jar-list">
+          <div class="entry">
+            <div class="glyph fire"><svg viewBox="0 0 24 24"><path d="M12 3 C 9 8 6 9 6 14 a6 6 0 0 0 12 0 c0-3-2-5-3-7z"/></svg></div>
+            <div class="text"><div class="line">cold call · <b>17 dials, 1 yes</b>.</div><div class="when">4 weeks ago</div></div>
+          </div>
+          <div class="entry">
+            <div class="glyph seed"><svg viewBox="0 0 24 24"><path d="M12 4 C 8 8 6 12 8 16 C 10 19 14 19 16 16 C 18 12 16 8 12 4 Z"/></svg></div>
+            <div class="text"><div class="line">read <b>Atomic Habits</b> cover-to-cover.</div><div class="when">3 weeks ago</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">D · desktop · hero + entries + recent additions sidebar</h2>
+<div class="frame-d">
+  <div class="dleft">
+    <div class="topbar">
+      <div class="quote">the mountain doesn't care.</div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="head">
+      <div class="title">cookie jar.</div>
+      <div class="meta"><b>47</b> entries · 5 this week</div>
+    </div>
+
+    <div class="hero">
+      <div class="eyebrow">cookie jar</div>
+      <h2>scroll. you've already done harder.</h2>
+      <div class="count"><b>47</b> entries. <span class="arrow">→</span> keep stacking.</div>
+      <svg class="jar" viewBox="0 0 120 140">
+        <rect x="22" y="10" width="76" height="14" rx="4" fill="#0B0B0F"/>
+        <rect x="22" y="22" width="76" height="6" rx="2" fill="rgba(11,11,15,0.55)"/>
+        <path d="M18 30 Q18 28 22 28 L98 28 Q102 28 102 30 L100 124 Q100 132 92 132 L28 132 Q20 132 20 124 Z" fill="rgba(255,255,255,0.78)" stroke="rgba(122,42,60,0.30)"/>
+        <circle cx="38" cy="66" r="7" fill="#7A2A3C" opacity="0.32"/>
+        <circle cx="58" cy="58" r="8" fill="#7A2A3C" opacity="0.42"/>
+        <circle cx="78" cy="64" r="7" fill="#7A2A3C" opacity="0.36"/>
+        <circle cx="46" cy="84" r="8" fill="#7A2A3C" opacity="0.40"/>
+        <circle cx="68" cy="82" r="9" fill="#7A2A3C" opacity="0.48"/>
+        <circle cx="86" cy="92" r="7" fill="#7A2A3C" opacity="0.34"/>
+        <circle cx="36" cy="104" r="8" fill="#7A2A3C" opacity="0.36"/>
+        <circle cx="58" cy="108" r="9" fill="#7A2A3C" opacity="0.46"/>
+        <circle cx="80" cy="114" r="7" fill="#7A2A3C" opacity="0.32"/>
+        <path d="M28 36 L28 110" stroke="rgba(255,255,255,0.65)" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="jar-list">
+      <div class="entry">
+        <div class="glyph fire"><svg viewBox="0 0 24 24"><path d="M12 3 C 9 8 6 9 6 14 a6 6 0 0 0 12 0 c0-3-2-5-3-7z"/></svg></div>
+        <div class="text"><div class="line">finished the <b>90-min Zone 2</b> after pausing twice. didn't quit.</div><div class="when">2 days ago</div></div>
+      </div>
+      <div class="entry">
+        <div class="glyph peak"><svg viewBox="0 0 24 24"><path d="M3 19 L9 9 L13 14 L17 7 L21 19 Z"/></svg></div>
+        <div class="text"><div class="line">closed the <b>$8K invoice</b> after 4 weeks of follow-up.</div><div class="when">5 days ago</div></div>
+      </div>
+      <div class="entry">
+        <div class="glyph stone"><svg viewBox="0 0 24 24"><path d="M5 13 C 4 10 7 6 11 6 C 16 6 20 9 20 13 C 20 17 16 19 12 19 C 8 19 6 17 5 13 Z"/></svg></div>
+        <div class="text"><div class="line">prayed all 5 prayers · <b>14 days straight</b>.</div><div class="when">1 week ago</div></div>
+      </div>
+      <div class="entry">
+        <div class="glyph hammer"><svg viewBox="0 0 24 24"><path d="M14 4 L20 10 L17 13 L11 7 Z"/><path d="M11 7 L4 14 L7 17 L14 10"/></svg></div>
+        <div class="text"><div class="line"><b>220kg deadlift</b> single. came back from the 8-week plateau.</div><div class="when">2 weeks ago</div></div>
+      </div>
+      <div class="entry">
+        <div class="glyph seed"><svg viewBox="0 0 24 24"><path d="M12 4 C 8 8 6 12 8 16 C 10 19 14 19 16 16 C 18 12 16 8 12 4 Z"/></svg></div>
+        <div class="text"><div class="line">read <b>Atomic Habits cover-to-cover</b> · book 3 of 24.</div><div class="when">3 weeks ago</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dright">
+    <div class="seyebrow">recent additions</div>
+    <div class="recent">
+      <div class="item"><div class="when">2d ago</div><div class="what"><b>90-min Zone 2</b> · finished after pausing twice</div></div>
+      <div class="item"><div class="when">5d ago</div><div class="what"><b>$8K invoice</b> · closed after 4 weeks</div></div>
+      <div class="item"><div class="when">1w ago</div><div class="what"><b>14 days</b> · prayed all 5 prayers</div></div>
+      <div class="item"><div class="when">2w ago</div><div class="what"><b>220kg DL</b> · plateau broken</div></div>
+      <div class="item"><div class="when">3w ago</div><div class="what">read <b>Atomic Habits</b> cover-to-cover</div></div>
+      <div class="item"><div class="when">4w ago</div><div class="what">cold call · <b>17 dials, 1 yes</b></div></div>
+    </div>
+
+    <div class="seyebrow" style="margin-top:24px">stack</div>
+    <div class="summary">
+      <div class="lbl">total</div>
+      <div class="v">47</div>
+      <div class="s">entries since jan 4</div>
+    </div>
+    <div class="summary" style="margin-top:10px">
+      <div class="lbl">this month</div>
+      <div class="v">9</div>
+      <div class="s">→ on track for biggest month</div>
+    </div>
+    <div class="summary" style="margin-top:10px">
+      <div class="lbl">auto-captured</div>
+      <div class="v">31</div>
+      <div class="s">16 added by hand</div>
+    </div>
+  </div>
+</div>
+
+</body></html>

@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — NOW v3-final · calibrated from Layout 4.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;  /* cool neutral micro-surface for inline chips that sit on white paper */
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-ink:#1F5C2C;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;
+  --d-fitness:#FFD0DA;--d-fitness-2:#FFB6C5;--d-fitness-ink:#7A2A3C;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif}
+body{padding:48px 56px 96px;max-width:1280px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:680px;margin-bottom:18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:820px;margin:0 0 32px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+.split{display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:start}
+
+/* ============= MOBILE FRAME 390x852 ============= */
+.frame-m{
+  width:390px;height:852px;
+  background:var(--bg);
+  border-radius:48px;
+  overflow:hidden;
+  box-shadow:var(--shadow-paper);
+  position:relative;
+  display:flex;flex-direction:column;
+}
+
+/* topbar */
+.topbar{
+  background:var(--paper);
+  padding:18px 22px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:0.5px solid var(--hairline);
+  flex-shrink:0;
+}
+.topbar .hi{font-size:20px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.1}
+.topbar .sub{font-size:12px;color:var(--label);font-weight:500;margin-top:2px}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+/* scrollbody */
+.scroll{flex:1;overflow:hidden;padding:20px 18px 0;display:flex;flex-direction:column;gap:16px}
+
+/* eyebrow above hero */
+.eyebrow{display:flex;align-items:center;gap:8px;padding:0 4px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--green-ink);box-shadow:0 0 0 4px rgba(31,92,44,0.16)}
+.eyebrow .pulse{animation:pulse 2.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(0.85)}}
+
+/* HERO BLOCK CARD — calibrated from Layout 4.jpg evening ritual */
+.hero{
+  background:linear-gradient(180deg,var(--paper-warm) 0%,var(--paper) 60%);
+  border-radius:28px;
+  padding:24px 22px 22px;
+  box-shadow:var(--shadow-card-lifted);
+  position:relative;
+  overflow:hidden;
+}
+.hero .corner-mem{position:absolute;top:18px;right:20px;width:36px;height:36px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:0 4px 10px rgba(20,20,30,0.10)}
+.hero .corner-mem img{width:100%;height:100%}
+.hero .domain-row{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.hero .domain-disc{width:26px;height:26px;border-radius:50%;background:linear-gradient(180deg,var(--d-fitness) 0%,var(--d-fitness-2) 100%);display:flex;align-items:center;justify-content:center;color:var(--d-fitness-ink);box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06)}
+.hero .domain-disc svg{width:14px;height:14px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.hero .domain-name{font-size:12.5px;color:var(--ink-2);font-weight:700;letter-spacing:-0.005em}
+.hero .domain-time{font-size:11.5px;color:var(--label);font-weight:600;margin-left:auto;font-variant-numeric:tabular-nums}
+
+.hero .title{font-size:36px;font-weight:800;letter-spacing:-0.035em;color:var(--ink);line-height:1.02;margin-bottom:6px}
+.hero .intent{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.005em;line-height:1.45;margin-bottom:18px}
+.hero .intent b{color:var(--ink-2);font-weight:700}
+
+/* rotated chip — Amie Welcome accent */
+.chip-rotated{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green);color:var(--green-ink);
+  padding:7px 14px;border-radius:999px;
+  font-size:12.5px;font-weight:700;letter-spacing:-0.005em;
+  transform:rotate(-6deg);
+  box-shadow:var(--shadow-chip);
+  position:absolute;top:74px;right:14px;
+}
+.chip-rotated .arr{font-size:11px;opacity:0.75;margin-left:1px}
+
+/* 2x2 chip cluster — Layout 4 chips */
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.ch{background:var(--chip-surface);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.ch .ico{width:24px;height:24px;border-radius:50%;background:var(--paper);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-chip);flex-shrink:0}
+.ch .ico svg{width:13px;height:13px;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none;color:var(--ink-2)}
+.ch .ck{font-size:9.5px;color:var(--label);font-weight:700;letter-spacing:0.08em;text-transform:uppercase;line-height:1.2}
+.ch .cv{font-size:13.5px;font-weight:700;color:var(--ink);letter-spacing:-0.01em;line-height:1.2;margin-top:1px;font-variant-numeric:tabular-nums}
+
+/* step card — body card with smile illo + step text */
+.stepcard{
+  background:var(--paper);
+  border-radius:22px;padding:18px 18px 18px 16px;
+  box-shadow:var(--shadow-paper);
+  display:flex;gap:14px;align-items:flex-start;
+}
+.stepcard .smile{
+  width:40px;height:40px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#FFFFFF 0%,#EFEFEA 100%);
+  box-shadow:inset 0 -3px 6px rgba(20,20,30,0.05),0 1px 2px rgba(20,20,30,0.06);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-size:20px;
+}
+.stepcard .smile svg{width:22px;height:22px}
+.stepcard .body-text{font-size:14.5px;color:var(--ink-2);line-height:1.5;letter-spacing:-0.005em}
+.stepcard .body-text b{color:var(--ink);font-weight:700}
+.stepcard .body-text .step-mark{display:inline-block;background:var(--green-2);color:var(--green-ink);padding:0 6px;border-radius:6px;font-size:12.5px;font-weight:700}
+
+/* steps list — compact iter */
+.steps{background:var(--paper);border-radius:22px;box-shadow:var(--shadow-paper);overflow:hidden}
+.steps .stepshead{display:flex;align-items:baseline;justify-content:space-between;padding:16px 18px 8px}
+.steps .stepshead .lbl{font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase}
+.steps .stepshead .count{font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.steps .row{display:flex;align-items:center;gap:12px;padding:11px 18px;border-top:0.5px solid var(--hairline-soft)}
+.steps .row .ck{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px}
+.steps .row .ck.done{background:var(--ink);color:#fff}
+.steps .row .ck.todo{background:var(--chip-surface);box-shadow:inset 0 0 0 1.5px var(--hairline-soft)}
+.steps .row .ck.now{background:var(--green-2);box-shadow:inset 0 0 0 1.5px var(--green-ink);color:var(--green-ink)}
+.steps .row .nm{font-size:14px;font-weight:600;color:var(--ink-2);letter-spacing:-0.005em;flex:1}
+.steps .row .nm.done{color:var(--label);text-decoration:line-through;text-decoration-color:var(--hairline)}
+.steps .row .nm.now{color:var(--ink);font-weight:700}
+.steps .row .du{font-size:11.5px;color:var(--label);font-variant-numeric:tabular-nums}
+
+/* CTA pill — bottom floating */
+.cta-wrap{position:absolute;left:18px;right:18px;bottom:96px;display:flex;justify-content:center}
+.cta{
+  background:linear-gradient(180deg,#1A1A20 0%,#000 100%);
+  color:#fff;border:none;
+  border-radius:999px;padding:18px 32px;
+  font-size:16px;font-weight:700;letter-spacing:-0.01em;
+  font-family:inherit;cursor:pointer;
+  box-shadow:var(--shadow-press-ink);
+  display:inline-flex;align-items:center;gap:12px;
+}
+.cta .play{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:#fff}
+.cta .play svg{width:10px;height:10px;fill:currentColor}
+.cta .du{font-size:14px;font-weight:600;color:rgba(255,255,255,0.6);font-variant-numeric:tabular-nums}
+
+/* bottom nav */
+.bnav{position:absolute;left:0;right:0;bottom:0;height:78px;background:var(--paper);border-top:0.5px solid var(--hairline);display:flex;align-items:center;justify-content:space-around;padding:14px 24px 22px}
+.bnav .it{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;color:var(--label)}
+.bnav .it.active{color:var(--ink);background:var(--chip-surface);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.bnav .it svg{width:22px;height:22px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* ============= DESKTOP 1280x800 ============= */
+.frame-d{
+  width:1100px;height:760px;background:var(--bg);border-radius:24px;overflow:hidden;
+  box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column;
+  margin-top:48px;
+}
+.frame-d .topbar-d{
+  background:var(--paper);padding:20px 36px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:0.5px solid var(--hairline);
+}
+.frame-d .topbar-d .hi{font-size:24px;font-weight:700;letter-spacing:-0.025em}
+.frame-d .topbar-d .sub{font-size:13px;color:var(--label);font-weight:500;margin-top:2px}
+.frame-d .topbar-d .right{display:flex;align-items:center;gap:18px}
+.frame-d .topbar-d .memoji{width:32px;height:32px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08)}
+.frame-d .topbar-d .memoji img{width:100%;height:100%}
+
+.frame-d .stage{flex:1;display:grid;grid-template-columns:280px 1fr 320px;gap:0;overflow:hidden}
+.frame-d .rail{padding:24px 22px;border-right:0.5px solid var(--hairline);background:var(--paper)}
+.frame-d .rail .lbl{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin:14px 8px 6px}
+.frame-d .rail .ri{padding:10px 12px;border-radius:12px;font-size:14px;color:var(--ink-2);font-weight:600;display:flex;align-items:center;gap:10px;margin-bottom:2px;cursor:pointer}
+.frame-d .rail .ri.active{background:var(--chip-surface);color:var(--ink);font-weight:700;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.frame-d .rail .ri svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.frame-d .center{padding:36px 40px;overflow:auto}
+.frame-d .right{padding:24px 22px;border-left:0.5px solid var(--hairline);background:var(--paper)}
+.frame-d .right .lbl{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin:0 0 12px}
+.frame-d .upnext{background:var(--chip-surface);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.frame-d .upnext .nm{font-size:13.5px;font-weight:700;color:var(--ink-2);letter-spacing:-0.005em}
+.frame-d .upnext .du{font-size:11.5px;color:var(--label);margin-top:2px;font-variant-numeric:tabular-nums}
+
+/* center hero — desktop variant */
+.hero-d{max-width:680px}
+.hero-d .domain-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.hero-d .domain-disc{width:30px;height:30px;border-radius:50%;background:linear-gradient(180deg,var(--d-fitness) 0%,var(--d-fitness-2) 100%);display:flex;align-items:center;justify-content:center;color:var(--d-fitness-ink);box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06)}
+.hero-d .domain-disc svg{width:16px;height:16px;stroke:currentColor;stroke-width:2.2;fill:none}
+.hero-d .domain-name{font-size:13.5px;font-weight:700;color:var(--ink-2)}
+.hero-d .title{font-size:64px;font-weight:800;letter-spacing:-0.04em;color:var(--ink);line-height:1.02;margin-bottom:10px}
+.hero-d .intent{font-size:17px;color:var(--label-2);font-weight:500;line-height:1.5;margin-bottom:24px;max-width:540px}
+.hero-d .intent b{color:var(--ink-2);font-weight:700}
+.hero-d .chip-rotated{position:relative;top:auto;right:auto;display:inline-flex;margin-bottom:18px}
+.hero-d .chips{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px}
+.hero-d .stepcard{margin-bottom:16px}
+.hero-d .ctarow{display:flex;gap:14px;align-items:center}
+.hero-d .skipbtn{background:transparent;border:none;font-size:14.5px;font-weight:600;color:var(--label-2);cursor:pointer;padding:14px 18px;font-family:inherit}
+</style></head><body>
+
+<div class="h">NOW · v3-final · mobile + desktop</div>
+<p class="lead">single focal block. one identity-line title. one rotated playful chip. zero glass-liquid. one black ink CTA at the bottom.</p>
+
+<div class="preamble">
+  <p><strong>calibrated from</strong> <code>board/Layout 4.jpg</code> (Evening Ritual / Lóvi). that screen IS the NOW composition: hero title big, 2x2 chip cluster (goal · time · author · count), white paper card with smile-illo + body, big rounded CTA pill at bottom.</p>
+  <p><strong>copied:</strong> hero composition (eyebrow → giant SF Pro Display title → chip cluster → white-paper smile card → bottom CTA), the 2x2 chip cluster idea, the smile illo on the body card.</p>
+  <p><strong>adapted:</strong> Layout 4's photo background is dropped (we don't shoot photos for blocks) — replaced with calm warm paper surface + corner memoji accent. Layout 4's purple gradient CTA → ink-black gradient (palette law). Domain tag becomes a rotated -7deg green chip (Amie Welcome accent) hovering at top-right of the hero.</p>
+</div>
+
+<div class="split">
+
+  <!-- ============ MOBILE 390x852 ============ -->
+  <div class="frame-m">
+    <div class="topbar">
+      <div>
+        <div class="hi">today is the lift.</div>
+        <div class="sub">block 3 of 6 · 22 min left</div>
+      </div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+
+    <div class="scroll">
+      <div class="eyebrow"><span class="dot pulse"></span> now · running</div>
+
+      <div class="hero">
+        <div class="corner-mem"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+
+        <div class="domain-row">
+          <div class="domain-disc"><svg viewBox="0 0 24 24"><path d="M6 9v6"/><path d="M18 9v6"/><path d="M3 12h18"/></svg></div>
+          <div class="domain-name">fitness</div>
+          <div class="domain-time">22 / 45 min</div>
+        </div>
+
+        <div class="title">deadlift block.</div>
+        <div class="intent"><b>5×5 at 110kg.</b> form over weight. two minutes between sets.</div>
+
+        <span class="chip-rotated">→ 220kg coming</span>
+
+        <div class="chips">
+          <div class="ch">
+            <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div><div class="ck">vision</div><div class="cv">220kg dl</div></div>
+          </div>
+          <div class="ch">
+            <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+            <div><div class="ck">duration</div><div class="cv">45 min</div></div>
+          </div>
+          <div class="ch">
+            <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M9 18h6"/></svg></div>
+            <div><div class="ck">step</div><div class="cv">3 of 5</div></div>
+          </div>
+          <div class="ch">
+            <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2v6m0 8v6M2 12h6m8 0h6"/></svg></div>
+            <div><div class="ck">state</div><div class="cv">focused</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stepcard">
+        <div class="smile">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M8 10h.01" stroke="#1C1C1E" stroke-width="2.5" stroke-linecap="round"/><path d="M16 10h.01" stroke="#1C1C1E" stroke-width="2.5" stroke-linecap="round"/><path d="M8 14c1 1.5 2.5 2.5 4 2.5s3-1 4-2.5" stroke="#1C1C1E" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="body-text">
+          on set <span class="step-mark">3 of 5</span>. <b>load 110kg.</b> brace, hinge, drive through the heels. log when done — bar stays loaded for set 4.
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="stepshead">
+          <div class="lbl">sets</div>
+          <div class="count">3 / 5</div>
+        </div>
+        <div class="row"><div class="ck done">✓</div><div class="nm done">warm-up · 60kg × 8</div><div class="du">done</div></div>
+        <div class="row"><div class="ck done">✓</div><div class="nm done">working set · 110kg × 5</div><div class="du">done</div></div>
+        <div class="row"><div class="ck done">✓</div><div class="nm done">working set · 110kg × 5</div><div class="du">done</div></div>
+        <div class="row"><div class="ck now">●</div><div class="nm now">working set · 110kg × 5</div><div class="du">now</div></div>
+        <div class="row"><div class="ck todo"></div><div class="nm">working set · 110kg × 5</div><div class="du">queued</div></div>
+      </div>
+    </div>
+
+    <div class="cta-wrap">
+      <button class="cta">
+        <span class="play"><svg viewBox="0 0 10 10"><path d="M2 1.5v7l6-3.5z"/></svg></span>
+        log set
+        <span class="du">110×5</span>
+      </button>
+    </div>
+
+    <div class="bnav">
+      <div class="it active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg></div>
+      <div class="it"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg></div>
+      <div class="it"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg></div>
+      <div class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg></div>
+    </div>
+  </div>
+
+  <div>
+    <h2 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:0 0 14px">layout notes</h2>
+    <div class="preamble" style="margin:0">
+      <p><strong>vertical reading order:</strong> topbar → eyebrow + pulse dot → hero card (domain row · title · intent · rotated chip · 2x2 chips) → stepcard with smile illo + body text → steps list → ink CTA → bnav.</p>
+      <p><strong>one rotated chip max.</strong> the green "→ 220kg coming" sits at -6deg over the hero corner. Borrowed from Amie Welcome. nowhere else on the screen rotates.</p>
+      <p><strong>memoji corner accent.</strong> 36px memoji top-right of hero card. NOT the topbar memoji — this one represents the future-self version (different seed). always there, never the only memoji.</p>
+      <p><strong>tone strings (TONE.md applied):</strong> "deadlift block." / "5×5 at 110kg. form over weight." / "→ 220kg coming" / "log set 110×5". short. fact → future-self pull. no exclamation.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DESKTOP 1100x760 ============ -->
+<div class="frame-d">
+  <div class="topbar-d">
+    <div>
+      <div class="hi">today is the lift.</div>
+      <div class="sub">block 3 of 6 · 22 min left · fitness</div>
+    </div>
+    <div class="right">
+      <button style="background:var(--chip-surface);border:none;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:700;color:var(--ink-2);box-shadow:inset 0 0 0 0.5px var(--hairline);font-family:inherit;cursor:pointer">⌘ K</button>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <!-- left rail -->
+    <div class="rail">
+      <div class="lbl">primary</div>
+      <div class="ri active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="9"/></svg> now</div>
+      <div class="ri"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></svg> today</div>
+      <div class="ri"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/></svg> week</div>
+      <div class="ri"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg> more</div>
+
+      <div class="lbl">capture</div>
+      <div class="ri"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/></svg> voice</div>
+      <div class="ri"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg> add block</div>
+    </div>
+
+    <!-- center hero -->
+    <div class="center">
+      <div class="hero-d">
+        <div class="eyebrow"><span class="dot pulse"></span> now · running · 22 min in</div>
+        <div class="domain-row" style="margin-top:14px">
+          <div class="domain-disc"><svg viewBox="0 0 24 24"><path d="M6 9v6"/><path d="M18 9v6"/><path d="M3 12h18"/></svg></div>
+          <div class="domain-name">fitness</div>
+        </div>
+        <div class="title">deadlift block.</div>
+        <div class="intent"><b>5×5 at 110kg.</b> form over weight. two minutes between sets. set 3 next.</div>
+        <span class="chip-rotated">→ 220kg coming</span>
+
+        <div class="chips">
+          <div class="ch"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg></div><div><div class="ck">vision</div><div class="cv">220kg dl</div></div></div>
+          <div class="ch"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div><div class="ck">duration</div><div class="cv">45 min</div></div></div>
+          <div class="ch"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M9 18h6"/></svg></div><div><div class="ck">step</div><div class="cv">3 of 5</div></div></div>
+          <div class="ch"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2v6m0 8v6M2 12h6m8 0h6"/></svg></div><div><div class="ck">state</div><div class="cv">focused</div></div></div>
+        </div>
+
+        <div class="stepcard">
+          <div class="smile">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M8 10h.01" stroke="#1C1C1E" stroke-width="2.5" stroke-linecap="round"/><path d="M16 10h.01" stroke="#1C1C1E" stroke-width="2.5" stroke-linecap="round"/><path d="M8 14c1 1.5 2.5 2.5 4 2.5s3-1 4-2.5" stroke="#1C1C1E" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="body-text">
+            on set <span class="step-mark">3 of 5</span>. <b>load 110kg.</b> brace, hinge, drive through heels. log when done — bar stays loaded for set 4.
+          </div>
+        </div>
+
+        <div class="ctarow">
+          <button class="cta">
+            <span class="play"><svg viewBox="0 0 10 10"><path d="M2 1.5v7l6-3.5z"/></svg></span>
+            log set
+            <span class="du">110×5</span>
+          </button>
+          <button class="skipbtn">skip · queue inbox</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- right rail -->
+    <div class="right">
+      <div class="lbl">up next</div>
+      <div class="upnext"><div class="nm">surah review · 15 min</div><div class="du">religion · maghrib anchor</div></div>
+      <div class="upnext"><div class="nm">deep-work · pricing page</div><div class="du">business · 50 min</div></div>
+      <div class="upnext"><div class="nm">chapter 4 · atomic habits</div><div class="du">learning · 20 min</div></div>
+
+      <div class="lbl" style="margin-top:24px">today</div>
+      <div class="upnext"><div class="nm">3 done · 1 paused · 2 queued</div><div class="du">elastic · no late</div></div>
+    </div>
+  </div>
+</div>
+
+</body></html>

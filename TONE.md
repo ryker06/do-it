@@ -2,6 +2,33 @@
 
 Adam's directive: **conqueror type, without weird language.** Short factual statement + future-self reminder.
 
+## Background (HARD RULE)
+**Default surface = white (#FFFFFF or near-white #FBFAF8 max).** No beige. No cream. No sand. No warm earth tones as a base.
+
+Tints from board/ are for accents (cards, tinted strips, illustration panels) — never the global background. The skincare.jpg / Layout 5 cream tones inspire micro-accents, not the page bg.
+
+When a hero card uses a tint (mint/pink/blue), the surrounding screen stays white so the tint pops.
+
+## Header (HARD RULE)
+Topbar = the v2 working pattern Adam likes:
+- **Motivational quote line** LEFT (SF Pro Display Semibold, calm ink color) — short single-line quote that rotates daily or session-based. Examples: "discipline equals freedom." / "you become what you repeat." / "today is the lift." / "the mountain doesn't care." / "show up. that's the move." Pick from a curated list of ~30. NOT a personal greeting like "adam. ready when you are." — that pattern is dead.
+- **Memoji 28-32px FAR RIGHT** (Link to `/settings/`)
+- **Memoji source = `https://www.tapback.co/api/avatar/jay.webp?color=7`** — this is THE Adam memoji (black hair + black beard + glasses). NEVER substitute a different memoji. NEVER show a woman / random face. Adam called this out specifically.
+- White surface, hairline bottom border (no frosted blur as primary state)
+- Slim height (~56-64px)
+- Memoji is non-negotiable. Always present.
+
+## App identity (HARD RULE)
+- **App name: "Do It"** (exact). manifest.json `name` and `short_name` = "Do It".
+- App icon: needs to feel premium Apple — clean glyph on a solid or subtle gradient background. Current icon-192/512.png may need refresh during engineering implementation.
+
+## Typography (HARD RULE)
+**SF Pro Display / SF Pro Text ONLY. NO serif. NO italic. NO cursive. EVER.**
+- The journal-app reference was a CREATIVITY-LEVEL example, not a font choice. Its Georgia-italic intention strips do NOT apply to Do It.
+- Keep memoji on Topbar (top-right). Memoji is part of the design system, never remove.
+- Keep all existing memojis throughout the app. Don't strip them anywhere.
+- Board/ images are THE design standard. Journal-app shows what creativity LOOKS like, but every visual decision calibrates against board/.
+
 ## The pattern (use this everywhere)
 **`<short fact>` → `<future version reminder>`**
 

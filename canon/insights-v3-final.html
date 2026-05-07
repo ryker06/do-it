@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — INSIGHTS v3-final · calibrated from Layout 6.jpg + skincare.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;--ink-soft:#5A5A5E;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-3:#EEF8EF;--green-ink:#1F5C2C;--green-ink-2:#2F7A40;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-tint-2:#D7E6FF;--blue-ink:#0050C8;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1480px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:680px;margin-bottom:18px}
+h2.section{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 24px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+.row3{display:grid;grid-template-columns:repeat(3,390px);gap:32px;align-items:start;margin-bottom:56px;justify-content:start}
+.cap{position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+
+/* mobile frame */
+.frame-m{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column}
+
+/* topbar */
+.topbar{background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);flex-shrink:0}
+.topbar .quote{font-size:16px;font-weight:600;letter-spacing:-0.022em;color:var(--ink);line-height:1.2;font-family:"SF Pro Display",-apple-system,sans-serif}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+.scroll{flex:1;overflow:auto;padding:16px 16px 96px}
+
+/* heading + count */
+.head-row{display:flex;align-items:baseline;justify-content:space-between;padding:4px 6px 14px}
+.head-row .title{font-size:30px;font-weight:800;letter-spacing:-0.03em;color:var(--ink)}
+.head-row .count{font-size:11.5px;color:var(--label);font-weight:600}
+.head-row .count b{color:var(--ink-2);font-weight:700}
+
+/* filter chips — calm pills, NOT rotated */
+.filters{display:flex;gap:6px;overflow-x:auto;padding:0 4px 14px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.fchip{flex-shrink:0;font-size:12.5px;font-weight:600;color:var(--label-2);background:var(--paper);padding:7px 13px;border-radius:999px;box-shadow:inset 0 0 0 0.5px var(--hairline);letter-spacing:-0.005em;font-family:inherit;border:none;cursor:pointer}
+.fchip.on{background:var(--ink);color:#fff;box-shadow:none}
+.fchip .n{font-variant-numeric:tabular-nums;color:var(--label);font-weight:600;margin-left:4px;font-size:11px}
+.fchip.on .n{color:rgba(255,255,255,0.55)}
+
+/* + insight inline strip */
+.add-strip{background:var(--paper-warm);border-radius:18px;padding:14px;margin:0 4px 18px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.add-strip .input{display:flex;align-items:center;gap:10px}
+.add-strip .plus{width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;line-height:1;flex-shrink:0}
+.add-strip .placeholder{font-size:14px;color:var(--label);font-weight:500;letter-spacing:-0.005em;flex:1}
+.add-strip .meta-row{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:0.5px solid var(--hairline)}
+.add-strip .mchip{font-size:11px;font-weight:600;color:var(--label-2);background:var(--paper);padding:5px 10px;border-radius:999px;box-shadow:inset 0 0 0 0.5px var(--hairline);letter-spacing:-0.005em}
+.add-strip .mchip.has{color:var(--ink-2)}
+
+/* QUOTE-STYLE INSIGHT ROW — Layout 6 chat-style mixed-weight prose treatment */
+.insight{position:relative;background:var(--paper);border-radius:20px;padding:18px 18px 14px;box-shadow:var(--shadow-paper);margin:0 4px 12px}
+.insight .text{font-size:18px;line-height:1.32;letter-spacing:-0.02em;color:var(--ink-soft);font-weight:500;font-family:"SF Pro Display",-apple-system,sans-serif}
+.insight .text b{color:var(--ink);font-weight:700}
+.insight .meta{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:0.5px solid var(--hairline)}
+.insight .src{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase}
+.insight .src b{color:var(--ink-2);font-weight:700;letter-spacing:0.06em;text-transform:none;font-size:11.5px}
+.insight .dot{width:3px;height:3px;border-radius:50%;background:var(--label);opacity:0.6}
+.insight .domain{font-size:11px;color:var(--label-2);font-weight:600;letter-spacing:-0.005em}
+
+/* status pill — rotated -7deg, top-right corner */
+.pill{position:absolute;top:-8px;right:14px;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;transform:rotate(-7deg);box-shadow:var(--shadow-chip);font-family:inherit}
+.pill.captured{background:var(--paper);color:var(--ink-2);box-shadow:inset 0 0 0 0.5px var(--hairline-strong),0 2px 4px rgba(20,20,30,0.06)}
+.pill.testing{background:var(--blue-tint);color:var(--blue-ink);box-shadow:inset 0 0 0 0.5px rgba(0,80,200,0.12),0 2px 4px rgba(20,20,30,0.06)}
+.pill.adopted{background:var(--green);color:var(--green-ink);box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.18),0 2px 4px rgba(20,20,30,0.06)}
+.pill.discarded{background:var(--chip-surface);color:var(--label);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+
+.insight.discarded .text{opacity:0.55;text-decoration:line-through;text-decoration-color:rgba(60,60,67,0.30);text-decoration-thickness:1px}
+
+/* "did this become you?" prompt card — calibrated from skincare.jpg paper card */
+.prompt{position:relative;background:var(--paper);border-radius:22px;padding:20px 20px 18px;box-shadow:var(--shadow-card-lifted);margin:0 4px 16px;overflow:hidden}
+.prompt::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue-tint) 0%,var(--blue) 50%,var(--blue-tint) 100%);opacity:0.45}
+.prompt .pill-status{position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;background:var(--blue-tint);color:var(--blue-ink);box-shadow:var(--shadow-chip);transform:rotate(-7deg)}
+.prompt .eyebrow{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.16em;text-transform:uppercase;margin-bottom:8px}
+.prompt .ask{font-size:22px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);line-height:1.1;margin-bottom:12px;font-family:"SF Pro Display",-apple-system,sans-serif}
+.prompt .quoted{font-size:15px;line-height:1.4;color:var(--ink-soft);font-weight:500;letter-spacing:-0.012em;border-left:2px solid var(--blue);padding-left:12px;margin-bottom:14px}
+.prompt .quoted b{color:var(--ink);font-weight:700}
+.prompt .meta-line{font-size:11px;color:var(--label);font-weight:600;letter-spacing:0.04em;margin-bottom:14px}
+.prompt .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.prompt .btn-yes{background:linear-gradient(180deg,#1A1A20,#000);color:#fff;border:none;border-radius:14px;padding:13px 14px;font-size:13.5px;font-weight:700;letter-spacing:-0.005em;box-shadow:var(--shadow-press-ink);font-family:inherit;cursor:pointer}
+.prompt .btn-no{background:var(--paper);color:var(--ink-2);border:none;border-radius:14px;padding:13px 14px;font-size:13.5px;font-weight:700;box-shadow:inset 0 0 0 0.5px var(--hairline-strong);font-family:inherit;cursor:pointer}
+.prompt .ghost{display:block;text-align:center;font-size:12px;color:var(--label-2);font-weight:600;padding:8px;letter-spacing:-0.005em;background:none;border:none;width:100%;font-family:inherit;cursor:pointer}
+
+/* DRAWER (mockup C / D) — pinned panel, NOT bottom-up */
+.drawer{background:var(--paper);border-radius:22px;padding:20px;box-shadow:var(--shadow-card-lifted);margin:0 4px 16px}
+.drawer .deyebrow{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:8px}
+.drawer .dquote{font-size:18px;line-height:1.32;letter-spacing:-0.02em;color:var(--ink);font-weight:600;margin-bottom:14px;font-family:"SF Pro Display",-apple-system,sans-serif}
+.drawer .dsource{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--paper-warm);border-radius:12px;margin-bottom:10px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.drawer .dsource .ico{width:24px;height:24px;border-radius:6px;background:var(--blue-tint);display:flex;align-items:center;justify-content:center;color:var(--blue-ink);font-size:12px;font-weight:700;flex-shrink:0}
+.drawer .dsource .col .lbl{font-size:10px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+.drawer .dsource .col .val{font-size:13px;color:var(--ink);font-weight:600;letter-spacing:-0.005em}
+.drawer .ddomain{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--paper-warm);border-radius:12px;margin-bottom:14px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.drawer .ddomain .disc{width:22px;height:22px;border-radius:50%;background:linear-gradient(180deg,#FFE0E8 0%,#FFC9D6 100%);display:flex;align-items:center;justify-content:center;color:var(--pink-ink);font-size:10px;font-weight:800}
+.drawer .ddomain .nm{font-size:12.5px;color:var(--ink-2);font-weight:600;letter-spacing:-0.005em}
+.drawer .ddomain .nm span{color:var(--label);font-weight:500}
+.drawer .notes-lbl{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px}
+.drawer .notes{background:var(--paper-warm);border-radius:12px;padding:12px;font-size:13px;color:var(--ink-soft);line-height:1.5;font-weight:500;box-shadow:inset 0 0 0 0.5px var(--hairline);min-height:64px;letter-spacing:-0.005em}
+.drawer .notes .ph{color:var(--label);font-weight:500}
+.drawer .dactions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.drawer .dbtn{font-size:12.5px;font-weight:700;padding:11px;border-radius:12px;border:none;font-family:inherit;cursor:pointer;letter-spacing:-0.005em}
+.drawer .dbtn.testing{background:var(--blue-tint);color:var(--blue-ink);box-shadow:inset 0 0 0 0.5px rgba(0,80,200,0.18)}
+.drawer .dbtn.adopt{background:var(--green);color:var(--green-ink);box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.18)}
+
+/* desktop master/detail (mockup D) */
+.frame-d{width:1180px;height:780px;background:var(--bg);border-radius:32px;box-shadow:var(--shadow-paper);overflow:hidden;display:grid;grid-template-columns:380px 1fr;border:0.5px solid var(--hairline);margin-top:12px}
+.dleft{background:var(--paper-warm);border-right:0.5px solid var(--hairline);padding:24px 20px;overflow:auto}
+.dleft .topbar{background:transparent;border-bottom:none;padding:0 0 18px}
+.dleft .head{font-size:24px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);margin-bottom:14px}
+.dleft .filters{padding:0 0 14px}
+.dleft .insight{margin:0 0 10px;border-radius:16px;padding:14px 14px 12px}
+.dleft .insight .text{font-size:14.5px;line-height:1.4}
+.dleft .insight .pill{top:-7px;right:10px;font-size:9.5px;padding:4px 8px}
+.dright{padding:36px 40px;overflow:auto}
+.dright .deyebrow{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:10px}
+.dright .dquote{font-size:36px;font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:var(--ink);margin-bottom:8px;font-family:"SF Pro Display",-apple-system,sans-serif;max-width:640px}
+.dright .dquote b{font-weight:800}
+.dright .dsub{font-size:14px;color:var(--label-2);font-weight:500;letter-spacing:-0.005em;margin-bottom:24px}
+.dright .row-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px;max-width:640px}
+.dright .meta-tile{background:var(--paper);border-radius:14px;padding:12px 14px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.dright .meta-tile .lbl{font-size:10px;color:var(--label);font-weight:700;letter-spacing:0.12em;text-transform:uppercase}
+.dright .meta-tile .val{font-size:14px;color:var(--ink);font-weight:700;letter-spacing:-0.012em;margin-top:4px}
+.dright .notes-lbl{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:8px}
+.dright .notes{background:var(--paper-warm);border-radius:14px;padding:14px 16px;font-size:14px;color:var(--ink-soft);line-height:1.5;font-weight:500;box-shadow:inset 0 0 0 0.5px var(--hairline);max-width:640px;min-height:120px}
+.dright .timeline{display:flex;gap:8px;margin:18px 0 22px;max-width:640px}
+.dright .tev{flex:1;background:var(--paper);border-radius:12px;padding:10px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.dright .tev .d{font-size:10px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+.dright .tev .w{font-size:11.5px;color:var(--ink-2);font-weight:600;margin-top:4px;letter-spacing:-0.005em;line-height:1.4}
+.dright .actions{display:flex;gap:10px;margin-top:14px}
+.dright .actions .btn-ink{background:linear-gradient(180deg,#1A1A20,#000);color:#fff;border:none;border-radius:14px;padding:13px 22px;font-size:14px;font-weight:700;box-shadow:var(--shadow-press-ink);font-family:inherit;cursor:pointer;letter-spacing:-0.005em}
+.dright .actions .btn-paper{background:var(--paper);color:var(--ink-2);border:none;border-radius:14px;padding:13px 22px;font-size:14px;font-weight:700;box-shadow:inset 0 0 0 0.5px var(--hairline-strong);font-family:inherit;cursor:pointer;letter-spacing:-0.005em}
+
+</style></head><body>
+
+<h1 class="h">Do It · INSIGHTS v3-final</h1>
+<p class="lead">personal codex · captured · testing · adopted · discarded. quote-style rows in the Layout 6 mixed-weight prose register, with rotated status pills.</p>
+
+<div class="preamble">
+<p><strong>calibration.</strong> Layout 6.jpg gives the chat-style row anatomy — <em>mixed-weight prose where the key clause sits in heavier ink against a softer surrounding sentence.</em> skincare.jpg gives the prompt-card recipe — paper card with a status pill, eyebrow, and quoted body.</p>
+<p><strong>distinct from existing 11.</strong> No timeline. No heatmap. No discs. No paper cards w/ figure. Each insight is a quoted sentence — typography is the focal element. Status pills rotate -7deg (system accent).</p>
+<p><strong>rules honored.</strong> White bg. SF Pro only. Memoji <code>jay.webp?color=7</code> top-right. Motivational quote in topbar. Zero serif. Zero italic. No bottom-up sheets — drawer renders inline as a pinned panel.</p>
+</div>
+
+<h2 class="section">A · canonical · scrolling list with mixed statuses</h2>
+<div class="row3">
+  <div style="position:relative">
+    <div class="cap">A · canonical</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">quiet work, loud results.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">insights.</div>
+          <div class="count"><b>23</b> captured</div>
+        </div>
+        <div class="filters">
+          <button class="fchip on">all <span class="n">23</span></button>
+          <button class="fchip">captured <span class="n">11</span></button>
+          <button class="fchip">testing <span class="n">5</span></button>
+          <button class="fchip">adopted <span class="n">4</span></button>
+          <button class="fchip">discarded <span class="n">3</span></button>
+        </div>
+        <div class="add-strip">
+          <div class="input">
+            <div class="plus">+</div>
+            <div class="placeholder">capture an insight…</div>
+          </div>
+          <div class="meta-row">
+            <span class="mchip">+ source</span>
+            <span class="mchip">+ domain</span>
+          </div>
+        </div>
+
+        <div class="insight">
+          <span class="pill testing">testing · day 9</span>
+          <div class="text">i run clearer when i <b>eat earlier before the gym</b> — afternoon lifts feel heavy on a 1pm meal.</div>
+          <div class="meta"><span class="src"><b>Self · pattern</b></span><span class="dot"></span><span class="domain">fitness</span></div>
+        </div>
+
+        <div class="insight">
+          <span class="pill adopted">adopted</span>
+          <div class="text">the move isn't motivation, it's <b>shrinking the first rep</b>. one set, then choose.</div>
+          <div class="meta"><span class="src"><b>Atomic Habits</b></span><span class="dot"></span><span class="domain">fitness</span></div>
+        </div>
+
+        <div class="insight">
+          <span class="pill captured">captured</span>
+          <div class="text">money compounds quietly. <b>3 months of steady deposits</b> beats one big push.</div>
+          <div class="meta"><span class="src"><b>Morgan Housel</b></span><span class="dot"></span><span class="domain">business</span></div>
+        </div>
+
+        <div class="insight discarded">
+          <span class="pill discarded">discarded</span>
+          <div class="text">cold showers every morning. <b>tried 3 weeks</b> — no measurable signal on focus.</div>
+          <div class="meta"><span class="src"><b>Self · trial</b></span><span class="dot"></span><span class="domain">health</span></div>
+        </div>
+
+        <div class="insight">
+          <span class="pill testing">testing · day 4</span>
+          <div class="text">read 30min before sleep instead of phone — <b>recall on books goes up</b> when paired with a morning recap.</div>
+          <div class="meta"><span class="src"><b>Naval · podcast</b></span><span class="dot"></span><span class="domain">learning</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B · prompt -->
+  <div style="position:relative">
+    <div class="cap">B · "did this become you?" · 14d testing</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">show up. that's the move.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">insights.</div>
+          <div class="count"><b>1</b> ready to confirm</div>
+        </div>
+
+        <div class="prompt">
+          <span class="pill-status">14 days in</span>
+          <div class="eyebrow">decision time</div>
+          <div class="ask">did this become you?</div>
+          <div class="quoted">i run clearer when i <b>eat earlier before the gym</b> — afternoon lifts feel heavy on a 1pm meal.</div>
+          <div class="meta-line">tested 14 days · noted on 9 of 14 sessions</div>
+          <div class="actions">
+            <button class="btn-yes">yes · became me</button>
+            <button class="btn-no">no · discard</button>
+          </div>
+          <button class="ghost">still testing · check again in 7 days</button>
+        </div>
+
+        <div class="filters">
+          <button class="fchip on">all <span class="n">23</span></button>
+          <button class="fchip">testing <span class="n">5</span></button>
+          <button class="fchip">adopted <span class="n">4</span></button>
+        </div>
+
+        <div class="insight">
+          <span class="pill adopted">adopted</span>
+          <div class="text">the move isn't motivation, it's <b>shrinking the first rep</b>.</div>
+          <div class="meta"><span class="src"><b>Atomic Habits</b></span><span class="dot"></span><span class="domain">fitness</span></div>
+        </div>
+        <div class="insight">
+          <span class="pill testing">testing · day 4</span>
+          <div class="text">read 30min before sleep — <b>recall on books goes up</b>.</div>
+          <div class="meta"><span class="src"><b>Naval</b></span><span class="dot"></span><span class="domain">learning</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C · drawer detail -->
+  <div style="position:relative">
+    <div class="cap">C · tap insight → inline drawer detail</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">you become what you repeat.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">insight.</div>
+          <div class="count">testing · <b>day 9</b></div>
+        </div>
+
+        <div class="drawer">
+          <div class="deyebrow">the insight</div>
+          <div class="dquote">i run clearer when i eat earlier before the gym — afternoon lifts feel heavy on a 1pm meal.</div>
+
+          <div class="dsource">
+            <div class="ico">S</div>
+            <div class="col">
+              <div class="lbl">source</div>
+              <div class="val">self · noticed Apr 14</div>
+            </div>
+          </div>
+          <div class="ddomain">
+            <div class="disc">F</div>
+            <div class="nm">fitness <span>· also touches health</span></div>
+          </div>
+
+          <div class="notes-lbl">tested notes</div>
+          <div class="notes">apr 18 — 3pm lift after 12pm meal: heavy.<br/>apr 22 — 4pm lift after 11am meal: clean, +5kg pr.<br/>apr 27 — repeated · same signal.<br/><span class="ph">add a note…</span></div>
+
+          <div class="dactions">
+            <button class="dbtn testing">extend testing</button>
+            <button class="dbtn adopt">→ adopted</button>
+          </div>
+        </div>
+
+        <div style="font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin:4px 8px 8px">related</div>
+        <div class="insight">
+          <span class="pill captured">captured</span>
+          <div class="text">protein meal <b>2hrs before lifting</b> — possibly linked.</div>
+          <div class="meta"><span class="src"><b>Self · linked</b></span><span class="dot"></span><span class="domain">fitness</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">D · desktop · master/detail</h2>
+<div class="frame-d">
+  <div class="dleft">
+    <div class="topbar">
+      <div class="quote">discipline equals freedom.</div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="head">insights.</div>
+    <div class="filters">
+      <button class="fchip">all <span class="n">23</span></button>
+      <button class="fchip on">testing <span class="n">5</span></button>
+      <button class="fchip">adopted <span class="n">4</span></button>
+    </div>
+    <div class="insight">
+      <span class="pill testing">testing · 9</span>
+      <div class="text">i run clearer when i <b>eat earlier before the gym</b>.</div>
+      <div class="meta"><span class="src"><b>Self</b></span><span class="dot"></span><span class="domain">fitness</span></div>
+    </div>
+    <div class="insight">
+      <span class="pill testing">testing · 4</span>
+      <div class="text">read 30min before sleep — <b>recall goes up</b>.</div>
+      <div class="meta"><span class="src"><b>Naval</b></span><span class="dot"></span><span class="domain">learning</span></div>
+    </div>
+    <div class="insight">
+      <span class="pill testing">testing · 12</span>
+      <div class="text"><b>2hr deep block first</b> before any meetings.</div>
+      <div class="meta"><span class="src"><b>Cal Newport</b></span><span class="dot"></span><span class="domain">business</span></div>
+    </div>
+    <div class="insight">
+      <span class="pill adopted">adopted</span>
+      <div class="text">the move isn't motivation, it's <b>shrinking the first rep</b>.</div>
+      <div class="meta"><span class="src"><b>Atomic Habits</b></span><span class="dot"></span><span class="domain">fitness</span></div>
+    </div>
+    <div class="insight">
+      <span class="pill captured">captured</span>
+      <div class="text">money compounds quietly. <b>3 months steady</b> &gt; one big push.</div>
+      <div class="meta"><span class="src"><b>Housel</b></span><span class="dot"></span><span class="domain">business</span></div>
+    </div>
+  </div>
+  <div class="dright">
+    <div class="deyebrow">testing · day 9 of 14</div>
+    <div class="dquote">i run clearer when i <b>eat earlier before the gym</b> — afternoon lifts feel heavy on a 1pm meal.</div>
+    <div class="dsub">noticed yourself · linked to fitness + health</div>
+    <div class="row-meta">
+      <div class="meta-tile"><div class="lbl">source</div><div class="val">self · pattern</div></div>
+      <div class="meta-tile"><div class="lbl">domain</div><div class="val">fitness</div></div>
+      <div class="meta-tile"><div class="lbl">first noticed</div><div class="val">apr 14</div></div>
+    </div>
+    <div class="notes-lbl">tested notes</div>
+    <div class="notes">apr 18 — 3pm lift after 12pm meal: heavy, paused twice.<br/>apr 22 — 4pm lift after 11am meal: clean, +5kg pr on deadlift.<br/>apr 27 — same signal: earlier meal → cleaner session.<br/>apr 30 — neutral · big lunch but late lift, inconclusive.</div>
+    <div class="timeline">
+      <div class="tev"><div class="d">apr 18</div><div class="w">heavy lift</div></div>
+      <div class="tev"><div class="d">apr 22</div><div class="w">+5kg pr</div></div>
+      <div class="tev"><div class="d">apr 27</div><div class="w">clean session</div></div>
+      <div class="tev"><div class="d">apr 30</div><div class="w">inconclusive</div></div>
+      <div class="tev"><div class="d">may 04</div><div class="w">strong</div></div>
+    </div>
+    <div class="actions">
+      <button class="btn-ink">→ adopted</button>
+      <button class="btn-paper">extend testing 7d</button>
+      <button class="btn-paper">discard</button>
+    </div>
+  </div>
+</div>
+
+</body></html>

@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — MONEY v3-final · calibrated from Layout 2.jpg + Element 1.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-3:#EEF8EF;--green-ink:#1F5C2C;--green-ink-2:#2F7A40;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-ink:#0050C8;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+
+  /* domain mini-pill tints */
+  --d-business:#E2EEFF;--d-business-ink:#1748A8;
+  --d-fitness:#FFD9E0;--d-fitness-ink:#7A2A3C;
+  --d-learning:#FFE0E8;--d-learning-ink:#7A2A3C;
+  --d-religion:#E2F4E6;--d-religion-ink:#1F5C2C;
+  --d-home:#EAEFF3;--d-home-ink:#36475A;
+  --d-food:#FFF0DD;--d-food-ink:#7A4A1A;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1440px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:780px;margin-bottom:18px}
+h2.section{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 24px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+.row3{display:grid;grid-template-columns:repeat(3,390px);gap:32px;align-items:start;margin-bottom:48px;justify-content:start}
+.cap{position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+
+.frame-m{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column}
+
+/* topbar */
+.topbar{background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);flex-shrink:0}
+.topbar .hi{font-size:20px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.1;font-family:"SF Pro Display",-apple-system,sans-serif}
+.topbar .sub{font-size:12px;color:var(--label);font-weight:500;margin-top:2px}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+.scroll{flex:1;overflow:auto;padding:0 0 96px}
+
+.head-row{padding:18px 22px 6px;display:flex;align-items:baseline;justify-content:space-between}
+.head-row .title{font-size:32px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);line-height:1}
+.head-row .month{font-size:12px;color:var(--label);font-weight:600;letter-spacing:-0.005em}
+.add-strip{margin:0 22px 12px;display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:999px;padding:10px 14px 10px 12px;font-size:13.5px;font-weight:700;letter-spacing:-0.012em;width:fit-content;box-shadow:var(--shadow-press-ink)}
+.add-strip .p{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+
+/* HERO 3-CELL — Layout 2 multi-account stacked feel + Element 1 figure card */
+.hero-3{
+  margin:6px 22px 16px;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+}
+.cell{
+  position:relative;overflow:hidden;
+  border-radius:20px;padding:14px 14px 16px;
+  box-shadow:var(--shadow-paper);
+  display:flex;flex-direction:column;justify-content:space-between;
+  min-height:124px;
+}
+.cell.in{background:linear-gradient(180deg,var(--green-2) 0%,#CDEBD3 100%)}
+.cell.out{background:linear-gradient(180deg,var(--pink-2) 0%,var(--pink) 100%)}
+.cell.net{background:var(--paper);box-shadow:var(--shadow-card-lifted)}
+.cell::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 20% 28%,rgba(255,255,255,0.55) 1.5px,transparent 2px);background-size:14px 14px;opacity:0.30;pointer-events:none}
+.cell.net::before{display:none}
+.cell .lbl{font-size:10px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;position:relative}
+.cell.in .lbl{color:var(--green-ink)}
+.cell.out .lbl{color:var(--pink-ink)}
+.cell.net .lbl{color:var(--label)}
+.cell .fig{font-size:22px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1;position:relative;margin-top:8px}
+.cell .fig .cur{font-size:13px;font-weight:700;color:var(--label-2);margin-right:1px}
+.cell.net.pos .fig{color:var(--green-ink)}
+.cell .delta{font-size:10.5px;font-weight:700;color:var(--label-2);margin-top:6px;letter-spacing:-0.005em;position:relative}
+.cell.in .delta{color:var(--green-ink)}
+.cell.out .delta{color:var(--pink-ink)}
+.cell.net .delta{color:var(--green-ink)}
+
+/* Layout 2 — small layered hint behind net cell */
+.cell.net::after{
+  content:"";position:absolute;left:14px;right:14px;bottom:-6px;height:8px;
+  border-radius:0 0 14px 14px;background:var(--paper-warm);
+  box-shadow:0 0 0 0.5px var(--hairline);z-index:-1;
+}
+
+/* ink-underline tabs */
+.tabs{display:flex;gap:0;padding:8px 22px 0;border-bottom:0.5px solid var(--hairline);position:relative}
+.tab{flex:1;text-align:center;padding:10px 0 14px;font-size:12.5px;font-weight:700;letter-spacing:-0.012em;color:var(--label);cursor:pointer;position:relative}
+.tab.active{color:var(--ink)}
+.tab.active::after{content:"";position:absolute;left:18%;right:18%;bottom:-0.5px;height:2px;background:var(--ink);border-radius:2px}
+
+.list-pad{padding:14px 22px 0}
+
+/* one rotated chip */
+.chip-rotated{display:inline-flex;align-items:center;gap:6px;background:var(--green);color:var(--green-ink);padding:6px 12px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:-0.005em;transform:rotate(-7deg);box-shadow:var(--shadow-chip);margin-bottom:10px}
+.chip-rotated .a{opacity:0.7;font-size:10px}
+
+/* TX ROW */
+.tx{
+  display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;
+  padding:12px 4px;
+  border-bottom:0.5px solid var(--hairline-soft);
+}
+.tx:last-child{border-bottom:none}
+.tx .icon{
+  width:38px;height:38px;border-radius:12px;
+  background:var(--paper-warm);
+  display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;
+  box-shadow:inset 0 0 0 0.5px var(--hairline);flex-shrink:0;
+}
+.tx .body{min-width:0}
+.tx .nm{font-size:14.5px;font-weight:700;letter-spacing:-0.012em;color:var(--ink);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tx .meta{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:11px;color:var(--label);font-weight:600;flex-wrap:wrap}
+.dpill{font-size:9.5px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;padding:2px 7px;border-radius:6px}
+.dpill.business{background:var(--d-business);color:var(--d-business-ink)}
+.dpill.fitness{background:var(--d-fitness);color:var(--d-fitness-ink)}
+.dpill.learning{background:var(--d-learning);color:var(--d-learning-ink)}
+.dpill.religion{background:var(--d-religion);color:var(--d-religion-ink)}
+.dpill.home{background:var(--d-home);color:var(--d-home-ink)}
+.dpill.food{background:var(--d-food);color:var(--d-food-ink)}
+.tx .amt{font-size:15px;font-weight:800;letter-spacing:-0.012em;color:var(--ink);font-variant-numeric:tabular-nums;text-align:right;line-height:1.2}
+.tx.in .amt{color:var(--green-ink)}
+.tx .when{font-size:10.5px;color:var(--label);font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums;text-align:right}
+
+/* sub row · subscriptions */
+.sub-row{
+  display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;
+  padding:14px 14px;border-radius:16px;background:var(--paper);
+  box-shadow:var(--shadow-soft);margin-bottom:10px;
+}
+.sub-row .icon{width:38px;height:38px;border-radius:12px;background:var(--paper-warm);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.sub-row .nm{font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:-0.012em}
+.sub-row .meta{font-size:11.5px;color:var(--label);font-weight:600;margin-top:3px}
+.sub-row .meta b{color:var(--ink-2);font-weight:700}
+.sub-row .right{text-align:right}
+.sub-row .amt{font-size:15px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-0.012em}
+.sub-row .cad{font-size:10.5px;color:var(--label);font-weight:600;margin-top:3px}
+.sub-row.due{background:linear-gradient(180deg,var(--paper) 0%,var(--paper-warm) 100%);box-shadow:var(--shadow-paper)}
+
+/* group header for outflow */
+.gh{font-size:10.5px;color:var(--label);font-weight:800;letter-spacing:0.14em;text-transform:uppercase;margin:14px 0 6px;display:flex;justify-content:space-between;align-items:baseline}
+.gh .total{color:var(--ink-2);font-variant-numeric:tabular-nums;font-weight:700}
+
+/* drawer */
+.drawer{position:absolute;inset:0;background:rgba(20,20,30,0.32);display:flex;align-items:flex-start;justify-content:center;padding-top:48px}
+.drawer .sheet{
+  width:calc(100% - 16px);max-width:374px;background:var(--paper);border-radius:28px;
+  box-shadow:var(--shadow-card-lifted);padding:22px 22px 18px;max-height:calc(100% - 70px);overflow:auto;
+}
+.drawer .grab{width:36px;height:4px;border-radius:2px;background:var(--hairline-strong);margin:0 auto 14px}
+.field{margin-top:12px}
+.field .lbl{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px;display:flex;justify-content:space-between;align-items:baseline}
+.field .val{background:var(--paper-warm);border-radius:14px;padding:11px 14px;font-size:14px;color:var(--ink);font-weight:600;box-shadow:inset 0 0 0 0.5px var(--hairline);letter-spacing:-0.005em;line-height:1.4;display:flex;align-items:center;gap:8px;justify-content:space-between}
+.field .val .ch{color:var(--label);font-size:13px}
+.field .val.amt-input{font-size:28px;font-weight:800;letter-spacing:-0.03em;font-variant-numeric:tabular-nums}
+.field .val.amt-input .cur{font-size:18px;color:var(--label);font-weight:700;margin-right:2px}
+.btn-row{display:flex;gap:8px;margin-top:14px}
+.btn-row .b{flex:1;text-align:center;padding:12px 0;border-radius:14px;font-size:13.5px;font-weight:700;letter-spacing:-0.012em}
+.btn-row .b.ink{background:var(--ink);color:#fff;box-shadow:var(--shadow-press-ink)}
+.btn-row .b.paper{background:var(--paper-warm);color:var(--ink);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.btn-row .b.green{background:var(--green);color:var(--green-ink);box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.18)}
+
+/* desktop frame */
+.frame-d{
+  width:1320px;height:880px;background:var(--bg);border-radius:28px;overflow:hidden;
+  box-shadow:var(--shadow-paper);display:grid;grid-template-rows:auto 1fr;
+}
+.frame-d .topbar{padding:18px 28px 14px}
+.d-body{display:grid;grid-template-columns:1fr 360px;overflow:hidden}
+.d-body .main{padding:24px 28px;overflow:auto;border-right:0.5px solid var(--hairline-soft)}
+.d-body .side{padding:24px 22px;overflow:auto;background:var(--paper-warm)}
+.d-body .main h3{font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin:6px 0 14px}
+.d-body .side h3{font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin:6px 0 14px}
+.d-hero-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:24px}
+.d-cell{position:relative;overflow:hidden;border-radius:24px;padding:22px;box-shadow:var(--shadow-paper);min-height:160px;display:flex;flex-direction:column;justify-content:space-between}
+.d-cell.in{background:linear-gradient(180deg,var(--green-2) 0%,#CDEBD3 100%)}
+.d-cell.out{background:linear-gradient(180deg,var(--pink-2) 0%,var(--pink) 100%)}
+.d-cell.net{background:var(--paper);box-shadow:var(--shadow-card-lifted)}
+.d-cell .lbl{font-size:11px;font-weight:800;letter-spacing:0.16em;text-transform:uppercase}
+.d-cell.in .lbl{color:var(--green-ink)}
+.d-cell.out .lbl{color:var(--pink-ink)}
+.d-cell.net .lbl{color:var(--label)}
+.d-cell .fig{font-size:42px;font-weight:800;letter-spacing:-0.035em;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1;margin-top:10px}
+.d-cell .fig .cur{font-size:22px;font-weight:700;color:var(--label-2);margin-right:2px}
+.d-cell.net.pos .fig{color:var(--green-ink)}
+.d-cell .delta{font-size:12.5px;font-weight:700;margin-top:10px}
+.d-cell.in .delta{color:var(--green-ink)}
+.d-cell.out .delta{color:var(--pink-ink)}
+.d-cell.net .delta{color:var(--green-ink)}
+.cmp{background:var(--paper);border-radius:18px;padding:16px;box-shadow:var(--shadow-soft);margin-bottom:14px}
+.cmp .nm{font-size:12px;color:var(--label);font-weight:700;letter-spacing:-0.005em}
+.cmp .fig{font-size:22px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:4px}
+.cmp .echo{font-size:11.5px;color:var(--ink-3);font-weight:600;margin-top:6px;line-height:1.4}
+.cmp .echo b{color:var(--green-ink);font-weight:800}
+
+</style></head><body>
+
+<div class="h">Do It · money v3-final</div>
+<p class="lead">calibrated from <code style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px">board/Layout 2.jpg</code> (multi-account hero stack — perfect 3-cell hero) + <code style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px">board/Element 1.jpg</code> (clean paper card with figure).</p>
+
+<div class="preamble">
+  <p><strong>anatomy distinct from existing 14.</strong> Top hero = three side-by-side stat cells (in / out / net) — Layout 2's multi-account stack pattern compressed laterally. No other v3-final canon uses a 3-cell hero. Below: ink-underline tabs (subs / outflow / inflow / all) + dense tx rows with <em>domain mini-pill</em> per row — domain×money cross-reference is unique to this canon.</p>
+  <p><strong>topbar quote</strong> = "wealth is captured discipline." (new — not heavily repeated).</p>
+  <p><strong>tabs · ink underline</strong> share the workouts vocabulary but the surface composition (3-cell hero + grouped lists) is fully distinct. No dot-grid (Habits), no person rows (People), no card grid (Wishlist).</p>
+</div>
+
+<h2 class="section">A · canonical · 3-cell hero · outflow</h2>
+<div class="row3">
+  <div style="position:relative">
+    <span class="cap">A · mobile · canonical</span>
+    <div class="frame-m">
+      <div class="topbar">
+        <div>
+          <div class="hi">wealth is captured discipline.</div>
+          <div class="sub">october · 14 days in</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">money.</div>
+          <div class="month">oct · this month</div>
+        </div>
+        <div class="add-strip"><div class="p">+</div>tx</div>
+
+        <!-- 3-cell hero -->
+        <div class="hero-3">
+          <div class="cell in">
+            <div class="lbl">in</div>
+            <div>
+              <div class="fig"><span class="cur">$</span>4,200</div>
+              <div class="delta">+ 8% vs sep</div>
+            </div>
+          </div>
+          <div class="cell out">
+            <div class="lbl">out</div>
+            <div>
+              <div class="fig"><span class="cur">$</span>2,810</div>
+              <div class="delta">− 3% vs sep</div>
+            </div>
+          </div>
+          <div class="cell net pos">
+            <div class="lbl">net</div>
+            <div>
+              <div class="fig">+ 1,390</div>
+              <div class="delta">→ stacking</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <div class="tab">subs</div>
+          <div class="tab active">outflow</div>
+          <div class="tab">inflow</div>
+          <div class="tab">all</div>
+        </div>
+
+        <div class="list-pad">
+          <span class="chip-rotated">stacking <span class="a">→</span> 1,390 net</span>
+
+          <div class="gh">food <span class="total">$ 612</span></div>
+          <div class="tx">
+            <div class="icon">🥩</div>
+            <div class="body"><div class="nm">whole foods · weekly haul</div><div class="meta"><span class="dpill food">food</span><span>oct 12 · sat</span></div></div>
+            <div><div class="amt">−$ 184.20</div><div class="when">2d ago</div></div>
+          </div>
+          <div class="tx">
+            <div class="icon">🍳</div>
+            <div class="body"><div class="nm">sunday brunch · marcus</div><div class="meta"><span class="dpill food">food</span><span>oct 13</span></div></div>
+            <div><div class="amt">−$ 42.00</div><div class="when">1d ago</div></div>
+          </div>
+
+          <div class="gh">fitness <span class="total">$ 480</span></div>
+          <div class="tx">
+            <div class="icon">🏋️</div>
+            <div class="body"><div class="nm">gym · monthly</div><div class="meta"><span class="dpill fitness">fitness</span><span>recurring · oct 1</span></div></div>
+            <div><div class="amt">−$ 85.00</div><div class="when">13d ago</div></div>
+          </div>
+          <div class="tx">
+            <div class="icon">🥩</div>
+            <div class="body"><div class="nm">whey · 5kg tub</div><div class="meta"><span class="dpill fitness">fitness</span><span>oct 09</span></div></div>
+            <div><div class="amt">−$ 124.00</div><div class="when">5d ago</div></div>
+          </div>
+          <div class="tx">
+            <div class="icon">👟</div>
+            <div class="body"><div class="nm">lifting shoes · sabo</div><div class="meta"><span class="dpill fitness">fitness</span><span>oct 04</span></div></div>
+            <div><div class="amt">−$ 270.00</div><div class="when">10d ago</div></div>
+          </div>
+
+          <div class="gh">business <span class="total">$ 950</span></div>
+          <div class="tx">
+            <div class="icon">💼</div>
+            <div class="body"><div class="nm">office space · monthly</div><div class="meta"><span class="dpill business">business</span><span>recurring · oct 1</span></div></div>
+            <div><div class="amt">−$ 650.00</div><div class="when">13d ago</div></div>
+          </div>
+          <div class="tx">
+            <div class="icon">📚</div>
+            <div class="body"><div class="nm">notion · annual</div><div class="meta"><span class="dpill business">business</span><span>oct 07</span></div></div>
+            <div><div class="amt">−$ 96.00</div><div class="when">7d ago</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B · subscriptions tab -->
+  <div style="position:relative">
+    <span class="cap">B · mobile · subs · sorted by next-charge</span>
+    <div class="frame-m">
+      <div class="topbar">
+        <div>
+          <div class="hi">wealth is captured discipline.</div>
+          <div class="sub">5 subs · $ 218 / month</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">money.</div>
+          <div class="month">subs · 5 active</div>
+        </div>
+        <div class="add-strip"><div class="p">+</div>tx</div>
+
+        <div class="hero-3">
+          <div class="cell in">
+            <div class="lbl">in</div><div><div class="fig"><span class="cur">$</span>4,200</div><div class="delta">+ 8% vs sep</div></div>
+          </div>
+          <div class="cell out">
+            <div class="lbl">out</div><div><div class="fig"><span class="cur">$</span>2,810</div><div class="delta">− 3% vs sep</div></div>
+          </div>
+          <div class="cell net pos">
+            <div class="lbl">net</div><div><div class="fig">+ 1,390</div><div class="delta">→ stacking</div></div>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active">subs</div>
+          <div class="tab">outflow</div>
+          <div class="tab">inflow</div>
+          <div class="tab">all</div>
+        </div>
+
+        <div class="list-pad">
+          <div class="gh">next 30 days <span class="total">$ 218 / mo</span></div>
+
+          <div class="sub-row due">
+            <div class="icon">📚</div>
+            <div>
+              <div class="nm">notion plus</div>
+              <div class="meta"><b>renews in 4 days</b> · oct 18 · <span class="dpill business" style="margin-left:4px">business</span></div>
+            </div>
+            <div class="right"><div class="amt">$ 16.00</div><div class="cad">monthly</div></div>
+          </div>
+
+          <div class="sub-row">
+            <div class="icon">🎵</div>
+            <div>
+              <div class="nm">spotify · family</div>
+              <div class="meta">renews in 9 days · oct 23 · <span class="dpill home" style="margin-left:4px">home</span></div>
+            </div>
+            <div class="right"><div class="amt">$ 18.00</div><div class="cad">monthly</div></div>
+          </div>
+
+          <div class="sub-row">
+            <div class="icon">🏋️</div>
+            <div>
+              <div class="nm">gym · annual</div>
+              <div class="meta">renews in 14 days · oct 28 · <span class="dpill fitness" style="margin-left:4px">fitness</span></div>
+            </div>
+            <div class="right"><div class="amt">$ 85.00</div><div class="cad">monthly</div></div>
+          </div>
+
+          <div class="sub-row">
+            <div class="icon">☁️</div>
+            <div>
+              <div class="nm">icloud · 2 TB</div>
+              <div class="meta">renews in 18 days · nov 01 · <span class="dpill home" style="margin-left:4px">home</span></div>
+            </div>
+            <div class="right"><div class="amt">$ 9.99</div><div class="cad">monthly</div></div>
+          </div>
+
+          <div class="sub-row">
+            <div class="icon">🎓</div>
+            <div>
+              <div class="nm">readwise reader</div>
+              <div class="meta">renews in 22 days · nov 05 · <span class="dpill learning" style="margin-left:4px">learning</span></div>
+            </div>
+            <div class="right"><div class="amt">$ 8.33</div><div class="cad">annual · monthly avg</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C · tx detail drawer -->
+  <div style="position:relative">
+    <span class="cap">C · mobile · tx detail · edit</span>
+    <div class="frame-m">
+      <div class="topbar">
+        <div>
+          <div class="hi">wealth is captured discipline.</div>
+          <div class="sub">edit tx · whey · 5kg tub</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+
+      <div class="scroll" style="filter:brightness(0.96)">
+        <div class="head-row"><div class="title" style="opacity:0.4">money.</div></div>
+      </div>
+
+      <div class="drawer">
+        <div class="sheet">
+          <div class="grab"></div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">
+            <div style="width:48px;height:48px;border-radius:14px;background:var(--paper-warm);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:inset 0 0 0 0.5px var(--hairline)">🥩</div>
+            <div>
+              <div style="font-size:18px;font-weight:800;letter-spacing:-0.022em;color:var(--ink)">whey · 5kg tub</div>
+              <div style="font-size:11.5px;color:var(--label);font-weight:600;margin-top:2px">myprotein · oct 09 · 5d ago</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">amount</div>
+            <div class="val amt-input"><div><span class="cur">$</span>124.00</div><div class="ch">edit</div></div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">domain</div>
+            <div class="val"><div style="display:flex;align-items:center;gap:8px"><span class="dpill fitness">fitness</span><span>cross-reference active</span></div><div class="ch">▾</div></div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">category</div>
+            <div class="val"><span>supplements</span><div class="ch">▾</div></div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">date</div>
+            <div class="val"><span>oct 09 · thu</span><div class="ch">▾</div></div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">note</div>
+            <div class="val" style="font-weight:500;color:var(--ink-2)">unflavoured · for the 220kg deadlift run.</div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">recurring</div>
+            <div class="val"><span>none</span><div class="ch">▾</div></div>
+          </div>
+
+          <div class="btn-row">
+            <div class="b ink">→ saved · stack continues</div>
+          </div>
+          <div style="height:8px"></div>
+          <div class="btn-row">
+            <div class="b paper">duplicate</div>
+            <div class="b paper" style="color:var(--pink-ink)">delete</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">D · desktop · wider hero · main + comparison sidebar</h2>
+<div class="frame-d">
+  <div class="topbar">
+    <div>
+      <div class="hi">wealth is captured discipline.</div>
+      <div class="sub">october · 14 days in · $ 1,390 net</div>
+    </div>
+    <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+  </div>
+  <div class="d-body">
+    <div class="main">
+      <h3>this month</h3>
+      <div class="d-hero-3">
+        <div class="d-cell in">
+          <div class="lbl">in · $ 4,200</div>
+          <div><div class="fig"><span class="cur">$</span>4,200</div><div class="delta">+ 8% vs sep · $ 3,890</div></div>
+        </div>
+        <div class="d-cell out">
+          <div class="lbl">out · $ 2,810</div>
+          <div><div class="fig"><span class="cur">$</span>2,810</div><div class="delta">− 3% vs sep · $ 2,895</div></div>
+        </div>
+        <div class="d-cell net pos">
+          <div class="lbl">net</div>
+          <div><div class="fig">+ 1,390</div><div class="delta">→ stacking · 4 months running</div></div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab">subs</div>
+        <div class="tab active">outflow</div>
+        <div class="tab">inflow</div>
+        <div class="tab">all</div>
+      </div>
+
+      <div style="padding-top:14px">
+        <div class="gh">food <span class="total">$ 612</span></div>
+        <div class="tx"><div class="icon">🥩</div><div class="body"><div class="nm">whole foods · weekly haul</div><div class="meta"><span class="dpill food">food</span><span>oct 12</span></div></div><div><div class="amt">−$ 184.20</div><div class="when">2d ago</div></div></div>
+        <div class="tx"><div class="icon">🍳</div><div class="body"><div class="nm">sunday brunch · marcus</div><div class="meta"><span class="dpill food">food</span><span>oct 13</span></div></div><div><div class="amt">−$ 42.00</div><div class="when">1d ago</div></div></div>
+
+        <div class="gh">fitness <span class="total">$ 480</span></div>
+        <div class="tx"><div class="icon">🏋️</div><div class="body"><div class="nm">gym · monthly</div><div class="meta"><span class="dpill fitness">fitness</span><span>recurring · oct 1</span></div></div><div><div class="amt">−$ 85.00</div><div class="when">13d ago</div></div></div>
+        <div class="tx"><div class="icon">🥩</div><div class="body"><div class="nm">whey · 5kg tub</div><div class="meta"><span class="dpill fitness">fitness</span><span>oct 09</span></div></div><div><div class="amt">−$ 124.00</div><div class="when">5d ago</div></div></div>
+        <div class="tx"><div class="icon">👟</div><div class="body"><div class="nm">lifting shoes · sabo</div><div class="meta"><span class="dpill fitness">fitness</span><span>oct 04</span></div></div><div><div class="amt">−$ 270.00</div><div class="when">10d ago</div></div></div>
+
+        <div class="gh">business <span class="total">$ 950</span></div>
+        <div class="tx"><div class="icon">💼</div><div class="body"><div class="nm">office space</div><div class="meta"><span class="dpill business">business</span><span>recurring · oct 1</span></div></div><div><div class="amt">−$ 650.00</div><div class="when">13d ago</div></div></div>
+        <div class="tx"><div class="icon">📚</div><div class="body"><div class="nm">notion · annual</div><div class="meta"><span class="dpill business">business</span><span>oct 07</span></div></div><div><div class="amt">−$ 96.00</div><div class="when">7d ago</div></div></div>
+      </div>
+    </div>
+
+    <div class="side">
+      <h3>monthly comparison</h3>
+      <div class="cmp">
+        <div class="nm">this month vs sep</div>
+        <div class="fig">+ $ 1,390</div>
+        <div class="echo">net up <b>$ 295</b> · <b>→ stacking 4 months running.</b></div>
+      </div>
+      <div class="cmp">
+        <div class="nm">3-mo avg net</div>
+        <div class="fig">$ 1,180</div>
+        <div class="echo">trending up. <b>→ q4 saving target on track.</b></div>
+      </div>
+      <div class="cmp">
+        <div class="nm">subs · pressure</div>
+        <div class="fig">$ 218 / mo</div>
+        <div class="echo">5 active · readwise renews nov 05 · <b>review.</b></div>
+      </div>
+
+      <h3 style="margin-top:24px">by domain · oct</h3>
+      <div class="cmp">
+        <div class="nm"><span class="dpill fitness">fitness</span></div>
+        <div class="fig">$ 480</div>
+        <div class="echo">heavy month · shoes + whey + gym.</div>
+      </div>
+      <div class="cmp">
+        <div class="nm"><span class="dpill business">business</span></div>
+        <div class="fig">$ 950</div>
+        <div class="echo">steady. office + tools.</div>
+      </div>
+      <div class="cmp">
+        <div class="nm"><span class="dpill food">food</span></div>
+        <div class="fig">$ 612</div>
+        <div class="echo">in line with 3-mo avg.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

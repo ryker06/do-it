@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — WISHLIST v3-final · calibrated from Home Screen X 1.jpg + Element 3.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-3:#EEF8EF;--green-ink:#1F5C2C;--green-ink-2:#2F7A40;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-ink:#0050C8;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+
+  /* category mini-pill tints */
+  --c-gear:#E2EEFF;--c-gear-ink:#1748A8;
+  --c-books:#FFE0E8;--c-books-ink:#7A2A3C;
+  --c-exp:#E2F4E6;--c-exp-ink:#1F5C2C;
+  --c-tools:#EAEFF3;--c-tools-ink:#36475A;
+  --c-other:#FFF0DD;--c-other-ink:#7A4A1A;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1440px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:780px;margin-bottom:18px}
+h2.section{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 24px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+.row3{display:grid;grid-template-columns:repeat(3,390px);gap:32px;align-items:start;margin-bottom:48px;justify-content:start}
+.cap{position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+
+.frame-m{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column}
+
+.topbar{background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);flex-shrink:0}
+.topbar .hi{font-size:20px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.1;font-family:"SF Pro Display",-apple-system,sans-serif}
+.topbar .sub{font-size:12px;color:var(--label);font-weight:500;margin-top:2px}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+.scroll{flex:1;overflow:auto;padding:0 0 96px}
+
+.head-row{padding:18px 22px 4px;display:flex;align-items:baseline;justify-content:space-between}
+.head-row .title{font-size:32px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);line-height:1}
+.head-row .count{font-size:12px;color:var(--label);font-weight:600;letter-spacing:-0.005em}
+
+/* total expected spend phrase */
+.spend-phrase{padding:0 22px 12px;font-size:13.5px;color:var(--ink-2);font-weight:600;letter-spacing:-0.005em;line-height:1.45;border-bottom:0.5px solid var(--hairline-soft);margin:0 0 14px}
+.spend-phrase b{color:var(--ink);font-weight:800;font-variant-numeric:tabular-nums}
+.spend-phrase .pull{color:var(--green-ink);font-weight:800}
+
+/* + wishlist inline strip */
+.add-strip{margin:0 22px 12px;display:grid;grid-template-columns:30px 1fr 90px;gap:8px;align-items:center;background:var(--paper-warm);border-radius:16px;padding:10px 12px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.add-strip .p{width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600}
+.add-strip .ph{font-size:13.5px;color:var(--label);font-weight:600;letter-spacing:-0.005em}
+.add-strip .pr{font-size:13px;color:var(--label);font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+
+/* filter chip rows */
+.chip-row{padding:0 22px 6px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.chip-row::-webkit-scrollbar{display:none}
+.fchip{
+  flex-shrink:0;background:var(--paper);border-radius:999px;padding:7px 12px;
+  font-size:12.5px;font-weight:700;color:var(--ink-2);letter-spacing:-0.005em;
+  box-shadow:inset 0 0 0 0.5px var(--hairline);
+}
+.fchip.active{background:var(--ink);color:#fff;box-shadow:none}
+.chip-row+.chip-row{padding-top:8px;padding-bottom:14px}
+
+/* GRID — Home Screen X 1 varied photo cards */
+.grid-2{padding:6px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.card{
+  position:relative;
+  background:var(--paper);border-radius:20px;
+  overflow:hidden;
+  box-shadow:var(--shadow-soft);
+  display:flex;flex-direction:column;
+}
+.cover{height:120px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cover .cam{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;background:rgba(20,20,30,0.55);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;backdrop-filter:none;z-index:2;font-weight:600}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.cover.svg{background:linear-gradient(180deg,var(--pink-2) 0%,var(--pink-3) 100%)}
+.cover.svg.gear{background:linear-gradient(180deg,var(--blue-tint) 0%,#F0F6FF 100%)}
+.cover.svg.books{background:linear-gradient(180deg,var(--pink-2) 0%,var(--pink-3) 100%)}
+.cover.svg.exp{background:linear-gradient(180deg,var(--green-2) 0%,#F0F8F2 100%)}
+.cover.svg.tools{background:linear-gradient(180deg,#EAEFF3 0%,#F4F6F8 100%)}
+.cover.svg.other{background:linear-gradient(180deg,#FFF0DD 0%,#FFF8EC 100%)}
+.cover.svg svg{width:64px;height:64px;opacity:0.85}
+.card .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;position:relative}
+.card .nm{font-size:14.5px;font-weight:800;letter-spacing:-0.022em;color:var(--ink);line-height:1.2;font-family:"SF Pro Display",-apple-system,sans-serif}
+.card .pr{font-size:14px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-0.012em}
+.card .pr .cur{font-size:11px;color:var(--label);font-weight:700;margin-right:1px}
+.card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+.cpill{font-size:9.5px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;padding:3px 7px;border-radius:6px}
+.cpill.gear{background:var(--c-gear);color:var(--c-gear-ink)}
+.cpill.books{background:var(--c-books);color:var(--c-books-ink)}
+.cpill.exp{background:var(--c-exp);color:var(--c-exp-ink)}
+.cpill.tools{background:var(--c-tools);color:var(--c-tools-ink)}
+.cpill.other{background:var(--c-other);color:var(--c-other-ink)}
+
+/* priority chip rotated */
+.pri-chip{
+  position:absolute;top:-12px;right:8px;
+  padding:5px 10px;border-radius:999px;
+  font-size:10px;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;
+  transform:rotate(-7deg);box-shadow:var(--shadow-chip);
+  z-index:3;
+}
+.pri-chip.low{background:var(--paper-warm);color:var(--label-2);box-shadow:var(--shadow-chip)}
+.pri-chip.med{background:var(--green);color:var(--green-ink)}
+.pri-chip.high{background:var(--pink);color:var(--pink-ink)}
+
+/* bought section */
+.bought-head{padding:24px 22px 8px;display:flex;align-items:baseline;justify-content:space-between}
+.bought-head .lh{font-size:11px;color:var(--label);font-weight:800;letter-spacing:0.16em;text-transform:uppercase}
+.bought-head .ct{font-size:11px;color:var(--label);font-weight:700;font-variant-numeric:tabular-nums}
+.grid-2.bought .card{opacity:0.55}
+.grid-2.bought .card .tick{
+  position:absolute;top:8px;left:8px;
+  width:24px;height:24px;border-radius:50%;background:var(--green);color:var(--green-ink);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;
+  box-shadow:var(--shadow-chip);z-index:2;
+}
+
+/* drawer (B,C) */
+.drawer{position:absolute;inset:0;background:rgba(20,20,30,0.32);display:flex;align-items:flex-start;justify-content:center;padding-top:48px}
+.drawer .sheet{
+  width:calc(100% - 16px);max-width:374px;background:var(--paper);border-radius:28px;
+  box-shadow:var(--shadow-card-lifted);padding:22px 22px 18px;max-height:calc(100% - 70px);overflow:auto;
+}
+.drawer .grab{width:36px;height:4px;border-radius:2px;background:var(--hairline-strong);margin:0 auto 14px}
+.field{margin-top:12px}
+.field .lbl{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:6px}
+.field .val{background:var(--paper-warm);border-radius:14px;padding:11px 14px;font-size:14px;color:var(--ink);font-weight:600;box-shadow:inset 0 0 0 0.5px var(--hairline);letter-spacing:-0.005em;line-height:1.4;display:flex;align-items:center;gap:8px;justify-content:space-between}
+.field .val .ch{color:var(--label);font-size:13px}
+.btn-row{display:flex;gap:8px;margin-top:14px}
+.btn-row .b{flex:1;text-align:center;padding:12px 0;border-radius:14px;font-size:13.5px;font-weight:700;letter-spacing:-0.012em}
+.btn-row .b.ink{background:var(--ink);color:#fff;box-shadow:var(--shadow-press-ink)}
+.btn-row .b.paper{background:var(--paper-warm);color:var(--ink);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.btn-row .b.green{background:var(--green);color:var(--green-ink);box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.18)}
+
+/* cover edit drawer */
+.tabs-pill{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--paper-warm);border-radius:14px;padding:4px;box-shadow:inset 0 0 0 0.5px var(--hairline);margin-bottom:14px}
+.tabs-pill .t{text-align:center;padding:8px 0;font-size:12px;font-weight:700;color:var(--label);letter-spacing:-0.005em;border-radius:10px}
+.tabs-pill .t.active{background:var(--paper);color:var(--ink);box-shadow:var(--shadow-chip)}
+.svg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.svg-tile{aspect-ratio:1;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 0.5px var(--hairline);position:relative;overflow:hidden}
+.svg-tile.sel{box-shadow:inset 0 0 0 2.5px var(--ink),0 2px 4px rgba(20,20,30,0.10)}
+.svg-tile svg{width:46px;height:46px;opacity:0.9}
+
+/* desktop frame */
+.frame-d{
+  width:1320px;height:880px;background:var(--bg);border-radius:28px;overflow:hidden;
+  box-shadow:var(--shadow-paper);display:grid;grid-template-rows:auto 1fr;
+}
+.frame-d .topbar{padding:18px 28px 14px}
+.d-body{padding:28px 32px;overflow:auto;height:100%}
+.d-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:24px}
+.d-card{
+  position:relative;background:var(--paper);border-radius:22px;overflow:hidden;
+  box-shadow:var(--shadow-soft);display:flex;flex-direction:column;
+}
+.d-card .cover{height:180px}
+.d-card .body{padding:14px 18px 18px}
+.d-card .nm{font-size:17px;font-weight:800;letter-spacing:-0.022em;color:var(--ink);line-height:1.2}
+.d-card .pr{font-size:18px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:4px}
+
+</style></head><body>
+
+<div class="h">Do It · wishlist v3-final</div>
+<p class="lead">calibrated from <code style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px">board/Home Screen X 1.jpg</code> (varied photo cards · stacked 2-col rhythm) + <code style="font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px">board/Element 3.jpg</code> (dimensional layered card with dot-pattern texture).</p>
+
+<div class="preamble">
+  <p><strong>anatomy distinct from existing 14.</strong> Two-column photo-card grid with customizable cover image per card. No other v3-final canon uses a 2-col card grid with photo covers (Visions uses hero+2-col with full-bleed band; Today uses single-col stack). Wanted grid + dimmed bought grid is unique. Per-card -7deg priority chip is the signature playful element.</p>
+  <p><strong>topbar quote</strong> = "buy the body, not the cart." (new — distinct).</p>
+  <p><strong>cover image</strong> defaults to category SVG, taps to a 4-tab picker (emoji / svg / url / upload). Mark-bought auto-creates a Money expense tx with the cover image carried over.</p>
+</div>
+
+<h2 class="section">A · canonical · 2-col grid · wanted + bought</h2>
+<div class="row3">
+  <div style="position:relative">
+    <span class="cap">A · mobile · canonical</span>
+    <div class="frame-m">
+      <div class="topbar">
+        <div>
+          <div class="hi">buy the body, not the cart.</div>
+          <div class="sub">14 wanted · 6 bought this year</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">wishlist.</div>
+          <div class="count">14</div>
+        </div>
+        <div class="spend-phrase"><b>$ 2,400</b> across 14 items. <span class="pull">→ keep stacking.</span></div>
+
+        <div class="add-strip">
+          <div class="p">+</div>
+          <div class="ph">wishlist · name</div>
+          <div class="pr">$ — — —</div>
+        </div>
+
+        <!-- filters -->
+        <div class="chip-row">
+          <div class="fchip active">all</div>
+          <div class="fchip">wanted</div>
+          <div class="fchip">bought</div>
+        </div>
+        <div class="chip-row">
+          <div class="fchip active">all</div>
+          <div class="fchip">gear</div>
+          <div class="fchip">books</div>
+          <div class="fchip">experiences</div>
+          <div class="fchip">tools</div>
+          <div class="fchip">other</div>
+        </div>
+
+        <!-- 2-col grid -->
+        <div class="grid-2">
+          <!-- 1. eight sleep · custom photo · high -->
+          <div class="card">
+            <div class="cover">
+              <div class="cam">📷</div>
+              <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&q=80" alt=""/>
+            </div>
+            <div class="body">
+              <span class="pri-chip high">high</span>
+              <div class="nm">eight sleep · pod 4</div>
+              <div class="pr"><span class="cur">$</span>2,395</div>
+              <div class="foot"><span class="cpill gear">gear</span></div>
+            </div>
+          </div>
+
+          <!-- 2. discipline is destiny · svg book · med -->
+          <div class="card">
+            <div class="cover svg books">
+              <div class="cam">📷</div>
+              <svg viewBox="0 0 64 64" fill="none">
+                <rect x="14" y="10" width="36" height="48" rx="3" fill="#FFE0E8" stroke="#7A2A3C" stroke-width="2"/>
+                <path d="M14 10v48" stroke="#7A2A3C" stroke-width="2"/>
+                <path d="M22 22h20M22 30h20M22 38h14" stroke="#7A2A3C" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="body">
+              <span class="pri-chip med">med</span>
+              <div class="nm">discipline is destiny</div>
+              <div class="pr"><span class="cur">$</span>22</div>
+              <div class="foot"><span class="cpill books">books</span></div>
+            </div>
+          </div>
+
+          <!-- 3. lifting belt · custom photo · high -->
+          <div class="card">
+            <div class="cover">
+              <div class="cam">📷</div>
+              <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=400&q=80" alt=""/>
+            </div>
+            <div class="body">
+              <span class="pri-chip high">high</span>
+              <div class="nm">SBD lever belt · 13mm</div>
+              <div class="pr"><span class="cur">$</span>185</div>
+              <div class="foot"><span class="cpill gear">gear</span></div>
+            </div>
+          </div>
+
+          <!-- 4. Japan trip · svg exp · low -->
+          <div class="card">
+            <div class="cover svg exp">
+              <div class="cam">📷</div>
+              <svg viewBox="0 0 64 64" fill="none">
+                <circle cx="32" cy="32" r="20" fill="#C7F0CF" stroke="#1F5C2C" stroke-width="2"/>
+                <path d="M12 32h40M32 12c5 6 5 34 0 40M32 12c-5 6-5 34 0 40" stroke="#1F5C2C" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="body">
+              <span class="pri-chip low">low</span>
+              <div class="nm">tokyo · 8 day trip</div>
+              <div class="pr"><span class="cur">$</span>3,800</div>
+              <div class="foot"><span class="cpill exp">experiences</span></div>
+            </div>
+          </div>
+
+          <!-- 5. M3 max · svg tools · med -->
+          <div class="card">
+            <div class="cover svg tools">
+              <div class="cam">📷</div>
+              <svg viewBox="0 0 64 64" fill="none">
+                <rect x="8" y="14" width="48" height="32" rx="3" fill="#fff" stroke="#36475A" stroke-width="2"/>
+                <rect x="4" y="46" width="56" height="4" rx="1" fill="#36475A"/>
+                <rect x="14" y="20" width="36" height="20" rx="1" fill="#EAEFF3"/>
+              </svg>
+            </div>
+            <div class="body">
+              <span class="pri-chip med">med</span>
+              <div class="nm">macbook pro · M3 max</div>
+              <div class="pr"><span class="cur">$</span>3,499</div>
+              <div class="foot"><span class="cpill tools">tools</span></div>
+            </div>
+          </div>
+
+          <!-- 6. wireless mic · custom photo · low -->
+          <div class="card">
+            <div class="cover">
+              <div class="cam">📷</div>
+              <img src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&q=80" alt=""/>
+            </div>
+            <div class="body">
+              <span class="pri-chip low">low</span>
+              <div class="nm">DJI mic 2</div>
+              <div class="pr"><span class="cur">$</span>349</div>
+              <div class="foot"><span class="cpill tools">tools</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- bought -->
+        <div class="bought-head">
+          <div class="lh">bought · this year</div>
+          <div class="ct">6 items · $ 1,840</div>
+        </div>
+        <div class="grid-2 bought">
+          <div class="card">
+            <div class="tick">✓</div>
+            <div class="cover svg gear">
+              <svg viewBox="0 0 64 64" fill="none"><path d="M16 40c0-8 6-14 16-14s16 6 16 14" stroke="#1748A8" stroke-width="2.5" stroke-linecap="round"/><circle cx="22" cy="40" r="4" fill="#1748A8"/><circle cx="42" cy="40" r="4" fill="#1748A8"/></svg>
+            </div>
+            <div class="body">
+              <div class="nm">sabo lifting shoes</div>
+              <div class="pr"><span class="cur">$</span>270</div>
+              <div class="foot"><span class="cpill gear">gear</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="tick">✓</div>
+            <div class="cover svg books">
+              <svg viewBox="0 0 64 64" fill="none"><rect x="14" y="10" width="36" height="48" rx="3" fill="#FFE0E8" stroke="#7A2A3C" stroke-width="2"/><path d="M14 10v48" stroke="#7A2A3C" stroke-width="2"/></svg>
+            </div>
+            <div class="body">
+              <div class="nm">meditations · hays</div>
+              <div class="pr"><span class="cur">$</span>16</div>
+              <div class="foot"><span class="cpill books">books</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B · cover image edit drawer -->
+  <div style="position:relative">
+    <span class="cap">B · mobile · cover image picker</span>
+    <div class="frame-m">
+      <div class="topbar">
+        <div>
+          <div class="hi">buy the body, not the cart.</div>
+          <div class="sub">cover · eight sleep · pod 4</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+
+      <div class="scroll" style="filter:brightness(0.96)">
+        <div class="head-row"><div class="title" style="opacity:0.4">wishlist.</div></div>
+      </div>
+
+      <div class="drawer">
+        <div class="sheet">
+          <div class="grab"></div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+            <div style="width:64px;height:64px;border-radius:14px;overflow:hidden;background:var(--blue-tint);box-shadow:inset 0 0 0 0.5px var(--hairline)"><img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=400&q=80" alt="" style="width:100%;height:100%;object-fit:cover"/></div>
+            <div>
+              <div style="font-size:18px;font-weight:800;letter-spacing:-0.022em;color:var(--ink)">eight sleep · pod 4</div>
+              <div style="font-size:11.5px;color:var(--label);font-weight:600;margin-top:2px">cover · choose a default svg, emoji, url, or upload</div>
+            </div>
+          </div>
+
+          <div class="tabs-pill">
+            <div class="t">emoji</div>
+            <div class="t active">svg</div>
+            <div class="t">url</div>
+            <div class="t">upload</div>
+          </div>
+
+          <div style="font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px">category svgs · gear</div>
+          <div class="svg-grid">
+            <div class="svg-tile sel" style="background:linear-gradient(180deg,var(--blue-tint) 0%,#F0F6FF 100%)">
+              <svg viewBox="0 0 64 64" fill="none"><rect x="10" y="22" width="44" height="24" rx="6" fill="#fff" stroke="#1748A8" stroke-width="2"/><circle cx="32" cy="34" r="6" fill="#1748A8"/></svg>
+            </div>
+            <div class="svg-tile" style="background:linear-gradient(180deg,var(--blue-tint) 0%,#F0F6FF 100%)">
+              <svg viewBox="0 0 64 64" fill="none"><circle cx="20" cy="38" r="10" fill="#1748A8"/><circle cx="44" cy="38" r="10" fill="#1748A8"/><rect x="18" y="36" width="28" height="4" fill="#1748A8"/></svg>
+            </div>
+            <div class="svg-tile" style="background:linear-gradient(180deg,var(--blue-tint) 0%,#F0F6FF 100%)">
+              <svg viewBox="0 0 64 64" fill="none"><path d="M16 40c0-8 6-14 16-14s16 6 16 14" stroke="#1748A8" stroke-width="2.5"/></svg>
+            </div>
+            <div class="svg-tile" style="background:linear-gradient(180deg,var(--pink-2) 0%,var(--pink-3) 100%)">
+              <svg viewBox="0 0 64 64" fill="none"><rect x="14" y="10" width="36" height="48" rx="3" fill="#FFE0E8" stroke="#7A2A3C" stroke-width="2"/></svg>
+            </div>
+            <div class="svg-tile" style="background:linear-gradient(180deg,var(--green-2) 0%,#F0F8F2 100%)">
+              <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="20" fill="#C7F0CF" stroke="#1F5C2C" stroke-width="2"/></svg>
+            </div>
+            <div class="svg-tile" style="background:linear-gradient(180deg,#EAEFF3 0%,#F4F6F8 100%)">
+              <svg viewBox="0 0 64 64" fill="none"><rect x="8" y="14" width="48" height="32" rx="3" fill="#fff" stroke="#36475A" stroke-width="2"/></svg>
+            </div>
+            <div class="svg-tile" style="background:linear-gradient(180deg,#FFF0DD 0%,#FFF8EC 100%)">
+              <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="16" fill="#FFD9A6" stroke="#7A4A1A" stroke-width="2"/></svg>
+            </div>
+            <div class="svg-tile" style="background:linear-gradient(180deg,var(--blue-tint) 0%,#F0F6FF 100%)">
+              <svg viewBox="0 0 64 64" fill="none"><path d="M20 18l24 14L20 46z" fill="#1748A8"/></svg>
+            </div>
+            <div class="svg-tile" style="background:linear-gradient(180deg,var(--pink-2) 0%,var(--pink-3) 100%)">
+              <svg viewBox="0 0 64 64" fill="none"><path d="M32 12L40 28h16L42 38l5 18-15-10-15 10 5-18L8 28h16z" fill="#FFD9E0" stroke="#7A2A3C" stroke-width="1.5"/></svg>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:18px">
+            <div class="b ink">→ saved · cover updated</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C · item detail · mark bought -->
+  <div style="position:relative">
+    <span class="cap">C · mobile · item detail · mark bought</span>
+    <div class="frame-m">
+      <div class="topbar">
+        <div>
+          <div class="hi">buy the body, not the cart.</div>
+          <div class="sub">eight sleep · pod 4</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+
+      <div class="scroll" style="filter:brightness(0.96)">
+        <div class="head-row"><div class="title" style="opacity:0.4">wishlist.</div></div>
+      </div>
+
+      <div class="drawer">
+        <div class="sheet">
+          <div class="grab"></div>
+          <div style="position:relative;border-radius:18px;overflow:hidden;height:160px;margin-bottom:14px">
+            <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/>
+            <div style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(20,20,30,0.55);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;font-weight:600">📷</div>
+            <span class="pri-chip high" style="position:absolute;top:auto;bottom:12px;left:14px;right:auto">high priority</span>
+          </div>
+
+          <div style="font-size:22px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);line-height:1.1">eight sleep · pod 4</div>
+          <div style="font-size:13px;color:var(--label);font-weight:600;margin-top:4px;display:flex;align-items:center;gap:8px"><span class="cpill gear">gear</span><span>added 12 days ago</span></div>
+
+          <div class="field">
+            <div class="lbl">expected price</div>
+            <div class="val" style="font-size:22px;font-weight:800;letter-spacing:-0.025em;font-variant-numeric:tabular-nums"><div><span style="font-size:14px;color:var(--label);font-weight:700;margin-right:2px">$</span>2,395</div><div class="ch">edit</div></div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">link</div>
+            <div class="val" style="font-weight:500;color:var(--blue);font-size:13px">eightsleep.com/pod-4 →</div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">why</div>
+            <div class="val" style="font-weight:500;color:var(--ink-2);line-height:1.45">deeper sleep = stronger lift the next morning. → 220kg deadlift man sleeps 8.</div>
+          </div>
+
+          <div class="btn-row">
+            <div class="b green">→ mark bought · creates expense</div>
+          </div>
+          <div style="height:8px"></div>
+          <div class="btn-row">
+            <div class="b paper">edit</div>
+            <div class="b paper" style="color:var(--pink-ink)">remove</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">D · desktop · 3-col grid · wider</h2>
+<div class="frame-d">
+  <div class="topbar">
+    <div>
+      <div class="hi">buy the body, not the cart.</div>
+      <div class="sub">14 wanted · $ 2,400 across · 6 bought this year</div>
+    </div>
+    <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+  </div>
+  <div class="d-body">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px">
+      <div style="font-size:38px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);line-height:1">wishlist.</div>
+      <div style="font-size:14px;color:var(--label-2);font-weight:600"><b style="color:var(--ink);font-weight:800">$ 2,400</b> across 14 items. <span style="color:var(--green-ink);font-weight:800">→ keep stacking.</span></div>
+    </div>
+
+    <div class="chip-row" style="padding:0 0 8px;margin-top:14px">
+      <div class="fchip active">all</div>
+      <div class="fchip">wanted</div>
+      <div class="fchip">bought</div>
+      <div class="fchip" style="margin-left:18px">gear</div>
+      <div class="fchip">books</div>
+      <div class="fchip">experiences</div>
+      <div class="fchip">tools</div>
+      <div class="fchip">other</div>
+    </div>
+
+    <div class="d-grid-3">
+      <div class="d-card">
+        <div class="cover"><div class="cam">📷</div><img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=600&q=80" alt=""/></div>
+        <div class="body" style="position:relative">
+          <span class="pri-chip high" style="top:-14px">high</span>
+          <div class="nm">eight sleep · pod 4</div>
+          <div class="pr"><span style="font-size:13px;color:var(--label);font-weight:700;margin-right:2px">$</span>2,395</div>
+          <div class="foot" style="margin-top:8px"><span class="cpill gear">gear</span></div>
+        </div>
+      </div>
+      <div class="d-card">
+        <div class="cover svg books"><div class="cam">📷</div><svg viewBox="0 0 64 64" fill="none"><rect x="14" y="10" width="36" height="48" rx="3" fill="#FFE0E8" stroke="#7A2A3C" stroke-width="2"/><path d="M14 10v48M22 22h20M22 30h20M22 38h14" stroke="#7A2A3C" stroke-width="1.5"/></svg></div>
+        <div class="body" style="position:relative">
+          <span class="pri-chip med" style="top:-14px">med</span>
+          <div class="nm">discipline is destiny · holiday</div>
+          <div class="pr"><span style="font-size:13px;color:var(--label);font-weight:700;margin-right:2px">$</span>22</div>
+          <div class="foot" style="margin-top:8px"><span class="cpill books">books</span></div>
+        </div>
+      </div>
+      <div class="d-card">
+        <div class="cover"><div class="cam">📷</div><img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&q=80" alt=""/></div>
+        <div class="body" style="position:relative">
+          <span class="pri-chip high" style="top:-14px">high</span>
+          <div class="nm">SBD lever belt · 13mm</div>
+          <div class="pr"><span style="font-size:13px;color:var(--label);font-weight:700;margin-right:2px">$</span>185</div>
+          <div class="foot" style="margin-top:8px"><span class="cpill gear">gear</span></div>
+        </div>
+      </div>
+      <div class="d-card">
+        <div class="cover svg exp"><div class="cam">📷</div><svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="20" fill="#C7F0CF" stroke="#1F5C2C" stroke-width="2"/><path d="M12 32h40M32 12c5 6 5 34 0 40M32 12c-5 6-5 34 0 40" stroke="#1F5C2C" stroke-width="1.5"/></svg></div>
+        <div class="body" style="position:relative">
+          <span class="pri-chip low" style="top:-14px">low</span>
+          <div class="nm">tokyo · 8 day trip</div>
+          <div class="pr"><span style="font-size:13px;color:var(--label);font-weight:700;margin-right:2px">$</span>3,800</div>
+          <div class="foot" style="margin-top:8px"><span class="cpill exp">experiences</span></div>
+        </div>
+      </div>
+      <div class="d-card">
+        <div class="cover svg tools"><div class="cam">📷</div><svg viewBox="0 0 64 64" fill="none"><rect x="8" y="14" width="48" height="32" rx="3" fill="#fff" stroke="#36475A" stroke-width="2"/><rect x="4" y="46" width="56" height="4" rx="1" fill="#36475A"/></svg></div>
+        <div class="body" style="position:relative">
+          <span class="pri-chip med" style="top:-14px">med</span>
+          <div class="nm">macbook pro · M3 max</div>
+          <div class="pr"><span style="font-size:13px;color:var(--label);font-weight:700;margin-right:2px">$</span>3,499</div>
+          <div class="foot" style="margin-top:8px"><span class="cpill tools">tools</span></div>
+        </div>
+      </div>
+      <div class="d-card">
+        <div class="cover"><div class="cam">📷</div><img src="https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&q=80" alt=""/></div>
+        <div class="body" style="position:relative">
+          <span class="pri-chip low" style="top:-14px">low</span>
+          <div class="nm">DJI mic 2</div>
+          <div class="pr"><span style="font-size:13px;color:var(--label);font-weight:700;margin-right:2px">$</span>349</div>
+          <div class="foot" style="margin-top:8px"><span class="cpill tools">tools</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;color:var(--label);font-weight:800;letter-spacing:0.16em;text-transform:uppercase;margin:8px 0 12px">bought · this year · 6 items · $ 1,840</div>
+    <div class="d-grid-3">
+      <div class="d-card" style="opacity:0.55;position:relative">
+        <div style="position:absolute;top:10px;left:10px;width:28px;height:28px;border-radius:50%;background:var(--green);color:var(--green-ink);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;box-shadow:var(--shadow-chip);z-index:2">✓</div>
+        <div class="cover svg gear"><svg viewBox="0 0 64 64" fill="none"><circle cx="22" cy="40" r="4" fill="#1748A8"/><circle cx="42" cy="40" r="4" fill="#1748A8"/><path d="M16 40c0-8 6-14 16-14s16 6 16 14" stroke="#1748A8" stroke-width="2.5"/></svg></div>
+        <div class="body"><div class="nm">sabo lifting shoes</div><div class="pr"><span style="font-size:13px;color:var(--label);font-weight:700;margin-right:2px">$</span>270</div><div class="foot" style="margin-top:8px"><span class="cpill gear">gear</span></div></div>
+      </div>
+      <div class="d-card" style="opacity:0.55;position:relative">
+        <div style="position:absolute;top:10px;left:10px;width:28px;height:28px;border-radius:50%;background:var(--green);color:var(--green-ink);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;box-shadow:var(--shadow-chip);z-index:2">✓</div>
+        <div class="cover svg books"><svg viewBox="0 0 64 64" fill="none"><rect x="14" y="10" width="36" height="48" rx="3" fill="#FFE0E8" stroke="#7A2A3C" stroke-width="2"/></svg></div>
+        <div class="body"><div class="nm">meditations · hays</div><div class="pr"><span style="font-size:13px;color:var(--label);font-weight:700;margin-right:2px">$</span>16</div><div class="foot" style="margin-top:8px"><span class="cpill books">books</span></div></div>
+      </div>
+      <div class="d-card" style="opacity:0.55;position:relative">
+        <div style="position:absolute;top:10px;left:10px;width:28px;height:28px;border-radius:50%;background:var(--green);color:var(--green-ink);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;box-shadow:var(--shadow-chip);z-index:2">✓</div>
+        <div class="cover"><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80" alt=""/></div>
+        <div class="body"><div class="nm">leather travel duffel</div><div class="pr"><span style="font-size:13px;color:var(--label);font-weight:700;margin-right:2px">$</span>420</div><div class="foot" style="margin-top:8px"><span class="cpill gear">gear</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — KNOWLEDGE v3-final · calibrated from lisa jones eleemnt.jpg + Layout 5.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;--ink-soft:#5A5A5E;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-ink:#1F5C2C;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-ink:#0050C8;
+
+  /* heatmap blue ramp — calm, NOT GitHub-green, NOT amber */
+  --hm-0:#F2F4F7;        /* empty cell · faint */
+  --hm-1:#E2EAF6;
+  --hm-2:#C7D7F0;
+  --hm-3:#9DB9E6;
+  --hm-4:#5C88D4;
+  --hm-5:#1E5BC0;        /* deepest blue — only when day was very dense */
+
+  --d-business:#E2EEFF;     --d-business-2:#C9DBFF;     --d-business-ink:#1748A8;
+  --d-religion:#E2F4E6;     --d-religion-2:#C0E5C8;     --d-religion-ink:#1F5C2C;
+  --d-learning:#FFE0E8;     --d-learning-2:#FFC9D6;     --d-learning-ink:#7A2A3C;
+  --d-fitness:#FFD0DA;      --d-fitness-2:#FFB6C5;      --d-fitness-ink:#7A2A3C;
+  --d-home:#EAEFF3;         --d-home-2:#D4DCE3;         --d-home-ink:#36475A;
+  --d-food:#FFF0DD;         --d-food-2:#FFDFB5;         --d-food-ink:#7A4A1A;
+
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+  /* lisa-jones soft outer-ring shadow */
+  --shadow-outer-ring:0 0 0 1px rgba(60,60,67,0.05), 0 0 0 12px rgba(255,255,255,0.6), 0 14px 30px -16px rgba(20,20,30,0.14), 0 32px 56px -28px rgba(20,20,30,0.16);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1480px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:680px;margin-bottom:18px}
+h2.section{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 24px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+.row3{display:grid;grid-template-columns:repeat(3,390px);gap:32px;align-items:start;margin-bottom:56px;justify-content:start}
+.cap{position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+
+.frame-m{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column}
+
+.topbar{background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);flex-shrink:0}
+.topbar .quote{font-size:16px;font-weight:600;letter-spacing:-0.022em;color:var(--ink);line-height:1.2;font-family:"SF Pro Display",-apple-system,sans-serif}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+.scroll{flex:1;overflow:auto;padding:18px 16px 96px}
+
+.head-row{display:flex;align-items:baseline;justify-content:space-between;padding:2px 6px 14px}
+.head-row .title{font-size:30px;font-weight:800;letter-spacing:-0.03em;color:var(--ink)}
+.head-row .meta{font-size:11.5px;color:var(--label);font-weight:600}
+.head-row .meta b{color:var(--ink-2);font-weight:700}
+
+/* domain filter chips */
+.dchips{display:flex;gap:6px;overflow-x:auto;padding:0 4px 16px;scrollbar-width:none}
+.dchips::-webkit-scrollbar{display:none}
+.dchip{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--label-2);background:var(--paper);padding:7px 12px;border-radius:999px;box-shadow:inset 0 0 0 0.5px var(--hairline);letter-spacing:-0.005em;font-family:inherit;border:none;cursor:pointer}
+.dchip.on{background:var(--ink);color:#fff;box-shadow:none}
+.dchip .pip{width:8px;height:8px;border-radius:50%}
+.dchip.on .pip{box-shadow:0 0 0 1px rgba(255,255,255,0.40)}
+.pip.business{background:var(--d-business-2)}
+.pip.religion{background:var(--d-religion-2)}
+.pip.learning{background:var(--d-learning-2)}
+.pip.fitness{background:var(--d-fitness-2)}
+.pip.home{background:var(--d-home-2)}
+.pip.food{background:var(--d-food-2)}
+
+/* HERO heatmap card · lisa-jones soft outer-ring · grid pattern body */
+.hmap{
+  position:relative;
+  background:var(--paper);
+  border-radius:24px;
+  padding:20px 18px 18px;
+  margin:0 4px 18px;
+  box-shadow:var(--shadow-card-lifted);
+}
+.hmap .hmap-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.hmap .hmap-eye{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase}
+.hmap .hmap-num{font-size:13px;color:var(--ink-2);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-0.012em}
+.hmap .hmap-num b{color:var(--ink);font-weight:800}
+
+/* the heatmap grid · 8 cols (weeks) × 7 rows (days) — Layout 5 calendar grid pattern */
+.grid{display:grid;grid-template-columns:18px repeat(8,1fr);grid-template-rows:repeat(7,28px);column-gap:4px;row-gap:4px;align-items:center;padding:2px 0}
+.grid .dow{font-size:9px;font-weight:700;color:var(--label);letter-spacing:0.08em;text-transform:uppercase;text-align:right;padding-right:2px}
+.cell{height:28px;width:100%;border-radius:6px;background:var(--hm-0);box-shadow:inset 0 0 0 0.5px var(--hairline-soft);position:relative;cursor:pointer}
+.cell.l1{background:var(--hm-1)}
+.cell.l2{background:var(--hm-2)}
+.cell.l3{background:var(--hm-3)}
+.cell.l4{background:var(--hm-4)}
+.cell.l5{background:var(--hm-5)}
+.cell.today{box-shadow:0 0 0 2px var(--ink),0 0 0 4px var(--paper)}
+
+.hmap .legend{display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:0.5px solid var(--hairline)}
+.hmap .legend .lbl{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+.hmap .legend .scale{display:flex;gap:3px;margin-left:auto;align-items:center}
+.hmap .legend .scale .lc{width:14px;height:14px;border-radius:4px;box-shadow:inset 0 0 0 0.5px var(--hairline-soft)}
+.hmap .legend .ends{font-size:10.5px;color:var(--label);font-weight:600;letter-spacing:-0.005em}
+
+.hmap .summary{margin-top:14px;padding-top:12px;border-top:0.5px solid var(--hairline);font-size:13.5px;color:var(--ink-2);font-weight:500;line-height:1.45;letter-spacing:-0.005em}
+.hmap .summary b{color:var(--ink);font-weight:700}
+.hmap .summary .arr{color:var(--blue-ink);font-weight:700;margin:0 4px}
+
+/* per-domain mini-rows */
+.drows{padding:0 4px}
+.drow{display:flex;align-items:center;gap:14px;padding:14px 4px;border-bottom:0.5px solid var(--hairline);cursor:pointer}
+.drow:last-child{border-bottom:none}
+.drow .disc{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06),0 2px 4px rgba(20,20,30,0.05);font-size:13px;font-weight:800;letter-spacing:-0.02em}
+.drow .disc.business{background:linear-gradient(180deg,var(--d-business),var(--d-business-2));color:var(--d-business-ink)}
+.drow .disc.religion{background:linear-gradient(180deg,var(--d-religion),var(--d-religion-2));color:var(--d-religion-ink)}
+.drow .disc.learning{background:linear-gradient(180deg,var(--d-learning),var(--d-learning-2));color:var(--d-learning-ink)}
+.drow .disc.fitness{background:linear-gradient(180deg,var(--d-fitness),var(--d-fitness-2));color:var(--d-fitness-ink)}
+.drow .disc.home{background:linear-gradient(180deg,var(--d-home),var(--d-home-2));color:var(--d-home-ink)}
+.drow .disc.food{background:linear-gradient(180deg,var(--d-food),var(--d-food-2));color:var(--d-food-ink)}
+.drow .body{flex:1;min-width:0}
+.drow .name{font-size:14px;color:var(--ink);font-weight:700;letter-spacing:-0.012em}
+.drow .name span{color:var(--label);font-weight:500;font-variant-numeric:tabular-nums;margin-left:6px}
+.drow .spark{display:flex;gap:2px;margin-top:6px;align-items:flex-end;height:18px}
+.drow .spark .b{flex:1;background:var(--hm-3);border-radius:1.5px;min-width:3px}
+.drow .spark .b.l0{background:var(--hm-0);height:4px}
+.drow .spark .b.l1{background:var(--hm-1);height:6px}
+.drow .spark .b.l2{background:var(--hm-2);height:9px}
+.drow .spark .b.l3{background:var(--hm-3);height:13px}
+.drow .spark .b.l4{background:var(--hm-4);height:16px}
+.drow .spark .b.l5{background:var(--hm-5);height:18px}
+.drow .arrow{font-size:14px;color:var(--label);font-weight:600;flex-shrink:0}
+
+/* day-detail drawer (mockup C) */
+.drawer{background:var(--paper);border-radius:22px;padding:20px 20px 18px;box-shadow:var(--shadow-card-lifted);margin:0 4px 14px}
+.drawer .deye{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:6px}
+.drawer .ddate{font-size:24px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);line-height:1.1;font-family:"SF Pro Display",-apple-system,sans-serif;margin-bottom:4px}
+.drawer .dcount{font-size:13px;color:var(--label-2);font-weight:600;letter-spacing:-0.005em;margin-bottom:14px}
+.drawer .dsec{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin:14px 0 8px}
+.drawer .ditem{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--paper-warm);border-radius:12px;margin-bottom:6px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.drawer .ditem .ico{width:22px;height:22px;border-radius:6px;background:var(--blue-tint);color:var(--blue-ink);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;margin-top:1px}
+.drawer .ditem .ico.theory{background:var(--green-2);color:var(--green-ink)}
+.drawer .ditem .what{font-size:13px;color:var(--ink);font-weight:600;letter-spacing:-0.005em;line-height:1.4}
+.drawer .ditem .what span{color:var(--label);font-weight:500;display:block;margin-top:2px;font-size:11.5px}
+
+/* desktop frame (D) */
+.frame-d{width:1180px;height:820px;background:var(--bg);border-radius:32px;box-shadow:var(--shadow-paper);overflow:hidden;display:grid;grid-template-columns:1fr 380px;border:0.5px solid var(--hairline);margin-top:12px}
+.dleft{padding:32px 40px;overflow:auto;background:var(--paper)}
+.dleft .topbar{background:transparent;border-bottom:none;padding:0 0 18px}
+.dleft .head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px}
+.dleft .head .title{font-size:32px;font-weight:800;letter-spacing:-0.032em;color:var(--ink)}
+.dleft .head .meta{font-size:12px;color:var(--label);font-weight:600}
+.dleft .head .meta b{color:var(--ink-2);font-weight:700}
+.dleft .hmap{margin:0 0 22px;padding:24px 24px 22px}
+.dleft .hmap .grid{grid-template-columns:24px repeat(16,1fr);grid-template-rows:repeat(7,32px);column-gap:5px;row-gap:5px}
+.dleft .hmap .grid .cell{height:32px}
+.dleft .hmap .summary{font-size:14.5px}
+.dright{background:var(--paper-warm);border-left:0.5px solid var(--hairline);padding:24px 22px;overflow:auto}
+.dright .seye{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin-bottom:12px}
+.dright .drow{padding:14px 0;border-bottom:0.5px solid var(--hairline)}
+.dright .drow:last-child{border-bottom:none}
+
+</style></head><body>
+
+<h1 class="h">Do It · KNOWLEDGE v3-final</h1>
+<p class="lead">heatmap of knowledge engagement per day · per domain · calm blue tints. lisa jones outer-ring softness + Layout 5 calendar grid anatomy.</p>
+
+<div class="preamble">
+<p><strong>calibration.</strong> lisa jones eleemnt.jpg gives the soft outer-ring card frame — paper inside a paper. Layout 5.jpg gives the grid + tile vocabulary that powers the calendar heatmap. Layout 4 informs the per-domain mini-row treatment (avatar disc + body + chevron).</p>
+<p><strong>distinct from existing 11.</strong> Habits-v3 uses a 7-day weekly grid; Knowledge uses an 8-week × 7-day matrix oriented horizontally. Heatmap is BLUE (not green or amber). Domains here render as compact horizontal mini-rows with sparklines — never as the full discs row from Domains-v3.</p>
+<p><strong>rules honored.</strong> White bg. SF Pro only. Memoji <code>jay.webp?color=7</code> top-right. Motivational quote in topbar. Zero serif. Zero italic. No bottom-up sheets — drawer is an inline pinned card.</p>
+</div>
+
+<h2 class="section">A · canonical · full heatmap + 6 domain rows</h2>
+<div class="row3">
+  <div style="position:relative">
+    <div class="cap">A · canonical</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">you become what you repeat.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">knowledge.</div>
+          <div class="meta"><b>87</b> captures · 8 wks</div>
+        </div>
+
+        <div class="dchips">
+          <button class="dchip on">all</button>
+          <button class="dchip"><span class="pip business"></span>business</button>
+          <button class="dchip"><span class="pip religion"></span>religion</button>
+          <button class="dchip"><span class="pip learning"></span>learning</button>
+          <button class="dchip"><span class="pip fitness"></span>fitness</button>
+          <button class="dchip"><span class="pip home"></span>home</button>
+          <button class="dchip"><span class="pip food"></span>food</button>
+        </div>
+
+        <div class="hmap">
+          <div class="hmap-top">
+            <div class="hmap-eye">last 8 weeks</div>
+            <div class="hmap-num"><b>87</b> captures · <b>34</b> theory blocks</div>
+          </div>
+          <div class="grid">
+            <div class="dow">M</div>
+            <div class="cell l2"></div><div class="cell l1"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l5"></div><div class="cell l3"></div>
+            <div class="dow">T</div>
+            <div class="cell l1"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l4"></div>
+            <div class="dow">W</div>
+            <div class="cell"></div><div class="cell l2"></div><div class="cell l4"></div><div class="cell l5"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l5"></div>
+            <div class="dow">T</div>
+            <div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l4"></div><div class="cell l5"></div><div class="cell l4"></div><div class="cell l3"></div>
+            <div class="dow">F</div>
+            <div class="cell l2"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l5"></div><div class="cell l4"></div>
+            <div class="dow">S</div>
+            <div class="cell"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell"></div><div class="cell l3"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell l2"></div>
+            <div class="dow">S</div>
+            <div class="cell l1"></div><div class="cell"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell l3 today"></div>
+          </div>
+          <div class="legend">
+            <span class="lbl">density</span>
+            <span class="ends">less</span>
+            <span class="scale">
+              <span class="lc" style="background:var(--hm-0)"></span>
+              <span class="lc" style="background:var(--hm-1)"></span>
+              <span class="lc" style="background:var(--hm-2)"></span>
+              <span class="lc" style="background:var(--hm-3)"></span>
+              <span class="lc" style="background:var(--hm-4)"></span>
+              <span class="lc" style="background:var(--hm-5)"></span>
+            </span>
+            <span class="ends">more</span>
+          </div>
+          <div class="summary">heaviest week was <b>last week</b>. <span class="arr">→</span> 14 captures, mostly business + learning.</div>
+        </div>
+
+        <div style="font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin:2px 8px 6px">by domain</div>
+
+        <div class="drows">
+          <div class="drow">
+            <div class="disc business">B</div>
+            <div class="body">
+              <div class="name">business <span>· 23 captures</span></div>
+              <div class="spark"><span class="b l2"></span><span class="b l3"></span><span class="b l1"></span><span class="b l4"></span><span class="b l3"></span><span class="b l5"></span><span class="b l4"></span><span class="b l5"></span></div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+          <div class="drow">
+            <div class="disc learning">L</div>
+            <div class="body">
+              <div class="name">learning <span>· 21 captures</span></div>
+              <div class="spark"><span class="b l3"></span><span class="b l4"></span><span class="b l2"></span><span class="b l3"></span><span class="b l4"></span><span class="b l3"></span><span class="b l5"></span><span class="b l4"></span></div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+          <div class="drow">
+            <div class="disc fitness">F</div>
+            <div class="body">
+              <div class="name">fitness <span>· 16 captures</span></div>
+              <div class="spark"><span class="b l1"></span><span class="b l2"></span><span class="b l3"></span><span class="b l2"></span><span class="b l3"></span><span class="b l4"></span><span class="b l3"></span><span class="b l3"></span></div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+          <div class="drow">
+            <div class="disc religion">R</div>
+            <div class="body">
+              <div class="name">religion <span>· 12 captures</span></div>
+              <div class="spark"><span class="b l1"></span><span class="b l1"></span><span class="b l2"></span><span class="b l1"></span><span class="b l2"></span><span class="b l3"></span><span class="b l2"></span><span class="b l3"></span></div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+          <div class="drow">
+            <div class="disc home">H</div>
+            <div class="body">
+              <div class="name">home <span>· 9 captures</span></div>
+              <div class="spark"><span class="b l0"></span><span class="b l1"></span><span class="b l1"></span><span class="b l2"></span><span class="b l1"></span><span class="b l1"></span><span class="b l2"></span><span class="b l2"></span></div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+          <div class="drow">
+            <div class="disc food">F</div>
+            <div class="body">
+              <div class="name">food <span>· 6 captures</span></div>
+              <div class="spark"><span class="b l0"></span><span class="b l1"></span><span class="b l0"></span><span class="b l1"></span><span class="b l1"></span><span class="b l1"></span><span class="b l2"></span><span class="b l1"></span></div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B · learning filter active -->
+  <div style="position:relative">
+    <div class="cap">B · "learning" filter active</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">quiet work, loud results.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">knowledge.</div>
+          <div class="meta">learning · <b>21</b> captures</div>
+        </div>
+
+        <div class="dchips">
+          <button class="dchip">all</button>
+          <button class="dchip"><span class="pip business"></span>business</button>
+          <button class="dchip"><span class="pip religion"></span>religion</button>
+          <button class="dchip on"><span class="pip learning"></span>learning</button>
+          <button class="dchip"><span class="pip fitness"></span>fitness</button>
+        </div>
+
+        <div class="hmap">
+          <div class="hmap-top">
+            <div class="hmap-eye">learning · 8 wks</div>
+            <div class="hmap-num"><b>21</b> captures · <b>9</b> theory blocks</div>
+          </div>
+          <div class="grid">
+            <div class="dow">M</div>
+            <div class="cell l1"></div><div class="cell"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell l4"></div><div class="cell l2"></div>
+            <div class="dow">T</div>
+            <div class="cell"></div><div class="cell l2"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l3"></div>
+            <div class="dow">W</div>
+            <div class="cell"></div><div class="cell l1"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l4"></div>
+            <div class="dow">T</div>
+            <div class="cell l2"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l1"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l2"></div>
+            <div class="dow">F</div>
+            <div class="cell l1"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell l4"></div><div class="cell l3"></div>
+            <div class="dow">S</div>
+            <div class="cell"></div><div class="cell"></div><div class="cell l1"></div><div class="cell"></div><div class="cell l2"></div><div class="cell"></div><div class="cell l1"></div><div class="cell l1"></div>
+            <div class="dow">S</div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell l1"></div><div class="cell"></div><div class="cell"></div><div class="cell l1"></div><div class="cell l2 today"></div>
+          </div>
+          <div class="summary">strongest in <b>weekday evenings</b>. <span class="arr">→</span> almost no weekend captures.</div>
+        </div>
+
+        <div style="font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase;margin:2px 8px 6px">recent in learning</div>
+
+        <div class="drows">
+          <div class="drow">
+            <div class="disc learning">L</div>
+            <div class="body">
+              <div class="name">Atomic Habits <span>· 4 captures</span></div>
+              <div class="spark"><span class="b l3"></span><span class="b l4"></span><span class="b l2"></span><span class="b l1"></span><span class="b l0"></span><span class="b l0"></span><span class="b l0"></span><span class="b l0"></span></div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+          <div class="drow">
+            <div class="disc learning">L</div>
+            <div class="body">
+              <div class="name">Naval podcast <span>· 6 captures</span></div>
+              <div class="spark"><span class="b l1"></span><span class="b l2"></span><span class="b l3"></span><span class="b l2"></span><span class="b l4"></span><span class="b l3"></span><span class="b l2"></span><span class="b l3"></span></div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+          <div class="drow">
+            <div class="disc learning">L</div>
+            <div class="body">
+              <div class="name">Cal Newport · Deep Work <span>· 3 captures</span></div>
+              <div class="spark"><span class="b l0"></span><span class="b l1"></span><span class="b l2"></span><span class="b l0"></span><span class="b l1"></span><span class="b l1"></span><span class="b l2"></span><span class="b l1"></span></div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C · day-detail drawer -->
+  <div style="position:relative">
+    <div class="cap">C · cell tap → day-detail drawer</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">show up. that's the move.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row">
+          <div class="title">apr 27.</div>
+          <div class="meta"><b>5</b> captures · <b>2</b> theory</div>
+        </div>
+
+        <div class="drawer">
+          <div class="deye">that day</div>
+          <div class="ddate">wednesday · apr 27</div>
+          <div class="dcount">heaviest learning day in the last 8 weeks.</div>
+
+          <div class="dsec">insights captured · 5</div>
+          <div class="ditem">
+            <div class="ico" style="background:var(--d-learning);color:var(--d-learning-ink)">L</div>
+            <div class="what">read 30min before sleep — recall on books goes up.<span>Naval · podcast · 9:14 pm</span></div>
+          </div>
+          <div class="ditem">
+            <div class="ico" style="background:var(--d-business);color:var(--d-business-ink)">B</div>
+            <div class="what">price anchor on the high tier — middle tier doubled in conversion.<span>Self · pattern · 2:48 pm</span></div>
+          </div>
+          <div class="ditem">
+            <div class="ico" style="background:var(--d-fitness);color:var(--d-fitness-ink)">F</div>
+            <div class="what">earlier meals · cleaner lift sessions.<span>Self · pattern · 6:02 pm</span></div>
+          </div>
+          <div class="ditem">
+            <div class="ico" style="background:var(--d-learning);color:var(--d-learning-ink)">L</div>
+            <div class="what">deep work happens before any meeting · always.<span>Cal Newport · 8:30 am</span></div>
+          </div>
+          <div class="ditem">
+            <div class="ico" style="background:var(--d-religion);color:var(--d-religion-ink)">R</div>
+            <div class="what">prayer anchors the day — fajr sets the tone.<span>Self · 5:12 am</span></div>
+          </div>
+
+          <div class="dsec">theory blocks · 2</div>
+          <div class="ditem">
+            <div class="ico theory">T</div>
+            <div class="what">Atomic Habits · ch 4-5 · 30 min<span>learning · 9:00 pm</span></div>
+          </div>
+          <div class="ditem">
+            <div class="ico theory">T</div>
+            <div class="what">Newport podcast · deep work piece · 45 min<span>learning · 8:00 am</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">D · desktop · wider heatmap (16 wks) + per-domain breakdown</h2>
+<div class="frame-d">
+  <div class="dleft">
+    <div class="topbar">
+      <div class="quote">you become what you repeat.</div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="head">
+      <div class="title">knowledge.</div>
+      <div class="meta"><b>178</b> captures · last 16 weeks</div>
+    </div>
+
+    <div class="dchips">
+      <button class="dchip on">all</button>
+      <button class="dchip"><span class="pip business"></span>business</button>
+      <button class="dchip"><span class="pip religion"></span>religion</button>
+      <button class="dchip"><span class="pip learning"></span>learning</button>
+      <button class="dchip"><span class="pip fitness"></span>fitness</button>
+      <button class="dchip"><span class="pip home"></span>home</button>
+      <button class="dchip"><span class="pip food"></span>food</button>
+    </div>
+
+    <div class="hmap">
+      <div class="hmap-top">
+        <div class="hmap-eye">last 16 weeks · jan 14 → today</div>
+        <div class="hmap-num"><b>178</b> captures · <b>72</b> theory blocks · <b>11</b> avg/week</div>
+      </div>
+      <div class="grid">
+        <div class="dow">M</div>
+        <div class="cell l1"></div><div class="cell l2"></div><div class="cell l1"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l5"></div>
+        <div class="cell l2"></div><div class="cell l3"></div><div class="cell l1"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l5"></div><div class="cell l4"></div><div class="cell l3"></div>
+        <div class="dow">T</div>
+        <div class="cell"></div><div class="cell l1"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l4"></div>
+        <div class="cell l1"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l4"></div>
+        <div class="dow">W</div>
+        <div class="cell l2"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell l4"></div><div class="cell l5"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div>
+        <div class="cell"></div><div class="cell l2"></div><div class="cell l4"></div><div class="cell l5"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l5"></div>
+        <div class="dow">T</div>
+        <div class="cell l1"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l4"></div>
+        <div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l4"></div><div class="cell l5"></div><div class="cell l4"></div><div class="cell l3"></div>
+        <div class="dow">F</div>
+        <div class="cell"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l2"></div>
+        <div class="cell l2"></div><div class="cell l3"></div><div class="cell l4"></div><div class="cell l3"></div><div class="cell l2"></div><div class="cell l3"></div><div class="cell l5"></div><div class="cell l4"></div>
+        <div class="dow">S</div>
+        <div class="cell"></div><div class="cell"></div><div class="cell l1"></div><div class="cell"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell"></div><div class="cell l1"></div>
+        <div class="cell"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell"></div><div class="cell l3"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell l2"></div>
+        <div class="dow">S</div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell l1"></div><div class="cell"></div><div class="cell l1"></div><div class="cell"></div><div class="cell l1"></div>
+        <div class="cell l1"></div><div class="cell"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell"></div><div class="cell l1"></div><div class="cell l2"></div><div class="cell l3 today"></div>
+      </div>
+      <div class="legend">
+        <span class="lbl">density</span>
+        <span class="ends">less</span>
+        <span class="scale">
+          <span class="lc" style="background:var(--hm-0)"></span>
+          <span class="lc" style="background:var(--hm-1)"></span>
+          <span class="lc" style="background:var(--hm-2)"></span>
+          <span class="lc" style="background:var(--hm-3)"></span>
+          <span class="lc" style="background:var(--hm-4)"></span>
+          <span class="lc" style="background:var(--hm-5)"></span>
+        </span>
+        <span class="ends">more</span>
+      </div>
+      <div class="summary">heaviest stretch was <b>weeks 13–16</b>. <span class="arr">→</span> business + learning carrying the curve.</div>
+    </div>
+  </div>
+
+  <div class="dright">
+    <div class="seye">by domain</div>
+    <div class="drows">
+      <div class="drow">
+        <div class="disc business">B</div>
+        <div class="body">
+          <div class="name">business <span>· 47</span></div>
+          <div class="spark"><span class="b l2"></span><span class="b l3"></span><span class="b l1"></span><span class="b l4"></span><span class="b l3"></span><span class="b l5"></span><span class="b l4"></span><span class="b l5"></span></div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="drow">
+        <div class="disc learning">L</div>
+        <div class="body">
+          <div class="name">learning <span>· 42</span></div>
+          <div class="spark"><span class="b l3"></span><span class="b l4"></span><span class="b l2"></span><span class="b l3"></span><span class="b l4"></span><span class="b l3"></span><span class="b l5"></span><span class="b l4"></span></div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="drow">
+        <div class="disc fitness">F</div>
+        <div class="body">
+          <div class="name">fitness <span>· 33</span></div>
+          <div class="spark"><span class="b l1"></span><span class="b l2"></span><span class="b l3"></span><span class="b l2"></span><span class="b l3"></span><span class="b l4"></span><span class="b l3"></span><span class="b l3"></span></div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="drow">
+        <div class="disc religion">R</div>
+        <div class="body">
+          <div class="name">religion <span>· 24</span></div>
+          <div class="spark"><span class="b l1"></span><span class="b l1"></span><span class="b l2"></span><span class="b l1"></span><span class="b l2"></span><span class="b l3"></span><span class="b l2"></span><span class="b l3"></span></div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="drow">
+        <div class="disc home">H</div>
+        <div class="body">
+          <div class="name">home <span>· 18</span></div>
+          <div class="spark"><span class="b l0"></span><span class="b l1"></span><span class="b l1"></span><span class="b l2"></span><span class="b l1"></span><span class="b l1"></span><span class="b l2"></span><span class="b l2"></span></div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+      <div class="drow">
+        <div class="disc food">F</div>
+        <div class="body">
+          <div class="name">food <span>· 14</span></div>
+          <div class="spark"><span class="b l0"></span><span class="b l1"></span><span class="b l0"></span><span class="b l1"></span><span class="b l1"></span><span class="b l1"></span><span class="b l2"></span><span class="b l1"></span></div>
+        </div>
+        <div class="arrow">›</div>
+      </div>
+    </div>
+
+    <div class="seye" style="margin-top:24px">heaviest day</div>
+    <div style="background:var(--paper);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow-soft)">
+      <div style="font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.16em;text-transform:uppercase">apr 27 · wed</div>
+      <div style="font-size:22px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);margin-top:4px;font-variant-numeric:tabular-nums">5 captures</div>
+      <div style="font-size:12px;color:var(--label-2);margin-top:4px">2 theory blocks · learning + business</div>
+    </div>
+  </div>
+</div>
+
+</body></html>

@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — ROUTINES v3-final · calibrated from Layout 3.jpg + Deel Screen 1.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;--ink-soft:#5A5A5E;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-3:#EEF8EF;--green-ink:#1F5C2C;--green-ink-2:#2F7A40;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-tint-2:#D7E6FF;--blue-ink:#0050C8;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1480px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:680px;margin-bottom:18px}
+h2.section{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 24px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+.row3{display:grid;grid-template-columns:repeat(3,390px);gap:32px;align-items:start;margin-bottom:56px;justify-content:start;position:relative}
+.cap{position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+.frame-wrap{position:relative}
+
+/* ---- mobile frame ---- */
+.frame-m{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column}
+
+/* topbar */
+.topbar{background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);flex-shrink:0}
+.topbar .quote{font-size:16px;font-weight:600;letter-spacing:-0.022em;color:var(--ink);line-height:1.2;font-family:"SF Pro Display",-apple-system,sans-serif}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+.scroll{flex:1;overflow:auto;padding:16px 16px 96px}
+
+/* heading + count */
+.head-row{display:flex;align-items:baseline;justify-content:space-between;padding:4px 6px 14px}
+.head-row .title{font-size:30px;font-weight:800;letter-spacing:-0.03em;color:var(--ink)}
+.head-row .count{font-size:11.5px;color:var(--label);font-weight:600}
+.head-row .count b{color:var(--ink-2);font-weight:700}
+
+/* ---- ROUTINE CARD (Layout 3 schedule card vibe — generous padding, identity TOP, kept-grid bottom-right) ---- */
+.routine{
+  position:relative;
+  background:var(--paper);
+  border-radius:24px;
+  padding:18px 18px 16px;
+  box-shadow:var(--shadow-paper);
+  margin:0 4px 14px;
+  overflow:hidden;
+}
+.routine .cover{
+  position:absolute;top:14px;right:14px;
+  width:42px;height:42px;border-radius:14px;
+  background:linear-gradient(180deg,var(--pink-3),var(--pink-2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;line-height:1;
+  box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.04);
+  cursor:pointer;
+}
+.routine .cover.green{background:linear-gradient(180deg,var(--green-3),var(--green-2))}
+.routine .cover.blue{background:linear-gradient(180deg,#F1F6FE,var(--blue-tint))}
+.routine .cover.warm{background:linear-gradient(180deg,#FFF6E8,#FFE9CC)}
+.routine .cover .cam{position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;box-shadow:0 0 0 1.5px var(--bg)}
+
+.routine .identity{font-size:18px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);line-height:1.2;padding-right:54px;font-family:"SF Pro Display",-apple-system,sans-serif}
+.routine .cadence{font-size:13px;color:var(--label-2);font-weight:500;letter-spacing:-0.005em;margin-top:6px;line-height:1.4}
+.routine .cadence b{color:var(--ink-2);font-weight:700}
+
+.routine .grid8{
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  grid-auto-rows:11px;
+  gap:3px;
+  margin-top:14px;
+  padding:10px 0 8px;
+}
+.routine .grid8 .d{aspect-ratio:1;border-radius:3px}
+.routine .grid8 .d.kept{background:linear-gradient(180deg,var(--green-2),var(--green));box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.10)}
+.routine .grid8 .d.kept-pink{background:linear-gradient(180deg,var(--pink-2),var(--pink));box-shadow:inset 0 0 0 0.5px rgba(122,42,60,0.10)}
+.routine .grid8 .d.miss{background:transparent;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.routine .grid8 .d.rest{background:var(--paper-warm);box-shadow:inset 0 0 0 0.5px var(--hairline-soft)}
+.routine .grid8 .d.today{box-shadow:0 0 0 1.5px var(--ink),0 0 0 3px rgba(11,11,15,0.10);background:linear-gradient(180deg,var(--green-2),var(--green))}
+.routine .grid8 .d.today-empty{box-shadow:0 0 0 1.5px var(--ink),0 0 0 3px rgba(11,11,15,0.10);background:transparent}
+
+.routine .foot{display:flex;align-items:center;gap:8px;margin-top:6px;padding-top:10px;border-top:0.5px solid var(--hairline-soft)}
+.routine .streak{display:inline-flex;align-items:center;gap:6px;background:var(--green);color:var(--green-ink);padding:5px 11px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:-0.005em;box-shadow:var(--shadow-chip)}
+.routine .streak.calm{background:var(--paper-warm);color:var(--ink-2);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.routine .streak.pink{background:var(--pink-2);color:var(--pink-ink)}
+.routine .last{font-size:11.5px;color:var(--label);font-weight:500;margin-left:auto}
+
+/* rotated chip on first card only */
+.chip-rotated{position:absolute;top:-6px;left:18px;background:var(--green);color:var(--green-ink);padding:6px 11px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:-0.005em;transform:rotate(-7deg);box-shadow:var(--shadow-chip);z-index:2}
+
+/* + routine pill */
+.add-pill{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--paper-warm);border-radius:14px;padding:14px;margin:14px 4px 0;box-shadow:inset 0 0 0 0.5px var(--hairline);font-size:14px;font-weight:600;color:var(--ink-2);letter-spacing:-0.005em;cursor:pointer}
+.add-pill .plus{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;line-height:1}
+
+/* ---- DETAIL VIEW (mockup B/C) ---- */
+.back-row{display:flex;align-items:center;gap:10px;padding:2px 6px 12px;font-size:13px;color:var(--label-2);font-weight:600;cursor:pointer}
+.back-row .arrow{font-size:14px;color:var(--ink-2)}
+.detail-hero{background:var(--paper);border-radius:22px;padding:18px;box-shadow:var(--shadow-paper);margin:0 4px 14px;position:relative;overflow:hidden}
+.detail-hero .cover{position:absolute;top:16px;right:16px;width:48px;height:48px;border-radius:16px;background:linear-gradient(180deg,var(--green-3),var(--green-2));display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.detail-hero .eyebrow{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase}
+.detail-hero .identity{font-size:22px;font-weight:800;letter-spacing:-0.028em;color:var(--ink);margin-top:6px;line-height:1.15;padding-right:60px;font-family:"SF Pro Display",-apple-system,sans-serif}
+.detail-hero .cadence{font-size:13px;color:var(--label-2);font-weight:500;margin-top:6px}
+.detail-hero .cadence b{color:var(--ink-2);font-weight:700}
+
+/* cadence builder (Deel pill rows pattern) */
+.builder{background:var(--paper);border-radius:22px;padding:18px;box-shadow:var(--shadow-paper);margin:0 4px 14px}
+.builder h3{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label);margin-bottom:12px}
+
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field .lbl{font-size:11px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--label-2);margin-bottom:8px}
+
+/* kind dropdown */
+.kind-row{display:flex;gap:6px;flex-wrap:wrap}
+.kchip{font-size:12px;font-weight:600;color:var(--label-2);background:var(--paper);padding:7px 12px;border-radius:999px;box-shadow:inset 0 0 0 0.5px var(--hairline);letter-spacing:-0.005em;cursor:pointer;font-family:inherit;border:none}
+.kchip.on{background:var(--ink);color:#fff;box-shadow:none;font-weight:700}
+
+/* weekday toggles */
+.wd-row{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.wd{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;letter-spacing:-0.005em;color:var(--label-2);background:var(--paper);border-radius:12px;box-shadow:inset 0 0 0 0.5px var(--hairline);cursor:pointer;text-transform:lowercase}
+.wd.on{background:var(--ink);color:#fff;box-shadow:0 4px 10px -4px rgba(11,11,15,0.30)}
+
+/* week-of-month chips 1-5 */
+.wom-row{display:flex;gap:6px}
+.wom{flex:1;padding:9px 0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--label-2);background:var(--paper);border-radius:12px;box-shadow:inset 0 0 0 0.5px var(--hairline);cursor:pointer}
+.wom.on{background:linear-gradient(180deg,var(--pink-2),var(--pink));color:var(--pink-ink);box-shadow:inset 0 0 0 0.5px rgba(122,42,60,0.18)}
+.wom .sub{font-size:9.5px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--label);margin-top:2px}
+.wom.on .sub{color:rgba(122,42,60,0.65)}
+
+/* day number / interval input */
+.numbox{display:flex;align-items:center;gap:0;background:var(--paper);border-radius:12px;box-shadow:inset 0 0 0 0.5px var(--hairline);overflow:hidden;width:fit-content}
+.numbox .stp{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--ink-2);cursor:pointer;background:var(--paper-warm)}
+.numbox .val{padding:0 18px;font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink);letter-spacing:-0.02em;min-width:54px;text-align:center}
+
+/* derived plain-english phrase */
+.derive{margin-top:14px;padding:12px 14px;background:var(--paper-warm);border-radius:14px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.derive .key{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label);margin-bottom:4px}
+.derive .phr{font-size:14px;font-weight:600;letter-spacing:-0.012em;color:var(--ink);line-height:1.4;font-family:"SF Pro Display",-apple-system,sans-serif}
+.derive .phr b{font-weight:800}
+
+/* history strip */
+.history{background:var(--paper);border-radius:22px;padding:16px 18px;box-shadow:var(--shadow-paper);margin:0 4px 14px}
+.history .h-title{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label);margin-bottom:10px}
+.history .week{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:0.5px solid var(--hairline-soft);font-size:12.5px;color:var(--ink-2);font-weight:500}
+.history .week:first-of-type{border-top:none}
+.history .week .wnum{font-size:10.5px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--label);width:50px}
+.history .week .dots{display:flex;gap:3px;flex:1}
+.history .week .dt{width:9px;height:9px;border-radius:2.5px;background:transparent;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.history .week .dt.k{background:linear-gradient(180deg,var(--green-2),var(--green));box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.10)}
+.history .week .dt.kp{background:linear-gradient(180deg,var(--pink-2),var(--pink));box-shadow:inset 0 0 0 0.5px rgba(122,42,60,0.10)}
+.history .week .pct{font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+
+/* save row */
+.save-row{display:flex;gap:10px;padding:0 4px;margin-top:6px}
+.save-row .btn-ink{flex:1;background:linear-gradient(180deg,#1A1A20 0%,#000 100%);color:#fff;border:none;border-radius:999px;padding:14px 22px;font-size:14.5px;font-weight:700;letter-spacing:-0.012em;box-shadow:var(--shadow-press-ink);font-family:inherit;cursor:pointer}
+.save-row .btn-ghost{padding:14px 18px;font-size:13.5px;font-weight:600;color:var(--label-2);background:var(--paper);border:none;border-radius:999px;box-shadow:inset 0 0 0 0.5px var(--hairline);font-family:inherit;cursor:pointer}
+
+/* ---- desktop frame (mockup D) ---- */
+.row1d{display:grid;grid-template-columns:1280px;gap:24px;justify-content:start;position:relative;margin-top:64px}
+.frame-d{width:1280px;background:var(--paper);border-radius:28px;box-shadow:var(--shadow-card-lifted);overflow:hidden;border:0.5px solid var(--hairline)}
+.frame-d .top-d{padding:18px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline)}
+.frame-d .top-d .quote{font-size:16px;font-weight:600;letter-spacing:-0.022em;color:var(--ink)}
+.frame-d .top-d .crumbs{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--label);font-weight:600}
+.frame-d .top-d .crumbs b{color:var(--ink);font-weight:700;font-size:13.5px;letter-spacing:-0.012em}
+.frame-d .top-d .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.frame-d .top-d .memoji img{width:100%;height:100%}
+
+.split{display:grid;grid-template-columns:380px 1fr;min-height:760px}
+.master{border-right:0.5px solid var(--hairline);padding:22px;background:var(--paper-warm);display:flex;flex-direction:column;gap:10px}
+.master .h-title{font-size:24px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);margin-bottom:8px}
+.master .m-card{background:var(--paper);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow-soft);cursor:pointer;display:flex;align-items:center;gap:12px}
+.master .m-card.active{box-shadow:0 0 0 1.5px var(--ink),var(--shadow-soft)}
+.master .m-card .cv{width:34px;height:34px;border-radius:11px;background:linear-gradient(180deg,var(--green-3),var(--green-2));display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.master .m-card .cv.pink{background:linear-gradient(180deg,var(--pink-3),var(--pink-2))}
+.master .m-card .cv.blue{background:linear-gradient(180deg,#F1F6FE,var(--blue-tint))}
+.master .m-card .cv.warm{background:linear-gradient(180deg,#FFF6E8,#FFE9CC)}
+.master .m-card .body .nm{font-size:13.5px;font-weight:700;color:var(--ink);letter-spacing:-0.012em;line-height:1.2}
+.master .m-card .body .cd{font-size:11.5px;color:var(--label-2);font-weight:500;margin-top:2px}
+
+.detail{padding:32px;display:flex;flex-direction:column;gap:18px;overflow:auto;max-height:760px}
+.detail .d-hero{background:var(--paper);border-radius:22px;padding:24px;box-shadow:var(--shadow-paper);position:relative}
+.detail .d-hero .cover{position:absolute;top:22px;right:22px;width:64px;height:64px;border-radius:18px;background:linear-gradient(180deg,var(--green-3),var(--green-2));display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.detail .d-hero .eyebrow{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label)}
+.detail .d-hero .identity{font-size:32px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);margin-top:6px;padding-right:80px;line-height:1.1}
+.detail .d-hero .cadence{font-size:14.5px;color:var(--label-2);font-weight:500;margin-top:8px}
+.detail .d-hero .cadence b{color:var(--ink-2);font-weight:700}
+.detail .d-hero .grid8{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-top:18px;max-width:380px}
+.detail .d-hero .grid8 .d{aspect-ratio:1;border-radius:4px}
+.detail .d-hero .grid8 .d.kept{background:linear-gradient(180deg,var(--green-2),var(--green));box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.10)}
+.detail .d-hero .grid8 .d.miss{background:transparent;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.detail .d-hero .grid8 .d.rest{background:var(--paper-warm);box-shadow:inset 0 0 0 0.5px var(--hairline-soft)}
+.detail .d-hero .grid8 .d.today{box-shadow:0 0 0 1.5px var(--ink),0 0 0 3px rgba(11,11,15,0.10);background:linear-gradient(180deg,var(--green-2),var(--green))}
+
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+</style></head><body>
+
+<h1 class="h">Do It · ROUTINES v3-final</h1>
+<p class="lead">calibrated from <strong>Layout 3.jpg</strong> (schedule card composition — generous identity, calm cadence, clear spatial grid) + <strong>Deel Screen 1.jpg</strong> (cadence builder pill rows). routines = identity-driven repeating commitments with elastic cadences.</p>
+
+<div class="preamble">
+  <p><strong>anatomy.</strong> each routine card carries an <em>identity line</em> (display 18/800), a calm cadence phrase below, an 8-week × 7-day kept-dot grid (filled = kept, hairline = missed, never red, today gets glow ring), and a streak pill in the foot. cover glyph top-right is editable.</p>
+  <p><strong>cadence kinds.</strong> <code>weekly</code> · <code>biweekly</code> · <code>monthlyWeeks</code> · <code>monthlyDays</code> · <code>interval</code>. each kind reveals a different config row (weekday toggles, week-of-month chips 1-5, day-number, interval days). a plain-english phrase derives below in real time.</p>
+  <p><strong>distinct.</strong> habits uses a single 7-day strip + horizontal row treatment. routines uses the full 8×7 grid PER card, identity-led, with the cadence builder being its signature surface. visions is goal-led, no cadence. domains is momentum-word, no grid.</p>
+</div>
+
+<h2 class="section">mobile · A list · B detail · C builder</h2>
+<div class="row3">
+  <div class="frame-wrap">
+    <div class="cap">A · routines list</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">show up. that's the move.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row"><div class="title">routines.</div><div class="count"><b>4</b> running</div></div>
+
+        <!-- routine 1 — weekly · with rotated chip -->
+        <div class="routine">
+          <span class="chip-rotated">humming</span>
+          <div class="cover">
+            <span>🏋︎</span>
+            <span class="cam">✎</span>
+          </div>
+          <div class="identity">I am someone who trains daily.</div>
+          <div class="cadence"><b>mon · wed · fri</b> mornings · 60 min</div>
+          <div class="grid8">
+            <!-- 8 cols × 7 rows = 56 dots; fill kept on M/W/F columns -->
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d today"></div><div class="d miss"></div><div class="d miss"></div><div class="d rest"></div><div class="d rest"></div>
+          </div>
+          <div class="foot">
+            <div class="streak">humming · 6 weeks steady</div>
+            <div class="last">last · mon</div>
+          </div>
+        </div>
+
+        <!-- routine 2 — biweekly · pink coverart -->
+        <div class="routine">
+          <div class="cover blue">
+            <span>📖</span>
+            <span class="cam">✎</span>
+          </div>
+          <div class="identity">I am someone who studies the book.</div>
+          <div class="cadence"><b>tue · sat</b> evenings · biweekly · 30 min</div>
+          <div class="grid8">
+            <div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d today-empty"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div>
+          </div>
+          <div class="foot">
+            <div class="streak pink">3 weeks · biweekly cadence</div>
+            <div class="last">last · sat</div>
+          </div>
+        </div>
+
+        <!-- routine 3 — monthlyWeeks (1+3) -->
+        <div class="routine">
+          <div class="cover warm">
+            <span>✂︎</span>
+            <span class="cam">✎</span>
+          </div>
+          <div class="identity">I am someone who keeps a sharp look.</div>
+          <div class="cadence">first &amp; third <b>fri</b> · weeks 1 + 3 · 30 min</div>
+          <div class="grid8">
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d today-empty"></div><div class="d rest"></div><div class="d rest"></div>
+          </div>
+          <div class="foot">
+            <div class="streak calm">on cadence · 4 in a row</div>
+            <div class="last">last · 2 weeks ago</div>
+          </div>
+        </div>
+
+        <!-- routine 4 — interval -->
+        <div class="routine">
+          <div class="cover">
+            <span>💧</span>
+            <span class="cam">✎</span>
+          </div>
+          <div class="identity">I am someone who resets every 10 days.</div>
+          <div class="cadence">every <b>10 days</b> · sauna + walk · 90 min</div>
+          <div class="grid8">
+            <div class="d miss"></div><div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept-pink"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept-pink"></div><div class="d miss"></div><div class="d miss"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept-pink"></div>
+            <div class="d miss"></div><div class="d miss"></div><div class="d today-empty"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div>
+          </div>
+          <div class="foot">
+            <div class="streak pink">interval kept · 6 cycles</div>
+            <div class="last">last · 9 days</div>
+          </div>
+        </div>
+
+        <div class="add-pill"><div class="plus">+</div><div>routine</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="frame-wrap">
+    <div class="cap">B · routine detail (cadence: weekly)</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">you become what you repeat.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="back-row"><span class="arrow">‹</span><span>routines</span></div>
+
+        <div class="detail-hero">
+          <div class="cover">🏋︎</div>
+          <div class="eyebrow">routine</div>
+          <div class="identity">I am someone who trains daily.</div>
+          <div class="cadence"><b>mon · wed · fri</b> mornings · 60 min</div>
+        </div>
+
+        <div class="builder">
+          <h3>cadence</h3>
+          <div class="field">
+            <div class="lbl">kind</div>
+            <div class="kind-row">
+              <button class="kchip on">weekly</button>
+              <button class="kchip">biweekly</button>
+              <button class="kchip">weeks of month</button>
+              <button class="kchip">days of month</button>
+              <button class="kchip">interval</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">days</div>
+            <div class="wd-row">
+              <div class="wd on">m</div>
+              <div class="wd">t</div>
+              <div class="wd on">w</div>
+              <div class="wd">t</div>
+              <div class="wd on">f</div>
+              <div class="wd">s</div>
+              <div class="wd">s</div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">duration</div>
+            <div class="numbox">
+              <div class="stp">−</div>
+              <div class="val">60</div>
+              <div class="stp">+</div>
+            </div>
+          </div>
+
+          <div class="derive">
+            <div class="key">plain english</div>
+            <div class="phr"><b>mon · wed · fri</b> · 60 min · every week.</div>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="btn-ghost">cancel</button>
+          <button class="btn-ink">save · → daily training kept</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="frame-wrap">
+    <div class="cap">C · cadence: weeks of month</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">quiet work, loud results.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="back-row"><span class="arrow">‹</span><span>routines</span></div>
+
+        <div class="detail-hero">
+          <div class="cover" style="background:linear-gradient(180deg,#FFF6E8,#FFE9CC)">✂︎</div>
+          <div class="eyebrow">routine</div>
+          <div class="identity">I am someone who keeps a sharp look.</div>
+          <div class="cadence">first &amp; third <b>fri</b> · 30 min</div>
+        </div>
+
+        <div class="builder">
+          <h3>cadence</h3>
+          <div class="field">
+            <div class="lbl">kind</div>
+            <div class="kind-row">
+              <button class="kchip">weekly</button>
+              <button class="kchip">biweekly</button>
+              <button class="kchip on">weeks of month</button>
+              <button class="kchip">days of month</button>
+              <button class="kchip">interval</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">weeks</div>
+            <div class="wom-row">
+              <div class="wom on">1<div class="sub">first</div></div>
+              <div class="wom">2<div class="sub">second</div></div>
+              <div class="wom on">3<div class="sub">third</div></div>
+              <div class="wom">4<div class="sub">fourth</div></div>
+              <div class="wom">5<div class="sub">fifth</div></div>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="lbl">day</div>
+            <div class="wd-row">
+              <div class="wd">m</div>
+              <div class="wd">t</div>
+              <div class="wd">w</div>
+              <div class="wd">t</div>
+              <div class="wd on">f</div>
+              <div class="wd">s</div>
+              <div class="wd">s</div>
+            </div>
+          </div>
+
+          <div class="derive">
+            <div class="key">plain english</div>
+            <div class="phr">weeks <b>1 + 3</b> · <b>fri</b> · every month.</div>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="btn-ghost">cancel</button>
+          <button class="btn-ink">save · → sharp look kept</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2 class="section">desktop · D · master / detail</h2>
+<div class="row1d">
+  <div class="frame-d">
+    <div class="top-d">
+      <div class="quote">discipline equals freedom.</div>
+      <div class="crumbs"><span>do it</span><span>›</span><b>routines</b></div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="split">
+      <div class="master">
+        <div class="h-title">routines</div>
+        <div class="m-card active">
+          <div class="cv">🏋︎</div>
+          <div class="body"><div class="nm">trains daily.</div><div class="cd">mon · wed · fri</div></div>
+        </div>
+        <div class="m-card">
+          <div class="cv blue">📖</div>
+          <div class="body"><div class="nm">studies the book.</div><div class="cd">tue · sat · biweekly</div></div>
+        </div>
+        <div class="m-card">
+          <div class="cv warm">✂︎</div>
+          <div class="body"><div class="nm">keeps a sharp look.</div><div class="cd">first &amp; third fri</div></div>
+        </div>
+        <div class="m-card">
+          <div class="cv pink">💧</div>
+          <div class="body"><div class="nm">resets every 10 days.</div><div class="cd">interval · 10d</div></div>
+        </div>
+        <div class="add-pill" style="margin:8px 0 0"><div class="plus">+</div><div>routine</div></div>
+      </div>
+      <div class="detail">
+        <div class="d-hero">
+          <div class="cover">🏋︎</div>
+          <div class="eyebrow">routine</div>
+          <div class="identity">I am someone who trains daily.</div>
+          <div class="cadence"><b>mon · wed · fri</b> mornings · 60 min · 6 weeks steady</div>
+          <div class="grid8">
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d miss"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d miss"></div><div class="d kept"></div><div class="d rest"></div><div class="d rest"></div>
+            <div class="d kept"></div><div class="d miss"></div><div class="d today"></div><div class="d miss"></div><div class="d miss"></div><div class="d rest"></div><div class="d rest"></div>
+          </div>
+        </div>
+        <div class="det-grid">
+          <div class="builder" style="margin:0">
+            <h3>cadence</h3>
+            <div class="field">
+              <div class="lbl">kind</div>
+              <div class="kind-row">
+                <button class="kchip on">weekly</button>
+                <button class="kchip">biweekly</button>
+                <button class="kchip">weeks of month</button>
+                <button class="kchip">days of month</button>
+                <button class="kchip">interval</button>
+              </div>
+            </div>
+            <div class="field">
+              <div class="lbl">days</div>
+              <div class="wd-row">
+                <div class="wd on">m</div><div class="wd">t</div><div class="wd on">w</div><div class="wd">t</div><div class="wd on">f</div><div class="wd">s</div><div class="wd">s</div>
+              </div>
+            </div>
+            <div class="derive">
+              <div class="key">plain english</div>
+              <div class="phr"><b>mon · wed · fri</b> · 60 min · every week.</div>
+            </div>
+          </div>
+          <div class="history" style="margin:0">
+            <div class="h-title">last 8 weeks</div>
+            <div class="week"><div class="wnum">w-7</div><div class="dots"><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt"></div></div><div class="pct">3/3</div></div>
+            <div class="week"><div class="wnum">w-6</div><div class="dots"><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt"></div></div><div class="pct">3/3</div></div>
+            <div class="week"><div class="wnum">w-5</div><div class="dots"><div class="dt k"></div><div class="dt"></div><div class="dt"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt"></div></div><div class="pct">2/3</div></div>
+            <div class="week"><div class="wnum">w-4</div><div class="dots"><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt"></div></div><div class="pct">3/3</div></div>
+            <div class="week"><div class="wnum">w-3</div><div class="dots"><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt"></div></div><div class="pct">3/3</div></div>
+            <div class="week"><div class="wnum">w-2</div><div class="dots"><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt"></div></div><div class="pct">3/3</div></div>
+            <div class="week"><div class="wnum">w-1</div><div class="dots"><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt k"></div><div class="dt"></div><div class="dt"></div></div><div class="pct">3/3</div></div>
+            <div class="week"><div class="wnum">now</div><div class="dots"><div class="dt k"></div><div class="dt"></div><div class="dt"></div><div class="dt"></div><div class="dt"></div><div class="dt"></div><div class="dt"></div></div><div class="pct">1/3</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

@@ -142,5 +142,14 @@
 - **AI categorization, smart suggestions** — explicit no.
 - **Goals as separate from Visions** — Goals nest UNDER each Vision; not a competing surface.
 
+## Hard typography rule (lock)
+**SF Pro Display / SF Pro Text ONLY. No serif. No italic. No cursive. Anywhere.** Adam was explicit. The journal-app reference was a creativity-LEVEL example, not a font directive. Apply ONLY its compositional ideas (per-screen identity, embedded illustrations, texture noise, rotated chips, frosted toolbars, paper-fade) — never its serif italic typography.
+
+## Hard memoji rule (lock)
+Memoji top-right of Topbar = always there, links to /settings/. Memojis on People avatars = stay. Never strip memojis from anywhere they currently exist. The `memojis/` folder in `board/` is curated reference.
+
+## Hard creative-reference rule (lock)
+**`board/` is THE design standard.** Every visual decision calibrates from board images. Journal-app was a LEVEL reference (showing what creative-quality looks like) — not a thing to copy patterns from beyond the abstract ideas (variety per screen, custom illustrations per surface, etc.).
+
 ## Soul (one paragraph)
 Quiet. Direct. Conqueror's. Every fact echoes a future-self pull. Words over graphs. Identity above outcome. Workouts and weights and water are tracked because that's how the man becomes who he says. Cookie jar holds the proof. Evening audit sharpens tomorrow. Cmd+K lets him strike anywhere. Premium the way a mechanical watch is premium — nothing extra, nothing missing. Walking through it should feel like the externalized version of the man Adam is becoming.

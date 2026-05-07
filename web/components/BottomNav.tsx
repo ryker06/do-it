@@ -62,7 +62,8 @@ export function BottomNav() {
             href={t.href}
             className={`tab${active ? " active" : ""}`}
           >
-            <div className="pill">{t.glyph}</div>
+            <div className="tab-icon">{t.glyph}</div>
+            <span className="tab-label">{t.label}</span>
           </Link>
         );
       })}

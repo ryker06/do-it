@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — STATE v3-final · calibrated from Element 3.jpg + Layout 4.jpg</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;--ink-soft:#5A5A5E;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-3:#EEF8EF;--green-ink:#1F5C2C;--green-ink-2:#2F7A40;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-tint-2:#D7E6FF;--blue-ink:#0050C8;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+  --shadow-chip-lifted:0 0 0 0.5px rgba(60,60,67,0.05),0 2px 4px rgba(20,20,30,0.05),0 14px 28px -14px rgba(20,20,30,0.16),0 1px 0 rgba(255,255,255,0.6) inset;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1480px;margin:0 auto}
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:680px;margin-bottom:18px}
+h2.section{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 24px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+.row3{display:grid;grid-template-columns:repeat(3,390px);gap:32px;align-items:start;margin-bottom:56px;justify-content:start;position:relative}
+.cap{position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+.frame-wrap{position:relative}
+
+.frame-m{width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column}
+
+.topbar{background:var(--paper);padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline);flex-shrink:0}
+.topbar .quote{font-size:16px;font-weight:600;letter-spacing:-0.022em;color:var(--ink);line-height:1.2;font-family:"SF Pro Display",-apple-system,sans-serif}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+.scroll{flex:1;overflow:auto;padding:18px 16px 96px}
+
+.head-row{display:flex;align-items:baseline;justify-content:space-between;padding:2px 6px 16px}
+.head-row .title{font-size:30px;font-weight:800;letter-spacing:-0.03em;color:var(--ink)}
+.head-row .meta{font-size:11.5px;color:var(--label);font-weight:600}
+.head-row .meta b{color:var(--ink-2);font-weight:700}
+
+/* ---- HERO 5-CHIP GRID (Element 3 dimensional layered card vibe) ---- */
+.hero-frame{margin:0 4px 18px}
+.hero-eye{font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin:0 4px 10px}
+.hero-eye b{color:var(--ink-2)}
+
+.chip-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.s-chip{
+  border-radius:22px;
+  padding:18px 16px 16px;
+  position:relative;
+  overflow:hidden;
+  cursor:pointer;
+  min-height:104px;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  box-shadow:var(--shadow-chip-lifted);
+}
+.s-chip .word{font-size:26px;font-weight:800;letter-spacing:-0.03em;line-height:1;font-family:"SF Pro Display",-apple-system,sans-serif}
+.s-chip .sub{font-size:10.5px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;margin-top:6px;opacity:0.65}
+.s-chip .glyph{position:absolute;top:14px;right:14px;font-size:18px;opacity:0.6}
+
+/* tints */
+.s-chip.clear{background:linear-gradient(180deg,#EEF8EF 0%,var(--green-2) 100%);color:var(--green-ink);box-shadow:var(--shadow-chip-lifted),inset 0 0 0 0.5px rgba(31,92,44,0.10)}
+.s-chip.focused{background:linear-gradient(180deg,#F1F6FE 0%,var(--blue-tint) 100%);color:var(--blue-ink);box-shadow:var(--shadow-chip-lifted),inset 0 0 0 0.5px rgba(10,80,200,0.10)}
+.s-chip.wired{background:linear-gradient(180deg,var(--pink-3) 0%,var(--pink-2) 100%);color:var(--pink-ink);box-shadow:var(--shadow-chip-lifted),inset 0 0 0 0.5px rgba(122,42,60,0.10)}
+.s-chip.drained{background:linear-gradient(180deg,var(--paper-warm) 0%,#F1EFEA 100%);color:var(--ink-2);box-shadow:var(--shadow-chip-lifted),inset 0 0 0 0.5px var(--hairline)}
+.s-chip.heavy{
+  grid-column:span 2;
+  background:linear-gradient(180deg,#1A1A20 0%,#000 100%);
+  color:#fff;
+  min-height:108px;
+  box-shadow:var(--shadow-press-ink);
+}
+.s-chip.heavy .word{font-size:32px;font-weight:800}
+.s-chip.heavy .sub{opacity:0.5;color:#D8D8DC}
+
+/* offset stagger to feel layered like Element 3 */
+.chip-grid .s-chip:nth-child(1){transform:translateY(0)}
+.chip-grid .s-chip:nth-child(2){transform:translateY(-4px)}
+.chip-grid .s-chip:nth-child(3){transform:translateY(-2px)}
+.chip-grid .s-chip:nth-child(4){transform:translateY(2px)}
+
+/* tap helper text */
+.tap-hint{font-size:11px;color:var(--label);font-weight:500;text-align:center;margin-top:10px;letter-spacing:-0.005em}
+
+/* ---- TODAY'S HISTORY LIST ---- */
+.history{background:var(--paper);border-radius:22px;padding:6px 16px;box-shadow:var(--shadow-paper);margin:0 4px 14px}
+.h-title{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label);padding:14px 0 10px}
+.h-row{display:flex;align-items:center;gap:14px;padding:11px 0;border-top:0.5px solid var(--hairline-soft)}
+.h-row .t{font-size:12px;color:var(--label);font-weight:600;font-variant-numeric:tabular-nums;width:54px;letter-spacing:0.02em}
+.h-row .w{font-size:14.5px;color:var(--ink);font-weight:700;letter-spacing:-0.012em;flex:1}
+.h-row .dot{width:8px;height:8px;border-radius:50%}
+.h-row .dot.green{background:var(--green-ink-2);box-shadow:0 0 0 3px var(--green-2)}
+.h-row .dot.blue{background:var(--blue);box-shadow:0 0 0 3px var(--blue-tint)}
+.h-row .dot.pink{background:var(--pink-ink);box-shadow:0 0 0 3px var(--pink-2)}
+.h-row .dot.warm{background:var(--ink-3);box-shadow:0 0 0 3px var(--paper-warm)}
+
+/* ---- WEEK DENSITY ---- */
+.week-block{background:var(--paper);border-radius:22px;padding:18px;box-shadow:var(--shadow-paper);margin:0 4px 14px}
+.week-block .wb-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px}
+.week-block .wb-eye{font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label)}
+.week-block .wb-sum{font-size:13px;font-weight:600;color:var(--ink-2);letter-spacing:-0.005em}
+.week-block .wb-sum b{color:var(--ink);font-weight:800}
+.week-block .days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.day{display:flex;flex-direction:column;align-items:center;gap:5px}
+.day .dlabel{font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--label)}
+.day .stack{display:flex;flex-direction:column;gap:2px;width:100%}
+.day .seg{height:7px;border-radius:2.5px;background:var(--paper-warm);box-shadow:inset 0 0 0 0.5px var(--hairline-soft)}
+.day .seg.clr{background:var(--green-2);box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.10)}
+.day .seg.foc{background:var(--blue-tint);box-shadow:inset 0 0 0 0.5px rgba(10,80,200,0.10)}
+.day .seg.wir{background:var(--pink-2);box-shadow:inset 0 0 0 0.5px rgba(122,42,60,0.10)}
+.day .seg.drn{background:#EAE6E0;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.day .seg.hvy{background:var(--ink);box-shadow:none}
+
+/* ---- PATTERN PHRASES ---- */
+.patterns{margin:0 4px}
+.p-eye{font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label);padding:0 4px 10px}
+.p-card{background:var(--paper);border-radius:18px;padding:16px 18px;box-shadow:inset 0 0 0 0.5px var(--hairline);margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px}
+.p-card .marker{width:6px;height:36px;border-radius:3px;background:var(--green);flex-shrink:0}
+.p-card .marker.blue{background:var(--blue-tint-2)}
+.p-card .marker.pink{background:var(--pink)}
+.p-card .body .phr{font-size:14.5px;font-weight:600;color:var(--ink);letter-spacing:-0.012em;line-height:1.35;font-family:"SF Pro Display",-apple-system,sans-serif}
+.p-card .body .phr b{font-weight:800}
+.p-card .body .meta{font-size:11px;color:var(--label);font-weight:500;margin-top:3px}
+.p-card .arrow{color:var(--label);margin-left:auto;font-size:14px}
+
+/* rotated chip (one per screen) */
+.chip-rotated{display:inline-flex;align-items:center;gap:6px;background:var(--green);color:var(--green-ink);padding:5px 11px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:-0.005em;transform:rotate(-7deg);box-shadow:var(--shadow-chip);position:absolute;top:14px;right:14px}
+
+/* ---- mockup B: post-tap toast ---- */
+.toast{
+  position:absolute;
+  left:16px;right:16px;top:calc(56px + 18px + 220px);
+  background:linear-gradient(180deg,#1A1A20 0%,#000 100%);
+  color:#fff;border-radius:20px;padding:16px 20px;
+  box-shadow:var(--shadow-press-ink);
+  display:flex;align-items:center;gap:12px;
+  z-index:5;
+}
+.toast .check{width:26px;height:26px;border-radius:50%;background:var(--green);color:var(--green-ink);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+.toast .body .lbl{font-size:13.5px;font-weight:700;letter-spacing:-0.012em;color:#fff}
+.toast .body .pull{font-size:11.5px;font-weight:600;color:#A8A8AC;margin-top:1px}
+
+/* ---- mockup C: pattern detail drawer ---- */
+.drawer{
+  background:var(--paper);
+  border-radius:24px;
+  margin:0 4px 14px;
+  padding:18px;
+  box-shadow:var(--shadow-paper);
+}
+.drawer .d-eye{font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label)}
+.drawer .d-phr{font-size:18px;font-weight:800;letter-spacing:-0.022em;color:var(--ink);margin-top:6px;line-height:1.25;font-family:"SF Pro Display",-apple-system,sans-serif}
+.drawer .d-phr b{color:var(--green-ink)}
+.drawer .corr{margin-top:14px}
+.drawer .corr .lbl{font-size:10.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--label);margin-bottom:8px}
+.drawer .bars{display:flex;align-items:flex-end;gap:6px;height:64px;padding:6px 0;border-bottom:0.5px solid var(--hairline-soft)}
+.drawer .bar{flex:1;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--green-2),var(--green));box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.10)}
+.drawer .bar.dim{background:var(--paper-warm);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.drawer .axis{display:flex;justify-content:space-between;font-size:10px;color:var(--label);font-weight:600;letter-spacing:0.04em;text-transform:uppercase;margin-top:6px}
+.drawer .stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.drawer .stat{background:var(--paper-warm);border-radius:12px;padding:10px 12px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.drawer .stat .k{font-size:10.5px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;color:var(--label)}
+.drawer .stat .v{font-size:18px;font-weight:800;letter-spacing:-0.022em;color:var(--ink);margin-top:2px;font-variant-numeric:tabular-nums}
+
+/* ---- desktop ---- */
+.row1d{display:grid;grid-template-columns:1280px;gap:24px;justify-content:start;position:relative;margin-top:56px}
+.frame-d{width:1280px;background:var(--paper);border-radius:28px;box-shadow:var(--shadow-card-lifted);overflow:hidden;border:0.5px solid var(--hairline)}
+.frame-d .top-d{padding:18px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--hairline)}
+.frame-d .top-d .quote{font-size:16px;font-weight:600;letter-spacing:-0.022em;color:var(--ink)}
+.frame-d .top-d .crumbs{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--label);font-weight:600}
+.frame-d .top-d .crumbs b{color:var(--ink);font-weight:700;font-size:13.5px;letter-spacing:-0.012em}
+.frame-d .top-d .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.frame-d .top-d .memoji img{width:100%;height:100%}
+
+.split{display:grid;grid-template-columns:1fr 380px;min-height:760px}
+.main{padding:32px;display:flex;flex-direction:column;gap:18px;overflow:auto;max-height:760px}
+.main .d-title{font-size:36px;font-weight:800;letter-spacing:-0.035em;color:var(--ink);margin-bottom:4px}
+.main .d-sub{font-size:14px;color:var(--label-2);font-weight:500}
+
+.main .chip-grid-d{display:grid;grid-template-columns:repeat(4,1fr) 2fr;gap:12px;margin-top:14px}
+.main .s-chip-d{border-radius:24px;padding:22px 20px;min-height:130px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;box-shadow:var(--shadow-chip-lifted);cursor:pointer}
+.main .s-chip-d .word{font-size:32px;font-weight:800;letter-spacing:-0.035em;line-height:1}
+.main .s-chip-d .sub{font-size:10.5px;font-weight:700;letter-spacing:0.10em;text-transform:uppercase;margin-top:6px;opacity:0.65}
+.main .s-chip-d.clear{background:linear-gradient(180deg,#EEF8EF,var(--green-2));color:var(--green-ink)}
+.main .s-chip-d.focused{background:linear-gradient(180deg,#F1F6FE,var(--blue-tint));color:var(--blue-ink)}
+.main .s-chip-d.wired{background:linear-gradient(180deg,var(--pink-3),var(--pink-2));color:var(--pink-ink)}
+.main .s-chip-d.drained{background:linear-gradient(180deg,var(--paper-warm),#F1EFEA);color:var(--ink-2)}
+.main .s-chip-d.heavy{background:linear-gradient(180deg,#1A1A20,#000);color:#fff;box-shadow:var(--shadow-press-ink)}
+.main .s-chip-d.heavy .word{font-size:38px}
+
+.side{border-left:0.5px solid var(--hairline);padding:32px;background:var(--paper-warm);display:flex;flex-direction:column;gap:14px;overflow:auto;max-height:760px}
+.side .s-title{font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label)}
+
+</style></head><body>
+
+<h1 class="h">Do It · STATE v3-final</h1>
+<p class="lead">calibrated from <strong>Element 3.jpg</strong> (dimensional pink-stack pastel chip card · soft layered drop) + <strong>Layout 4.jpg</strong> (status hero with chip cluster). state = the one-tap log of how you actually run today, plus the patterns that emerge over weeks.</p>
+
+<div class="preamble">
+  <p><strong>anatomy.</strong> hero is a 2+2+1 chip grid (5 dimensional chips, soft drop shadow, hairline border). top: <code>clear</code> · <code>focused</code>. middle: <code>wired</code> · <code>drained</code>. bottom: <code>heavy</code> spanning both columns in dark gradient. tap → flips to dark + flashes "logged." toast.</p>
+  <p><strong>below the hero.</strong> today's history list (time + word + colored dot, hairline divider) → this-week density (per-day stacked seg bars in chosen-state tint, plain-english summary above) → pattern phrases (e.g. <em>"you run clearer when you eat earlier"</em>) as calm hairline cards.</p>
+  <p><strong>distinct.</strong> insights uses prose mixed-weight quote rows. domains uses momentum-word hero + list. health uses metric tiles. state uses dimensional chip grid + history strip + pattern hairline cards. nothing else in the canon set has the 5-chip layered grid.</p>
+</div>
+
+<h2 class="section">mobile · A canonical · B post-tap · C pattern drawer</h2>
+<div class="row3">
+
+  <div class="frame-wrap">
+    <div class="cap">A · canonical hero + history + patterns</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">today is the lift.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row"><div class="title">state.</div><div class="meta"><b>4</b> logs today</div></div>
+
+        <div class="hero-frame">
+          <div class="hero-eye">how are you running <b>now</b></div>
+          <div class="chip-grid">
+            <div class="s-chip clear">
+              <span class="glyph">◐</span>
+              <div class="word">clear</div>
+              <div class="sub">light · sharp</div>
+            </div>
+            <div class="s-chip focused">
+              <span class="glyph">◉</span>
+              <div class="word">focused</div>
+              <div class="sub">narrow · steady</div>
+            </div>
+            <div class="s-chip wired">
+              <span class="glyph">⚡︎</span>
+              <div class="word">wired</div>
+              <div class="sub">over-edge</div>
+            </div>
+            <div class="s-chip drained">
+              <span class="glyph">◌</span>
+              <div class="word">drained</div>
+              <div class="sub">low fuel</div>
+            </div>
+            <div class="s-chip heavy">
+              <span class="glyph" style="opacity:0.5">▣</span>
+              <div class="word">heavy</div>
+              <div class="sub">slow · grind day</div>
+            </div>
+          </div>
+          <div class="tap-hint">tap → log now</div>
+        </div>
+
+        <div class="history">
+          <div class="h-title">today</div>
+          <div class="h-row"><div class="t">06:40</div><div class="w">clear</div><div class="dot green"></div></div>
+          <div class="h-row"><div class="t">09:42</div><div class="w">focused</div><div class="dot blue"></div></div>
+          <div class="h-row"><div class="t">12:55</div><div class="w">drained</div><div class="dot warm"></div></div>
+          <div class="h-row"><div class="t">15:10</div><div class="w">focused</div><div class="dot blue"></div></div>
+        </div>
+
+        <div class="week-block">
+          <div class="wb-top">
+            <div class="wb-eye">this week</div>
+            <div class="wb-sum"><b>clear</b> · most days</div>
+          </div>
+          <div class="days">
+            <div class="day"><div class="dlabel">m</div><div class="stack"><div class="seg clr"></div><div class="seg foc"></div><div class="seg foc"></div><div class="seg drn"></div></div></div>
+            <div class="day"><div class="dlabel">t</div><div class="stack"><div class="seg clr"></div><div class="seg clr"></div><div class="seg foc"></div><div class="seg"></div></div></div>
+            <div class="day"><div class="dlabel">w</div><div class="stack"><div class="seg foc"></div><div class="seg wir"></div><div class="seg drn"></div><div class="seg hvy"></div></div></div>
+            <div class="day"><div class="dlabel">t</div><div class="stack"><div class="seg clr"></div><div class="seg clr"></div><div class="seg foc"></div><div class="seg foc"></div></div></div>
+            <div class="day"><div class="dlabel">f</div><div class="stack"><div class="seg clr"></div><div class="seg foc"></div><div class="seg drn"></div><div class="seg foc"></div></div></div>
+            <div class="day"><div class="dlabel">s</div><div class="stack"><div class="seg foc"></div><div class="seg foc"></div><div class="seg"></div><div class="seg"></div></div></div>
+            <div class="day"><div class="dlabel">s</div><div class="stack"><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div></div></div>
+          </div>
+        </div>
+
+        <div class="patterns">
+          <div class="p-eye">patterns</div>
+          <div class="p-card">
+            <div class="marker"></div>
+            <div class="body">
+              <div class="phr">you run <b>clearer</b> when you eat earlier.</div>
+              <div class="meta">12 of last 14 clear days · dinner before 7</div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+          <div class="p-card">
+            <div class="marker blue"></div>
+            <div class="body">
+              <div class="phr"><b>focused</b> peaks tuesdays after training.</div>
+              <div class="meta">5 of 6 last tuesdays</div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+          <div class="p-card">
+            <div class="marker pink"></div>
+            <div class="body">
+              <div class="phr"><b>wired</b> shows up on screen-late nights.</div>
+              <div class="meta">3 of 4 wired logs after 11pm</div>
+            </div>
+            <div class="arrow">›</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="frame-wrap">
+    <div class="cap">B · post-tap flash + log toast</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">the mountain doesn't care.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll" style="position:relative">
+        <div class="head-row"><div class="title">state.</div><div class="meta"><b>5</b> logs today</div></div>
+
+        <div class="hero-frame">
+          <div class="hero-eye">logged · <b>9:42</b></div>
+          <div class="chip-grid">
+            <div class="s-chip clear" style="opacity:0.55">
+              <span class="glyph">◐</span>
+              <div class="word">clear</div>
+              <div class="sub">light · sharp</div>
+            </div>
+            <!-- focused tapped → flipped to dark gradient flash -->
+            <div class="s-chip heavy" style="grid-column:span 1;min-height:104px;position:relative">
+              <span class="chip-rotated">→ logged</span>
+              <span class="glyph" style="opacity:0.5">◉</span>
+              <div class="word">focused</div>
+              <div class="sub">narrow · steady</div>
+            </div>
+            <div class="s-chip wired" style="opacity:0.55">
+              <span class="glyph">⚡︎</span>
+              <div class="word">wired</div>
+              <div class="sub">over-edge</div>
+            </div>
+            <div class="s-chip drained" style="opacity:0.55">
+              <span class="glyph">◌</span>
+              <div class="word">drained</div>
+              <div class="sub">low fuel</div>
+            </div>
+            <div class="s-chip heavy" style="opacity:0.55">
+              <span class="glyph" style="opacity:0.5">▣</span>
+              <div class="word">heavy</div>
+              <div class="sub">slow · grind day</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toast" style="position:relative;left:0;right:0;top:0;margin:0 4px 14px">
+          <div class="check">✓</div>
+          <div class="body">
+            <div class="lbl">logged 9:42 → focused.</div>
+            <div class="pull">→ steady block ahead.</div>
+          </div>
+        </div>
+
+        <div class="history">
+          <div class="h-title">today</div>
+          <div class="h-row"><div class="t">06:40</div><div class="w">clear</div><div class="dot green"></div></div>
+          <div class="h-row"><div class="t">09:42</div><div class="w">focused</div><div class="dot blue"></div></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="frame-wrap">
+    <div class="cap">C · pattern detail (tap a phrase)</div>
+    <div class="frame-m">
+      <div class="topbar">
+        <div class="quote">every rep is a vote.</div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="scroll">
+        <div class="head-row"><div class="title">pattern.</div><div class="meta">14 days</div></div>
+
+        <div class="drawer">
+          <div class="d-eye">correlation</div>
+          <div class="d-phr">you run <b>clearer</b> when you eat earlier.</div>
+
+          <div class="corr">
+            <div class="lbl">clear days · by dinner time</div>
+            <div class="bars">
+              <div class="bar" style="height:80%"></div>
+              <div class="bar" style="height:92%"></div>
+              <div class="bar" style="height:74%"></div>
+              <div class="bar" style="height:60%"></div>
+              <div class="bar dim" style="height:40%"></div>
+              <div class="bar dim" style="height:24%"></div>
+              <div class="bar dim" style="height:18%"></div>
+            </div>
+            <div class="axis">
+              <span>5pm</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11+</span>
+            </div>
+          </div>
+
+          <div class="stat-row">
+            <div class="stat"><div class="k">clear days</div><div class="v">12 / 14</div></div>
+            <div class="stat"><div class="k">avg dinner</div><div class="v">6:48 pm</div></div>
+            <div class="stat"><div class="k">non-clear avg</div><div class="v">9:20 pm</div></div>
+            <div class="stat"><div class="k">confidence</div><div class="v">strong</div></div>
+          </div>
+        </div>
+
+        <div class="drawer" style="background:var(--paper-warm);box-shadow:inset 0 0 0 0.5px var(--hairline)">
+          <div class="d-eye">action</div>
+          <div class="d-phr" style="font-size:15px;font-weight:700;line-height:1.4">eat by <b style="color:var(--ink)">7pm</b> on training days · clear morning follows.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2 class="section">desktop · D · chips + history + patterns sidebar</h2>
+<div class="row1d">
+  <div class="frame-d">
+    <div class="top-d">
+      <div class="quote">discipline equals freedom.</div>
+      <div class="crumbs"><span>do it</span><span>›</span><b>state</b></div>
+      <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+    </div>
+    <div class="split">
+      <div class="main">
+        <div>
+          <div class="d-title">state.</div>
+          <div class="d-sub">tap how you run · 4 logs today · clear most this week</div>
+        </div>
+
+        <div class="chip-grid-d">
+          <div class="s-chip-d clear"><div class="word">clear</div><div class="sub">light · sharp</div></div>
+          <div class="s-chip-d focused"><div class="word">focused</div><div class="sub">narrow · steady</div></div>
+          <div class="s-chip-d wired"><div class="word">wired</div><div class="sub">over-edge</div></div>
+          <div class="s-chip-d drained"><div class="word">drained</div><div class="sub">low fuel</div></div>
+          <div class="s-chip-d heavy"><div class="word">heavy</div><div class="sub">slow · grind day</div></div>
+        </div>
+
+        <div class="history" style="margin:0">
+          <div class="h-title">today</div>
+          <div class="h-row"><div class="t">06:40</div><div class="w">clear</div><div class="dot green"></div></div>
+          <div class="h-row"><div class="t">09:42</div><div class="w">focused</div><div class="dot blue"></div></div>
+          <div class="h-row"><div class="t">12:55</div><div class="w">drained</div><div class="dot warm"></div></div>
+          <div class="h-row"><div class="t">15:10</div><div class="w">focused</div><div class="dot blue"></div></div>
+        </div>
+
+        <div class="week-block" style="margin:0">
+          <div class="wb-top">
+            <div class="wb-eye">this week</div>
+            <div class="wb-sum"><b>clear</b> · most days</div>
+          </div>
+          <div class="days">
+            <div class="day"><div class="dlabel">mon</div><div class="stack"><div class="seg clr"></div><div class="seg foc"></div><div class="seg foc"></div><div class="seg drn"></div></div></div>
+            <div class="day"><div class="dlabel">tue</div><div class="stack"><div class="seg clr"></div><div class="seg clr"></div><div class="seg foc"></div><div class="seg"></div></div></div>
+            <div class="day"><div class="dlabel">wed</div><div class="stack"><div class="seg foc"></div><div class="seg wir"></div><div class="seg drn"></div><div class="seg hvy"></div></div></div>
+            <div class="day"><div class="dlabel">thu</div><div class="stack"><div class="seg clr"></div><div class="seg clr"></div><div class="seg foc"></div><div class="seg foc"></div></div></div>
+            <div class="day"><div class="dlabel">fri</div><div class="stack"><div class="seg clr"></div><div class="seg foc"></div><div class="seg drn"></div><div class="seg foc"></div></div></div>
+            <div class="day"><div class="dlabel">sat</div><div class="stack"><div class="seg foc"></div><div class="seg foc"></div><div class="seg"></div><div class="seg"></div></div></div>
+            <div class="day"><div class="dlabel">sun</div><div class="stack"><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="s-title">patterns</div>
+        <div class="p-card" style="margin:0">
+          <div class="marker"></div>
+          <div class="body">
+            <div class="phr">you run <b>clearer</b> when you eat earlier.</div>
+            <div class="meta">12 / 14 clear · dinner < 7</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="p-card" style="margin:0">
+          <div class="marker blue"></div>
+          <div class="body">
+            <div class="phr"><b>focused</b> peaks tuesdays after training.</div>
+            <div class="meta">5 / 6 last tuesdays</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="p-card" style="margin:0">
+          <div class="marker pink"></div>
+          <div class="body">
+            <div class="phr"><b>wired</b> follows screen-late nights.</div>
+            <div class="meta">3 / 4 logs after 11pm</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+        <div class="p-card" style="margin:0">
+          <div class="marker"></div>
+          <div class="body">
+            <div class="phr"><b>heavy</b> drops after walking days.</div>
+            <div class="meta">7 / 8 walks · clear next morning</div>
+          </div>
+          <div class="arrow">›</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body></html>

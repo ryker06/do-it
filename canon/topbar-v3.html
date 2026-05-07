@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — Topbar v3 · greeting + memoji</title>
+<style>
+:root{
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);
+  --pink-2:#FFE7EC;--green-2:#E2F4E6;--blue-tint:#E2EEFF;
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif}
+body{padding:48px 56px 96px;max-width:1280px;margin:0 auto}
+h1{font-size:42px;font-weight:800;letter-spacing:-0.04em;margin-bottom:6px}
+.lead{font-size:15px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;margin-bottom:8px;max-width:680px;line-height:1.5}
+.note{font-size:13px;color:var(--label);max-width:680px;letter-spacing:-0.005em;line-height:1.5}
+.preamble{background:var(--paper);border-radius:24px;padding:24px 28px;box-shadow:var(--shadow-paper);max-width:820px;margin:18px 0 32px}
+.preamble p{font-size:14px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{color:var(--ink);font-weight:700}
+h2{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 18px}
+
+/* ---- device grid ---- */
+.devices{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.device{background:var(--paper);border-radius:36px;padding:18px;box-shadow:var(--shadow-paper);position:relative}
+.device .lbl{position:absolute;top:-26px;left:8px;font-size:11px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+.frame{background:var(--bg);border-radius:30px;width:100%;aspect-ratio:390/720;overflow:hidden;position:relative}
+
+/* ---- Topbar (the actual canon) ---- */
+.topbar{
+  background:var(--paper);
+  padding:20px 22px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:0.5px solid var(--hairline);
+  position:relative;
+}
+.topbar .greet{display:flex;flex-direction:column;gap:2px}
+.topbar .greet .hi{font-family:"SF Pro Display",-apple-system,sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.1}
+.topbar .greet .sub{font-size:12.5px;color:var(--label);font-weight:500;letter-spacing:-0.005em}
+.topbar .memoji{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--pink-2);
+  overflow:hidden;
+  box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);
+  cursor:pointer;
+  flex-shrink:0;
+}
+.topbar .memoji img{width:100%;height:100%;display:block}
+/* size variant */
+.topbar.compact{padding:16px 20px 12px}
+.topbar.compact .greet .hi{font-size:18px}
+
+/* ---- mock screen content below ---- */
+.body-mock{padding:22px;display:flex;flex-direction:column;gap:14px}
+.row{height:40px;background:var(--paper);border-radius:14px;box-shadow:var(--shadow-soft)}
+.row.tall{height:120px}
+.row.eyebrow{height:auto;background:transparent;box-shadow:none;font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:6px 4px}
+
+/* ---- inline anatomy diagram ---- */
+.anatomy{background:var(--paper);border-radius:24px;padding:32px;box-shadow:var(--shadow-paper)}
+.anatomy .bar{display:flex;align-items:center;justify-content:space-between;padding:24px;background:var(--paper);border-radius:18px;box-shadow:inset 0 0 0 1px var(--hairline);position:relative}
+.anatomy .bar .greet{display:flex;flex-direction:column;gap:2px}
+.anatomy .bar .greet .hi{font-size:22px;font-weight:700;letter-spacing:-0.025em}
+.anatomy .bar .greet .sub{font-size:12.5px;color:var(--label)}
+.anatomy .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.anatomy .memoji img{width:100%;height:100%}
+.anatomy .annotations{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.anatomy .ann{background:var(--bg);border-radius:14px;padding:12px 14px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.anatomy .ann b{font-weight:700;color:var(--ink);display:block;margin-bottom:2px;font-size:13px}
+</style></head><body>
+
+<h1>topbar v3 · Do It</h1>
+<p class="lead">rotating motivational quote LEFT (SF Pro Display 700, calm). memoji circle FAR RIGHT. hairline bottom. zero blur. tap memoji → /settings/.</p>
+
+<div class="preamble">
+  <p><strong>calibrated from</strong> <code>board/Layout 1.jpg</code> (clean Apple settings header — left-leaning title, calm hairline rule) <strong>+</strong> <code>board/Element 1.jpg</code> (memoji disc treatment, soft 0.5px ring shadow).</p>
+  <p><strong>copied:</strong> the calm horizontal layout, the SF Pro Display semibold weight, the bottom hairline rule, the 30px circular memoji on the right.</p>
+  <p><strong>adapted:</strong> Apple's centered "Family" title becomes a left-aligned <strong>rotating motivational quote</strong> (lowercase, period at end) with a micro state subtitle below. NOT a personal greeting — "adam. ready when you are." pattern is dead. Quotes rotate session-based from a curated set of ~30.</p>
+  <p><strong>memoji (LOCKED):</strong> <code>https://www.tapback.co/api/avatar/jay.webp?color=7</code>. Black hair + black beard + glasses. THE Adam memoji. NEVER substitute. Always 30px. Tap → /settings/.</p>
+</div>
+
+<h2>three device frames · varied greetings</h2>
+<div class="devices">
+
+  <!-- 1: morning -->
+  <div class="device">
+    <span class="lbl">morning · 06:24</span>
+    <div class="frame">
+      <div class="topbar">
+        <div class="greet">
+          <div class="hi">discipline equals freedom.</div>
+          <div class="sub">today · 6 blocks ready</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="body-mock">
+        <div class="row eyebrow">now</div>
+        <div class="row tall"></div>
+        <div class="row eyebrow">up next</div>
+        <div class="row"></div>
+        <div class="row"></div>
+        <div class="row"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2: midday -->
+  <div class="device">
+    <span class="lbl">midday · 13:47</span>
+    <div class="frame">
+      <div class="topbar">
+        <div class="greet">
+          <div class="hi">you become what you repeat.</div>
+          <div class="sub">block 3 of 6 · 22 min left</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="body-mock">
+        <div class="row tall" style="height:200px"></div>
+        <div class="row eyebrow">queued</div>
+        <div class="row"></div>
+        <div class="row"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3: evening -->
+  <div class="device">
+    <span class="lbl">evening · 21:08</span>
+    <div class="frame">
+      <div class="topbar">
+        <div class="greet">
+          <div class="hi">the mountain doesn't care.</div>
+          <div class="sub">5 blocks done · 1 paused</div>
+        </div>
+        <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+      </div>
+      <div class="body-mock">
+        <div class="row eyebrow">today's flow</div>
+        <div class="row"></div>
+        <div class="row"></div>
+        <div class="row"></div>
+        <div class="row eyebrow">reflect</div>
+        <div class="row tall"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<h2>anatomy</h2>
+<div class="anatomy">
+  <div class="bar">
+    <div class="greet">
+      <div class="hi">discipline equals freedom.</div>
+      <div class="sub">today · 6 blocks ready</div>
+    </div>
+    <div class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></div>
+  </div>
+  <div class="annotations">
+    <div class="ann"><b>quote · SF Pro Display 22 / 700 / -0.025em</b>rotating motivational quote (lowercase, period at end, no emoji). curated set of ~30. NEVER a personal greeting like "adam. ready when you are." — that pattern is dead.</div>
+    <div class="ann"><b>subtitle · SF Pro Text 12.5 / 500 / label</b>one-line context. "today · 6 blocks ready" / "block 3 of 6 · 22 min left" / "5 done · 1 paused".</div>
+    <div class="ann"><b>memoji · 30px circle · top-right · always</b>hosted via tapback.co. 0.5px hairline ring + soft drop. tap → /settings/. never stripped.</div>
+    <div class="ann"><b>surface · paper #FFFFFF + 0.5px hairline bottom</b>NO backdrop blur. NO frosted band. just clean paper sitting above the page bg.</div>
+  </div>
+</div>
+
+</body></html>

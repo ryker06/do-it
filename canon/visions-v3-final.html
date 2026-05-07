@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Do It — VISIONS v3-final · calibrated from Element 3 + Layout 5 + Layout 1</title>
+<style>
+:root{
+  /* page = white. always. */
+  --bg:#FFFFFF;--paper:#FFFFFF;--paper-warm:#FBFAF8;
+  --chip-surface:#F4F5F7;
+  --ink:#0B0B0F;--ink-2:#1C1C1E;--ink-3:#3A3A3C;
+  --label:#8E8E93;--label-2:#6E6E73;
+  --hairline:rgba(60,60,67,0.10);--hairline-soft:rgba(60,60,67,0.06);--hairline-strong:rgba(60,60,67,0.18);
+
+  /* accents — palette law: pink · green · black · blue */
+  --pink:#FFD9E0;--pink-2:#FFE7EC;--pink-3:#FFF1F4;--pink-ink:#7A2A3C;
+  --green:#C7F0CF;--green-2:#E2F4E6;--green-ink:#1F5C2C;
+  --blue:#0A84FF;--blue-soft:rgba(10,132,255,0.10);--blue-tint:#E2EEFF;--blue-tint-2:#D2E4FF;--blue-ink:#0050C8;
+
+  /* domain pastels (palette-locked) */
+  --d-business:#E2EEFF;--d-business-2:#C9DBFF;--d-business-ink:#1748A8;
+  --d-religion:#E2F4E6;--d-religion-2:#C0E5C8;--d-religion-ink:#1F5C2C;
+  --d-learning:#FFE0E8;--d-learning-2:#FFC9D6;--d-learning-ink:#7A2A3C;
+  --d-fitness:#FFD0DA;--d-fitness-2:#FFB6C5;--d-fitness-ink:#7A2A3C;
+  --d-home:#EAEFF3;--d-home-2:#D4DCE3;--d-home-ink:#36475A;
+  --d-food:#FFF0DD;--d-food-2:#FFDFB5;--d-food-ink:#7A4A1A;
+
+  --shadow-paper:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14);
+  --shadow-soft:0 0 0 0.5px rgba(60,60,67,0.05),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12);
+  --shadow-card-lifted:0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18);
+  --shadow-chip:0 0 0 0.5px rgba(60,60,67,0.06),0 1px 2px rgba(20,20,30,0.04),0 1px 0 rgba(255,255,255,0.7) inset;
+  --shadow-press-ink:0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55);
+  --shadow-frosted-disc:0 0 0 0.5px rgba(20,20,30,0.10),0 4px 12px -4px rgba(20,20,30,0.20);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",system-ui,sans-serif;font-feature-settings:"ss01","cv11"}
+body{padding:48px 56px 96px;max-width:1320px;margin:0 auto}
+
+.h{font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-bottom:6px}
+.lead{font-size:14.5px;color:var(--label-2);font-weight:500;letter-spacing:-0.012em;line-height:1.5;max-width:760px;margin-bottom:18px}
+.preamble{background:var(--paper);border-radius:24px;padding:22px 26px;box-shadow:var(--shadow-paper);max-width:880px;margin:0 0 36px}
+.preamble p{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.preamble p+p{margin-top:8px}
+.preamble strong{font-weight:700;color:var(--ink)}
+.preamble code{font-family:ui-monospace,SFMono-Regular,monospace;font-size:12px;background:var(--chip-surface);padding:2px 6px;border-radius:6px}
+
+h2.section{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--label);margin:48px 0 16px}
+
+.split{display:grid;grid-template-columns:auto auto auto;gap:48px;align-items:start;flex-wrap:wrap}
+.split.two{grid-template-columns:auto auto}
+.split.one{grid-template-columns:auto}
+
+/* ============= MOBILE FRAME 390x852 ============= */
+.frame-m{
+  width:390px;height:852px;background:var(--bg);border-radius:48px;overflow:hidden;
+  box-shadow:var(--shadow-paper);position:relative;display:flex;flex-direction:column;
+}
+.frame-m .lbl{position:absolute;top:-26px;left:8px;font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+
+/* topbar — canonical from topbar-v3 */
+.topbar{
+  background:var(--paper);padding:18px 22px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:0.5px solid var(--hairline);flex-shrink:0;z-index:5;
+}
+.topbar .hi{font-size:20px;font-weight:700;letter-spacing:-0.025em;color:var(--ink);line-height:1.1}
+.topbar .sub{font-size:12px;color:var(--label);font-weight:500;margin-top:2px}
+.topbar .memoji{width:30px;height:30px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08);flex-shrink:0}
+.topbar .memoji img{width:100%;height:100%;display:block}
+
+.scroll{flex:1;overflow:auto;padding:18px 18px 100px}
+
+/* page heading */
+.page-title{font-size:30px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);padding:6px 4px 4px}
+.page-sub{font-size:13px;color:var(--label);font-weight:500;padding:0 4px 18px;letter-spacing:-0.005em}
+
+/* domain group header */
+.dgroup-head{display:flex;align-items:center;gap:10px;padding:18px 4px 10px;border-top:0.5px solid var(--hairline-soft);margin-top:8px}
+.dgroup-head:first-of-type{border-top:none;margin-top:0;padding-top:6px}
+.dgroup-head .dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06)}
+.dgroup-head .dot svg{width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.dgroup-head .dot.fitness{background:linear-gradient(180deg,var(--d-fitness) 0%,var(--d-fitness-2) 100%);color:var(--d-fitness-ink)}
+.dgroup-head .dot.business{background:linear-gradient(180deg,var(--d-business) 0%,var(--d-business-2) 100%);color:var(--d-business-ink)}
+.dgroup-head .dot.religion{background:linear-gradient(180deg,var(--d-religion) 0%,var(--d-religion-2) 100%);color:var(--d-religion-ink)}
+.dgroup-head .dot.learning{background:linear-gradient(180deg,var(--d-learning) 0%,var(--d-learning-2) 100%);color:var(--d-learning-ink)}
+.dgroup-head .nm{font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--label-2)}
+.dgroup-head .ct{font-size:10.5px;font-weight:600;color:var(--label);margin-left:auto;font-variant-numeric:tabular-nums}
+
+/* ===== VISION CARD ===== */
+.vcard{
+  background:var(--paper);border-radius:22px;
+  box-shadow:var(--shadow-paper);
+  margin-bottom:18px;overflow:hidden;position:relative;
+}
+/* cover image area — 16:9 */
+.vcover{
+  position:relative;height:120px;width:100%;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+/* default tinted SVG illustration variants */
+.vcover.tint-fitness{background:linear-gradient(135deg,var(--d-fitness) 0%,var(--d-fitness-2) 100%)}
+.vcover.tint-business{background:linear-gradient(135deg,var(--d-business) 0%,var(--d-business-2) 100%)}
+.vcover.tint-religion{background:linear-gradient(135deg,var(--d-religion) 0%,var(--d-religion-2) 100%)}
+.vcover.tint-learning{background:linear-gradient(135deg,var(--d-learning) 0%,var(--d-learning-2) 100%)}
+.vcover .ill{width:64px;height:64px;opacity:0.85}
+.vcover .emoji{font-size:48px;line-height:1}
+.vcover .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vcover .photo-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(0,0,0,0.18) 100%)}
+.vcover .dotbg{position:absolute;inset:0;background-image:radial-gradient(circle at 18% 22%,rgba(255,255,255,0.55) 1.5px,transparent 2px),radial-gradient(circle at 70% 70%,rgba(255,255,255,0.45) 1.5px,transparent 2px);background-size:18px 18px;opacity:0.6;pointer-events:none}
+/* camera affordance */
+.vcover .cam{
+  position:absolute;top:10px;right:10px;
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,0.92);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-frosted-disc);
+}
+.vcover .cam svg{width:14px;height:14px;stroke:#1C1C1E;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* deadline chip — rotated, top-right of card body */
+.vbody{padding:16px 18px 14px;position:relative}
+.vchip{
+  position:absolute;top:-14px;right:14px;
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green);color:var(--green-ink);
+  padding:6px 12px;border-radius:999px;
+  font-size:11px;font-weight:700;letter-spacing:-0.005em;
+  transform:rotate(-7deg);box-shadow:var(--shadow-chip);
+  font-variant-numeric:tabular-nums;
+}
+.vchip.warm{background:var(--pink-2);color:var(--pink-ink)}
+.vchip.cool{background:var(--blue-tint);color:var(--blue-ink)}
+
+.videntity{font-size:20px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);line-height:1.18;margin-top:2px;padding-right:80px}
+.vaim{font-size:13px;font-weight:500;color:var(--label-2);letter-spacing:-0.005em;line-height:1.45;margin-top:6px}
+
+/* goals foot — small chips */
+.vgoals{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;padding-top:12px;border-top:0.5px solid var(--hairline-soft)}
+.gchip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--chip-surface);
+  padding:6px 10px;border-radius:999px;
+  font-size:11.5px;font-weight:600;color:var(--ink-2);letter-spacing:-0.005em;
+  box-shadow:inset 0 0 0 0.5px var(--hairline);
+  font-variant-numeric:tabular-nums;
+}
+.gchip .dot{width:5px;height:5px;border-radius:50%;background:var(--green-ink);opacity:0.7}
+.gchip .dot.todo{background:var(--label);opacity:0.4}
+
+/* bottom nav */
+.bnav{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;background:var(--paper);border-radius:28px;padding:6px;box-shadow:var(--shadow-card-lifted)}
+.bnav .it{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;color:var(--label)}
+.bnav .it.active{color:var(--ink);background:var(--chip-surface);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.bnav .it svg{width:22px;height:22px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* ============= MOCKUP B — drawer open ============= */
+.frame-m.with-drawer{width:520px}
+.drawer{
+  position:absolute;top:0;right:0;bottom:0;width:300px;
+  background:var(--paper);
+  border-left:0.5px solid var(--hairline);
+  display:flex;flex-direction:column;
+  box-shadow:-12px 0 28px -18px rgba(20,20,30,0.16);
+  z-index:8;
+}
+.drawer .head{padding:18px 20px 14px;border-bottom:0.5px solid var(--hairline-soft);display:flex;align-items:center;justify-content:space-between}
+.drawer .head .ti{font-size:15px;font-weight:700;letter-spacing:-0.012em;color:var(--ink)}
+.drawer .head .x{width:26px;height:26px;border-radius:50%;background:var(--chip-surface);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--label-2);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.drawer .tabs{display:flex;padding:12px 16px 0;gap:4px;border-bottom:0.5px solid var(--hairline-soft);flex-shrink:0}
+.drawer .tab{flex:1;text-align:center;padding:8px 6px 10px;font-size:11.5px;font-weight:700;color:var(--label);letter-spacing:0.04em;text-transform:uppercase;border-bottom:2px solid transparent;cursor:pointer}
+.drawer .tab.active{color:var(--ink);border-bottom-color:var(--ink)}
+.drawer .body{flex:1;overflow:auto;padding:16px 18px 24px}
+.drawer .bsec{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.10em;text-transform:uppercase;margin:8px 0 10px}
+.emoji-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.emoji-grid .e{aspect-ratio:1;background:var(--chip-surface);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:inset 0 0 0 0.5px var(--hairline-soft);cursor:pointer}
+.emoji-grid .e.sel{background:var(--blue-tint);box-shadow:inset 0 0 0 1.5px var(--blue)}
+.svg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
+.svg-grid .s{aspect-ratio:16/10;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 0 0 0.5px var(--hairline-soft)}
+.svg-grid .s svg{width:36px;height:36px;opacity:0.85}
+.upload-zone{margin-top:8px;border:1.5px dashed var(--hairline-strong);border-radius:14px;padding:24px 12px;text-align:center;color:var(--label-2);font-size:12.5px;font-weight:600}
+.upload-zone .ic{width:30px;height:30px;border-radius:50%;background:var(--chip-surface);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+
+/* ============= MOCKUP C — vision detail ============= */
+.detail .vcover{height:200px}
+.detail .vcover .cam{top:14px;right:14px;width:34px;height:34px}
+.detail-body{padding:22px 22px 28px}
+.detail-eyebrow{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.14em;text-transform:uppercase}
+.detail-identity{font-size:28px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);line-height:1.1;margin-top:6px}
+.detail-aim{font-size:14.5px;color:var(--ink-3);font-weight:500;letter-spacing:-0.005em;line-height:1.5;margin-top:10px}
+.detail-deadline{display:flex;align-items:baseline;justify-content:space-between;margin-top:18px;padding:14px 16px;background:var(--chip-surface);border-radius:16px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.detail-deadline .dl{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.14em;text-transform:uppercase}
+.detail-deadline .nu{font-size:22px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);font-variant-numeric:tabular-nums}
+.detail-deadline .nu small{font-size:11px;font-weight:600;color:var(--label);margin-left:4px;letter-spacing:0}
+.goals-list{margin-top:22px}
+.goals-list .gh{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.goals-list .gh .add{color:var(--blue);letter-spacing:-0.005em;text-transform:none;font-size:13px;font-weight:600}
+.goals-list .grow{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--paper);border-radius:14px;box-shadow:inset 0 0 0 0.5px var(--hairline);margin-bottom:8px}
+.goals-list .grow .gnm{font-size:14px;font-weight:700;color:var(--ink-2);letter-spacing:-0.005em;flex:1}
+.goals-list .grow .gpr{font-size:12px;color:var(--label-2);font-weight:600;font-variant-numeric:tabular-nums}
+.goals-list .grow .pcheck{width:18px;height:18px;border-radius:50%;background:var(--green);box-shadow:inset 0 0 0 0.5px rgba(31,92,44,0.28);display:flex;align-items:center;justify-content:center;color:var(--green-ink);font-size:10px;font-weight:800}
+.goals-list .grow .pcheck.todo{background:var(--chip-surface);box-shadow:inset 0 0 0 1.5px var(--hairline-soft);color:transparent}
+
+/* ============= MOCKUP D — empty state ============= */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:24px 32px;text-align:center}
+.empty .ill{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--blue-tint) 0%,var(--blue-tint-2) 100%);display:flex;align-items:center;justify-content:center;margin-bottom:24px;box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06)}
+.empty .ill svg{width:54px;height:54px;stroke:var(--blue-ink);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.empty .ti{font-size:24px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);margin-bottom:8px}
+.empty .su{font-size:14px;color:var(--label-2);font-weight:500;letter-spacing:-0.005em;line-height:1.5;max-width:280px;margin-bottom:24px}
+.btn-ink{background:linear-gradient(180deg,#1A1A20 0%,#000 100%);color:#fff;border:none;border-radius:999px;padding:14px 28px;font-size:14.5px;font-weight:600;letter-spacing:-0.012em;box-shadow:var(--shadow-press-ink);font-family:inherit;cursor:pointer}
+
+/* ============= DESKTOP 1280x800 ============= */
+.frame-d{
+  width:1280px;height:800px;background:var(--bg);
+  border-radius:24px;overflow:hidden;
+  box-shadow:var(--shadow-paper);position:relative;
+  display:flex;flex-direction:column;margin-top:48px;
+}
+.frame-d .lbl{position:absolute;top:-26px;left:8px;font-size:10.5px;color:var(--label);font-weight:700;letter-spacing:0.10em;text-transform:uppercase}
+.frame-d .topbar-d{
+  background:var(--paper);padding:20px 36px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:0.5px solid var(--hairline);
+}
+.frame-d .topbar-d .hi{font-size:22px;font-weight:700;letter-spacing:-0.025em}
+.frame-d .topbar-d .sub{font-size:13px;color:var(--label);font-weight:500;margin-top:2px}
+.frame-d .topbar-d .right{display:flex;align-items:center;gap:18px}
+.frame-d .topbar-d .memoji{width:32px;height:32px;border-radius:50%;background:var(--pink-2);overflow:hidden;box-shadow:inset 0 0 0 0.5px var(--hairline),0 1px 2px rgba(20,20,30,0.08)}
+.frame-d .topbar-d .memoji img{width:100%;height:100%}
+.frame-d .topbar-d .kbtn{background:var(--chip-surface);border:none;border-radius:999px;padding:9px 16px;font-size:13px;font-weight:700;color:var(--ink-2);box-shadow:inset 0 0 0 0.5px var(--hairline);font-family:inherit}
+
+.frame-d .stage{flex:1;display:grid;grid-template-columns:360px 1fr;gap:0;overflow:hidden}
+.dlist{padding:22px 18px 22px;border-right:0.5px solid var(--hairline);background:var(--paper);overflow:auto}
+.dlist .ti{font-size:24px;font-weight:800;letter-spacing:-0.03em;color:var(--ink);padding:4px 6px 14px}
+.dlist .vrow{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;cursor:pointer;margin-bottom:4px}
+.dlist .vrow.active{background:var(--chip-surface);box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.dlist .vrow .vt{width:44px;height:44px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 0.5px rgba(20,20,30,0.06)}
+.dlist .vrow .vt.fitness{background:linear-gradient(135deg,var(--d-fitness) 0%,var(--d-fitness-2) 100%)}
+.dlist .vrow .vt.business{background:linear-gradient(135deg,var(--d-business) 0%,var(--d-business-2) 100%)}
+.dlist .vrow .vt.religion{background:linear-gradient(135deg,var(--d-religion) 0%,var(--d-religion-2) 100%)}
+.dlist .vrow .vt.learning{background:linear-gradient(135deg,var(--d-learning) 0%,var(--d-learning-2) 100%)}
+.dlist .vrow .vt span{font-size:22px}
+.dlist .vrow .vmid{flex:1;min-width:0}
+.dlist .vrow .vmid .vid{font-size:14px;font-weight:700;color:var(--ink);letter-spacing:-0.012em;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dlist .vrow .vmid .vsub{font-size:11.5px;color:var(--label);font-weight:500;margin-top:2px;font-variant-numeric:tabular-nums}
+.dlist .grouphead{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.14em;text-transform:uppercase;padding:14px 8px 6px;display:flex;align-items:center;gap:8px}
+.dlist .grouphead:first-of-type{padding-top:6px}
+
+.dpane{padding:0;overflow:auto;background:var(--bg)}
+.dpane .vcover{height:240px}
+.dpane .vcover .cam{top:18px;right:18px;width:36px;height:36px}
+.dpane .dpcontent{padding:28px 36px 36px;max-width:680px}
+.dpane .dpeyebrow{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.14em;text-transform:uppercase}
+.dpane .dpidentity{font-size:42px;font-weight:800;letter-spacing:-0.035em;color:var(--ink);line-height:1.05;margin-top:8px}
+.dpane .dpaim{font-size:16px;color:var(--ink-3);font-weight:500;letter-spacing:-0.005em;line-height:1.55;margin-top:12px;max-width:560px}
+.dpane .dprow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+.dpane .dprow .stat{background:var(--paper);border-radius:16px;padding:14px 18px;box-shadow:inset 0 0 0 0.5px var(--hairline)}
+.dpane .dprow .stat .l{font-size:10.5px;font-weight:700;color:var(--label);letter-spacing:0.14em;text-transform:uppercase}
+.dpane .dprow .stat .v{font-size:22px;font-weight:800;letter-spacing:-0.025em;color:var(--ink);margin-top:4px;font-variant-numeric:tabular-nums}
+.dpane .dprow .stat .v small{font-size:11px;font-weight:600;color:var(--label);margin-left:4px}
+
+</style></head><body>
+
+<h1 class="h">visions · v3-final</h1>
+<p class="lead">identity-first life aims. cover · identity · aim · deadline · goals at foot. calibrated from <code>Element 3.jpg</code> (soft paper card stack) and <code>Layout 5.jpg</code> (paper card with three discs + labeled chip + tinted top band).</p>
+
+<div class="preamble">
+  <p><strong>anatomy.</strong> cover image (16:9, customizable per-vision via camera affordance) · domain glyph + identity line (display 800) · aim sentence (text 500, label-2) · deadline countdown chip rotated -7deg top-right · goals at card foot as small chips with current → target.</p>
+  <p><strong>customization.</strong> tap camera in cover top-right → drawer opens with 4 tabs (emoji / svg / url / upload). default cover = tinted SVG illustration matching domain. one rotated chip per card max — the deadline pill.</p>
+  <p><strong>page bg.</strong> <code>#FFFFFF</code>. tints live on cover bands and accent chips only. memoji top-right of every Topbar. zero serif. zero italic.</p>
+</div>
+
+<div class="split two">
+
+<!-- ============================================================ -->
+<!-- MOCKUP A · canonical visions list                            -->
+<!-- ============================================================ -->
+<div class="frame-m" style="position:relative">
+  <span class="lbl">A · visions list</span>
+  <div class="topbar">
+    <div><div class="hi">every rep is a vote.</div><div class="sub">5 visions in flight · 3 domains</div></div>
+    <a class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></a>
+  </div>
+  <div class="scroll">
+
+    <!-- FITNESS group -->
+    <div class="dgroup-head">
+      <div class="dot fitness"><svg viewBox="0 0 24 24"><path d="M6 9v6"/><path d="M18 9v6"/><path d="M3 12h18"/></svg></div>
+      <div class="nm">fitness</div><div class="ct">2 visions</div>
+    </div>
+
+    <!-- vision 1 — fitness, photo cover -->
+    <div class="vcard">
+      <div class="vcover" style="background:linear-gradient(135deg,#2a2a2e 0%,#0b0b0f 100%)">
+        <!-- simulated photo via gradient + texture -->
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 30% 35%,rgba(255,210,220,0.18) 0%,transparent 60%),radial-gradient(circle at 75% 70%,rgba(120,180,255,0.14) 0%,transparent 55%)"></div>
+        <div style="position:absolute;left:18px;bottom:14px;font-size:11px;font-weight:700;color:rgba(255,255,255,0.86);letter-spacing:0.10em;text-transform:uppercase">photo · gym frame</div>
+        <div class="cam"><svg viewBox="0 0 24 24"><path d="M3 8h3l2-3h8l2 3h3v11H3z"/><circle cx="12" cy="13" r="4"/></svg></div>
+      </div>
+      <div class="vbody">
+        <div class="vchip">12w · 84d</div>
+        <div class="videntity">i am a 100kg deadlifter.</div>
+        <div class="vaim">three sessions a week. heavy compound lifts. no excuses on the schedule.</div>
+        <div class="vgoals">
+          <span class="gchip"><span class="dot"></span>96kg → 100kg</span>
+          <span class="gchip"><span class="dot todo"></span>3x/wk · 8w</span>
+          <span class="gchip"><span class="dot todo"></span>sleep 8h</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- vision 2 — fitness, svg illustration cover -->
+    <div class="vcard">
+      <div class="vcover tint-fitness">
+        <div class="dotbg"></div>
+        <svg class="ill" viewBox="0 0 64 64" fill="none" stroke="#7A2A3C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="32" cy="20" r="6"/>
+          <path d="M32 26v18"/>
+          <path d="M32 32l-10 6"/>
+          <path d="M32 32l10 6"/>
+          <path d="M32 44l-6 12"/>
+          <path d="M32 44l6 12"/>
+        </svg>
+        <div class="cam"><svg viewBox="0 0 24 24"><path d="M3 8h3l2-3h8l2 3h3v11H3z"/><circle cx="12" cy="13" r="4"/></svg></div>
+      </div>
+      <div class="vbody">
+        <div class="vchip warm">26w</div>
+        <div class="videntity">sub-19 · 5k runner.</div>
+        <div class="vaim">pace work twice a week. one long run on saturdays.</div>
+        <div class="vgoals">
+          <span class="gchip"><span class="dot"></span>21:40 → 18:59</span>
+          <span class="gchip"><span class="dot todo"></span>2x intervals/wk</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUSINESS group -->
+    <div class="dgroup-head">
+      <div class="dot business"><svg viewBox="0 0 24 24"><path d="M3 7h18v12H3z"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+      <div class="nm">business</div><div class="ct">2 visions</div>
+    </div>
+
+    <!-- vision 3 — business, svg cover -->
+    <div class="vcard">
+      <div class="vcover tint-business">
+        <div class="dotbg"></div>
+        <svg class="ill" viewBox="0 0 64 64" fill="none" stroke="#1748A8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 50l8-12 10 6 16-22"/>
+          <path d="M44 22h6v6"/>
+          <path d="M10 56h44"/>
+        </svg>
+        <div class="cam"><svg viewBox="0 0 24 24"><path d="M3 8h3l2-3h8l2 3h3v11H3z"/><circle cx="12" cy="13" r="4"/></svg></div>
+      </div>
+      <div class="vbody">
+        <div class="vchip cool">52w · year-end</div>
+        <div class="videntity">i run a £1m company.</div>
+        <div class="vaim">predictable monthly revenue. one hire by Q3. systems, not heroics.</div>
+        <div class="vgoals">
+          <span class="gchip"><span class="dot"></span>£62k → £83k mrr</span>
+          <span class="gchip"><span class="dot todo"></span>hire ops · Q3</span>
+          <span class="gchip"><span class="dot todo"></span>3 anchor clients</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RELIGION group -->
+    <div class="dgroup-head">
+      <div class="dot religion"><svg viewBox="0 0 24 24"><path d="M12 2v20"/><path d="M5 9h14"/></svg></div>
+      <div class="nm">religion</div><div class="ct">1 vision</div>
+    </div>
+
+    <!-- vision 4 — religion, emoji cover -->
+    <div class="vcard">
+      <div class="vcover tint-religion">
+        <div class="dotbg"></div>
+        <span class="emoji">🕌</span>
+        <div class="cam"><svg viewBox="0 0 24 24"><path d="M3 8h3l2-3h8l2 3h3v11H3z"/><circle cx="12" cy="13" r="4"/></svg></div>
+      </div>
+      <div class="vbody">
+        <div class="vchip">365d · steady</div>
+        <div class="videntity">five prayers, on time, every day.</div>
+        <div class="vaim">anchor each prayer to its block. tahajjud on fridays.</div>
+        <div class="vgoals">
+          <span class="gchip"><span class="dot"></span>fajr streak · 18d</span>
+          <span class="gchip"><span class="dot todo"></span>tahajjud · weekly</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <nav class="bnav">
+    <span class="it"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+    <span class="it"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M4 9h16"/><path d="M9 5v14"/></svg></span>
+    <span class="it active"><svg viewBox="0 0 24 24"><path d="M12 3l9 7v11h-6v-7H9v7H3V10z"/></svg></span>
+    <span class="it"><svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/></svg></span>
+  </nav>
+</div>
+
+<!-- ============================================================ -->
+<!-- MOCKUP B · cover image edit drawer open                      -->
+<!-- ============================================================ -->
+<div class="frame-m with-drawer" style="position:relative">
+  <span class="lbl">B · cover edit drawer</span>
+  <div class="topbar">
+    <div><div class="hi">ready when you are.</div><div class="sub">editing cover</div></div>
+    <a class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></a>
+  </div>
+  <div class="scroll" style="filter:saturate(0.94)">
+    <div class="dgroup-head">
+      <div class="dot fitness"><svg viewBox="0 0 24 24"><path d="M6 9v6"/><path d="M18 9v6"/><path d="M3 12h18"/></svg></div>
+      <div class="nm">fitness</div>
+    </div>
+    <!-- the card being edited, cover lifted -->
+    <div class="vcard" style="box-shadow:var(--shadow-card-lifted)">
+      <div class="vcover tint-fitness">
+        <div class="dotbg"></div>
+        <svg class="ill" viewBox="0 0 64 64" fill="none" stroke="#7A2A3C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="32" cy="20" r="6"/>
+          <path d="M32 26v18"/><path d="M32 32l-10 6"/><path d="M32 32l10 6"/>
+        </svg>
+        <div class="cam" style="background:var(--blue);box-shadow:var(--shadow-frosted-disc)"><svg viewBox="0 0 24 24" stroke="#fff"><path d="M3 8h3l2-3h8l2 3h3v11H3z"/><circle cx="12" cy="13" r="4"/></svg></div>
+      </div>
+      <div class="vbody">
+        <div class="videntity">i am a 100kg deadlifter.</div>
+        <div class="vaim">three sessions a week. heavy compound lifts.</div>
+      </div>
+    </div>
+  </div>
+  <!-- the drawer -->
+  <div class="drawer">
+    <div class="head">
+      <div class="ti">cover image</div>
+      <div class="x">×</div>
+    </div>
+    <div class="tabs">
+      <div class="tab">emoji</div>
+      <div class="tab active">svg</div>
+      <div class="tab">url</div>
+      <div class="tab">upload</div>
+    </div>
+    <div class="body">
+      <div class="bsec">domain illustrations</div>
+      <div class="svg-grid">
+        <div class="s tint-fitness" style="background:linear-gradient(135deg,var(--d-fitness),var(--d-fitness-2));box-shadow:inset 0 0 0 1.5px var(--blue)">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#7A2A3C" stroke-width="3"><circle cx="32" cy="20" r="6"/><path d="M32 26v18"/></svg>
+        </div>
+        <div class="s" style="background:linear-gradient(135deg,var(--d-fitness),var(--d-fitness-2))">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#7A2A3C" stroke-width="3"><path d="M14 32h8M42 32h8"/><circle cx="32" cy="32" r="10"/></svg>
+        </div>
+        <div class="s" style="background:linear-gradient(135deg,var(--d-business),var(--d-business-2))">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#1748A8" stroke-width="3"><path d="M14 48l8-12 10 6 16-22"/></svg>
+        </div>
+        <div class="s" style="background:linear-gradient(135deg,var(--d-religion),var(--d-religion-2))">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#1F5C2C" stroke-width="3"><path d="M32 12v40M14 28h36"/></svg>
+        </div>
+        <div class="s" style="background:linear-gradient(135deg,var(--d-learning),var(--d-learning-2))">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#7A2A3C" stroke-width="3"><path d="M12 18h40v32H12z"/><path d="M12 26h40"/></svg>
+        </div>
+        <div class="s" style="background:linear-gradient(135deg,var(--d-home),var(--d-home-2))">
+          <svg viewBox="0 0 64 64" fill="none" stroke="#36475A" stroke-width="3"><path d="M10 32l22-18 22 18v22H10z"/></svg>
+        </div>
+      </div>
+      <div class="bsec" style="margin-top:18px">tints</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div style="width:32px;height:32px;border-radius:10px;background:var(--d-fitness);box-shadow:inset 0 0 0 1.5px var(--blue)"></div>
+        <div style="width:32px;height:32px;border-radius:10px;background:var(--d-business);box-shadow:inset 0 0 0 0.5px var(--hairline)"></div>
+        <div style="width:32px;height:32px;border-radius:10px;background:var(--d-religion);box-shadow:inset 0 0 0 0.5px var(--hairline)"></div>
+        <div style="width:32px;height:32px;border-radius:10px;background:var(--d-learning);box-shadow:inset 0 0 0 0.5px var(--hairline)"></div>
+        <div style="width:32px;height:32px;border-radius:10px;background:var(--d-home);box-shadow:inset 0 0 0 0.5px var(--hairline)"></div>
+        <div style="width:32px;height:32px;border-radius:10px;background:var(--d-food);box-shadow:inset 0 0 0 0.5px var(--hairline)"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /split two -->
+
+<h2 class="section">vision detail · tap into one</h2>
+
+<div class="split two">
+
+<!-- ============================================================ -->
+<!-- MOCKUP C · vision detail                                     -->
+<!-- ============================================================ -->
+<div class="frame-m detail" style="position:relative">
+  <span class="lbl">C · vision detail</span>
+  <div class="topbar">
+    <div><div class="hi">← back</div><div class="sub">fitness · vision</div></div>
+    <a class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></a>
+  </div>
+  <div class="scroll" style="padding:0 0 100px">
+    <div class="vcover tint-fitness" style="border-radius:0">
+      <div class="dotbg"></div>
+      <svg class="ill" viewBox="0 0 64 64" fill="none" stroke="#7A2A3C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:90px;height:90px">
+        <circle cx="32" cy="20" r="6"/>
+        <path d="M32 26v18"/>
+        <path d="M32 32l-10 6"/>
+        <path d="M32 32l10 6"/>
+        <path d="M32 44l-6 12"/>
+        <path d="M32 44l6 12"/>
+      </svg>
+      <div class="cam"><svg viewBox="0 0 24 24"><path d="M3 8h3l2-3h8l2 3h3v11H3z"/><circle cx="12" cy="13" r="4"/></svg></div>
+    </div>
+    <div class="detail-body">
+      <div class="detail-eyebrow">fitness</div>
+      <div class="detail-identity">i am a 100kg deadlifter.</div>
+      <div class="detail-aim">three sessions a week. heavy compound lifts. no excuses on the schedule.</div>
+
+      <div class="detail-deadline">
+        <div class="dl">deadline</div>
+        <div class="nu">84<small>d left</small></div>
+      </div>
+
+      <div class="goals-list">
+        <div class="gh"><span>goals</span><span class="add">+ goal</span></div>
+        <div class="grow">
+          <div class="pcheck">✓</div>
+          <div class="gnm">deadlift bodyweight+</div>
+          <div class="gpr">96 → 100kg</div>
+        </div>
+        <div class="grow">
+          <div class="pcheck todo"></div>
+          <div class="gnm">3 sessions per week</div>
+          <div class="gpr">2 → 3, 8w</div>
+        </div>
+        <div class="grow">
+          <div class="pcheck todo"></div>
+          <div class="gnm">sleep above 7h</div>
+          <div class="gpr">6.4 → 7.5h</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MOCKUP D · empty state                                       -->
+<!-- ============================================================ -->
+<div class="frame-m" style="position:relative">
+  <span class="lbl">D · empty state</span>
+  <div class="topbar">
+    <div><div class="hi">every rep is a vote.</div><div class="sub">none yet</div></div>
+    <a class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></a>
+  </div>
+  <div class="empty">
+    <div class="ill">
+      <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22"/><path d="M32 18v14l10 6"/></svg>
+    </div>
+    <div class="ti">no visions yet.</div>
+    <div class="su">name the man you're becoming. add the first one.</div>
+    <button class="btn-ink">+ first vision</button>
+  </div>
+</div>
+
+</div><!-- /split two -->
+
+<!-- ============================================================ -->
+<!-- MOCKUP E · desktop 1280x800 master/detail                    -->
+<!-- ============================================================ -->
+<h2 class="section">desktop · master / detail · 1280×800</h2>
+
+<div class="split one">
+<div class="frame-d" style="position:relative">
+  <span class="lbl">E · desktop</span>
+  <div class="topbar-d">
+    <div><div class="hi">every rep is a vote.</div><div class="sub">5 visions in flight · 3 domains</div></div>
+    <div class="right">
+      <button class="kbtn">⌘ K</button>
+      <a class="memoji"><img src="https://www.tapback.co/api/avatar/jay.webp?color=7" alt=""/></a>
+    </div>
+  </div>
+  <div class="stage">
+    <!-- left rail: vision list -->
+    <div class="dlist">
+      <div class="ti">all visions</div>
+
+      <div class="grouphead">fitness · 2</div>
+      <div class="vrow active">
+        <div class="vt fitness"><span>🏋️</span></div>
+        <div class="vmid">
+          <div class="vid">i am a 100kg deadlifter.</div>
+          <div class="vsub">84d left · 3 goals</div>
+        </div>
+      </div>
+      <div class="vrow">
+        <div class="vt fitness"><span>🏃</span></div>
+        <div class="vmid">
+          <div class="vid">sub-19 · 5k runner.</div>
+          <div class="vsub">26w left · 2 goals</div>
+        </div>
+      </div>
+
+      <div class="grouphead">business · 2</div>
+      <div class="vrow">
+        <div class="vt business"><span>📈</span></div>
+        <div class="vmid">
+          <div class="vid">i run a £1m company.</div>
+          <div class="vsub">52w left · 3 goals</div>
+        </div>
+      </div>
+      <div class="vrow">
+        <div class="vt business"><span>📚</span></div>
+        <div class="vmid">
+          <div class="vid">published author.</div>
+          <div class="vsub">38w left · 2 goals</div>
+        </div>
+      </div>
+
+      <div class="grouphead">religion · 1</div>
+      <div class="vrow">
+        <div class="vt religion"><span>🕌</span></div>
+        <div class="vmid">
+          <div class="vid">five prayers, on time.</div>
+          <div class="vsub">365d · steady</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- right pane: detail -->
+    <div class="dpane">
+      <div class="vcover tint-fitness" style="border-radius:0">
+        <div class="dotbg"></div>
+        <svg class="ill" viewBox="0 0 64 64" fill="none" stroke="#7A2A3C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:120px;height:120px">
+          <circle cx="32" cy="20" r="6"/>
+          <path d="M32 26v18"/>
+          <path d="M32 32l-10 6"/>
+          <path d="M32 32l10 6"/>
+          <path d="M32 44l-6 12"/>
+          <path d="M32 44l6 12"/>
+        </svg>
+        <div class="cam"><svg viewBox="0 0 24 24"><path d="M3 8h3l2-3h8l2 3h3v11H3z"/><circle cx="12" cy="13" r="4"/></svg></div>
+      </div>
+      <div class="dpcontent">
+        <div class="dpeyebrow">fitness</div>
+        <div class="dpidentity">i am a 100kg deadlifter.</div>
+        <div class="dpaim">three sessions a week. heavy compound lifts. no excuses on the schedule. the man who lifts twice his bodyweight doesn't argue with mondays.</div>
+
+        <div class="dprow">
+          <div class="stat"><div class="l">deadline</div><div class="v">84<small>d</small></div></div>
+          <div class="stat"><div class="l">progress</div><div class="v">96<small>kg now</small></div></div>
+          <div class="stat"><div class="l">goals</div><div class="v">3<small>· 1 done</small></div></div>
+        </div>
+
+        <div class="goals-list" style="margin-top:28px">
+          <div class="gh"><span>goals</span><span class="add">+ goal</span></div>
+          <div class="grow"><div class="pcheck">✓</div><div class="gnm">deadlift bodyweight+</div><div class="gpr">96 → 100kg</div></div>
+          <div class="grow"><div class="pcheck todo"></div><div class="gnm">3 sessions per week</div><div class="gpr">2 → 3, 8w</div></div>
+          <div class="grow"><div class="pcheck todo"></div><div class="gnm">sleep above 7h</div><div class="gpr">6.4 → 7.5h</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</body></html>
