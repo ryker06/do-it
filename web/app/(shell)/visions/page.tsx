@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDoIt } from "@/lib/store";
+import { useIsDesktop } from "@/lib/useIsDesktop";
 import { Topbar } from "@/components/Topbar";
 import { DomainGlyph } from "@/components/icons";
 import { CoverImagePickerTrigger } from "@/components/CoverImagePicker";
 import RightDrawer from "@/components/RightDrawer";
 import { svgById } from "@/lib/svgLibrary";
-import type { DomainId, CoverImage } from "@/lib/types";
+import type { DomainId, CoverImage, Vision, Goal } from "@/lib/types";
 
 const DOMAIN_ORDER: DomainId[] = [
   "fitness",
@@ -111,7 +113,6 @@ function CoverDisplay({
       </div>
     );
   }
-  // url / data url
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
@@ -128,15 +129,6 @@ function CoverDisplay({
   );
 }
 
-const DOMAIN_BG: Record<DomainId, string> = {
-  business: "linear-gradient(180deg,#E1ECFF 0%, #C9DBFF 100%)",
-  religion: "linear-gradient(180deg,#E2F4E6 0%, #C0E5C8 100%)",
-  learning: "linear-gradient(180deg,#FFE3EB 0%, #FFCFDC 100%)",
-  fitness: "linear-gradient(180deg,#FFD0DA 0%, #FFB6C5 100%)",
-  home: "linear-gradient(180deg,#E5ECF0 0%, #CFDCE3 100%)",
-  food: "linear-gradient(180deg,#FFF3E0 0%, #FFE0B2 100%)",
-};
-
 function deadlineCountdown(deadline: string | undefined): string | null {
   if (!deadline) return null;
   const diff = new Date(deadline).getTime() - Date.now();
@@ -148,7 +140,202 @@ function deadlineCountdown(deadline: string | undefined): string | null {
   return `${Math.round(days / 30)} months out`;
 }
 
-export default function VisionsPage() {
+// ── Shared vision card content (used in both mobile list + desktop detail pane) ──
+function VisionDetail({
+  v,
+  goals,
+  setCoverImage,
+}: {
+  v: Vision;
+  goals: Goal[];
+  setCoverImage: (
+    kind: "goal" | "vision" | "wishlist" | "habit" | "person" | "routine",
+    id: string,
+    image: CoverImage | null,
+  ) => void;
+}) {
+  const deadline = deadlineCountdown(v.deadline);
+  const vGoals = goals.filter((g) => g.visionId === v.id);
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        background: "var(--card,#fff)",
+        borderRadius: 24,
+        boxShadow:
+          "0 0 0 0.5px rgba(60,60,67,0.05),0 8px 22px -14px rgba(20,20,30,0.12)",
+        overflow: "hidden",
+      }}
+    >
+      {/* inset highlight */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          borderRadius: 24,
+          boxShadow:
+            "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+          pointerEvents: "none",
+          zIndex: 2,
+        }}
+      />
+      {/* Cover */}
+      <div style={{ position: "relative" }}>
+        <CoverDisplay cover={v.coverImage} domainId={v.domainId} />
+        <div
+          style={{ position: "absolute", top: 8, right: 8, zIndex: 3 }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <CoverImagePickerTrigger
+            context="vision"
+            current={v.coverImage}
+            onConfirm={(img) => setCoverImage("vision", v.id, img)}
+          />
+        </div>
+      </div>
+      {/* Body */}
+      <div style={{ padding: "14px 18px 16px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 10,
+            marginBottom: 4,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 24,
+              fontWeight: 800,
+              letterSpacing: "-0.04em",
+              lineHeight: 1.05,
+              color: "var(--ink,#000)",
+              flex: 1,
+            }}
+          >
+            {v.identity ?? v.title}
+          </div>
+          {deadline && (
+            <div
+              style={{
+                flexShrink: 0,
+                fontSize: 10.5,
+                fontWeight: 700,
+                color: "var(--label-2,#6E6E73)",
+                background: "var(--inset,#F2F2F7)",
+                padding: "4px 10px",
+                borderRadius: 999,
+                boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
+                fontVariantNumeric: "tabular-nums",
+                marginTop: 4,
+              }}
+            >
+              {deadline}
+            </div>
+          )}
+        </div>
+        <div
+          style={{
+            fontSize: 13.5,
+            color: "var(--label-2,#6E6E73)",
+            fontWeight: 500,
+            letterSpacing: "-0.012em",
+            lineHeight: 1.4,
+            marginBottom: vGoals.length > 0 ? 14 : 0,
+          }}
+        >
+          {v.blurb}
+        </div>
+        {vGoals.length > 0 && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+              paddingTop: 12,
+              borderTop: "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
+            }}
+          >
+            {vGoals.map((g) => {
+              const pct = Math.min(
+                1,
+                g.targetValue > 0 ? g.currentValue / g.targetValue : 0,
+              );
+              return (
+                <div
+                  key={g.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "10px 12px",
+                    background: "var(--inset,#F2F2F7)",
+                    borderRadius: 14,
+                    boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: "var(--ink,#000)",
+                      letterSpacing: "-0.012em",
+                      flex: 1,
+                    }}
+                  >
+                    {g.identityLine ?? g.unit}
+                  </div>
+                  <div
+                    style={{
+                      width: 50,
+                      height: 3,
+                      background: "var(--inset-2,#EAEAEF)",
+                      borderRadius: 999,
+                      position: "relative",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 7,
+                        height: 7,
+                        borderRadius: "50%",
+                        background: "var(--ink,#000)",
+                        position: "absolute",
+                        top: -2,
+                        left: `calc(${pct * 100}% - 3.5px)`,
+                      }}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: "var(--label-2,#6E6E73)",
+                      fontWeight: 600,
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {g.currentValue} / {g.targetValue}
+                    {g.unit}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Inner component (reads searchParams) ──
+function VisionsInner() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedId = searchParams.get("selected");
+  const isDesktop = useIsDesktop();
+
   const { visions, goals, setCoverImage, createVision } = useDoIt();
   const [createOpen, setCreateOpen] = useState(false);
   const [cTitle, setCTitle] = useState("");
@@ -307,6 +494,184 @@ export default function VisionsPage() {
     </RightDrawer>
   );
 
+  // Group by domain
+  const byDomain = new Map<DomainId, typeof visions>();
+  for (const v of visions) {
+    const list = byDomain.get(v.domainId) ?? [];
+    list.push(v);
+    byDomain.set(v.domainId, list);
+  }
+
+  const selectedVision = visions.find((v) => v.id === selectedId) ?? null;
+
+  // ── Add vision button ──
+  const addButton = (
+    <button
+      onClick={() => setCreateOpen(true)}
+      style={{
+        background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
+        color: "#fff",
+        border: "none",
+        borderRadius: 999,
+        padding: "9px 16px",
+        fontSize: 13,
+        fontWeight: 700,
+        fontFamily: "inherit",
+        cursor: "pointer",
+        boxShadow:
+          "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55)",
+        flexShrink: 0,
+      }}
+    >
+      + vision
+    </button>
+  );
+
+  // ── Vision list (shared between mobile card list + desktop left pane rows) ──
+  function VisionListRows({ compact }: { compact: boolean }) {
+    return (
+      <>
+        {DOMAIN_ORDER.map((domId) => {
+          const list = byDomain.get(domId);
+          if (!list || list.length === 0) return null;
+          return (
+            <div key={domId}>
+              {/* domain label */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: compact ? "10px 14px 6px" : "14px 6px 10px",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  color: "var(--label,#8E8E93)",
+                }}
+              >
+                <div
+                  className={`ddisc ${domId}`}
+                  style={{ width: 16, height: 16, flexShrink: 0 }}
+                >
+                  <DomainGlyph id={domId} size={10} />
+                </div>
+                {domId}
+              </div>
+
+              {list.map((v) => {
+                const deadline = deadlineCountdown(v.deadline);
+                const isSelected = selectedId === v.id;
+
+                if (compact) {
+                  // Desktop compact row
+                  return (
+                    <button
+                      key={v.id}
+                      onClick={() => {
+                        router.push(`/visions?selected=${v.id}`, {
+                          scroll: false,
+                        });
+                      }}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        width: "100%",
+                        padding: "9px 14px",
+                        background: isSelected
+                          ? "var(--ink,#0B0B0F)"
+                          : "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                        fontFamily: "inherit",
+                        textAlign: "left",
+                        transition: "background 160ms",
+                      }}
+                    >
+                      <div
+                        style={{
+                          flex: 1,
+                          minWidth: 0,
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: 13.5,
+                            fontWeight: 700,
+                            letterSpacing: "-0.015em",
+                            lineHeight: 1.2,
+                            color: isSelected ? "#fff" : "var(--ink,#0B0B0F)",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {v.identity ?? v.title}
+                        </div>
+                        {v.blurb && (
+                          <div
+                            style={{
+                              fontSize: 11.5,
+                              color: isSelected
+                                ? "rgba(255,255,255,0.6)"
+                                : "var(--label-2,#6E6E73)",
+                              fontWeight: 500,
+                              marginTop: 2,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {v.blurb}
+                          </div>
+                        )}
+                      </div>
+                      {deadline && (
+                        <div
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 700,
+                            color: isSelected
+                              ? "rgba(255,255,255,0.55)"
+                              : "var(--label,#8E8E93)",
+                            flexShrink: 0,
+                            fontVariantNumeric: "tabular-nums",
+                          }}
+                        >
+                          {deadline}
+                        </div>
+                      )}
+                    </button>
+                  );
+                }
+
+                // Mobile full card
+                return (
+                  <Link
+                    key={v.id}
+                    href={`/visions/${v.id}`}
+                    style={{
+                      textDecoration: "none",
+                      display: "block",
+                      marginBottom: 14,
+                    }}
+                  >
+                    <VisionDetail
+                      v={v}
+                      goals={goals}
+                      setCoverImage={setCoverImage}
+                    />
+                  </Link>
+                );
+              })}
+            </div>
+          );
+        })}
+      </>
+    );
+  }
+
   if (visions.length === 0) {
     return (
       <>
@@ -319,24 +684,7 @@ export default function VisionsPage() {
             marginBottom: 12,
           }}
         >
-          <button
-            onClick={() => setCreateOpen(true)}
-            style={{
-              background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
-              color: "#fff",
-              border: "none",
-              borderRadius: 999,
-              padding: "9px 16px",
-              fontSize: 13,
-              fontWeight: 700,
-              fontFamily: "inherit",
-              cursor: "pointer",
-              boxShadow:
-                "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55)",
-            }}
-          >
-            + vision
-          </button>
+          {addButton}
         </div>
         <div
           style={{
@@ -378,28 +726,67 @@ export default function VisionsPage() {
     );
   }
 
-  // Group visions by domain
-  const byDomain = new Map<DomainId, typeof visions>();
-  for (const v of visions) {
-    const list = byDomain.get(v.domainId) ?? [];
-    list.push(v);
-    byDomain.set(v.domainId, list);
-  }
-  const domainOrder: DomainId[] = [
-    "fitness",
-    "business",
-    "religion",
-    "learning",
-    "home",
-    "food",
-  ];
+  // ── Desktop master/detail layout ──
+  if (isDesktop) {
+    return (
+      <>
+        {CreateDrawer}
+        <div className="md-layout">
+          {/* LEFT — 360px list pane */}
+          <div className="md-list" style={{ width: 360 }}>
+            {/* Toolbar */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "16px 14px 10px",
+                borderBottom: "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.10em",
+                  textTransform: "uppercase",
+                  color: "var(--label,#8E8E93)",
+                }}
+              >
+                {visions.length} vision{visions.length !== 1 ? "s" : ""}
+              </span>
+              {addButton}
+            </div>
+            <VisionListRows compact />
+          </div>
 
+          {/* RIGHT — detail pane */}
+          <div className="md-detail">
+            {selectedVision ? (
+              <div style={{ padding: "24px 32px 40px", maxWidth: 600 }}>
+                <VisionDetail
+                  v={selectedVision}
+                  goals={goals}
+                  setCoverImage={setCoverImage}
+                />
+              </div>
+            ) : (
+              <div className="md-empty">
+                <span className="md-empty-icon">◎</span>
+                <span>select a vision to see the detail</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // ── Mobile single-column layout ──
   return (
     <>
       <Topbar name="visions." sub="what you're becoming." />
       {CreateDrawer}
-
-      {/* + vision pill */}
       <div
         style={{
           display: "flex",
@@ -407,26 +794,8 @@ export default function VisionsPage() {
           marginBottom: 12,
         }}
       >
-        <button
-          onClick={() => setCreateOpen(true)}
-          style={{
-            background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
-            color: "#fff",
-            border: "none",
-            borderRadius: 999,
-            padding: "9px 16px",
-            fontSize: 13,
-            fontWeight: 700,
-            fontFamily: "inherit",
-            cursor: "pointer",
-            boxShadow:
-              "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 18px 38px -18px rgba(10,10,20,0.55)",
-          }}
-        >
-          + vision
-        </button>
+        {addButton}
       </div>
-
       <div
         style={{
           display: "flex",
@@ -435,251 +804,16 @@ export default function VisionsPage() {
           paddingBottom: 110,
         }}
       >
-        {domainOrder.map((domId) => {
-          const list = byDomain.get(domId);
-          if (!list || list.length === 0) return null;
-          return (
-            <div key={domId}>
-              {/* Domain group label */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  padding: "14px 6px 10px",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  letterSpacing: "0.16em",
-                  textTransform: "uppercase",
-                  color: "var(--label,#8E8E93)",
-                }}
-              >
-                <div
-                  className={`ddisc ${domId}`}
-                  style={{ width: 18, height: 18, flexShrink: 0 }}
-                >
-                  <DomainGlyph id={domId} size={11} />
-                </div>
-                {domId}
-              </div>
-
-              {list.map((v) => {
-                const deadline = deadlineCountdown(v.deadline);
-                const vGoals = goals.filter((g) => g.visionId === v.id);
-
-                return (
-                  <Link
-                    key={v.id}
-                    href={`/visions/${v.id}`}
-                    style={{
-                      textDecoration: "none",
-                      display: "block",
-                      marginBottom: 14,
-                    }}
-                  >
-                    <div
-                      style={{
-                        position: "relative",
-                        background: "var(--card,#fff)",
-                        borderRadius: 24,
-                        boxShadow:
-                          "0 0 0 0.5px rgba(60,60,67,0.05),0 8px 22px -14px rgba(20,20,30,0.12)",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {/* inset highlight */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          borderRadius: 24,
-                          boxShadow:
-                            "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.06)",
-                          pointerEvents: "none",
-                          zIndex: 2,
-                        }}
-                      />
-
-                      {/* Cover image area */}
-                      <div style={{ position: "relative" }}>
-                        <CoverDisplay
-                          cover={v.coverImage}
-                          domainId={v.domainId}
-                        />
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            zIndex: 3,
-                          }}
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <CoverImagePickerTrigger
-                            context="vision"
-                            current={v.coverImage}
-                            onConfirm={(img) =>
-                              setCoverImage("vision", v.id, img)
-                            }
-                          />
-                        </div>
-                      </div>
-
-                      {/* Card content */}
-                      <div style={{ padding: "14px 18px 16px" }}>
-                        {/* Identity line + deadline row */}
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "flex-start",
-                            gap: 10,
-                            marginBottom: 4,
-                          }}
-                        >
-                          <div
-                            style={{
-                              fontSize: 24,
-                              fontWeight: 800,
-                              letterSpacing: "-0.04em",
-                              lineHeight: 1.05,
-                              color: "var(--ink,#000)",
-                              flex: 1,
-                            }}
-                          >
-                            {v.identity ?? v.title}
-                          </div>
-                          {deadline && (
-                            <div
-                              style={{
-                                flexShrink: 0,
-                                fontSize: 10.5,
-                                fontWeight: 700,
-                                color: "var(--label-2,#6E6E73)",
-                                background: "var(--inset,#F2F2F7)",
-                                padding: "4px 10px",
-                                borderRadius: 999,
-                                boxShadow:
-                                  "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
-                                fontVariantNumeric: "tabular-nums",
-                                marginTop: 4,
-                              }}
-                            >
-                              {deadline}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Aim sentence */}
-                        <div
-                          style={{
-                            fontSize: 13.5,
-                            color: "var(--label-2,#6E6E73)",
-                            fontWeight: 500,
-                            letterSpacing: "-0.012em",
-                            lineHeight: 1.4,
-                            marginBottom: vGoals.length > 0 ? 14 : 0,
-                          }}
-                        >
-                          {v.blurb}
-                        </div>
-
-                        {/* Goals mini-chips */}
-                        {vGoals.length > 0 && (
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: 8,
-                              paddingTop: 12,
-                              borderTop:
-                                "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
-                            }}
-                          >
-                            {vGoals.map((g) => {
-                              const pct = Math.min(
-                                1,
-                                g.targetValue > 0
-                                  ? g.currentValue / g.targetValue
-                                  : 0,
-                              );
-                              return (
-                                <div
-                                  key={g.id}
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 10,
-                                    padding: "10px 12px",
-                                    background: "var(--inset,#F2F2F7)",
-                                    borderRadius: 14,
-                                    boxShadow:
-                                      "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
-                                  }}
-                                >
-                                  <div
-                                    style={{
-                                      fontSize: 13,
-                                      fontWeight: 700,
-                                      color: "var(--ink,#000)",
-                                      letterSpacing: "-0.012em",
-                                      flex: 1,
-                                    }}
-                                  >
-                                    {g.identityLine ?? g.unit}
-                                  </div>
-                                  {/* hairline track */}
-                                  <div
-                                    style={{
-                                      width: 50,
-                                      height: 3,
-                                      background: "var(--inset-2,#EAEAEF)",
-                                      borderRadius: 999,
-                                      position: "relative",
-                                      flexShrink: 0,
-                                      boxShadow:
-                                        "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
-                                    }}
-                                  >
-                                    <div
-                                      style={{
-                                        width: 7,
-                                        height: 7,
-                                        borderRadius: "50%",
-                                        background: "var(--ink,#000)",
-                                        position: "absolute",
-                                        top: -2,
-                                        left: `calc(${pct * 100}% - 3.5px)`,
-                                        boxShadow:
-                                          "0 0 0 0.5px rgba(60,60,67,0.10)",
-                                      }}
-                                    />
-                                  </div>
-                                  <div
-                                    style={{
-                                      fontSize: 11.5,
-                                      color: "var(--label-2,#6E6E73)",
-                                      fontWeight: 600,
-                                      fontVariantNumeric: "tabular-nums",
-                                    }}
-                                  >
-                                    {g.currentValue} / {g.targetValue}
-                                    {g.unit}
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                      {/* end card content */}
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          );
-        })}
+        <VisionListRows compact={false} />
       </div>
     </>
+  );
+}
+
+export default function VisionsPage() {
+  return (
+    <Suspense>
+      <VisionsInner />
+    </Suspense>
   );
 }

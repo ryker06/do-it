@@ -1492,16 +1492,19 @@ button {
 }
 
 /* ── Desktop sidebar rail ── */
+/* Sidebar + titlebar hidden on mobile */
 .sidebar-rail,
-.desktop-titlebar {
+.titlebar-desktop {
   display: none;
 }
 
 @media (min-width: 1024px) {
+  /* ── Hide mobile chrome ── */
   .tabbar {
     display: none;
   }
 
+  /* ── Shell: offset for 240px sidebar + 44px titlebar ── */
   .shell {
     max-width: none;
     padding: 0;
@@ -1509,13 +1512,15 @@ button {
     min-height: 100dvh;
     background: var(--bg);
     position: relative;
+    padding-top: 44px;
   }
 
   .shell-content {
-    padding: 72px 0 40px;
+    padding: 44px 0 40px;
     min-height: 100dvh;
   }
 
+  /* ── Sidebar rail — 240px fixed left ── */
   .sidebar-rail {
     position: fixed;
     left: 0;
@@ -1526,8 +1531,8 @@ button {
     box-shadow: 0.5px 0 0 var(--hairline);
     display: flex;
     flex-direction: column;
-    padding: 14px 12px;
-    gap: 2px;
+    padding: 16px 10px 14px;
+    gap: 1px;
     z-index: 40;
     overflow-y: auto;
   }
@@ -1536,86 +1541,127 @@ button {
     display: none;
   }
 
-  .sb-logo {
-    font-size: 14px;
+  /* App wordmark */
+  .sb-wordmark {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px 16px;
+  }
+
+  .sb-wordmark-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    flex-shrink: 0;
+  }
+
+  .sb-wordmark-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .sb-wordmark-text {
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: -0.022em;
-    padding: 8px 10px 14px;
+    letter-spacing: -0.025em;
     color: var(--ink);
   }
 
+  /* Nav item — pill shape, ink-fill when active */
   .sb-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 7px 10px;
+    gap: 9px;
+    padding: 6px 10px;
     border-radius: 10px;
     font-size: 13px;
-    font-weight: 600;
-    color: var(--ink-2);
+    font-weight: 500;
+    color: var(--ink-3);
     cursor: pointer;
     text-decoration: none;
-    transition: background 160ms cubic-bezier(0.32, 0.72, 0, 1);
+    transition:
+      background 160ms cubic-bezier(0.32, 0.72, 0, 1),
+      color 160ms cubic-bezier(0.32, 0.72, 0, 1);
+    letter-spacing: -0.01em;
   }
 
   .sb-item:hover {
-    background: var(--chip-surface);
+    background: rgba(60, 60, 67, 0.05);
+    color: var(--ink-2);
   }
 
+  /* Active: ink fill + white text — Mac sidebar selected state */
   .sb-item.active {
-    background: var(--chip-surface);
-    color: var(--ink);
-    font-weight: 700;
+    background: var(--ink);
+    color: #ffffff;
+    font-weight: 600;
   }
 
   .sb-item svg {
-    width: 16px;
-    height: 16px;
-    stroke: var(--label-2);
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
     stroke-width: 1.7;
     fill: none;
     stroke-linecap: round;
     stroke-linejoin: round;
     flex-shrink: 0;
+    opacity: 0.75;
   }
 
   .sb-item.active svg {
-    stroke: var(--ink);
+    opacity: 1;
   }
 
   .sb-divider {
     height: 0.5px;
     background: var(--hairline);
-    margin: 10px 6px;
+    margin: 8px 6px;
   }
 
+  /* Group label: uppercase + hairline rule */
   .sb-group-label {
-    font-size: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 9.5px;
     font-weight: 700;
     color: var(--label);
-    letter-spacing: 0.14em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 8px 10px 4px;
+    padding: 10px 10px 3px;
   }
 
+  .sb-group-rule {
+    flex: 1;
+    height: 0.5px;
+    background: var(--hairline);
+  }
+
+  /* Bottom: avatar + name + Cmd+K pill */
   .sb-bottom {
     margin-top: auto;
     padding-top: 10px;
     border-top: 0.5px solid var(--hairline-soft);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
   }
 
   .sb-bottom .me-sm {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     overflow: hidden;
     box-shadow:
       inset 0 0 0 0.5px var(--hairline),
       0 1px 2px rgba(20, 20, 30, 0.06);
     flex-shrink: 0;
+    display: block;
   }
 
   .sb-bottom .me-sm img {
@@ -1631,75 +1677,192 @@ button {
     font-weight: 600;
     flex: 1;
     min-width: 0;
+    letter-spacing: -0.01em;
   }
 
   .sb-bottom .kb-hint {
-    font-size: 10.5px;
+    font-size: 10px;
     color: var(--label);
     background: var(--chip-surface);
-    padding: 3px 8px;
+    padding: 3px 7px;
     border-radius: 6px;
     box-shadow: var(--shadow-glyph-3d);
     flex-shrink: 0;
     font-family: "SF Mono", ui-monospace, monospace;
+    white-space: nowrap;
   }
 
-  /* slim title bar desktop */
+  /* ── Slim title bar — 44px, surface-aware ── */
   .titlebar-desktop {
     position: fixed;
     top: 0;
     left: 240px;
     right: 0;
-    height: 52px;
+    height: 44px;
     background: var(--paper);
     box-shadow: 0 0.5px 0 var(--hairline);
     display: flex;
     align-items: center;
-    padding: 0 28px;
+    padding: 0 24px;
     z-index: 30;
+    gap: 0;
   }
 
-  .titlebar-desktop .greet {
-    font-size: 20px;
+  .titlebar-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .titlebar-eyebrow {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--label);
+    line-height: 1;
+  }
+
+  .titlebar-title {
+    font-size: 17px;
     font-weight: 700;
     letter-spacing: -0.025em;
     color: var(--ink);
-    line-height: 1.1;
+    line-height: 1.15;
   }
 
-  .titlebar-desktop .greet-sub {
-    font-size: 12px;
-    color: var(--label);
-    font-weight: 500;
-    margin-top: 1px;
-  }
-
-  .titlebar-desktop .actions {
-    margin-left: auto;
+  .titlebar-right {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-shrink: 0;
   }
 
-  .titlebar-desktop .ax {
-    font-size: 12.5px;
-    color: var(--label-2);
-    font-weight: 600;
-    padding: 6px 12px;
-    border-radius: 999px;
-    background: var(--chip-surface);
-    box-shadow: inset 0 0 0 0.5px var(--hairline);
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-    text-decoration: none;
+  /* Cmd+K trigger pill */
+  .titlebar-cmdk {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    background: var(--chip-surface);
+    border: none;
+    border-radius: 999px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: inset 0 0 0 0.5px var(--hairline);
+    transition: background 160ms;
   }
 
-  .ax:hover {
-    background: var(--hairline-soft);
+  .titlebar-cmdk:hover {
+    background: var(--inset-2);
+  }
+
+  .titlebar-cmdk-key {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-2);
+    font-family: "SF Mono", ui-monospace, monospace;
+  }
+
+  .titlebar-cmdk-label {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--label-2);
+    letter-spacing: -0.01em;
+  }
+
+  /* Memoji avatar in titlebar */
+  .titlebar-avatar {
+    width: 28px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      inset 0 0 0 0.5px var(--hairline),
+      0 1px 3px rgba(20, 20, 30, 0.1);
+    background: var(--pink-2);
+    flex-shrink: 0;
+  }
+
+  .titlebar-avatar img {
+    width: 28px;
+    height: 30px;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ── Master/detail split layout ── */
+  /* Used by Visions, Goals, Insights, People, Notes, Knowledge, Money */
+  .md-layout {
+    display: flex;
+    height: calc(100dvh - 44px);
+    overflow: hidden;
+  }
+
+  .md-list {
+    flex-shrink: 0;
+    overflow-y: auto;
+    border-right: 0.5px solid var(--hairline);
+    background: var(--paper);
+  }
+
+  .md-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .md-detail {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--bg);
+    min-width: 0;
+  }
+
+  .md-detail::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .md-detail::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .md-detail::-webkit-scrollbar-thumb {
+    background: var(--hairline-strong);
+    border-radius: 3px;
+  }
+
+  /* Selected row in list pane — ink fill */
+  .md-row-selected {
+    background: var(--ink) !important;
+    color: #ffffff !important;
+  }
+
+  .md-row-selected * {
+    color: rgba(255, 255, 255, 0.9) !important;
+  }
+
+  /* Empty detail state */
+  .md-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 8px;
+    color: var(--label);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .md-empty-icon {
+    font-size: 28px;
+    opacity: 0.4;
   }
 }
 

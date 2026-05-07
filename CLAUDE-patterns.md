@@ -48,6 +48,15 @@ When adding new optional fields to `userPrefs`, define a named `UserPrefs` type 
 ## Static export + dynamic [id] routes
 With `output: export` in next.config, any `[id]/page.tsx` MUST export `generateStaticParams()` or the build fails with "missing generateStaticParams". For user-created runtime IDs (goals, jar entries, etc.) that aren't known at build time, do NOT use `[param]` routes. Instead, use a static page with `useSearchParams` to read `?id=` from the URL. Wrap the component reading searchParams in `<Suspense>` to avoid hydration errors.
 
+## JAR auto-capture tracking pattern
+Pause count is tracked in a `useRef<Record<string, number>>` (not state) to avoid re-renders. A separate `prevStatusRef` tracks the previous status per block. An effect compares current vs previous status to detect `active → paused` transitions (increment pause count) and `non-done → done` transitions (trigger JAR prompt if ≥2 pauses OR accumulatedMs ≥ 1.5× durationMin×60000). Dismissed prompt IDs live in a `useState<Set<string>>`.
+
+## Notes detail route uses ?id= search param
+`/notes/detail?id=<note-id>` — NOT a dynamic route. Wrap inner component in `<Suspense>`. On `addNote()`, delay navigation by 50ms with `setTimeout` so the store has time to write the new note before the detail page reads it (store update is synchronous but React state batching can defer the render).
+
+## Zustand persist version
+Current version: **14** (bumped from 13 in wave 3.5 to handle `notes: Note[]` and `prayerMarks: PrayerMark[]` in state and migration).
+
 Pattern:
 ```tsx
 // /goals/detail/page.tsx

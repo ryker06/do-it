@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDoIt } from "@/lib/store";
+import { useIsDesktop } from "@/lib/useIsDesktop";
 import { Topbar } from "@/components/Topbar";
 import RightDrawer from "@/components/RightDrawer";
 import type { DomainId } from "@/lib/types";
 
-// Blue heatmap ramp — calm, NOT GitHub-green
 const HM_COLORS = [
   "#F2F4F7",
   "#E2EAF6",
@@ -45,7 +46,8 @@ const DOMAIN_INK: Record<DomainId, string> = {
   food: "#7A4A1A",
 };
 
-// Get last 56 days as ISO strings, most-recent last (so column 0 = 8 weeks ago)
+const SPARK_HEIGHTS = [4, 6, 9, 13, 16, 18];
+
 function getLast56Dates(): string[] {
   const dates: string[] = [];
   const today = new Date();
@@ -57,12 +59,9 @@ function getLast56Dates(): string[] {
   return dates;
 }
 
-// Group into 8 weeks of 7 days, each column = one week, rows = Mon–Sun
 function buildGrid(dates: string[]): string[][] {
   const cols: string[][] = [];
-  for (let w = 0; w < 8; w++) {
-    cols.push(dates.slice(w * 7, w * 7 + 7));
-  }
+  for (let w = 0; w < 8; w++) cols.push(dates.slice(w * 7, w * 7 + 7));
   return cols;
 }
 
@@ -70,7 +69,6 @@ function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-// Simple sparkline: return last 8 weeks count array per domain
 function buildSparkline(
   counts: Record<string, number>,
   dates: string[],
@@ -102,13 +100,18 @@ function sparkLevel(val: number, max: number): number {
   return 5;
 }
 
-const SPARK_HEIGHTS = [4, 6, 9, 13, 16, 18];
+function KnowledgeInner() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const selectedDay = searchParams.get("day");
+  const isDesktop = useIsDesktop();
 
-export default function KnowledgePage() {
   const { insights, blocks, domains } = useDoIt();
   const [selectedDomain, setSelectedDomain] = useState<DomainId | "all">("all");
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [mobileSelectedDate, setMobileSelectedDate] = useState<string | null>(
+    null,
+  );
 
   const dates = getLast56Dates();
   const grid = buildGrid(dates);
@@ -121,20 +124,15 @@ export default function KnowledgePage() {
         insDate === dateISO && (domainId == null || ins.domainId === domainId)
       );
     }).length;
-
-    const theoryCount = blocks.filter((b) => {
-      const bDate = b.scheduledFor;
-      return (
-        bDate === dateISO &&
+    const theoryCount = blocks.filter(
+      (b) =>
+        b.scheduledFor === dateISO &&
         b.mode === "theory" &&
-        (domainId == null || b.domain === domainId)
-      );
-    }).length;
-
+        (domainId == null || b.domain === domainId),
+    ).length;
     return insightCount + theoryCount;
   }
 
-  // Build count map for heatmap
   const countMap: Record<string, number> = {};
   dates.forEach((d) => {
     countMap[d] = countForDate(
@@ -143,10 +141,8 @@ export default function KnowledgePage() {
     );
   });
 
-  // Total for summary phrase
   const totalCaptures = dates.reduce((sum, d) => sum + (countMap[d] ?? 0), 0);
 
-  // Per-domain sparkline data
   const domainIds: DomainId[] = [
     "business",
     "religion",
@@ -166,119 +162,144 @@ export default function KnowledgePage() {
     return { id: did, spark, total, max, domainCounts };
   });
 
-  // Day detail for drawer
-  const selectedDayInsights = selectedDate
-    ? insights.filter((ins) => {
-        const insDate = new Date(ins.capturedAt).toISOString().slice(0, 10);
-        return insDate === selectedDate;
-      })
-    : [];
-  const selectedDayTheory = selectedDate
-    ? blocks.filter(
-        (b) => b.scheduledFor === selectedDate && b.mode === "theory",
-      )
-    : [];
-
-  function handleCellClick(date: string) {
-    setSelectedDate(date);
-    setDrawerOpen(true);
-  }
-
-  return (
-    <>
-      <Topbar name="knowledge." sub="what you've absorbed over time." />
-
-      {/* Domain filter chips */}
-      <div
-        style={{
-          display: "flex",
-          gap: 6,
-          overflowX: "auto",
-          padding: "0 4px 16px",
-          scrollbarWidth: "none",
-        }}
-      >
-        {DOMAIN_FILTERS.map((f) => (
-          <button
-            key={f.id}
-            onClick={() => setSelectedDomain(f.id)}
-            style={{
-              flexShrink: 0,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              fontSize: 12.5,
-              fontWeight: 600,
-              color: selectedDomain === f.id ? "#fff" : "#6E6E73",
-              background: selectedDomain === f.id ? "#0B0B0F" : "#FFFFFF",
-              padding: "7px 12px",
-              borderRadius: 999,
-              boxShadow:
-                selectedDomain === f.id
-                  ? "none"
-                  : "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
-              letterSpacing: "-0.005em",
-              fontFamily: "inherit",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            {f.id !== "all" && f.id !== undefined && (
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background:
-                    selectedDomain === f.id
-                      ? "rgba(255,255,255,0.5)"
-                      : DOMAIN_BG2[f.id as DomainId][1],
-                }}
-              />
-            )}
-            {f.name}
-          </button>
-        ))}
-      </div>
-
-      {/* heading */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "baseline",
-          justifyContent: "space-between",
-          padding: "2px 6px 14px",
-        }}
-      >
+  // Day detail content
+  function DayDetail({ date }: { date: string }) {
+    const dayInsights = insights.filter(
+      (ins) => new Date(ins.capturedAt).toISOString().slice(0, 10) === date,
+    );
+    const dayTheory = blocks.filter(
+      (b) => b.scheduledFor === date && b.mode === "theory",
+    );
+    const count = dayInsights.length + dayTheory.length;
+    return (
+      <div style={{ padding: "24px 24px 40px" }}>
         <div
           style={{
-            fontSize: 30,
-            fontWeight: 800,
-            letterSpacing: "-0.03em",
-            color: "#0B0B0F",
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.10em",
+            textTransform: "uppercase",
+            color: "var(--label,#8E8E93)",
+            marginBottom: 6,
           }}
         >
-          knowledge
+          {new Date(date + "T12:00:00").toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+          })}
         </div>
-        <div style={{ fontSize: 11.5, color: "#8E8E93", fontWeight: 600 }}>
-          <b style={{ color: "#1C1C1E", fontWeight: 700 }}>{totalCaptures}</b>{" "}
-          captures
+        <div
+          style={{
+            fontSize: 28,
+            fontWeight: 800,
+            letterSpacing: "-0.03em",
+            color: "var(--ink,#0B0B0F)",
+            marginBottom: 20,
+          }}
+        >
+          {count} capture{count !== 1 ? "s" : ""}
         </div>
+        {dayInsights.length > 0 && (
+          <div style={{ marginBottom: 20 }}>
+            <div
+              style={{
+                fontSize: 9.5,
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#8E8E93",
+                marginBottom: 8,
+              }}
+            >
+              insights
+            </div>
+            {dayInsights.map((ins) => (
+              <div
+                key={ins.id}
+                style={{
+                  background: "#fff",
+                  borderRadius: 16,
+                  padding: "12px 14px",
+                  marginBottom: 8,
+                  boxShadow:
+                    "0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12)",
+                  fontSize: 13.5,
+                  fontWeight: 500,
+                  color: "#1C1C1E",
+                  lineHeight: 1.4,
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                {ins.text}
+                {ins.source && (
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: "#8E8E93",
+                      fontWeight: 600,
+                      marginTop: 4,
+                    }}
+                  >
+                    {ins.source}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+        {dayTheory.length > 0 && (
+          <div>
+            <div
+              style={{
+                fontSize: 9.5,
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#8E8E93",
+                marginBottom: 8,
+              }}
+            >
+              theory blocks
+            </div>
+            {dayTheory.map((b) => (
+              <div
+                key={b.id}
+                style={{
+                  background: "#fff",
+                  borderRadius: 16,
+                  padding: "12px 14px",
+                  marginBottom: 8,
+                  boxShadow:
+                    "0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.12)",
+                  fontSize: 13.5,
+                  fontWeight: 600,
+                  color: "#0B0B0F",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                {b.title}
+              </div>
+            ))}
+          </div>
+        )}
+        {count === 0 && (
+          <div style={{ fontSize: 14, color: "#8E8E93", fontWeight: 500 }}>
+            nothing captured this day.
+          </div>
+        )}
       </div>
+    );
+  }
 
-      {/* HERO heatmap card */}
-      <div
-        style={{
-          position: "relative",
-          background: "#FFFFFF",
-          borderRadius: 24,
-          padding: "20px 18px 18px",
-          marginBottom: 18,
-          boxShadow:
-            "0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18)",
-        }}
-      >
-        {/* heatmap top row */}
+  // Heatmap grid (shared)
+  function HeatmapGrid({
+    onCellClick,
+  }: {
+    onCellClick: (date: string) => void;
+  }) {
+    return (
+      <div>
         <div
           style={{
             display: "flex",
@@ -311,8 +332,6 @@ export default function KnowledgePage() {
             captures
           </div>
         </div>
-
-        {/* Grid: 18px DOW col + 8 week cols × 7 rows */}
         <div
           style={{
             display: "grid",
@@ -326,7 +345,6 @@ export default function KnowledgePage() {
         >
           {DOW_LABELS.map((dow, rowIdx) => (
             <>
-              {/* DOW label */}
               <div
                 key={`dow-${rowIdx}`}
                 style={{
@@ -343,10 +361,9 @@ export default function KnowledgePage() {
               >
                 {dow}
               </div>
-              {/* 8 week cells for this row */}
               {grid.map((weekDates, colIdx) => {
                 const date = weekDates[rowIdx];
-                if (!date) {
+                if (!date)
                   return (
                     <div
                       key={`cell-empty-${colIdx}-${rowIdx}`}
@@ -359,23 +376,25 @@ export default function KnowledgePage() {
                       }}
                     />
                   );
-                }
                 const count = countMap[date] ?? 0;
                 const level = hmLevel(count);
                 const isToday = date === today;
+                const isSelected = date === (selectedDay ?? mobileSelectedDate);
                 return (
                   <div
                     key={`cell-${colIdx}-${rowIdx}`}
-                    onClick={() => handleCellClick(date)}
+                    onClick={() => onCellClick(date)}
                     style={{
                       gridColumn: colIdx + 2,
                       gridRow: rowIdx + 1,
                       height: 28,
                       borderRadius: 6,
                       background: HM_COLORS[level],
-                      boxShadow: isToday
-                        ? "0 0 0 2px #0B0B0F,0 0 0 4px #FFFFFF"
-                        : "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+                      boxShadow: isSelected
+                        ? "0 0 0 2px #0A84FF,0 0 0 4px rgba(10,132,255,0.2)"
+                        : isToday
+                          ? "0 0 0 2px #0B0B0F,0 0 0 4px #FFFFFF"
+                          : "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
                       cursor: "pointer",
                       position: "relative",
                     }}
@@ -386,7 +405,6 @@ export default function KnowledgePage() {
             </>
           ))}
         </div>
-
         {/* Legend */}
         <div
           style={{
@@ -417,14 +435,7 @@ export default function KnowledgePage() {
               alignItems: "center",
             }}
           >
-            <span
-              style={{
-                fontSize: 10.5,
-                color: "#8E8E93",
-                fontWeight: 600,
-                letterSpacing: "-0.005em",
-              }}
-            >
+            <span style={{ fontSize: 10.5, color: "#8E8E93", fontWeight: 600 }}>
               less
             </span>
             {HM_COLORS.map((c, i) => (
@@ -439,20 +450,11 @@ export default function KnowledgePage() {
                 }}
               />
             ))}
-            <span
-              style={{
-                fontSize: 10.5,
-                color: "#8E8E93",
-                fontWeight: 600,
-                letterSpacing: "-0.005em",
-              }}
-            >
+            <span style={{ fontSize: 10.5, color: "#8E8E93", fontWeight: 600 }}>
               more
             </span>
           </div>
         </div>
-
-        {/* Summary phrase */}
         <div
           style={{
             marginTop: 14,
@@ -471,13 +473,16 @@ export default function KnowledgePage() {
           absorbing.
         </div>
       </div>
+    );
+  }
 
-      {/* Per-domain mini-rows */}
-      <div style={{ padding: "0 4px", marginBottom: 110 }}>
+  // Domain sparklines section
+  function DomainRows() {
+    return (
+      <div style={{ padding: "0 4px" }}>
         {domainSparklines.map((d) => {
           const [bg1, bg2] = DOMAIN_BG2[d.id];
           const ink = DOMAIN_INK[d.id];
-          const domainInfo = domains.find((dom) => dom.id === d.id);
           const sparkMax = Math.max(...d.spark, 1);
           return (
             <div
@@ -494,7 +499,6 @@ export default function KnowledgePage() {
                 setSelectedDomain(selectedDomain === d.id ? "all" : d.id)
               }
             >
-              {/* domain disc */}
               <div
                 style={{
                   width: 34,
@@ -515,8 +519,6 @@ export default function KnowledgePage() {
               >
                 {d.id.slice(0, 2).toUpperCase()}
               </div>
-
-              {/* body */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
@@ -538,8 +540,6 @@ export default function KnowledgePage() {
                     {d.total}
                   </span>
                 </div>
-
-                {/* sparkline */}
                 <div
                   style={{
                     display: "flex",
@@ -550,216 +550,216 @@ export default function KnowledgePage() {
                   }}
                 >
                   {d.spark.map((val, i) => {
-                    const lvl = sparkLevel(val, sparkMax);
+                    const lv = sparkLevel(val, sparkMax);
                     return (
                       <div
                         key={i}
                         style={{
                           flex: 1,
-                          background: HM_COLORS[Math.max(lvl, 1)],
-                          borderRadius: 1.5,
-                          minWidth: 3,
-                          height: SPARK_HEIGHTS[lvl],
+                          height: SPARK_HEIGHTS[lv],
+                          borderRadius: 2,
+                          background:
+                            lv === 0
+                              ? "rgba(60,60,67,0.08)"
+                              : `linear-gradient(180deg,${bg1},${bg2})`,
                         }}
                       />
                     );
                   })}
                 </div>
               </div>
-
-              <div
-                style={{
-                  fontSize: 14,
-                  color: "#8E8E93",
-                  fontWeight: 600,
-                  flexShrink: 0,
-                }}
-              >
-                ›
-              </div>
             </div>
           );
         })}
       </div>
+    );
+  }
 
-      {/* Right drawer — day detail */}
-      {drawerOpen && (
-        <RightDrawer onClose={() => setDrawerOpen(false)}>
-          {selectedDate && (
-            <div style={{ padding: "0 0 24px" }}>
-              <div
-                style={{
-                  fontSize: 24,
-                  fontWeight: 800,
-                  letterSpacing: "-0.025em",
-                  color: "#0B0B0F",
-                  lineHeight: 1.1,
-                  marginBottom: 4,
-                }}
-              >
-                {new Date(selectedDate + "T12:00:00").toLocaleDateString(
-                  "en-US",
-                  {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric",
-                  },
-                )}
-              </div>
-              <div
-                style={{
-                  fontSize: 13,
-                  color: "#6E6E73",
-                  fontWeight: 600,
-                  letterSpacing: "-0.005em",
-                  marginBottom: 14,
-                }}
-              >
-                {selectedDayInsights.length + selectedDayTheory.length} captures
-              </div>
-
-              {selectedDayInsights.length > 0 && (
-                <>
-                  <div
-                    style={{
-                      fontSize: 10.5,
-                      color: "#8E8E93",
-                      fontWeight: 700,
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      margin: "14px 0 8px",
-                    }}
-                  >
-                    insights
-                  </div>
-                  {selectedDayInsights.map((ins) => (
-                    <div
-                      key={ins.id}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: 10,
-                        padding: "10px 12px",
-                        background: "#FBFAF8",
-                        borderRadius: 12,
-                        marginBottom: 6,
-                        boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 22,
-                          height: 22,
-                          borderRadius: 6,
-                          background: "#E2EEFF",
-                          color: "#0050C8",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 10,
-                          fontWeight: 800,
-                          flexShrink: 0,
-                          marginTop: 1,
-                        }}
-                      >
-                        I
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          color: "#0B0B0F",
-                          fontWeight: 600,
-                          letterSpacing: "-0.005em",
-                          lineHeight: 1.4,
-                        }}
-                      >
-                        {ins.text}
-                      </div>
-                    </div>
-                  ))}
-                </>
-              )}
-
-              {selectedDayTheory.length > 0 && (
-                <>
-                  <div
-                    style={{
-                      fontSize: 10.5,
-                      color: "#8E8E93",
-                      fontWeight: 700,
-                      letterSpacing: "0.14em",
-                      textTransform: "uppercase",
-                      margin: "14px 0 8px",
-                    }}
-                  >
-                    theory blocks
-                  </div>
-                  {selectedDayTheory.map((b) => (
-                    <div
-                      key={b.id}
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: 10,
-                        padding: "10px 12px",
-                        background: "#FBFAF8",
-                        borderRadius: 12,
-                        marginBottom: 6,
-                        boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: 22,
-                          height: 22,
-                          borderRadius: 6,
-                          background: "#E2F4E6",
-                          color: "#1F5C2C",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontSize: 10,
-                          fontWeight: 800,
-                          flexShrink: 0,
-                          marginTop: 1,
-                        }}
-                      >
-                        T
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          color: "#0B0B0F",
-                          fontWeight: 600,
-                          letterSpacing: "-0.005em",
-                          lineHeight: 1.4,
-                        }}
-                      >
-                        {b.title}
-                      </div>
-                    </div>
-                  ))}
-                </>
-              )}
-
-              {selectedDayInsights.length === 0 &&
-                selectedDayTheory.length === 0 && (
-                  <div
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 500,
-                      color: "#8E8E93",
-                      padding: "24px 0",
-                      textAlign: "center",
-                    }}
-                  >
-                    nothing captured on this day.
-                  </div>
-                )}
-            </div>
+  // Filter chips
+  const filterChips = (
+    <div
+      style={{
+        display: "flex",
+        gap: 6,
+        overflowX: "auto",
+        padding: "0 4px 16px",
+        scrollbarWidth: "none",
+      }}
+    >
+      {DOMAIN_FILTERS.map((f) => (
+        <button
+          key={f.id}
+          onClick={() => setSelectedDomain(f.id)}
+          style={{
+            flexShrink: 0,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            fontSize: 12.5,
+            fontWeight: 600,
+            color: selectedDomain === f.id ? "#fff" : "#6E6E73",
+            background: selectedDomain === f.id ? "#0B0B0F" : "#FFFFFF",
+            padding: "7px 12px",
+            borderRadius: 999,
+            boxShadow:
+              selectedDomain === f.id
+                ? "none"
+                : "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
+            letterSpacing: "-0.005em",
+            fontFamily: "inherit",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          {f.id !== "all" && (
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background:
+                  selectedDomain === f.id
+                    ? "rgba(255,255,255,0.5)"
+                    : DOMAIN_BG2[f.id as DomainId][1],
+              }}
+            />
           )}
-        </RightDrawer>
-      )}
+          {f.name}
+        </button>
+      ))}
+    </div>
+  );
+
+  // ── Desktop: filter top + left 60% heatmap + right 40% day-detail ──
+  if (isDesktop) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "calc(100dvh - 44px)",
+          overflow: "hidden",
+        }}
+      >
+        {/* Top filter chips */}
+        <div style={{ padding: "16px 24px 0", flexShrink: 0 }}>
+          {filterChips}
+        </div>
+        {/* Main content split */}
+        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+          {/* LEFT — heatmap + domain rows */}
+          <div
+            style={{
+              flex: "0 0 60%",
+              overflowY: "auto",
+              borderRight: "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
+              padding: "0 24px 40px",
+            }}
+          >
+            <div
+              style={{
+                position: "relative",
+                background: "#FFFFFF",
+                borderRadius: 24,
+                padding: "20px 18px 18px",
+                marginBottom: 18,
+                boxShadow:
+                  "0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18)",
+              }}
+            >
+              <HeatmapGrid
+                onCellClick={(date) =>
+                  router.push(`/knowledge?day=${date}`, { scroll: false })
+                }
+              />
+            </div>
+            <DomainRows />
+          </div>
+          {/* RIGHT — day detail */}
+          <div
+            style={{
+              flex: "0 0 40%",
+              overflowY: "auto",
+              background: "var(--bg,#fff)",
+            }}
+          >
+            {selectedDay ? (
+              <DayDetail date={selectedDay} />
+            ) : (
+              <div className="md-empty">
+                <span className="md-empty-icon">◎</span>
+                <span>click a day to see captures</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Mobile single-column ──
+  return (
+    <>
+      <Topbar name="knowledge." sub="what you've absorbed over time." />
+      {filterChips}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          justifyContent: "space-between",
+          padding: "2px 6px 14px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: 30,
+            fontWeight: 800,
+            letterSpacing: "-0.03em",
+            color: "#0B0B0F",
+          }}
+        >
+          knowledge
+        </div>
+        <div style={{ fontSize: 11.5, color: "#8E8E93", fontWeight: 600 }}>
+          <b style={{ color: "#1C1C1E", fontWeight: 700 }}>{totalCaptures}</b>{" "}
+          captures
+        </div>
+      </div>
+      <div
+        style={{
+          position: "relative",
+          background: "#FFFFFF",
+          borderRadius: 24,
+          padding: "20px 18px 18px",
+          marginBottom: 18,
+          boxShadow:
+            "0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18)",
+        }}
+      >
+        <HeatmapGrid
+          onCellClick={(date) => {
+            setMobileSelectedDate(date);
+            setDrawerOpen(true);
+          }}
+        />
+      </div>
+      <DomainRows />
+      {/* Mobile day detail in drawer */}
+      <RightDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title={mobileSelectedDate ?? ""}
+      >
+        {mobileSelectedDate && <DayDetail date={mobileSelectedDate} />}
+      </RightDrawer>
     </>
+  );
+}
+
+export default function KnowledgePage() {
+  return (
+    <Suspense>
+      <KnowledgeInner />
+    </Suspense>
   );
 }

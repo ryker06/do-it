@@ -78,8 +78,15 @@ export function CmdK() {
       }
       if (e.key === "Escape") close();
     }
+    function onOpenEvent() {
+      setOpen((v) => !v);
+    }
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("open-cmdk", onOpenEvent);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("open-cmdk", onOpenEvent);
+    };
   }, [close]);
 
   useEffect(() => {
