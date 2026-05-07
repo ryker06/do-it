@@ -1,3 +1,9 @@
+// ── Cover image ──────────────────────────────────────────────────────────────
+export type CoverImage =
+  | { kind: "emoji"; value: string } // single emoji
+  | { kind: "svg-id"; value: string } // preset SVG illustration ID from curated library
+  | { kind: "url"; value: string }; // pasted image URL or data URL from upload
+
 export type DomainId =
   | "business"
   | "religion"
@@ -49,6 +55,7 @@ export type Block = {
   routineId?: string;
   mode?: "theory" | "application" | "feedback";
   intention?: string;
+  startTimeOverride?: number; // minutes from midnight (0–1439); overrides elastic engine
   meta?: {
     ingredients?: string[];
     mealSlot?: string;
@@ -80,6 +87,7 @@ export type Vision = {
   deadline?: string; // ISO date string e.g. "2026-07-28"
   targetMetric?: string;
   identity?: string; // "I am a 220kg deadlifter"
+  coverImage?: CoverImage;
 };
 
 export type VisionThread = {
@@ -117,6 +125,7 @@ export type Routine = {
   color?: string;
   blocks: RoutineBlock[];
   identity?: string; // "I am someone who trains daily"
+  coverImage?: CoverImage;
 };
 
 export type InboxItem = {
@@ -203,6 +212,7 @@ export type Person = {
   note?: string;
   role?: PersonRole;
   lastInsight?: string;
+  coverImage?: CoverImage;
 };
 
 export type WishlistPriority = "low" | "medium" | "high";
@@ -225,6 +235,7 @@ export type WishlistItem = {
   status: WishlistStatus;
   createdAt: number;
   boughtAt?: number;
+  coverImage?: CoverImage;
 };
 
 // ── New v2 types ──
@@ -241,6 +252,7 @@ export type Goal = {
   unit: string;
   deadlineISO: string;
   history: GoalLog[];
+  coverImage?: CoverImage;
 };
 
 export type HabitMark = { dateISO: string; status: "done" | "rested" };
@@ -250,6 +262,7 @@ export type Habit = {
   identity?: string;
   marks: HabitMark[];
   createdAt: number;
+  coverImage?: CoverImage;
 };
 
 export type WorkoutSet = { reps: number; weightKg: number; loggedAt: number };

@@ -30,6 +30,7 @@ import type {
   BodyLog,
   JarEntry,
   MorningBrief,
+  CoverImage,
 } from "./types";
 import {
   DOMAINS,
@@ -189,6 +190,15 @@ type Actions = {
   ) => void;
   removeWishlistItem: (id: string) => void;
   markWishlistBought: (id: string) => void;
+  // block mutations
+  updateBlock: (id: string, patch: Partial<Omit<Block, "id">>) => void;
+  setBlockStartTime: (blockId: string, minutes: number | null) => void;
+  // cover images
+  setCoverImage: (
+    kind: "goal" | "vision" | "wishlist" | "habit" | "person" | "routine",
+    id: string,
+    image: CoverImage | null,
+  ) => void;
   // NOW mid-session commands
   extendCurrent: (min: number) => void;
   skipCurrent: () => void;
@@ -796,6 +806,68 @@ export const useDoIt = create<State & Actions>()(
         }));
       },
 
+      updateBlock: (id, patch) => {
+        set((s) => ({
+          blocks: s.blocks.map((b) => (b.id === id ? { ...b, ...patch } : b)),
+        }));
+      },
+
+      setBlockStartTime: (blockId, minutes) => {
+        set((s) => ({
+          blocks: s.blocks.map((b) =>
+            b.id === blockId
+              ? {
+                  ...b,
+                  startTimeOverride: minutes !== null ? minutes : undefined,
+                }
+              : b,
+          ),
+        }));
+      },
+
+      setCoverImage: (kind, id, image) => {
+        set((s) => {
+          switch (kind) {
+            case "goal":
+              return {
+                goals: s.goals.map((g) =>
+                  g.id === id ? { ...g, coverImage: image ?? undefined } : g,
+                ),
+              };
+            case "vision":
+              return {
+                visions: s.visions.map((v) =>
+                  v.id === id ? { ...v, coverImage: image ?? undefined } : v,
+                ),
+              };
+            case "wishlist":
+              return {
+                wishlist: s.wishlist.map((w) =>
+                  w.id === id ? { ...w, coverImage: image ?? undefined } : w,
+                ),
+              };
+            case "habit":
+              return {
+                habits: s.habits.map((h) =>
+                  h.id === id ? { ...h, coverImage: image ?? undefined } : h,
+                ),
+              };
+            case "person":
+              return {
+                people: s.people.map((p) =>
+                  p.id === id ? { ...p, coverImage: image ?? undefined } : p,
+                ),
+              };
+            case "routine":
+              return {
+                routines: s.routines.map((r) =>
+                  r.id === id ? { ...r, coverImage: image ?? undefined } : r,
+                ),
+              };
+          }
+        });
+      },
+
       extendCurrent: (min) => {
         set((s) => {
           const active = s.blocks.find(
@@ -879,7 +951,7 @@ export const useDoIt = create<State & Actions>()(
     }),
     {
       name: "do-it-state",
-      version: 12,
+      version: 13,
       skipHydration: true,
       migrate: (persistedState, _fromVersion) => {
         const s = persistedState as Record<string, unknown> | null;
@@ -926,6 +998,7 @@ export const useDoIt = create<State & Actions>()(
             routineId: b.routineId as string | undefined,
             mode: b.mode as Block["mode"],
             intention: b.intention as string | undefined,
+            startTimeOverride: b.startTimeOverride as number | undefined,
             meta: b.meta as Block["meta"],
             scheduledFor,
           };
