@@ -609,6 +609,8 @@ function MorningBriefOverlay({ onDone }: { onDone: () => void }) {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+const BRIEF_SEEN_KEY = "do-it-brief-seen-date";
+
 export default function TodayPage() {
   const {
     blocks,
@@ -625,13 +627,35 @@ export default function TodayPage() {
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [showCreate, setShowCreate] = useState(false);
 
-  // Show morning brief overlay if none exists for today
-  const todayISO = new Date().toISOString().slice(0, 10);
-  const hasBriefToday = morningBriefs.some((b) => b.dateISO === todayISO);
-  const todayBrief = morningBriefs.find((b) => b.dateISO === todayISO);
-  const [briefDismissed, setBriefDismissed] = useState(false);
+  // Mounted guard — prevents SSR/client hydration mismatch on date/localStorage reads
+  const [mounted, setMounted] = useState(false);
+  // briefSeenToday: true if localStorage already has today's date — brief stays closed
+  const [briefSeenToday, setBriefSeenToday] = useState(true); // start closed; open after mount check
   const [briefChipExpanded, setBriefChipExpanded] = useState(false);
-  const showBrief = !hasBriefToday && !briefDismissed;
+
+  useEffect(() => {
+    setMounted(true);
+    const todayISO = new Date().toISOString().slice(0, 10);
+    const seen = localStorage.getItem(BRIEF_SEEN_KEY);
+    setBriefSeenToday(seen === todayISO);
+  }, []);
+
+  // Compute today's ISO date client-side only (after mount)
+  const todayISO = mounted ? new Date().toISOString().slice(0, 10) : "";
+  const hasBriefToday =
+    mounted && morningBriefs.some((b) => b.dateISO === todayISO);
+  const todayBrief = mounted
+    ? morningBriefs.find((b) => b.dateISO === todayISO)
+    : undefined;
+
+  // Show brief: only after mount, only if not already seen today, only if no saved brief
+  const showBrief = mounted && !briefSeenToday && !hasBriefToday;
+
+  function dismissBrief() {
+    const iso = new Date().toISOString().slice(0, 10);
+    localStorage.setItem(BRIEF_SEEN_KEY, iso);
+    setBriefSeenToday(true);
+  }
 
   // Local ordering state for optimistic drag-and-drop
   const [orderedIds, setOrderedIds] = useState<string[]>(() =>
@@ -840,9 +864,7 @@ export default function TodayPage() {
         {showCreate && (
           <BlockCreateSheet onClose={() => setShowCreate(false)} />
         )}
-        {showBrief && (
-          <MorningBriefOverlay onDone={() => setBriefDismissed(true)} />
-        )}
+        {showBrief && <MorningBriefOverlay onDone={dismissBrief} />}
       </>
     );
   }
@@ -850,9 +872,7 @@ export default function TodayPage() {
   return (
     <>
       <Topbar name="today." sub={`${sorted.length} blocks ready.`} />
-      {showBrief && (
-        <MorningBriefOverlay onDone={() => setBriefDismissed(true)} />
-      )}
+      {showBrief && <MorningBriefOverlay onDone={dismissBrief} />}
 
       {/* Collapsible morning brief chip — only when brief exists for today */}
       {todayBrief && (
@@ -1014,7 +1034,7 @@ export default function TodayPage() {
             letterSpacing: "-0.01em",
           }}
         >
-          {timeOfDayPhrase()}
+          {mounted ? timeOfDayPhrase() : ""}
         </span>
         <span
           style={{
