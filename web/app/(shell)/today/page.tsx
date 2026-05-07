@@ -628,7 +628,9 @@ export default function TodayPage() {
   // Show morning brief overlay if none exists for today
   const todayISO = new Date().toISOString().slice(0, 10);
   const hasBriefToday = morningBriefs.some((b) => b.dateISO === todayISO);
+  const todayBrief = morningBriefs.find((b) => b.dateISO === todayISO);
   const [briefDismissed, setBriefDismissed] = useState(false);
+  const [briefChipExpanded, setBriefChipExpanded] = useState(false);
   const showBrief = !hasBriefToday && !briefDismissed;
 
   // Local ordering state for optimistic drag-and-drop
@@ -850,6 +852,147 @@ export default function TodayPage() {
       <Topbar name="today." sub={`${sorted.length} blocks ready.`} />
       {showBrief && (
         <MorningBriefOverlay onDone={() => setBriefDismissed(true)} />
+      )}
+
+      {/* Collapsible morning brief chip — only when brief exists for today */}
+      {todayBrief && (
+        <div style={{ marginBottom: 8 }}>
+          <button
+            onClick={() => setBriefChipExpanded((v) => !v)}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "10px 14px",
+              background: briefChipExpanded
+                ? "#fff"
+                : "linear-gradient(180deg,#FBFAF8 0%,#F4F3EF 100%)",
+              borderRadius: briefChipExpanded ? "16px 16px 0 0" : 16,
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
+              textAlign: "left",
+            }}
+          >
+            <span
+              style={{
+                fontSize: 10.5,
+                fontWeight: 700,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: "#8E8E93",
+                flexShrink: 0,
+              }}
+            >
+              today&apos;s brief
+            </span>
+            {todayBrief.friction && (
+              <span
+                style={{
+                  fontSize: 12.5,
+                  fontWeight: 500,
+                  color: "#6E6E73",
+                  letterSpacing: "-0.005em",
+                  flex: 1,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                · friction: {todayBrief.friction}
+              </span>
+            )}
+            <svg
+              viewBox="0 0 24 24"
+              width={12}
+              height={12}
+              fill="none"
+              stroke="#8E8E93"
+              strokeWidth={2.2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{
+                flexShrink: 0,
+                transform: briefChipExpanded
+                  ? "rotate(180deg)"
+                  : "rotate(0deg)",
+                transition: "transform 0.2s ease",
+              }}
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          {briefChipExpanded && (
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: "0 0 16px 16px",
+                padding: "12px 14px 14px",
+                boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              {todayBrief.friction && (
+                <div>
+                  <div
+                    style={{
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      letterSpacing: "0.10em",
+                      textTransform: "uppercase",
+                      color: "#8E8E93",
+                      marginBottom: 4,
+                    }}
+                  >
+                    friction
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13.5,
+                      fontWeight: 500,
+                      color: "#1C1C1E",
+                      letterSpacing: "-0.008em",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {todayBrief.friction}
+                  </div>
+                </div>
+              )}
+              {todayBrief.resumePlan && (
+                <div>
+                  <div
+                    style={{
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      letterSpacing: "0.10em",
+                      textTransform: "uppercase",
+                      color: "#8E8E93",
+                      marginBottom: 4,
+                    }}
+                  >
+                    if it breaks
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13.5,
+                      fontWeight: 500,
+                      color: "#1C1C1E",
+                      letterSpacing: "-0.008em",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {todayBrief.resumePlan}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       )}
 
       {/* Day strip */}

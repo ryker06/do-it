@@ -31,6 +31,9 @@ import type {
   JarEntry,
   MorningBrief,
   CoverImage,
+  Note,
+  PrayerName,
+  PrayerMark,
 } from "./types";
 import {
   DOMAINS,
@@ -53,6 +56,7 @@ import {
   SEED_BODY_LOG,
   SEED_JAR,
   SEED_MORNING_BRIEFS,
+  SEED_NOTES,
 } from "./seed";
 
 type UserPrefs = {
@@ -91,6 +95,8 @@ type State = {
   bodyLog: BodyLog[];
   jar: JarEntry[];
   morningBriefs: MorningBrief[];
+  notes: Note[];
+  prayerMarks: PrayerMark[];
 };
 
 type Actions = {
@@ -206,6 +212,16 @@ type Actions = {
   finishCurrent: () => void;
   // user prefs
   setUserPrefs: (prefs: Partial<UserPrefs>) => void;
+  // notes
+  addNote: (note: Omit<Note, "id" | "createdAt" | "updatedAt">) => void;
+  updateNote: (
+    id: string,
+    patch: Partial<Omit<Note, "id" | "createdAt">>,
+  ) => void;
+  removeNote: (id: string) => void;
+  togglePinNote: (id: string) => void;
+  // prayer
+  markPrayer: (dateISO: string, prayer: PrayerName, prayed: boolean) => void;
 };
 
 export const useDoIt = create<State & Actions>()(
@@ -244,6 +260,8 @@ export const useDoIt = create<State & Actions>()(
       bodyLog: SEED_BODY_LOG,
       jar: SEED_JAR,
       morningBriefs: SEED_MORNING_BRIEFS,
+      notes: SEED_NOTES,
+      prayerMarks: [],
 
       setHydrated: () => set({ hydrated: true }),
       setSliderRange: (min, max) =>
@@ -948,10 +966,51 @@ export const useDoIt = create<State & Actions>()(
       setUserPrefs: (prefs) => {
         set((s) => ({ userPrefs: { ...s.userPrefs, ...prefs } }));
       },
+
+      // ── Notes ──
+      addNote: (note) => {
+        const now = Date.now();
+        const newNote: Note = {
+          ...note,
+          id: `note-${now}`,
+          createdAt: now,
+          updatedAt: now,
+        };
+        set((s) => ({ notes: [newNote, ...s.notes] }));
+      },
+      updateNote: (id, patch) => {
+        set((s) => ({
+          notes: s.notes.map((n) =>
+            n.id === id ? { ...n, ...patch, updatedAt: Date.now() } : n,
+          ),
+        }));
+      },
+      removeNote: (id) => {
+        set((s) => ({ notes: s.notes.filter((n) => n.id !== id) }));
+      },
+      togglePinNote: (id) => {
+        set((s) => ({
+          notes: s.notes.map((n) =>
+            n.id === id
+              ? { ...n, pinned: !n.pinned, updatedAt: Date.now() }
+              : n,
+          ),
+        }));
+      },
+
+      // ── Prayer ──
+      markPrayer: (dateISO, prayer, prayed) => {
+        set((s) => {
+          const filtered = s.prayerMarks.filter(
+            (m) => !(m.dateISO === dateISO && m.prayer === prayer),
+          );
+          return { prayerMarks: [...filtered, { dateISO, prayer, prayed }] };
+        });
+      },
     }),
     {
       name: "do-it-state",
-      version: 13,
+      version: 14,
       skipHydration: true,
       migrate: (persistedState, _fromVersion) => {
         const s = persistedState as Record<string, unknown> | null;
@@ -1152,6 +1211,10 @@ export const useDoIt = create<State & Actions>()(
             (s.morningBriefs as unknown[]).length > 0
               ? (s.morningBriefs as MorningBrief[])
               : SEED_MORNING_BRIEFS,
+          notes: Array.isArray(s?.notes) ? (s.notes as Note[]) : SEED_NOTES,
+          prayerMarks: Array.isArray(s?.prayerMarks)
+            ? (s.prayerMarks as PrayerMark[])
+            : [],
         };
       },
       onRehydrateStorage: () => (state) => {

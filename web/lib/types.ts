@@ -302,3 +302,25 @@ export type MorningBrief = {
   friction?: string;
   resumePlan?: string;
 };
+
+// ── Notes ──────────────────────────────────────────────────────────────────────
+export type Note = {
+  id: string;
+  title?: string;
+  body: string;
+  tags: string[];
+  domainId?: DomainId;
+  visionId?: string;
+  blockId?: string;
+  pinned?: boolean;
+  createdAt: number;
+  updatedAt: number;
+};
+
+// ── Prayer ─────────────────────────────────────────────────────────────────────
+export type PrayerName = "Fajr" | "Dhuhr" | "Asr" | "Maghrib" | "Isha";
+export type PrayerMark = {
+  dateISO: string;
+  prayer: PrayerName;
+  prayed: boolean;
+};

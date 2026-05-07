@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDoIt } from "@/lib/store";
 import {
@@ -42,13 +42,26 @@ const DOMAIN_BG: Record<string, string> = {
 
 export default function NowPage() {
   const router = useRouter();
-  const { blocks, domains, start, pause, resume, finish, extend, advanceStep } =
-    useDoIt();
+  const {
+    blocks,
+    domains,
+    start,
+    pause,
+    resume,
+    finish,
+    extend,
+    advanceStep,
+    addJarEntry,
+  } = useDoIt();
   const [now, setNow] = useState<number>(() => Date.now());
   const [showBrainDump, setShowBrainDump] = useState(false);
   const [anchors, setAnchors] = useState<Anchor[] | null>(() =>
     loadCachedAnchors(),
   );
+  // JAR auto-capture state
+  const [jarPromptBlockId, setJarPromptBlockId] = useState<string | null>(null);
+  const [jarDismissed, setJarDismissed] = useState<Set<string>>(new Set());
+  const pauseCountRef = useRef<Record<string, number>>({});
 
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
@@ -75,6 +88,31 @@ export default function NowPage() {
       }
     });
   }, []);
+
+  // Track pauses per block — increment when a block transitions to paused
+  const prevStatusRef = useRef<Record<string, string>>({});
+  useEffect(() => {
+    for (const b of blocks) {
+      const prev = prevStatusRef.current[b.id];
+      if (prev === "active" && b.status === "paused") {
+        pauseCountRef.current[b.id] = (pauseCountRef.current[b.id] ?? 0) + 1;
+      }
+      // Detect block finishing — show JAR prompt if qualifies
+      if (
+        prev !== "done" &&
+        b.status === "done" &&
+        !jarDismissed.has(b.id) &&
+        jarPromptBlockId !== b.id
+      ) {
+        const pauses = pauseCountRef.current[b.id] ?? 0;
+        const targetMs = b.durationMin * 60_000 * 1.5;
+        if (pauses >= 2 || b.accumulatedMs >= targetMs) {
+          setJarPromptBlockId(b.id);
+        }
+      }
+      prevStatusRef.current[b.id] = b.status;
+    }
+  }, [blocks, jarDismissed, jarPromptBlockId]);
 
   const focus = pickFocus(blocks);
   const next = focus ? nextBlock(blocks, focus.id) : null;
@@ -786,6 +824,114 @@ export default function NowPage() {
           shift forward
         </button>
       </div>
+
+      {/* JAR auto-capture inline prompt */}
+      {jarPromptBlockId &&
+        (() => {
+          const doneBlock = blocks.find((b) => b.id === jarPromptBlockId);
+          if (!doneBlock) return null;
+          const pauses = pauseCountRef.current[jarPromptBlockId] ?? 0;
+          const reason = pauses >= 2 ? `pausing ${pauses} times` : "going long";
+          return (
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 20,
+                padding: "16px 18px",
+                marginTop: 12,
+                boxShadow:
+                  "0 0 0 0.5px rgba(255,180,100,0.20),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10)",
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "#8E8E93",
+                }}
+              >
+                cookie jar
+              </div>
+              <div
+                style={{
+                  fontSize: 14.5,
+                  fontWeight: 600,
+                  color: "#0B0B0F",
+                  letterSpacing: "-0.015em",
+                  lineHeight: 1.35,
+                }}
+              >
+                you finished{" "}
+                <b style={{ fontWeight: 800 }}>{doneBlock.title}</b> after{" "}
+                {reason}. → add to jar?
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  onClick={() => {
+                    addJarEntry({
+                      capturedAt: Date.now(),
+                      oneLine: `finished ${doneBlock.title}`,
+                      blockId: doneBlock.id,
+                    });
+                    setJarPromptBlockId(null);
+                    setJarDismissed((prev) => {
+                      const next = new Set(prev);
+                      next.add(jarPromptBlockId);
+                      return next;
+                    });
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: "10px",
+                    borderRadius: 12,
+                    background: "linear-gradient(180deg,#1A1A20 0%,#000 100%)",
+                    color: "#fff",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    letterSpacing: "-0.010em",
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                    boxShadow:
+                      "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5)",
+                  }}
+                >
+                  add
+                </button>
+                <button
+                  onClick={() => {
+                    setJarPromptBlockId(null);
+                    setJarDismissed((prev) => {
+                      const next = new Set(prev);
+                      next.add(jarPromptBlockId);
+                      return next;
+                    });
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: "10px",
+                    borderRadius: 12,
+                    background: "#F4F5F7",
+                    color: "#6E6E73",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    letterSpacing: "-0.010em",
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "inherit",
+                  }}
+                >
+                  skip
+                </button>
+              </div>
+            </div>
+          );
+        })()}
 
       {/* Then — next block preview */}
       {next && (

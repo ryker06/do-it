@@ -63,7 +63,7 @@ export function CmdK() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const { addJarEntry, addHabit, logSleep, logBody } = useDoIt();
+  const { addJarEntry, addHabit, logSleep, logBody, addNote } = useDoIt();
 
   const close = useCallback(() => {
     setOpen(false);
@@ -335,6 +335,25 @@ export function CmdK() {
         const name = prompt("habit name?");
         if (!name?.trim()) return close();
         addHabit({ name: name.trim() });
+        close();
+      },
+    },
+    {
+      id: "add-note",
+      verb: "add",
+      label: "note",
+      sub: "note: <body> · capture a thought",
+      action: () => {
+        const raw = query.startsWith("note:")
+          ? query.slice(5).trim()
+          : query.trim();
+        const body = raw || (prompt("note body?") ?? "");
+        if (!body.trim()) return close();
+        const lines = body.trim().split("\n");
+        const title = lines.length > 1 ? lines[0] : undefined;
+        const noteBody =
+          lines.length > 1 ? lines.slice(1).join("\n").trim() : body.trim();
+        addNote({ title, body: noteBody, tags: [], pinned: false });
         close();
       },
     },

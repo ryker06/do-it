@@ -19,6 +19,7 @@ import type {
   BodyLog,
   JarEntry,
   MorningBrief,
+  Note,
 } from "./types";
 
 export const DOMAINS: Domain[] = [
@@ -946,5 +947,46 @@ export const SEED_MORNING_BRIEFS: MorningBrief[] = [
     dateISO: "2026-05-04",
     friction: "Low energy after poor sleep.",
     resumePlan: "Start with the lightest block first, build momentum.",
+  },
+];
+
+export const SEED_NOTES: Note[] = [
+  {
+    id: "n1",
+    title: "cold email angle that worked",
+    body: "Lead with the specific problem they have, not the solution. Reference their latest post or initiative. Keep it under 4 sentences.",
+    tags: ["business", "outreach"],
+    domainId: "business",
+    pinned: true,
+    createdAt: Date.now() - 3 * 86400000,
+    updatedAt: Date.now() - 3 * 86400000,
+  },
+  {
+    id: "n2",
+    title: "deadlift cue that clicked",
+    body: "Push the floor away instead of pulling the bar up. Hips drive forward at the lockout, not a hyperextension.",
+    tags: ["fitness", "lifting"],
+    domainId: "fitness",
+    pinned: false,
+    createdAt: Date.now() - 7 * 86400000,
+    updatedAt: Date.now() - 7 * 86400000,
+  },
+  {
+    id: "n3",
+    body: "Reading Almanack of Naval Ravikant. Compounding applies to knowledge and relationships, not just money. Time your inputs early.",
+    tags: ["learning"],
+    domainId: "learning",
+    pinned: false,
+    createdAt: Date.now() - 14 * 86400000,
+    updatedAt: Date.now() - 14 * 86400000,
+  },
+  {
+    id: "n4",
+    title: "morning routine what actually works",
+    body: "Prayer first. No phone for 30 min. Coffee while reading — not scrolling. The first decision of the day sets the tone for all subsequent ones.",
+    tags: ["routine", "discipline"],
+    pinned: true,
+    createdAt: Date.now() - 2 * 86400000,
+    updatedAt: Date.now() - 2 * 86400000,
   },
 ];
