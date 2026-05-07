@@ -1,6 +1,5 @@
 import { BottomNav } from "@/components/BottomNav";
 import { CmdK } from "@/components/CmdK";
-import { DesktopTitlebarWrapper } from "@/components/DesktopTitlebarWrapper";
 import { KeyboardShortcuts } from "@/components/KeyboardShortcuts";
 import { SidebarRail } from "@/components/SidebarRail";
 import { StoreHydrator } from "@/components/StoreHydrator";
@@ -14,7 +13,6 @@ export default function ShellLayout({
   return (
     <>
       <SidebarRail />
-      <DesktopTitlebarWrapper />
       <div className="shell">
         <StoreHydrator />
         <SyncOnLoad />

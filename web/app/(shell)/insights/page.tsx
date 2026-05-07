@@ -1,9 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useDoIt } from "@/lib/store";
-import { useIsDesktop } from "@/lib/useIsDesktop";
 import { Topbar } from "@/components/Topbar";
 import type { DomainId, InsightStatus } from "@/lib/types";
 
@@ -70,11 +68,6 @@ function daysInTesting(statusChangedAt: number | undefined): number {
 }
 
 function InsightsInner() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const selectedId = searchParams.get("selected");
-  const isDesktop = useIsDesktop();
-
   const { insights, visions, addInsight, removeInsight, updateInsightStatus } =
     useDoIt();
 
@@ -117,14 +110,6 @@ function InsightsInner() {
   const staleTestingInsights = insights.filter(
     (i) => i.status === "testing" && daysInTesting(i.statusChangedAt) >= 14,
   );
-
-  const selectedInsight = insights.find((i) => i.id === selectedId) ?? null;
-  const linkedVision = selectedInsight?.visionId
-    ? visions.find((v) => v.id === selectedInsight.visionId)
-    : null;
-  const linkedDomain = selectedInsight?.domainId
-    ? DOMAIN_OPTIONS.find((d) => d.id === selectedInsight.domainId)
-    : null;
 
   // ── Capture strip (shared) ──
   const captureStrip = (
@@ -420,89 +405,7 @@ function InsightsInner() {
     );
   }
 
-  // ── Single insight row for list pane ──
-  function InsightRow({
-    ins,
-    selected,
-  }: {
-    ins: (typeof insights)[number];
-    selected: boolean;
-  }) {
-    const st = STATUS_PILL[ins.status];
-    return (
-      <button
-        onClick={() =>
-          router.push(`/insights?selected=${ins.id}`, { scroll: false })
-        }
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 4,
-          width: "100%",
-          padding: "12px 14px",
-          background: selected ? "var(--ink,#0B0B0F)" : "transparent",
-          border: "none",
-          cursor: "pointer",
-          fontFamily: "inherit",
-          textAlign: "left",
-          transition: "background 160ms",
-          borderBottom: "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            marginBottom: 2,
-          }}
-        >
-          <span
-            style={{
-              fontSize: 9.5,
-              fontWeight: 700,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              padding: "2px 7px",
-              borderRadius: 999,
-              background: selected ? "rgba(255,255,255,0.15)" : st.bg,
-              color: selected ? "#fff" : st.color,
-            }}
-          >
-            {ins.status}
-          </span>
-          <span
-            style={{
-              fontSize: 10,
-              color: selected
-                ? "rgba(255,255,255,0.5)"
-                : "var(--label,#8E8E93)",
-              fontWeight: 600,
-            }}
-          >
-            {timeAgo(ins.capturedAt)}
-          </span>
-        </div>
-        <div
-          style={{
-            fontSize: 13,
-            fontWeight: 500,
-            color: selected ? "#fff" : "var(--ink-2,#1C1C1E)",
-            letterSpacing: "-0.01em",
-            lineHeight: 1.3,
-            overflow: "hidden",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-          }}
-        >
-          {ins.text}
-        </div>
-      </button>
-    );
-  }
-
-  // ── Full insight detail (for desktop right pane + mobile cards) ──
+  // ── Full insight detail ──
   function InsightFull({ ins }: { ins: (typeof insights)[number] }) {
     const st = STATUS_PILL[ins.status];
     const lv = ins.visionId ? visions.find((v) => v.id === ins.visionId) : null;
@@ -662,121 +565,9 @@ function InsightsInner() {
     );
   }
 
-  // ── Desktop master/detail ──
-  if (isDesktop) {
-    return (
-      <div className="md-layout">
-        {/* LEFT — 280px filter + list */}
-        <div className="md-list" style={{ width: 280 }}>
-          {/* Header */}
-          <div
-            style={{
-              padding: "16px 14px 10px",
-              borderBottom: "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.10em",
-                textTransform: "uppercase",
-                color: "var(--label,#8E8E93)",
-                marginBottom: 10,
-              }}
-            >
-              {insights.length} insights
-            </div>
-            {/* Filter chips */}
-            <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
-              {STATUS_FILTERS.map((f) => (
-                <button
-                  key={f.value}
-                  onClick={() => setFilterStatus(f.value)}
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: filterStatus === f.value ? "#fff" : "#6E6E73",
-                    background:
-                      filterStatus === f.value ? "#0B0B0F" : "#F4F5F7",
-                    padding: "5px 10px",
-                    borderRadius: 999,
-                    boxShadow:
-                      filterStatus === f.value
-                        ? "none"
-                        : "inset 0 0 0 0.5px rgba(60,60,67,0.10)",
-                    fontFamily: "inherit",
-                    border: "none",
-                    cursor: "pointer",
-                    flexShrink: 0,
-                  }}
-                >
-                  {f.label}
-                </button>
-              ))}
-            </div>
-          </div>
-          {/* Capture strip */}
-          <div style={{ padding: "12px 10px" }}>{captureStrip}</div>
-          {/* Insight rows */}
-          {filtered.map((ins) => (
-            <InsightRow
-              key={ins.id}
-              ins={ins}
-              selected={selectedId === ins.id}
-            />
-          ))}
-          {filtered.length === 0 && (
-            <div
-              style={{
-                fontSize: 13,
-                fontWeight: 500,
-                color: "#8E8E93",
-                textAlign: "center",
-                padding: "24px 0",
-              }}
-            >
-              nothing here yet
-            </div>
-          )}
-        </div>
-
-        {/* RIGHT — detail pane */}
-        <div className="md-detail">
-          {selectedInsight ? (
-            <div style={{ padding: "32px 32px 40px", maxWidth: 560 }}>
-              {/* "did this become you?" prompt persists at top if stale */}
-              {selectedInsight.status === "testing" &&
-                daysInTesting(selectedInsight.statusChangedAt) >= 14 && (
-                  <StalePrompt ins={selectedInsight} />
-                )}
-              <InsightFull ins={selectedInsight} />
-            </div>
-          ) : (
-            <div className="md-empty">
-              {staleTestingInsights.length > 0 && (
-                <div
-                  style={{ maxWidth: 440, width: "100%", padding: "0 24px" }}
-                >
-                  <StalePrompt ins={staleTestingInsights[0]} />
-                </div>
-              )}
-              {staleTestingInsights.length === 0 && (
-                <>
-                  <span className="md-empty-icon">◎</span>
-                  <span>select an insight to read the detail</span>
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  // ── Mobile single-column ──
+  // Single-column layout (mobile + desktop, centered with max-width)
   return (
-    <>
+    <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 24px" }}>
       <Topbar name="insights." sub="what's landing on you." />
 
       {staleTestingInsights.length > 0 && (
@@ -886,7 +677,7 @@ function InsightsInner() {
           <InsightFull key={ins.id} ins={ins} />
         ))}
       </div>
-    </>
+    </div>
   );
 }
 

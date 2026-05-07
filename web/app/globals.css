@@ -1492,8 +1492,12 @@ button {
 }
 
 /* ── Desktop sidebar rail ── */
-/* Sidebar + titlebar hidden on mobile */
-.sidebar-rail,
+/* Sidebar hidden on mobile */
+.sidebar-rail {
+  display: none;
+}
+
+/* Titlebar never renders (removed from layout) */
 .titlebar-desktop {
   display: none;
 }
@@ -1504,7 +1508,7 @@ button {
     display: none;
   }
 
-  /* ── Shell: offset for 240px sidebar + 44px titlebar ── */
+  /* ── Shell: offset for 240px sidebar only ── */
   .shell {
     max-width: none;
     padding: 0;
@@ -1512,11 +1516,10 @@ button {
     min-height: 100dvh;
     background: var(--bg);
     position: relative;
-    padding-top: 44px;
   }
 
   .shell-content {
-    padding: 44px 0 40px;
+    padding: 0 0 40px;
     min-height: 100dvh;
   }
 

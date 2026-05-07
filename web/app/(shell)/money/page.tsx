@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useDoIt } from "@/lib/store";
 import { Topbar } from "@/components/Topbar";
-import { useIsDesktop } from "@/lib/useIsDesktop";
 import type { DomainId, Transaction } from "@/lib/types";
 
 function fmt(cents: number, currency = "USD") {
@@ -577,9 +575,6 @@ function TabContent({
 
 function MoneyInner() {
   const { transactions } = useDoIt();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const isDesktop = useIsDesktop();
 
   const now = new Date();
   const monthISO = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
@@ -593,148 +588,19 @@ function MoneyInner() {
     .reduce((a, t) => a + t.amountCents, 0);
   const net = totalIn - totalOut;
 
-  // URL param for desktop, local state for mobile
-  const urlTab = searchParams.get("tab") as TabId | null;
-  const [mobileTab, setMobileTab] = useState<TabId>("subscriptions");
-
-  const activeTab: TabId = isDesktop ? (urlTab ?? "subscriptions") : mobileTab;
+  const [activeTab, setActiveTab] = useState<TabId>("subscriptions");
 
   function selectTab(id: TabId) {
-    if (isDesktop) {
-      router.push(`/money?tab=${id}`, { scroll: false });
-    } else {
-      setMobileTab(id);
-    }
+    setActiveTab(id);
   }
 
   const heroStats = (
     <HeroStats totalIn={totalIn} totalOut={totalOut} net={net} now={now} />
   );
 
-  if (isDesktop) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          height: "calc(100dvh - 44px)",
-          overflow: "hidden",
-        }}
-      >
-        {/* Hero stats — full width at top */}
-        <div style={{ padding: "20px 24px 0", flexShrink: 0 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-              padding: "4px 0 12px",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 28,
-                fontWeight: 800,
-                letterSpacing: "-0.03em",
-                color: "#0B0B0F",
-                lineHeight: 1,
-              }}
-            >
-              money
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ fontSize: 12, color: "#8E8E93", fontWeight: 600 }}>
-                {now.toLocaleString("en-US", {
-                  month: "long",
-                  year: "numeric",
-                })}
-              </div>
-              <Link href="/money/expenses" style={{ textDecoration: "none" }}>
-                <div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    background: "#0B0B0F",
-                    color: "#fff",
-                    borderRadius: 999,
-                    padding: "7px 12px 7px 10px",
-                    fontSize: 12,
-                    fontWeight: 700,
-                    letterSpacing: "-0.012em",
-                    boxShadow:
-                      "0 1px 0 rgba(255,255,255,0.08) inset,0 0 0 0.5px rgba(0,0,0,0.5),0 8px 20px -8px rgba(10,10,20,0.4)",
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 16,
-                      height: 16,
-                      borderRadius: "50%",
-                      background: "rgba(255,255,255,0.16)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 12,
-                    }}
-                  >
-                    +
-                  </span>
-                  add transaction
-                </div>
-              </Link>
-            </div>
-          </div>
-          {heroStats}
-        </div>
-
-        {/* Master/detail below hero */}
-        <div className="md-layout" style={{ flex: 1, marginTop: 0 }}>
-          {/* LEFT — tab rail 320px */}
-          <div className="md-list" style={{ width: 320, padding: "12px 0" }}>
-            {TABS.map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => selectTab(tab.id)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: isActive ? "calc(100% - 16px)" : "100%",
-                    padding: "10px 16px",
-                    background: isActive ? "var(--ink,#0B0B0F)" : "transparent",
-                    color: isActive ? "#fff" : "#0B0B0F",
-                    border: "none",
-                    cursor: "pointer",
-                    fontFamily: "inherit",
-                    fontSize: 14,
-                    fontWeight: isActive ? 700 : 500,
-                    letterSpacing: "-0.012em",
-                    borderRadius: isActive ? 10 : 0,
-                    margin: isActive ? "0 8px" : "0",
-                    textAlign: "left",
-                    transition: "background 0.15s",
-                  }}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* RIGHT — content */}
-          <div className="md-detail" style={{ padding: "16px 24px" }}>
-            <TabContent tab={activeTab} thisMonth={thisMonth} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Mobile layout — unchanged
+  // Single-column layout (mobile + desktop, centered with max-width)
   return (
-    <>
+    <div style={{ maxWidth: 880, margin: "0 auto", padding: "0 24px" }}>
       <Topbar name="money." sub="this month's picture." />
 
       <div
@@ -849,7 +715,7 @@ function MoneyInner() {
       <div style={{ paddingBottom: 110 }}>
         <TabContent tab={activeTab} thisMonth={thisMonth} />
       </div>
-    </>
+    </div>
   );
 }
 

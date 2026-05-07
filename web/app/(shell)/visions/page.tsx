@@ -2,9 +2,7 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useDoIt } from "@/lib/store";
-import { useIsDesktop } from "@/lib/useIsDesktop";
 import { Topbar } from "@/components/Topbar";
 import { DomainGlyph } from "@/components/icons";
 import { CoverImagePickerTrigger } from "@/components/CoverImagePicker";
@@ -329,13 +327,8 @@ function VisionDetail({
   );
 }
 
-// ── Inner component (reads searchParams) ──
+// ── Inner component ──
 function VisionsInner() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const selectedId = searchParams.get("selected");
-  const isDesktop = useIsDesktop();
-
   const { visions, goals, setCoverImage, createVision } = useDoIt();
   const [createOpen, setCreateOpen] = useState(false);
   const [cTitle, setCTitle] = useState("");
@@ -502,8 +495,6 @@ function VisionsInner() {
     byDomain.set(v.domainId, list);
   }
 
-  const selectedVision = visions.find((v) => v.id === selectedId) ?? null;
-
   // ── Add vision button ──
   const addButton = (
     <button
@@ -527,8 +518,8 @@ function VisionsInner() {
     </button>
   );
 
-  // ── Vision list (shared between mobile card list + desktop left pane rows) ──
-  function VisionListRows({ compact }: { compact: boolean }) {
+  // ── Vision list ──
+  function VisionListRows() {
     return (
       <>
         {DOMAIN_ORDER.map((domId) => {
@@ -542,7 +533,7 @@ function VisionsInner() {
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
-                  padding: compact ? "10px 14px 6px" : "14px 6px 10px",
+                  padding: "14px 6px 10px",
                   fontSize: 10,
                   fontWeight: 700,
                   letterSpacing: "0.16em",
@@ -559,112 +550,23 @@ function VisionsInner() {
                 {domId}
               </div>
 
-              {list.map((v) => {
-                const deadline = deadlineCountdown(v.deadline);
-                const isSelected = selectedId === v.id;
-
-                if (compact) {
-                  // Desktop compact row
-                  return (
-                    <button
-                      key={v.id}
-                      onClick={() => {
-                        router.push(`/visions?selected=${v.id}`, {
-                          scroll: false,
-                        });
-                      }}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                        width: "100%",
-                        padding: "9px 14px",
-                        background: isSelected
-                          ? "var(--ink,#0B0B0F)"
-                          : "transparent",
-                        border: "none",
-                        cursor: "pointer",
-                        fontFamily: "inherit",
-                        textAlign: "left",
-                        transition: "background 160ms",
-                      }}
-                    >
-                      <div
-                        style={{
-                          flex: 1,
-                          minWidth: 0,
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: 13.5,
-                            fontWeight: 700,
-                            letterSpacing: "-0.015em",
-                            lineHeight: 1.2,
-                            color: isSelected ? "#fff" : "var(--ink,#0B0B0F)",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {v.identity ?? v.title}
-                        </div>
-                        {v.blurb && (
-                          <div
-                            style={{
-                              fontSize: 11.5,
-                              color: isSelected
-                                ? "rgba(255,255,255,0.6)"
-                                : "var(--label-2,#6E6E73)",
-                              fontWeight: 500,
-                              marginTop: 2,
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {v.blurb}
-                          </div>
-                        )}
-                      </div>
-                      {deadline && (
-                        <div
-                          style={{
-                            fontSize: 10,
-                            fontWeight: 700,
-                            color: isSelected
-                              ? "rgba(255,255,255,0.55)"
-                              : "var(--label,#8E8E93)",
-                            flexShrink: 0,
-                            fontVariantNumeric: "tabular-nums",
-                          }}
-                        >
-                          {deadline}
-                        </div>
-                      )}
-                    </button>
-                  );
-                }
-
-                // Mobile full card
-                return (
-                  <Link
-                    key={v.id}
-                    href={`/visions/${v.id}`}
-                    style={{
-                      textDecoration: "none",
-                      display: "block",
-                      marginBottom: 14,
-                    }}
-                  >
-                    <VisionDetail
-                      v={v}
-                      goals={goals}
-                      setCoverImage={setCoverImage}
-                    />
-                  </Link>
-                );
-              })}
+              {list.map((v) => (
+                <Link
+                  key={v.id}
+                  href={`/visions/${v.id}`}
+                  style={{
+                    textDecoration: "none",
+                    display: "block",
+                    marginBottom: 14,
+                  }}
+                >
+                  <VisionDetail
+                    v={v}
+                    goals={goals}
+                    setCoverImage={setCoverImage}
+                  />
+                </Link>
+              ))}
             </div>
           );
         })}
@@ -674,7 +576,7 @@ function VisionsInner() {
 
   if (visions.length === 0) {
     return (
-      <>
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 24px" }}>
         <Topbar name="visions." sub="what you're becoming." />
         {CreateDrawer}
         <div
@@ -722,69 +624,13 @@ function VisionsInner() {
             visions are the big threads that pull you forward.
           </div>
         </div>
-      </>
+      </div>
     );
   }
 
-  // ── Desktop master/detail layout ──
-  if (isDesktop) {
-    return (
-      <>
-        {CreateDrawer}
-        <div className="md-layout">
-          {/* LEFT — 360px list pane */}
-          <div className="md-list" style={{ width: 360 }}>
-            {/* Toolbar */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "16px 14px 10px",
-                borderBottom: "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "0.10em",
-                  textTransform: "uppercase",
-                  color: "var(--label,#8E8E93)",
-                }}
-              >
-                {visions.length} vision{visions.length !== 1 ? "s" : ""}
-              </span>
-              {addButton}
-            </div>
-            <VisionListRows compact />
-          </div>
-
-          {/* RIGHT — detail pane */}
-          <div className="md-detail">
-            {selectedVision ? (
-              <div style={{ padding: "24px 32px 40px", maxWidth: 600 }}>
-                <VisionDetail
-                  v={selectedVision}
-                  goals={goals}
-                  setCoverImage={setCoverImage}
-                />
-              </div>
-            ) : (
-              <div className="md-empty">
-                <span className="md-empty-icon">◎</span>
-                <span>select a vision to see the detail</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // ── Mobile single-column layout ──
+  // ── Single-column layout (mobile + desktop) ──
   return (
-    <>
+    <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 24px" }}>
       <Topbar name="visions." sub="what you're becoming." />
       {CreateDrawer}
       <div
@@ -804,9 +650,9 @@ function VisionsInner() {
           paddingBottom: 110,
         }}
       >
-        <VisionListRows compact={false} />
+        <VisionListRows />
       </div>
-    </>
+    </div>
   );
 }
 

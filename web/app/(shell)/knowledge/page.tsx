@@ -1,9 +1,7 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useDoIt } from "@/lib/store";
-import { useIsDesktop } from "@/lib/useIsDesktop";
 import { Topbar } from "@/components/Topbar";
 import RightDrawer from "@/components/RightDrawer";
 import type { DomainId } from "@/lib/types";
@@ -101,12 +99,7 @@ function sparkLevel(val: number, max: number): number {
 }
 
 function KnowledgeInner() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const selectedDay = searchParams.get("day");
-  const isDesktop = useIsDesktop();
-
-  const { insights, blocks, domains } = useDoIt();
+  const { insights, blocks } = useDoIt();
   const [selectedDomain, setSelectedDomain] = useState<DomainId | "all">("all");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mobileSelectedDate, setMobileSelectedDate] = useState<string | null>(
@@ -379,7 +372,7 @@ function KnowledgeInner() {
                 const count = countMap[date] ?? 0;
                 const level = hmLevel(count);
                 const isToday = date === today;
-                const isSelected = date === (selectedDay ?? mobileSelectedDate);
+                const isSelected = date === mobileSelectedDate;
                 return (
                   <div
                     key={`cell-${colIdx}-${rowIdx}`}
@@ -630,76 +623,9 @@ function KnowledgeInner() {
     </div>
   );
 
-  // ── Desktop: filter top + left 60% heatmap + right 40% day-detail ──
-  if (isDesktop) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          height: "calc(100dvh - 44px)",
-          overflow: "hidden",
-        }}
-      >
-        {/* Top filter chips */}
-        <div style={{ padding: "16px 24px 0", flexShrink: 0 }}>
-          {filterChips}
-        </div>
-        {/* Main content split */}
-        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-          {/* LEFT — heatmap + domain rows */}
-          <div
-            style={{
-              flex: "0 0 60%",
-              overflowY: "auto",
-              borderRight: "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
-              padding: "0 24px 40px",
-            }}
-          >
-            <div
-              style={{
-                position: "relative",
-                background: "#FFFFFF",
-                borderRadius: 24,
-                padding: "20px 18px 18px",
-                marginBottom: 18,
-                boxShadow:
-                  "0 0 0 0.5px rgba(60,60,67,0.06),0 2px 3px rgba(20,20,30,0.04),0 18px 38px -18px rgba(20,20,30,0.18),0 36px 64px -32px rgba(20,20,30,0.18)",
-              }}
-            >
-              <HeatmapGrid
-                onCellClick={(date) =>
-                  router.push(`/knowledge?day=${date}`, { scroll: false })
-                }
-              />
-            </div>
-            <DomainRows />
-          </div>
-          {/* RIGHT — day detail */}
-          <div
-            style={{
-              flex: "0 0 40%",
-              overflowY: "auto",
-              background: "var(--bg,#fff)",
-            }}
-          >
-            {selectedDay ? (
-              <DayDetail date={selectedDay} />
-            ) : (
-              <div className="md-empty">
-                <span className="md-empty-icon">◎</span>
-                <span>click a day to see captures</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Mobile single-column ──
+  // Single-column layout (mobile + desktop, max-width 880px on desktop)
   return (
-    <>
+    <div style={{ maxWidth: 880, margin: "0 auto", padding: "0 24px" }}>
       <Topbar name="knowledge." sub="what you've absorbed over time." />
       {filterChips}
       <div
@@ -752,7 +678,7 @@ function KnowledgeInner() {
       >
         {mobileSelectedDate && <DayDetail date={mobileSelectedDate} />}
       </RightDrawer>
-    </>
+    </div>
   );
 }
 

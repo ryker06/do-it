@@ -2,9 +2,7 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useDoIt } from "@/lib/store";
-import { useIsDesktop } from "@/lib/useIsDesktop";
 import { Topbar } from "@/components/Topbar";
 import RightDrawer from "@/components/RightDrawer";
 import type { DomainId, GoalMetricKind, Goal } from "@/lib/types";
@@ -402,11 +400,6 @@ function GoalCard({
 }
 
 function GoalsInner() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const selectedId = searchParams.get("selected");
-  const isDesktop = useIsDesktop();
-
   const { goals, visions, logGoalValue, addGoal } = useDoIt();
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [echoes, setEchoes] = useState<Record<string, string>>({});
@@ -474,12 +467,6 @@ function GoalsInner() {
       .find((gr) => (gr.visionId ?? "__none__") === key)
       ?.goals.push(g);
   }
-
-  const selectedGoal = goals.find((g) => g.id === selectedId) ?? null;
-  const selectedVision = selectedGoal
-    ? visions.find((v) => v.id === selectedGoal.visionId)
-    : null;
-  const selectedDomainId = (selectedVision?.domainId ?? "business") as DomainId;
 
   const addButton = (
     <button
@@ -696,7 +683,7 @@ function GoalsInner() {
 
   if (goals.length === 0) {
     return (
-      <>
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 24px" }}>
         <Topbar name="goals." sub="measure what you're becoming." />
         <div
           style={{
@@ -768,156 +755,13 @@ function GoalsInner() {
           {addButton}
         </div>
         {createDrawer}
-      </>
+      </div>
     );
   }
 
-  // ── Desktop master/detail ──
-  if (isDesktop) {
-    return (
-      <>
-        {createDrawer}
-        <div className="md-layout">
-          {/* LEFT — 320px list pane */}
-          <div className="md-list" style={{ width: 320 }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                padding: "16px 14px 10px",
-                borderBottom: "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "0.10em",
-                  textTransform: "uppercase",
-                  color: "var(--label,#8E8E93)",
-                }}
-              >
-                {goals.length} goal{goals.length !== 1 ? "s" : ""}
-              </span>
-              {addButton}
-            </div>
-
-            {visionGroups.map((group) => (
-              <div key={group.visionId ?? "none"}>
-                <div
-                  style={{
-                    fontSize: 9.5,
-                    fontWeight: 700,
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    color: "#8E8E93",
-                    padding: "12px 14px 4px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                >
-                  <span>{group.visionTitle}</span>
-                  <div
-                    style={{
-                      flex: 1,
-                      height: 0.5,
-                      background: "rgba(60,60,67,0.10)",
-                    }}
-                  />
-                </div>
-                {group.goals.map((g) => {
-                  const isSelected = selectedId === g.id;
-                  return (
-                    <button
-                      key={g.id}
-                      onClick={() =>
-                        router.push(`/goals?selected=${g.id}`, {
-                          scroll: false,
-                        })
-                      }
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 3,
-                        width: "100%",
-                        padding: "10px 14px",
-                        background: isSelected
-                          ? "var(--ink,#0B0B0F)"
-                          : "transparent",
-                        border: "none",
-                        cursor: "pointer",
-                        fontFamily: "inherit",
-                        textAlign: "left",
-                        transition: "background 160ms",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: 13.5,
-                          fontWeight: 700,
-                          letterSpacing: "-0.012em",
-                          color: isSelected ? "#fff" : "var(--ink,#0B0B0F)",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {g.identityLine || g.unit}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 11.5,
-                          color: isSelected
-                            ? "rgba(255,255,255,0.6)"
-                            : "var(--label-2,#6E6E73)",
-                          fontWeight: 500,
-                          fontVariantNumeric: "tabular-nums",
-                        }}
-                      >
-                        {g.currentValue}
-                        {g.unit} → {g.targetValue}
-                        {g.unit}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-
-          {/* RIGHT — detail pane */}
-          <div className="md-detail">
-            {selectedGoal ? (
-              <div style={{ padding: "24px 32px 40px", maxWidth: 500 }}>
-                <GoalCard
-                  g={selectedGoal}
-                  domainId={selectedDomainId}
-                  inputs={inputs}
-                  echoes={echoes}
-                  onInputChange={(id, val) =>
-                    setInputs((p) => ({ ...p, [id]: val }))
-                  }
-                  onLog={handleLog}
-                  linkOnTap={false}
-                />
-              </div>
-            ) : (
-              <div className="md-empty">
-                <span className="md-empty-icon">◎</span>
-                <span>select a goal to see the detail</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  // ── Mobile single-column ──
+  // Single-column layout (mobile + desktop, centered with max-width on desktop)
   return (
-    <>
+    <div style={{ maxWidth: 720, margin: "0 auto", padding: "0 24px" }}>
       <Topbar name="goals." sub="measure what you're becoming." />
       {createDrawer}
       <div
@@ -984,7 +828,7 @@ function GoalsInner() {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
