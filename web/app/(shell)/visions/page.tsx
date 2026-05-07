@@ -138,7 +138,7 @@ function deadlineCountdown(deadline: string | undefined): string | null {
 }
 
 export default function VisionsPage() {
-  const { visions, goals } = useDoIt();
+  const { visions, goals, setCoverImage } = useDoIt();
 
   if (visions.length === 0) {
     return (
@@ -259,7 +259,6 @@ export default function VisionsPage() {
                         position: "relative",
                         background: "var(--card,#fff)",
                         borderRadius: 24,
-                        padding: "18px 18px 16px",
                         boxShadow:
                           "0 0 0 0.5px rgba(60,60,67,0.05),0 8px 22px -14px rgba(20,20,30,0.12)",
                         overflow: "hidden",
@@ -274,146 +273,182 @@ export default function VisionsPage() {
                           boxShadow:
                             "inset 0 1px 0 rgba(255,255,255,0.95), inset 0 0 0 0.5px rgba(60,60,67,0.06)",
                           pointerEvents: "none",
+                          zIndex: 2,
                         }}
                       />
 
-                      {/* Deadline pill */}
-                      {deadline && (
+                      {/* Cover image area */}
+                      <div style={{ position: "relative" }}>
+                        <CoverDisplay
+                          cover={v.coverImage}
+                          domainId={v.domainId}
+                        />
                         <div
                           style={{
                             position: "absolute",
-                            top: 14,
-                            right: 14,
-                            fontSize: 10.5,
-                            fontWeight: 700,
-                            color: "var(--label-2,#6E6E73)",
-                            background: "var(--inset,#F2F2F7)",
-                            padding: "4px 10px",
-                            borderRadius: 999,
-                            boxShadow: "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
-                            fontVariantNumeric: "tabular-nums",
+                            top: 8,
+                            right: 8,
+                            zIndex: 3,
                           }}
+                          onClick={(e) => e.preventDefault()}
                         >
-                          {deadline}
+                          <CoverImagePickerTrigger
+                            context="vision"
+                            current={v.coverImage}
+                            onConfirm={(img) =>
+                              setCoverImage("vision", v.id, img)
+                            }
+                          />
                         </div>
-                      )}
-
-                      {/* Identity line — BIG */}
-                      <div
-                        style={{
-                          fontSize: 24,
-                          fontWeight: 800,
-                          letterSpacing: "-0.04em",
-                          lineHeight: 1.05,
-                          color: "var(--ink,#000)",
-                          marginBottom: 4,
-                          paddingRight: deadline ? 80 : 0,
-                        }}
-                      >
-                        {v.identity ?? v.title}
                       </div>
 
-                      {/* Aim sentence */}
-                      <div
-                        style={{
-                          fontSize: 13.5,
-                          color: "var(--label-2,#6E6E73)",
-                          fontWeight: 500,
-                          letterSpacing: "-0.012em",
-                          lineHeight: 1.4,
-                          marginBottom: vGoals.length > 0 ? 14 : 0,
-                        }}
-                      >
-                        {v.blurb}
-                      </div>
-
-                      {/* Goals mini-chips */}
-                      {vGoals.length > 0 && (
+                      {/* Card content */}
+                      <div style={{ padding: "14px 18px 16px" }}>
+                        {/* Identity line + deadline row */}
                         <div
                           style={{
                             display: "flex",
-                            flexDirection: "column",
-                            gap: 8,
-                            paddingTop: 12,
-                            borderTop:
-                              "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
+                            alignItems: "flex-start",
+                            gap: 10,
+                            marginBottom: 4,
                           }}
                         >
-                          {vGoals.map((g) => {
-                            const pct = Math.min(
-                              1,
-                              g.targetValue > 0
-                                ? g.currentValue / g.targetValue
-                                : 0,
-                            );
-                            return (
-                              <div
-                                key={g.id}
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 10,
-                                  padding: "10px 12px",
-                                  background: "var(--inset,#F2F2F7)",
-                                  borderRadius: 14,
-                                  boxShadow:
-                                    "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
-                                }}
-                              >
+                          <div
+                            style={{
+                              fontSize: 24,
+                              fontWeight: 800,
+                              letterSpacing: "-0.04em",
+                              lineHeight: 1.05,
+                              color: "var(--ink,#000)",
+                              flex: 1,
+                            }}
+                          >
+                            {v.identity ?? v.title}
+                          </div>
+                          {deadline && (
+                            <div
+                              style={{
+                                flexShrink: 0,
+                                fontSize: 10.5,
+                                fontWeight: 700,
+                                color: "var(--label-2,#6E6E73)",
+                                background: "var(--inset,#F2F2F7)",
+                                padding: "4px 10px",
+                                borderRadius: 999,
+                                boxShadow:
+                                  "inset 0 0 0 0.5px rgba(60,60,67,0.08)",
+                                fontVariantNumeric: "tabular-nums",
+                                marginTop: 4,
+                              }}
+                            >
+                              {deadline}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Aim sentence */}
+                        <div
+                          style={{
+                            fontSize: 13.5,
+                            color: "var(--label-2,#6E6E73)",
+                            fontWeight: 500,
+                            letterSpacing: "-0.012em",
+                            lineHeight: 1.4,
+                            marginBottom: vGoals.length > 0 ? 14 : 0,
+                          }}
+                        >
+                          {v.blurb}
+                        </div>
+
+                        {/* Goals mini-chips */}
+                        {vGoals.length > 0 && (
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: 8,
+                              paddingTop: 12,
+                              borderTop:
+                                "0.5px solid var(--hairline,rgba(60,60,67,0.10))",
+                            }}
+                          >
+                            {vGoals.map((g) => {
+                              const pct = Math.min(
+                                1,
+                                g.targetValue > 0
+                                  ? g.currentValue / g.targetValue
+                                  : 0,
+                              );
+                              return (
                                 <div
+                                  key={g.id}
                                   style={{
-                                    fontSize: 13,
-                                    fontWeight: 700,
-                                    color: "var(--ink,#000)",
-                                    letterSpacing: "-0.012em",
-                                    flex: 1,
-                                  }}
-                                >
-                                  {g.identityLine ?? g.unit}
-                                </div>
-                                {/* hairline track */}
-                                <div
-                                  style={{
-                                    width: 50,
-                                    height: 3,
-                                    background: "var(--inset-2,#EAEAEF)",
-                                    borderRadius: 999,
-                                    position: "relative",
-                                    flexShrink: 0,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 10,
+                                    padding: "10px 12px",
+                                    background: "var(--inset,#F2F2F7)",
+                                    borderRadius: 14,
                                     boxShadow:
                                       "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
                                   }}
                                 >
                                   <div
                                     style={{
-                                      width: 7,
-                                      height: 7,
-                                      borderRadius: "50%",
-                                      background: "var(--ink,#000)",
-                                      position: "absolute",
-                                      top: -2,
-                                      left: `calc(${pct * 100}% - 3.5px)`,
-                                      boxShadow:
-                                        "0 0 0 0.5px rgba(60,60,67,0.10)",
+                                      fontSize: 13,
+                                      fontWeight: 700,
+                                      color: "var(--ink,#000)",
+                                      letterSpacing: "-0.012em",
+                                      flex: 1,
                                     }}
-                                  />
+                                  >
+                                    {g.identityLine ?? g.unit}
+                                  </div>
+                                  {/* hairline track */}
+                                  <div
+                                    style={{
+                                      width: 50,
+                                      height: 3,
+                                      background: "var(--inset-2,#EAEAEF)",
+                                      borderRadius: 999,
+                                      position: "relative",
+                                      flexShrink: 0,
+                                      boxShadow:
+                                        "inset 0 0 0 0.5px rgba(60,60,67,0.06)",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        width: 7,
+                                        height: 7,
+                                        borderRadius: "50%",
+                                        background: "var(--ink,#000)",
+                                        position: "absolute",
+                                        top: -2,
+                                        left: `calc(${pct * 100}% - 3.5px)`,
+                                        boxShadow:
+                                          "0 0 0 0.5px rgba(60,60,67,0.10)",
+                                      }}
+                                    />
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontSize: 11.5,
+                                      color: "var(--label-2,#6E6E73)",
+                                      fontWeight: 600,
+                                      fontVariantNumeric: "tabular-nums",
+                                    }}
+                                  >
+                                    {g.currentValue} / {g.targetValue}
+                                    {g.unit}
+                                  </div>
                                 </div>
-                                <div
-                                  style={{
-                                    fontSize: 11.5,
-                                    color: "var(--label-2,#6E6E73)",
-                                    fontWeight: 600,
-                                    fontVariantNumeric: "tabular-nums",
-                                  }}
-                                >
-                                  {g.currentValue} / {g.targetValue}
-                                  {g.unit}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                      {/* end card content */}
                     </div>
                   </Link>
                 );

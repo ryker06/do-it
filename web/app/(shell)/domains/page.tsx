@@ -22,8 +22,17 @@ const MOMENTUM_COLOR: Record<DomainMomentum, string> = {
   quiet: "#8E8E93",
 };
 
+const DOMAIN_TINT_BG: Record<DomainId, string> = {
+  business: "linear-gradient(180deg,#E2EEFF 0%,#C9DBFF 100%)",
+  religion: "linear-gradient(180deg,#E2F4E6 0%,#C0E5C8 100%)",
+  learning: "linear-gradient(180deg,#FFE0E8 0%,#FFC9D6 100%)",
+  fitness: "linear-gradient(180deg,#FFD0DA 0%,#FFB6C5 100%)",
+  home: "linear-gradient(180deg,#EAEFF3 0%,#D4DCE3 100%)",
+  food: "linear-gradient(180deg,#FFF0DD 0%,#FFDFB5 100%)",
+};
+
 // Domain SVG glyphs (inline)
-function DomainSVG({ id }: { id: DomainId }) {
+function DomainSVG({ id, size = 20 }: { id: DomainId; size?: number }) {
   const paths: Record<DomainId, React.ReactNode> = {
     business: (
       <>
@@ -93,8 +102,8 @@ function DomainSVG({ id }: { id: DomainId }) {
   return (
     <div
       style={{
-        width: 42,
-        height: 42,
+        width: size + 22,
+        height: size + 22,
         borderRadius: "50%",
         background: t.bg,
         color: t.color,
@@ -108,8 +117,8 @@ function DomainSVG({ id }: { id: DomainId }) {
     >
       <svg
         viewBox="0 0 24 24"
-        width={20}
-        height={20}
+        width={size}
+        height={size}
         stroke="currentColor"
         strokeWidth={2.2}
         fill="none"
@@ -120,6 +129,74 @@ function DomainSVG({ id }: { id: DomainId }) {
       </svg>
     </div>
   );
+}
+
+// 7-day mini bar: 7 cells, each reflecting block density
+function WeekBar({
+  blocks,
+  domainId,
+}: {
+  blocks: ReturnType<typeof useDoIt.getState>["blocks"];
+  domainId: DomainId;
+}) {
+  const now = Date.now();
+  // Build 7 buckets: index 0 = 6 days ago, index 6 = today
+  const buckets: number[] = Array(7).fill(0);
+  for (const b of blocks) {
+    if (b.domain !== domainId) continue;
+    if (!b.startedAt) continue;
+    const daysAgo = Math.floor((now - b.startedAt) / 86_400_000);
+    if (daysAgo >= 0 && daysAgo < 7) {
+      buckets[6 - daysAgo]++;
+    }
+  }
+
+  const cells = buckets.map((count, i) => {
+    // intensity 0/1/2/3+
+    const opacity =
+      count === 0 ? 0.1 : count === 1 ? 0.3 : count === 2 ? 0.6 : 0.9;
+    return (
+      <div
+        key={i}
+        style={{
+          flex: 1,
+          height: 4,
+          borderRadius: 2,
+          background: "#0B0B0F",
+          opacity,
+        }}
+      />
+    );
+  });
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: 2,
+        marginTop: 8,
+      }}
+    >
+      {cells}
+    </div>
+  );
+}
+
+// Momentum → grid span
+function getMomentumSpan(m: DomainMomentum): {
+  colSpan: number;
+  rowSpan: number;
+} {
+  switch (m) {
+    case "humming":
+      return { colSpan: 2, rowSpan: 2 };
+    case "warm":
+      return { colSpan: 2, rowSpan: 1 };
+    case "steady":
+      return { colSpan: 1, rowSpan: 2 };
+    default:
+      return { colSpan: 1, rowSpan: 1 };
+  }
 }
 
 function computeBalanceSignal(
@@ -214,7 +291,10 @@ export default function DomainsPage() {
     );
   }
 
-  // Build the compact domain list (canon pattern: disc row at top + clean rows below)
+  const now = Date.now();
+  const sevenDaysAgo = now - 7 * 86_400_000;
+  const monthStr = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+
   return (
     <>
       <Topbar
@@ -222,55 +302,25 @@ export default function DomainsPage() {
         sub="tap a domain to see what's moving"
       />
 
-      {/* Hero disc row */}
+      {/* Bento grid */}
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 0,
-          padding: "20px 0 14px",
-        }}
-      >
-        {domains.map((d, i) => (
-          <button
-            key={d.id}
-            onClick={() => router.push(`/domains/${d.id}`)}
-            style={{
-              marginLeft: i === 0 ? 0 : -6,
-              background: "none",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              borderRadius: "50%",
-            }}
-          >
-            <DomainSVG id={d.id} />
-          </button>
-        ))}
-      </div>
-
-      {/* Domain list rows */}
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: 20,
-          boxShadow:
-            "0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 12px 28px -16px rgba(20,20,30,0.10),0 28px 50px -32px rgba(20,20,30,0.14)",
-          overflow: "hidden",
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: 10,
           marginBottom: 18,
         }}
       >
-        {domains.map((d, i) => {
-          const now = Date.now();
-          const sevenDaysAgo = now - 7 * 86_400_000;
+        {domains.map((d) => {
+          const { colSpan, rowSpan } = getMomentumSpan(d.momentum);
+
           const domainBlocks = blocks.filter(
             (b) =>
               b.domain === d.id &&
-              b.status === "done" &&
               b.startedAt !== undefined &&
               b.startedAt > sevenDaysAgo,
           );
-          const monthStr = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`;
+
           const domainTx = transactions.filter(
             (t) => t.domain === d.id && t.dateISO.startsWith(monthStr),
           );
@@ -284,78 +334,132 @@ export default function DomainsPage() {
           else if (totalCents > 2000) moneyStr = "$ steady this month";
           else if (totalCents > 0) moneyStr = "$ light this month";
 
-          const subText = [
-            d.lastEngagement,
-            domainBlocks.length > 0
-              ? `${domainBlocks.length} block${domainBlocks.length !== 1 ? "s" : ""} this week`
-              : null,
-            moneyStr,
-          ]
-            .filter(Boolean)
-            .join(" · ");
+          // Tile min-height scales with rowSpan
+          const minH = rowSpan === 2 ? 180 : 110;
 
           return (
             <button
               key={d.id}
               onClick={() => router.push(`/domains/${d.id}`)}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-                padding: "14px 16px",
-                width: "100%",
-                background: "none",
+                gridColumn: `span ${colSpan}`,
+                gridRow: `span ${rowSpan}`,
+                minHeight: minH,
+                background: "#fff",
+                borderRadius: 20,
+                boxShadow:
+                  "0 0 0 0.5px rgba(60,60,67,0.06),0 1px 1px rgba(20,20,30,0.02),0 8px 22px -14px rgba(20,20,30,0.10)",
                 border: "none",
-                borderTop: i === 0 ? "none" : "0.5px solid rgba(60,60,67,0.06)",
                 cursor: "pointer",
-                fontFamily: "inherit",
+                padding: 14,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
                 textAlign: "left",
+                fontFamily: "inherit",
+                position: "relative",
+                overflow: "hidden",
               }}
             >
-              <DomainSVG id={d.id} />
-              <div style={{ flex: 1, minWidth: 0 }}>
+              {/* Domain tint accent strip at top */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 3,
+                  background: DOMAIN_TINT_BG[d.id],
+                  borderRadius: "20px 20px 0 0",
+                }}
+              />
+
+              {/* Glyph */}
+              <DomainSVG id={d.id} size={rowSpan === 2 ? 20 : 16} />
+
+              {/* Name + momentum */}
+              <div
+                style={{
+                  marginTop: 8,
+                  fontSize: rowSpan === 2 ? 17 : 14,
+                  fontWeight: 800,
+                  letterSpacing: "-0.025em",
+                  color: "#0B0B0F",
+                  lineHeight: 1.1,
+                }}
+              >
+                {d.name}
+              </div>
+              <div
+                style={{
+                  fontSize: rowSpan === 2 ? 13 : 11,
+                  fontWeight: 700,
+                  color: MOMENTUM_COLOR[d.momentum],
+                  letterSpacing: "-0.01em",
+                  marginTop: 2,
+                }}
+              >
+                {MOMENTUM_WORD[d.momentum]}
+              </div>
+
+              {/* Last-touched phrase */}
+              {d.lastEngagement && (
                 <div
                   style={{
-                    fontSize: 16,
-                    fontWeight: 700,
-                    color: "#0B0B0F",
-                    letterSpacing: "-0.012em",
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {d.name}
-                </div>
-                <div
-                  style={{
-                    fontSize: 12.5,
-                    color: "#6E6E73",
+                    fontSize: 10.5,
                     fontWeight: 500,
-                    marginTop: 2,
+                    color: "#8E8E93",
+                    marginTop: 4,
                     letterSpacing: "-0.005em",
                   }}
                 >
-                  <strong
-                    style={{
-                      fontWeight: 700,
-                      color: MOMENTUM_COLOR[d.momentum],
-                    }}
-                  >
-                    {MOMENTUM_WORD[d.momentum]}
-                  </strong>
-                  {subText ? ` · ${subText}` : ""}
+                  {d.lastEngagement}
                 </div>
-                <CompounderPhrase domainId={d.id} />
-              </div>
-              <span
-                style={{
-                  fontSize: 14,
-                  color: "#8E8E93",
-                  flexShrink: 0,
-                  marginLeft: 6,
-                }}
-              >
-                ›
-              </span>
+              )}
+
+              {/* Suggested next move */}
+              {d.nextAction && rowSpan === 2 && (
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 500,
+                    color: "#6E6E73",
+                    marginTop: 6,
+                    letterSpacing: "-0.005em",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {d.nextAction}
+                </div>
+              )}
+
+              {/* Spacer to push bar + phrases to bottom */}
+              <div style={{ flex: 1 }} />
+
+              {/* 7-day mini bar */}
+              <WeekBar blocks={blocks} domainId={d.id} />
+
+              {/* Money phrase */}
+              {moneyStr && (
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: "#8E8E93",
+                    marginTop: 5,
+                    letterSpacing: "-0.005em",
+                  }}
+                >
+                  {moneyStr}
+                </div>
+              )}
+
+              {/* CompounderPhrase */}
+              {domainBlocks.length > 0 && (
+                <div style={{ marginTop: 4, width: "100%" }}>
+                  <CompounderPhrase domainId={d.id} />
+                </div>
+              )}
             </button>
           );
         })}

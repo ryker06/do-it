@@ -417,7 +417,7 @@ export function CmdK() {
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="jump to · log · add…"
+            placeholder="do anything."
             style={{
               flex: 1,
               background: "transparent",
